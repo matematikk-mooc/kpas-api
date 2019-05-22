@@ -1,25 +1,64 @@
-## ...
+### Requirements
 
-### Instalacja
+* PHP version >= 7.2
+* 1 MySQL database (version >= 5.7) or MariaDB (version >= 10.0)
+* 1 SMTP e-mail account
+* Disk space at least 1 GB and external disk for users' files
 
-* pobrać projekt z repozytorium - `git pull origin master`
-* skierować domenę na katalog `public`
-* odpalić komendę `composer install`
-* odpalić komendę `npm install`
-* odpalić komendę `php artisan env:set AAAA`, gdzie AAAA to nazwa środowiska, które istnieje w katalogu environment
-* odpowiednio skonfigurować plik `.env`, jeśli wymagane są zmiany
-* odpalić komendę `php artisan key:generate` ze względów na bezpieczeństwo
-* odpalić komendy `chmod 0777 boostrap/cache` i `chmod 0777 storage`
-* odpalić komendę `php artisan migrate --seed` do utworzenia tabel w bazie danych
-* odpalić komendę `php artisan storage:link` do utworzenia symlinków w katalogu public
-* odpalić komendę `npm run dev` do kompilacji assetów (css i js)
+### Technologies
 
-### Aktualizacja
+* PHP 7.2 or newer
+* Laravel 5.8 or newer
+* MySQL 5.7 or newer / MariaDB 10 or newer
 
-* pobrać wszystkie zmiany na repozytorium - `git fetch --all`
-* pobrać aktualną wersję z repozytorium - `git reset --hard origin/master`
-* odpalić komendę `composer install` do zaktualizowania bibliotek PHP / jeśli jakieś zmiany w pliku `/composer.json`
-* odpalić komendę `npm install` do zaktualizowania paczek JS / jeśli jakieś zmiany w pliku `/package.json`
-* odpalić komendę `php artisan env:set AAAA`, gdzie AAAA to nazwa środowiska, które istnieje w katalogu environment
-* odpalić komendę `php artisan migrate` do zaktualizowania tabel w bazie danych / jeśli jakieś zmiany w katalogu `/database/migrations`
-* odpalić komendę `npm run dev` do kompilacji assetów (css i js)
+### Installation
+
+To install project on new server, please perform actions in following order:
+
+```$xslt
+# Generate SSH key
+$ ssh-keygen -t rsa -b 4096 -C "{email}"
+
+# Copy content of file `.ssh/id_ras.pub` and add new deploy key to project's repository on GitHub (`Settings > Deploy keys`).
+
+# Clone repository on server
+$ git init
+$ git remote add origin git@github.com:{user}/{repo}.git
+$ git pull origin {branch}
+
+# Download PHP dependencies
+$ composer install (--no-dev when *{branch} = master*)
+
+# Set environment
+$ php artisan env:set {mode} (dev, production etc.)
+
+# Run migrations & seeders
+
+$ php artisan migrate --force
+$ php artisan db:seed --force
+$ php artisan passport:install
+
+# Copy passport auth data from table oauth_clients to .env
+
+PASSWORD_CLIENT_ID=
+PASSWORD_CLIENT_SECRET=
+
+# Set permissions (if user has not permissions to write):
+$ chmod 0777 boostrap/cache
+$ chmod 0777 storage
+
+# Generate secret key
+$ php artisan key:generate
+
+```
+
+### Update
+
+```$xslt
+# Please perform actions in following order
+$ git pull origin {branch} (that same branch that was used during installation)
+$ composer install (when composer.lock has changed)
+$ php artisan migrate
+$ php artisan db:seed
+# *update `.env` file when necessary*
+```
