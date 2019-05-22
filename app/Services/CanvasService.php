@@ -33,7 +33,7 @@ class CanvasService
     public function getUserByFeideId(int $feideId): \stdClass
     {
         $accountId = config('canvas.account_id');
-        $url = "/accounts/{$accountId}/users";
+        $url = "accounts/{$accountId}/users";
         $data = ['search' => $feideId];
 
 
@@ -55,6 +55,10 @@ class CanvasService
         if (!empty($unenrollnmentIds)) {
             $this->unenrollUserFrom($userId, $group->getCourseId(), $unenrollnmentIds);
         }
+
+        $this->enrollStudent($userId, $section->getCourseId(), $section->getId());
+
+        $this->addUserToGroupId($userId, $group->getId());
     }
 
     protected function getOrCreateGroup(GroupDto $groupDto): GroupDto
@@ -113,8 +117,7 @@ class CanvasService
             'courseId' => $group->getCourseId(),
         ]);
         if ($section = $this->findSection($sectionDto)) {
-            $sectionDto->setId($section->id);
-            return $sectionDto;
+            return $section;
         }
 
         return $this->createSection($sectionDto);
@@ -163,6 +166,50 @@ class CanvasService
         }
     }
 
+    protected function enrollStudent($userId, $courseId, $sectionId)
+    {
+        if ($roleId = $this->getRoleIdFor("StudentEnrollment")) {
+            return $this->enroll($userId, $roleId, $courseId, $sectionId);
+        }
+        return null;
+
+    }
+
+    protected function enroll($userId, $roleId, $courseId, $sectionId)
+    {
+        $url = "sections/{$sectionId}/enrollments";
+        return $this->request($url, "POST", [
+            'enrollment' => [
+                'user_id' => $userId,
+                'role_id' => $roleId,
+                'enrollment_state' => "active",
+                'limit_privileges_to_course_section' => "true",
+                'self_emrolled' => "true",
+            ],
+        ]);
+    }
+
+    protected function getRoleIdFor(string $roleName): ?int
+    {
+        $accountId = config('canvas.account_id');
+        $url = "accounte/${accountId}/roles";
+        $roles = $this->request($url);
+        foreach ($roles as $role) {
+            if ($role['role'] === $roleName) {
+                return $role['id'];
+            }
+        }
+        return null;
+    }
+
+    protected function addUserToGroupId(int $userId, int $groupId)
+    {
+        $url = "groups/{$groupId}/memberships";
+        $this->request($url, 'POST', [
+            'user_id' => $userId,
+        ]);
+    }
+
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
     {
         $fullUrl = "{$this->domain}/{$url}";
@@ -174,14 +221,15 @@ class CanvasService
 
         try {
             $response = $this->guzzleClient->request($method, $fullUrl, [
-                'body' => $data,
+                'form_params' => $data,
                 'headers' => $headers,
+                'verify' => false,
             ]);
         } catch (GuzzleException $exception) {
             throw new \Exception("Canvas: " . $exception->getMessage());
         }
 
-        return json_encode($response);
+        return json_decode($response->getBody()->getContents());
     }
 
 }
