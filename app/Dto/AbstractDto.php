@@ -2,6 +2,8 @@
 
 namespace App\Dto;
 
+use Illuminate\Support\Str;
+
 abstract class AbstractDto
 {
     public function __construct(array $data)
@@ -12,8 +14,9 @@ abstract class AbstractDto
     protected function fillData(array $data): void
     {
         foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{"set" . ucfirst($key)}($value);
+            $camelKey = Str::camel($key);
+            if (property_exists($this, $camelKey)) {
+                $this->{"set" . ucfirst($camelKey)}($value);
             }
         }
 

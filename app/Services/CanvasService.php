@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Dto\GroupDto;
+use App\Dto\SectionDto;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
@@ -45,21 +46,27 @@ class CanvasService
         throw new \Exception("User with id {$feideId} not found in " .json_encode($result));
     }
 
-    public function addUserToGroup(int $id, GroupDto $group, array $unenrollnmentIds)
+    public function addUserToGroup(int $userId, GroupDto $group, array $unenrollnmentIds)
     {
+        $group = $this->getOrCreateGroup($group);
 
+        $section = $this->getOrCreateSection($group);
+
+        if (!empty($unenrollnmentIds)) {
+            $this->unenrollUserFrom($userId, $group->getCourseId(), $unenrollnmentIds);
+        }
     }
 
-    protected function getOrCreateGroup(GroupDto $groupDto): int
+    protected function getOrCreateGroup(GroupDto $groupDto): GroupDto
     {
-        if ($groupId = $this->findGroupId($groupDto)) {
-            return $groupId;
+        if ($group = $this->findGroupId($groupDto)) {
+            return $group;
         }
 
         return $this->createGroup($groupDto);
     }
 
-    protected function findGroupId(GroupDto $groupDto): ?int
+    protected function findGroupId(GroupDto $groupDto): ?GroupDto
     {
         $groups = $this->getGroups($groupDto->getGroupCategoryId());
 
@@ -68,14 +75,15 @@ class CanvasService
                 $group->name === $groupDto->getName()
                 && $group->description === $groupDto->getDescription()
             ) {
-                return $group->id;
+                $groupDto->setId($group->id);
+                return $groupDto;
             }
         }
 
         return null;
     }
 
-    protected function createGroup(GroupDto $groupDto): int
+    protected function createGroup(GroupDto $groupDto): GroupDto
     {
         $url = "group_categories/{$groupDto->getGroupCategoryId()}/groups";
 
@@ -84,7 +92,8 @@ class CanvasService
             'description' => $groupDto->getDescription(),
         ]);
 
-        return $response->id;
+        $groupDto->setId($response->id);
+        return $groupDto;
     }
 
     public function getGroups(int $categoryId): array
@@ -92,6 +101,66 @@ class CanvasService
         $url = "group_categories/{$categoryId}/groups";
 
         return $this->request($url, 'GET', ['per_page' => 999]);
+    }
+
+
+    protected function getOrCreateSection(GroupDto $group): SectionDto
+    {
+        $sectionName = $group->getName() . ":" . $group->getDescription();
+
+        $sectionDto = new SectionDto([
+            'name' => $sectionName,
+            'courseId' => $group->getCourseId(),
+        ]);
+        if ($section = $this->findSection($sectionDto)) {
+            $sectionDto->setId($section->id);
+            return $sectionDto;
+        }
+
+        return $this->createSection($sectionDto);
+    }
+
+    protected function createSection(SectionDto $sectionDto): SectionDto
+    {
+        $url = "courses/{$sectionDto->getCourseId()}/sections";
+
+        $response = $this->request($url, 'POST', [
+            'name' => $sectionDto->getName(),
+        ]);
+
+        $sectionDto->setId($response->id);
+        return $sectionDto;
+    }
+
+    protected function findSection(SectionDto $sectionDto): ?SectionDto
+    {
+        $sections = $this->getSections($sectionDto->getCourseId());
+
+        foreach ($sections as $section) {
+            if ($section->name === $sectionDto->getName()) {
+                $sectionDto->setId($section->id);
+                return $sectionDto;
+            }
+        }
+
+        return null;
+    }
+
+    protected function getSections(int $courseId): array
+    {
+        $url = "courses/{$courseId}/sections";
+
+        return $this->request($url);
+    }
+
+    protected function unenrollUserFrom(int $userId, ?int $courseId, array $unenrollnmentIds)
+    {
+        $url = "courses/{$courseId}/enrollment/%s";
+        foreach ($unenrollnmentIds as $unenrollnmentId) {
+            $this->request(sprintf($url, $unenrollnmentId), 'DELETE', [
+                'task' => 'delete'
+            ]);
+        }
     }
 
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
@@ -114,4 +183,5 @@ class CanvasService
 
         return json_encode($response);
     }
+
 }

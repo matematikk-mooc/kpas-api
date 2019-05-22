@@ -16,6 +16,12 @@ class GroupDto extends AbstractDto
     /** @var int|null */
     protected $id;
 
+    /** @var string|null */
+    protected $membership;
+
+    /** @var int|null */
+    protected $courseId;
+
     public function getGroupCategoryId(): ?int
     {
         return $this->groupCategoryId;
@@ -54,5 +60,25 @@ class GroupDto extends AbstractDto
     public function setId(?int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getMembership(): ?string
+    {
+        return $this->membership;
+    }
+
+    public function setMembership(?string $membership): void
+    {
+        $this->membership = $membership;
+    }
+
+    public function getCourseId(): ?int
+    {
+        return $this->courseId;
+    }
+
+    public function setCourseId(?int $courseId): void
+    {
+        $this->courseId = $courseId;
     }
 }
