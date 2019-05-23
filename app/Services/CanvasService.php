@@ -6,6 +6,7 @@ use App\Dto\GroupDto;
 use App\Dto\SectionDto;
 use App\Exceptions\CanvasException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 
@@ -34,7 +35,7 @@ class CanvasService
     /** Actual service */
 
 
-    public function getUsersByFeideId(int $feideId): \stdClass
+    public function getUsersByFeideId(int $feideId): array
     {
         $accountId = config('canvas.account_id');
         try {
@@ -42,7 +43,7 @@ class CanvasService
             $data = ['search' => $feideId];
 
             return $this->request($url, 'GET', $data);
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
             }
@@ -62,7 +63,7 @@ class CanvasService
             $groupDto->setId($response->id);
 
             return $groupDto;
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf(
                     'Group category with ID %s not found',
@@ -78,7 +79,7 @@ class CanvasService
             $url = "group_categories/{$categoryId}/groups";
 
             return $this->request($url, 'GET', ['per_page' => 999]);
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group category with ID %s not found', $categoryId));
             }
@@ -97,7 +98,7 @@ class CanvasService
             $sectionDto->setId($response->id);
 
             return $sectionDto;
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $sectionDto->getCourseId()));
             }
@@ -110,7 +111,7 @@ class CanvasService
             $url = "courses/{$courseId}/sections";
 
             return $this->request($url);
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
@@ -126,7 +127,7 @@ class CanvasService
                     'task' => 'delete'
                 ]);
             }
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
@@ -147,7 +148,7 @@ class CanvasService
                     'self_emrolled' => "true",
                 ],
             ]);
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Section with ID %s not found', $sectionId));
             }
@@ -167,7 +168,7 @@ class CanvasService
             }
 
             return null;
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
         }
     }
@@ -179,7 +180,7 @@ class CanvasService
             $this->request($url, 'POST', [
                 'user_id' => $userId,
             ]);
-        } catch (GuzzleException $exception) {
+        } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
             }
@@ -195,15 +196,11 @@ class CanvasService
         ], $headers);
 
 
-        try {
-            $response = $this->guzzleClient->request($method, $fullUrl, [
-                'form_params' => $data,
-                'headers' => $headers,
-                'verify' => false,
-            ]);
-        } catch (GuzzleException $exception) {
-            throw new CanvasException("Canvas: " . $exception->getMessage());
-        }
+        $response = $this->guzzleClient->request($method, $fullUrl, [
+            'form_params' => $data,
+            'headers' => $headers,
+            'verify' => false,
+        ]);
 
         $content = json_decode($response->getBody()->getContents());
 

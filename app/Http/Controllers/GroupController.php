@@ -37,7 +37,7 @@ class GroupController extends Controller
 
         $this->canvasRepository->addUserToGroup($canvasUser->id, $group, $unenrollForm->unenrollmentIds);
 
-        return new SuccessResponse(['']);
+        return new SuccessResponse('Success');
     }
 
     public function categories($groupId): SuccessResponse
