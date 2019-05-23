@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Dto\GroupDto;
 use App\Dto\SectionDto;
+use App\Exceptions\CanvasException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 
@@ -30,184 +32,159 @@ class CanvasService
         $this->guzzleClient = $guzzleClient;
     }
 
-    public function getUserByFeideId(int $feideId): \stdClass
+    /** Actual service */
+
+
+    public function getUsersByFeideId(int $feideId): array
     {
         $accountId = config('canvas.account_id');
-        $url = "accounts/{$accountId}/users";
-        $data = ['search' => $feideId];
+        try {
+            $url = "accounts/{$accountId}/users";
+            $data = ['search' => $feideId];
 
-
-        $result = $this->request($url, 'GET', $data);
-        foreach ($result as $canvasUser) {
-            if ($canvasUser->id === $feideId) {
-                return $canvasUser;
+            return $this->request($url, 'GET', $data);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
             }
         }
-        throw new \Exception("User with id {$feideId} not found in " .json_encode($result));
     }
 
-    public function addUserToGroup(int $userId, GroupDto $group, array $unenrollnmentIds)
+    public function createGroup(GroupDto $groupDto): GroupDto
     {
-        $group = $this->getOrCreateGroup($group);
+        try {
+            $url = "group_categories/{$groupDto->getGroupCategoryId()}/groups";
 
-        $section = $this->getOrCreateSection($group);
+            $response = $this->request($url, 'POST', [
+                'name' => $groupDto->getName(),
+                'description' => $groupDto->getDescription(),
+            ]);
 
-        if (!empty($unenrollnmentIds)) {
-            $this->unenrollUserFrom($userId, $group->getCourseId(), $unenrollnmentIds);
-        }
+            $groupDto->setId($response->id);
 
-        $this->enrollStudent($userId, $section->getCourseId(), $section->getId());
-
-        $this->addUserToGroupId($userId, $group->getId());
-    }
-
-    protected function getOrCreateGroup(GroupDto $groupDto): GroupDto
-    {
-        if ($group = $this->findGroupId($groupDto)) {
-            return $group;
-        }
-
-        return $this->createGroup($groupDto);
-    }
-
-    protected function findGroupId(GroupDto $groupDto): ?GroupDto
-    {
-        $groups = $this->getGroups($groupDto->getGroupCategoryId());
-
-        foreach ($groups as $group) {
-            if (
-                $group->name === $groupDto->getName()
-                && $group->description === $groupDto->getDescription()
-            ) {
-                $groupDto->setId($group->id);
-                return $groupDto;
+            return $groupDto;
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf(
+                    'Group category with ID %s not found',
+                    $groupDto->getGroupCategoryId()
+                ));
             }
         }
-
-        return null;
-    }
-
-    protected function createGroup(GroupDto $groupDto): GroupDto
-    {
-        $url = "group_categories/{$groupDto->getGroupCategoryId()}/groups";
-
-        $response = $this->request($url, 'POST', [
-            'name' => $groupDto->getName(),
-            'description' => $groupDto->getDescription(),
-        ]);
-
-        $groupDto->setId($response->id);
-        return $groupDto;
     }
 
     public function getGroups(int $categoryId): array
     {
-        $url = "group_categories/{$categoryId}/groups";
+        try {
+            $url = "group_categories/{$categoryId}/groups";
 
-        return $this->request($url, 'GET', ['per_page' => 999]);
-    }
-
-
-    protected function getOrCreateSection(GroupDto $group): SectionDto
-    {
-        $sectionName = $group->getName() . ":" . $group->getDescription();
-
-        $sectionDto = new SectionDto([
-            'name' => $sectionName,
-            'courseId' => $group->getCourseId(),
-        ]);
-        if ($section = $this->findSection($sectionDto)) {
-            return $section;
-        }
-
-        return $this->createSection($sectionDto);
-    }
-
-    protected function createSection(SectionDto $sectionDto): SectionDto
-    {
-        $url = "courses/{$sectionDto->getCourseId()}/sections";
-
-        $response = $this->request($url, 'POST', [
-            'name' => $sectionDto->getName(),
-        ]);
-
-        $sectionDto->setId($response->id);
-        return $sectionDto;
-    }
-
-    protected function findSection(SectionDto $sectionDto): ?SectionDto
-    {
-        $sections = $this->getSections($sectionDto->getCourseId());
-
-        foreach ($sections as $section) {
-            if ($section->name === $sectionDto->getName()) {
-                $sectionDto->setId($section->id);
-                return $sectionDto;
+            return $this->request($url, 'GET', ['per_page' => 999]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Group category with ID %s not found', $categoryId));
             }
         }
-
-        return null;
     }
 
-    protected function getSections(int $courseId): array
+    public function createSection(SectionDto $sectionDto): SectionDto
     {
-        $url = "courses/{$courseId}/sections";
+        try {
+            $url = "courses/{$sectionDto->getCourseId()}/sections";
 
-        return $this->request($url);
-    }
-
-    protected function unenrollUserFrom(int $userId, ?int $courseId, array $unenrollnmentIds)
-    {
-        $url = "courses/{$courseId}/enrollment/%s";
-        foreach ($unenrollnmentIds as $unenrollnmentId) {
-            $this->request(sprintf($url, $unenrollnmentId), 'DELETE', [
-                'task' => 'delete'
+            $response = $this->request($url, 'POST', [
+                'name' => $sectionDto->getName(),
             ]);
+
+            $sectionDto->setId($response->id);
+
+            return $sectionDto;
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $sectionDto->getCourseId()));
+            }
         }
     }
 
-    protected function enrollStudent($userId, $courseId, $sectionId)
+    public function getSections(int $courseId): array
     {
-        if ($roleId = $this->getRoleIdFor("StudentEnrollment")) {
-            return $this->enroll($userId, $roleId, $courseId, $sectionId);
+        try {
+            $url = "courses/{$courseId}/sections";
+
+            return $this->request($url);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
+            }
         }
-        return null;
-
     }
 
-    protected function enroll($userId, $roleId, $courseId, $sectionId)
+    public function unenrollUserFrom(int $userId, ?int $courseId, array $unenrollnmentIds)
     {
-        $url = "sections/{$sectionId}/enrollments";
-        return $this->request($url, "POST", [
-            'enrollment' => [
-                'user_id' => $userId,
-                'role_id' => $roleId,
-                'enrollment_state' => "active",
-                'limit_privileges_to_course_section' => "true",
-                'self_emrolled' => "true",
-            ],
-        ]);
+        try {
+            $url = "courses/{$courseId}/enrollments/%s";
+            foreach ($unenrollnmentIds as $unenrollnmentId) {
+                $this->request(sprintf($url, $unenrollnmentId), 'DELETE', [
+                    'task' => 'delete'
+                ]);
+            }
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
+            }
+        }
     }
 
-    protected function getRoleIdFor(string $roleName): ?int
+    public function enroll($userId, $roleId, $courseId, $sectionId)
+    {
+        try {
+            $url = "sections/{$sectionId}/enrollments";
+
+            return $this->request($url, "POST", [
+                'enrollment' => [
+                    'user_id' => $userId,
+                    'role_id' => $roleId,
+                    'enrollment_state' => "active",
+                    'limit_privileges_to_course_section' => "true",
+                    'self_emrolled' => "true",
+                ],
+            ]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Section with ID %s not found', $sectionId));
+            }
+        }
+    }
+
+    public function getRoleIdFor(string $roleName): ?int
     {
         $accountId = config('canvas.account_id');
-        $url = "accounte/${accountId}/roles";
-        $roles = $this->request($url);
-        foreach ($roles as $role) {
-            if ($role['role'] === $roleName) {
-                return $role['id'];
+        try {
+            $url = "accounts/${accountId}/roles";
+            $roles = $this->request($url);
+            foreach ($roles as $role) {
+                if ($role->role === $roleName) {
+                    return $role->id;
+                }
             }
+
+            return null;
+        } catch (ClientException $exception) {
+            throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
         }
-        return null;
     }
 
-    protected function addUserToGroupId(int $userId, int $groupId)
+    public function addUserToGroupId(int $userId, int $groupId)
     {
-        $url = "groups/{$groupId}/memberships";
-        $this->request($url, 'POST', [
-            'user_id' => $userId,
-        ]);
+        try {
+            $url = "groups/{$groupId}/memberships";
+            $this->request($url, 'POST', [
+                'user_id' => $userId,
+            ]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
+            }
+        }
     }
 
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
@@ -219,17 +196,25 @@ class CanvasService
         ], $headers);
 
 
-        try {
-            $response = $this->guzzleClient->request($method, $fullUrl, [
-                'form_params' => $data,
+        $response = $this->guzzleClient->request($method, $fullUrl, [
+            'form_params' => $data,
+            'headers' => $headers,
+            'verify' => false,
+        ]);
+
+        $content = json_decode($response->getBody()->getContents());
+
+        if (config('canvas.debug')) {
+            info(json_encode([
+                'url' => $url,
+                'method' => $method,
+                'data' => $data,
                 'headers' => $headers,
-                'verify' => false,
-            ]);
-        } catch (GuzzleException $exception) {
-            throw new \Exception("Canvas: " . $exception->getMessage());
+                'response' => $content
+            ], JSON_PRETTY_PRINT));
         }
 
-        return json_decode($response->getBody()->getContents());
+        return $content;
     }
 
 }

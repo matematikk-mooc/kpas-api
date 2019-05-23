@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Dto\GroupDto;
 use App\Http\Requests\Group\AddUserRequest;
 use App\Http\Responses\SuccessResponse;
-use App\Services\CanvasService;
+use App\Repositories\CanvasRepository;
 use App\Services\DataportenService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 
 class GroupController extends Controller
 {
@@ -17,14 +15,14 @@ class GroupController extends Controller
      */
     protected $dataportenService;
     /**
-     * @var CanvasService
+     * @var CanvasRepository
      */
-    protected $canvasService;
+    protected $canvasRepository;
 
-    public function __construct(DataportenService $dataportenService, CanvasService $canvasService)
+    public function __construct(DataportenService $dataportenService, CanvasRepository $canvasRepository)
     {
         $this->dataportenService = $dataportenService;
-        $this->canvasService = $canvasService;
+        $this->canvasRepository = $canvasRepository;
     }
 
     public function addUser(AddUserRequest $request): SuccessResponse
@@ -35,16 +33,16 @@ class GroupController extends Controller
 //        $dataportenUserInfo = $this->dataportenService->getUserInfo();
 
         $feideId = 1; //$this->dataportenService->getFeideId($dataportenUserInfo);
-        $canvasUser = $this->canvasService->getUserByFeideId($feideId);
+        $canvasUser = $this->canvasRepository->getUserByFeideId($feideId);
 
-        $result = $this->canvasService->addUserToGroup($canvasUser->id, $group, $unenrollForm->unenrollmentIds);
+        $this->canvasRepository->addUserToGroup($canvasUser->id, $group, $unenrollForm->unenrollmentIds);
 
-        return new SuccessResponse($result);
+        return new SuccessResponse('Success');
     }
 
     public function categories($groupId): SuccessResponse
     {
-        $result = $this->canvasService->getGroupCategories($groupId);
+        $result = $this->canvasRepository->getGroupCategories($groupId);
 
         return new SuccessResponse($result);
     }
