@@ -21,15 +21,19 @@ class DataportenService
     /** @var string|null */
     protected $accessKey;
 
+    /**
+     * @var string|null
+     */
+    protected $authDomain;
+
     public function __construct(Client $guzzleClient)
     {
         $this->guzzleClient = $guzzleClient;
-        $this->domain = config('dataporten.api_url');
     }
 
     public function getUserInfo(): \stdClass
     {
-        return $this->request('userinfo');
+        return $this->request(config('dataporten.auth_api_url') . '/userinfo');
     }
 
     public function getFeideId($userInfo): string
@@ -41,16 +45,24 @@ class DataportenService
         throw new \Exception('Feide ID not found in user info!');
     }
 
+    public function getExtraUserInfo()
+    {
+        return $this->request(config('dataporten.api_url') . '/userinfo/v1/userinfo');
+    }
+
+    public function getGroupsInfo()
+    {
+        return $this->request(config('dataporten.groups_api_url') . '/groups/me/groups');
+    }
+
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
     {
-        $fullUrl = "{$this->domain}/{$url}";
-
         $headers = array_merge([
             'Authorization' => 'Bearer ' . $this->accessKey,
         ], $headers);
 
 
-        $response = $this->guzzleClient->request($method, $fullUrl, [
+        $response = $this->guzzleClient->request($method, $url, [
             'form_params' => $data,
             'headers' => $headers,
             'verify' => false,
