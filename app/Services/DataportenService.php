@@ -3,7 +3,6 @@
 
 namespace App\Services;
 
-
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 
@@ -47,7 +46,7 @@ class DataportenService
 
     public function getExtraUserInfo()
     {
-        return $this->request(config('dataporten.api_url') . '/userinfo/v1/userinfo');
+        return $this->request(dataporten_api_uri('userinfo/v1/userinfo'));
     }
 
     public function getGroupsInfo()

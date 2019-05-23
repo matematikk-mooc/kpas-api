@@ -27,32 +27,21 @@ class MainController extends Controller
 
     public function index(Request $request)
     {
-
         $isMyGroups = $this->handleMyGroups($request);
 
-        if($isMyGroups==false) {
+        if ($isMyGroups==false) {
             $this->handleCourseId($request);
         }
 
         $oauth2Provider = $this->oauth2Service->getProvider();
 
-        if(!$request->has('code')) {
+        if (!$request->has('code')) {
             force_redirect($oauth2Provider->getAuthorizationUrl());
         }
 
-        $authorizationToken = $this->getAccessToken($oauth2Provider);
+        $this->cacheDataportenData();
 
-        //@TODO it should be one method to handle below code
-        $userInfo = '';
-        $groupsInfo = '';
-        $extraUserInfo = '';
-
-        $request->session()->put('token', $authorizationToken);
-        $request->session()->put('userInfo', $userInfo);
-        $request->session()->put('groups', $groupsInfo);
-        $request->session()->put('extraUserInfo', $extraUserInfo);
-
-        if($isMyGroups==true) {
+        if ($isMyGroups==true) {
             force_redirect(route('main.mygroups'));
         }
 
@@ -76,7 +65,7 @@ class MainController extends Controller
     {
         $isMyGroups = $request->session()->exists('minegrupper');
 
-        if($isMyGroups == false && $request->has('minegrupper')) {
+        if ($isMyGroups == false && $request->has('minegrupper')) {
             $isMyGroups = true;
             $request->session()->put('minegrupper', $isMyGroups);
         }
@@ -85,7 +74,7 @@ class MainController extends Controller
 
     protected function handleCourseId(Request $request)
     {
-        if(!$request->has('course_id') || !is_numeric($request->input('course_id'))) {
+        if (!$request->has('course_id') || !is_numeric($request->input('course_id'))) {
             force_redirect(route('main.pageLogout'));
         }
 
@@ -99,5 +88,20 @@ class MainController extends Controller
             'code' => $request->input('code'),
             'state' => $request->input('state')
         ])->getToken();
+    }
+
+    protected function cacheDataportenData($oauth2Provider): void
+    {
+        $authorizationToken = $this->getAccessToken($oauth2Provider);
+
+        $this->dataportenService->setAccessKey($authorizationToken);
+        $userInfo = $this->dataportenService->getUserInfo();
+        $groupsInfo = $this->dataportenService->getGroupsInfo();
+        $extraUserInfo = $this->dataportenService->getExtraUserInfo();
+
+        $request->session()->put('token', $authorizationToken);
+        $request->session()->put('userInfo', $userInfo);
+        $request->session()->put('groups', $groupsInfo);
+        $request->session()->put('extraUserInfo', $extraUserInfo);
     }
 }
