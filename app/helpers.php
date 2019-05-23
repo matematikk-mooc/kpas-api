@@ -13,4 +13,16 @@ if (!function_exists('is_external_link')) {
     }
 }
 
+if (!function_exists('dataporten_api_uri')) {
+    /**
+     * Return trimmed dataporten uri
+     *
+     * @return string
+     */
+    function dataporten_api_uri($uri=null)
+    {
+        return trim(config('dataporten.api_url'), '/') . '/' . ($uri ? trim($uri, '/') : '');
+    }
+}
+
 // ...
