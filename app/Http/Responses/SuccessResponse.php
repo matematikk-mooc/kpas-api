@@ -12,7 +12,7 @@ class SuccessResponse implements Responsable
      */
     protected $data;
 
-    public function __construct(string $data)
+    public function __construct($data)
     {
         $this->data = $data;
     }
@@ -28,7 +28,7 @@ class SuccessResponse implements Responsable
         return response()->json([
             'status' => 200,
             'status_message' => 'Success',
-            'result' => $this->data
+            'result' => $this->data,
         ]);
     }
 }

@@ -7,8 +7,6 @@ use App\Dto\SectionDto;
 use App\Exceptions\CanvasException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Response;
 
 class CanvasService
 {
@@ -180,6 +178,20 @@ class CanvasService
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
+            }
+        }
+    }
+
+    public function getGroupCategories(int $courseId)
+    {
+        try {
+            $url = "courses/{$courseId}/group_categories";
+            return $this->request($url, 'GET', [
+                'per_page' => 999,
+            ]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
         }
     }

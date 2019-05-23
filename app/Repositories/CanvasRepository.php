@@ -108,4 +108,9 @@ class CanvasRepository
         return null;
 
     }
+
+    public function getGroupCategories(int $courseIdId)
+    {
+        return $this->canvasService->getGroupCategories($courseIdId);
+    }
 }
