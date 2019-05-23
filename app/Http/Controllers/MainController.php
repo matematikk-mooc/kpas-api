@@ -29,7 +29,7 @@ class MainController extends Controller
         $request->session()
                 ->flush();
 
-        redirect(dataporten_api_url() . '/logout');
+        redirect(dataporten_api_uri('logout'));
     }
 
     protected function getAccessToken(): string
