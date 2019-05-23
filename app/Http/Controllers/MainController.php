@@ -53,6 +53,20 @@ class MainController extends Controller
         return view('main.logout');
     }
 
+    public function myGroups(Request $request)
+    {
+        if (!$request->session()->exists('token')) {
+            force_redirect(route('main.index'));
+        }
+
+        return view('main.mygroups', [
+            'token' => $request->session()->get('token'),
+            'userInfo' => $request->session()->get('userInfo'),
+            'groups' => $request->session()->get('groups'),
+            'extraUserInfo' => $request->session()->get('extraUserInfo'),
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $request->session()
