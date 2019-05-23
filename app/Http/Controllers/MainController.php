@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Responses\SuccessResponse;
 use App\Services\DataportenService;
+use App\Services\OAuth2Service;
 use Illuminate\Http\Request;
 
 class MainController extends Controller
@@ -13,9 +14,15 @@ class MainController extends Controller
      */
     protected $dataportenService;
 
-    public function __construct(DataportenService $dataportenService)
+    /**
+     * @var OAuth2Service
+     */
+    protected $oauth2Service;
+
+    public function __construct(DataportenService $dataportenService, OAuth2Service $oauth2Service)
     {
         $this->dataportenService = $dataportenService;
+        $this->oauth2Service = $oauth2Service;
     }
 
     public function index(Request $request)
@@ -27,7 +34,29 @@ class MainController extends Controller
             $this->handleCourseId($request);
         }
 
-        return view('main.index');
+        $oauth2Provider = $this->oauth2Service->getProvider();
+
+        if(!$request->has('code')) {
+            force_redirect($oauth2Provider->getAuthorizationUrl());
+        }
+
+        $authorizationToken = $this->getAccessToken($oauth2Provider);
+
+        //@TODO it should be one method to handle below code
+        $userInfo = '';
+        $groupsInfo = '';
+        $extraUserInfo = '';
+
+        $request->session()->put('token', $authorizationToken);
+        $request->session()->put('userInfo', $userInfo);
+        $request->session()->put('groups', $groupsInfo);
+        $request->session()->put('extraUserInfo', $extraUserInfo);
+
+        if($isMyGroups==true) {
+            force_redirect(route('main.mygroups'));
+        }
+
+        force_redirect(route('main.worker'));
     }
 
     public function pageLogout()
@@ -64,22 +93,11 @@ class MainController extends Controller
         $request->session()->put('courseId', $courseId);
     }
 
-    protected function getAccessToken(): string
+    protected function getToken(Request $request, $oauth2Provider)
     {
-
-        $provider = new \League\OAuth2\Client\Provider\GenericProvider([
-                'clientId'                => config('dataporten.client_id'),
-                'clientSecret'            => config('dataporten.client_secret'),
-                'redirectUri'             => config('dataporten.redirect_uri'),
-                'urlAuthorize'            => dataporten_api_uri('oauth/authorization'),
-                'urlAccessToken'          => dataporten_api_uri('oauth/token'),
-                'verify'                  => false,
-            ]);
-
-        try {
-            return $provider->getAccessToken('client_credentials');
-        } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-            throw $e;
-        }
+        return $oauth2Provider->provider->getAccessToken('authorization_code', [
+            'code' => $request->input('code'),
+            'state' => $request->input('state')
+        ])->getToken();
     }
 }
