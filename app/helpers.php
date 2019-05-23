@@ -25,4 +25,13 @@ if (!function_exists('dataporten_api_uri')) {
     }
 }
 
+if(!function_exists('force_redirect')){
+
+  function force_redirect($to = '/'){
+
+      throw new \Illuminate\Http\Exceptions\HttpResponseException(redirect($to));
+  }
+
+}
+
 // ...

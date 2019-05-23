@@ -21,7 +21,18 @@ class MainController extends Controller
     public function index(Request $request)
     {
 
+        $isMyGroups = $this->handleMyGroups($request);
+
+        if($isMyGroups==false) {
+            $this->handleCourseId($request);
+        }
+
         return view('main.index');
+    }
+
+    public function pageLogout()
+    {
+        return view('main.logout');
     }
 
     public function logout(Request $request)
@@ -30,6 +41,27 @@ class MainController extends Controller
                 ->flush();
 
         redirect(dataporten_api_uri('logout'));
+    }
+
+    protected function handleMyGroups(Request $request): bool
+    {
+        $isMyGroups = $request->session()->exists('minegrupper');
+
+        if($isMyGroups == false && $request->has('minegrupper')) {
+            $isMyGroups = true;
+            $request->session()->put('minegrupper', $isMyGroups);
+        }
+        return $isMyGroups;
+    }
+
+    protected function handleCourseId(Request $request)
+    {
+        if(!$request->has('course_id') || !is_numeric($request->input('course_id'))) {
+            force_redirect(route('main.pageLogout'));
+        }
+
+        $courseId = (int)$request->input('course_id');
+        $request->session()->put('courseId', $courseId);
     }
 
     protected function getAccessToken(): string
