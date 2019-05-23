@@ -13,6 +13,7 @@
         "highsolutions/laravel-environments": "*",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
+        "league/oauth2-client": "^2.4",
         "nesbot/carbon": "*"
     },
     "require-dev": {
