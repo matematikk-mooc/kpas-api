@@ -57,7 +57,7 @@ class CanvasRepository
 
     protected function findGroupId(GroupDto $groupDto): ?GroupDto
     {
-        $groups = $this->canvasService->getGroups($groupDto->getGroupCategoryId());
+        $groups = $this->canvasService->getGroups($groupDto->getCategoryId());
 
         foreach ($groups as $group) {
             if (

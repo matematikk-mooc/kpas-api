@@ -53,7 +53,7 @@ class CanvasService
     public function createGroup(GroupDto $groupDto): GroupDto
     {
         try {
-            $url = "group_categories/{$groupDto->getGroupCategoryId()}/groups";
+            $url = "group_categories/{$groupDto->getCategoryId()}/groups";
 
             $response = $this->request($url, 'POST', [
                 'name' => $groupDto->getName(),
@@ -67,7 +67,7 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf(
                     'Group category with ID %s not found',
-                    $groupDto->getGroupCategoryId()
+                    $groupDto->getCategoryId()
                 ));
             }
         }

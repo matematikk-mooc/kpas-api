@@ -7,6 +7,7 @@ use App\Http\Requests\Group\AddUserRequest;
 use App\Http\Responses\SuccessResponse;
 use App\Repositories\CanvasRepository;
 use App\Services\DataportenService;
+use Illuminate\Support\Arr;
 
 class GroupController extends Controller
 {
@@ -27,15 +28,15 @@ class GroupController extends Controller
 
     public function addUser(AddUserRequest $request): SuccessResponse
     {
-        $group = new GroupDto(json_decode($request->input('group'), true));
-        $unenrollForm = json_decode($request->input('unenrollFrom'));
+        $group = new GroupDto($request->input('group'));
+        $unenrollForm = $request->input('unenrollFrom', []);
 
 //        $dataportenUserInfo = $this->dataportenService->getUserInfo();
 
         $feideId = 1; //$this->dataportenService->getFeideId($dataportenUserInfo);
         $canvasUser = $this->canvasRepository->getUserByFeideId($feideId);
 
-        $this->canvasRepository->addUserToGroup($canvasUser->id, $group, $unenrollForm->unenrollmentIds);
+        $this->canvasRepository->addUserToGroup($canvasUser->id, $group, Arr::get($unenrollForm, 'unenrollmentIds', []));
 
         return new SuccessResponse('Success');
     }
