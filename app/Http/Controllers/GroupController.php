@@ -31,9 +31,12 @@ class GroupController extends Controller
         $group = new GroupDto($request->input('group'));
         $unenrollForm = $request->input('unenrollFrom', []);
 
-//        $dataportenUserInfo = $this->dataportenService->getUserInfo();
+        $this->dataportenService->setAccessKey($request->header('X-Dataporten-Token'));
 
-        $feideId = 1; //$this->dataportenService->getFeideId($dataportenUserInfo);
+        $dataportenUserInfo = $this->dataportenService->getUserInfo();
+
+        $feideId = $this->dataportenService->getFeideId($dataportenUserInfo);
+
         $canvasUser = $this->canvasRepository->getUserByFeideId($feideId);
 
         $this->canvasRepository->addUserToGroup($canvasUser->id, $group, Arr::get($unenrollForm, 'unenrollmentIds', []));

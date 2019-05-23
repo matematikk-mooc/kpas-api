@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
 
 class DataportenService
 {
@@ -31,9 +32,13 @@ class DataportenService
         return $this->request('userinfo');
     }
 
-    public function getFeideId($userInfo): int
+    public function getFeideId($userInfo): string
     {
-
+        if ($userIDSec = Arr::first($userInfo->user->userid_sec)) {
+            $start = strpos($userIDSec, ":") + 1;
+            return substr($userIDSec, $start);
+        }
+        throw new \Exception('Feide ID not found in user info!');
     }
 
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])

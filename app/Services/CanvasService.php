@@ -32,10 +32,7 @@ class CanvasService
         $this->guzzleClient = $guzzleClient;
     }
 
-    /** Actual service */
-
-
-    public function getUsersByFeideId(int $feideId): array
+    public function getUsersByFeideId(string $feideId): array
     {
         $accountId = config('canvas.account_id');
         try {

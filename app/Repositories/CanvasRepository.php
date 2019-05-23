@@ -6,7 +6,6 @@ use App\Dto\GroupDto;
 use App\Dto\SectionDto;
 use App\Exceptions\CanvasException;
 use App\Services\CanvasService;
-use GuzzleHttp\Exception\GuzzleException;
 
 class CanvasRepository
 {
@@ -20,11 +19,11 @@ class CanvasRepository
         $this->canvasService = $canvasService;
     }
 
-    public function getUserByFeideId($feideId): \stdClass
+    public function getUserByFeideId(string $feideId): \stdClass
     {
         $result = $this->canvasService->getUsersByFeideId($feideId);
         foreach ($result as $canvasUser) {
-            if ($canvasUser->id === $feideId) {
+            if ($canvasUser->login_id === $feideId) {
                 return $canvasUser;
             }
         }
