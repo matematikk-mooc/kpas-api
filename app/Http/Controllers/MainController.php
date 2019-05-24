@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Responses\SuccessResponse;
 use App\Services\DataportenService;
 use App\Services\OAuth2Service;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Illuminate\Http\Request;
 
 class MainController extends Controller
@@ -33,13 +34,25 @@ class MainController extends Controller
             $this->handleCourseId($request);
         }
 
-        $oauth2Provider = $this->oauth2Service->getProvider();
+        try {
+            $this->oauth2Service->setProvider();
+            $oauth2Provider = $this->oauth2Service->getProvider();
 
-        if (!$request->has('code')) {
-            force_redirect($oauth2Provider->getAuthorizationUrl());
+            if (!$request->has('code')) {
+                info('No code parameter in uri, redirect to the auth url', [
+                    'fullUrl' => $request->fullUrl(),
+                ]);
+                force_redirect($oauth2Provider->getAuthorizationUrl());
+            }
+
+            $this->cacheDataportenData($request, $oauth2Provider);
+
+            info('Store dataporten data', $this->getCachedDataportenData($request));
+
+        } catch(IdentityProviderException $e) {
+            info('IdentityProviderException exception', ['message' => $e->getMessage()]);
+            force_redirect(route('main.index'));
         }
-
-        $this->cacheDataportenData();
 
         if ($isMyGroups==true) {
             force_redirect(route('main.mygroups'));
@@ -55,16 +68,11 @@ class MainController extends Controller
 
     public function myGroups(Request $request)
     {
-        if (!$request->session()->exists('token')) {
+        if (!$request->session()->exists('minegrupper')) {
             force_redirect(route('main.index'));
         }
 
-        return view('main.mygroups', [
-            'token' => $request->session()->get('token'),
-            'userInfo' => $request->session()->get('userInfo'),
-            'groups' => $request->session()->get('groups'),
-            'extraUserInfo' => $request->session()->get('extraUserInfo'),
-        ]);
+        return view('main.mygroups', $this->getCachedDataportenData($request));
     }
 
     public function logout(Request $request)
@@ -86,27 +94,34 @@ class MainController extends Controller
         return $isMyGroups;
     }
 
-    protected function handleCourseId(Request $request)
+    protected function handleCourseId(Request $request): void
     {
-        if (!$request->has('course_id') || !is_numeric($request->input('course_id'))) {
-            force_redirect(route('main.pageLogout'));
+        if (!$request->session()->has('courseId')) {
+            if (!$request->has('course_id') || !is_numeric($request->input('course_id'))) {
+                info('Redirect to the logging out page', [
+                    'fullUrl' => $request->fullUrl(),
+                ]);
+
+                force_redirect(route('main.pageLogout'));
+            }
+            $courseId = (int)$request->input('course_id');
+            $request->session()->put('courseId', $courseId);
         }
-
-        $courseId = (int)$request->input('course_id');
-        $request->session()->put('courseId', $courseId);
     }
 
-    protected function getToken(Request $request, $oauth2Provider)
+    protected function getToken($oauth2Provider, $options = [])
     {
-        return $oauth2Provider->provider->getAccessToken('authorization_code', [
+        return $oauth2Provider->getAccessToken('authorization_code', $options)
+                            ->getToken();
+    }
+
+    protected function cacheDataportenData(Request $request, $oauth2Provider): void
+    {
+        $authOptions = [
             'code' => $request->input('code'),
-            'state' => $request->input('state')
-        ])->getToken();
-    }
-
-    protected function cacheDataportenData($oauth2Provider): void
-    {
-        $authorizationToken = $this->getAccessToken($oauth2Provider);
+            'state' => $request->input('state'),
+        ];
+        $authorizationToken = $this->getToken($oauth2Provider, $authOptions);
 
         $this->dataportenService->setAccessKey($authorizationToken);
         $userInfo = $this->dataportenService->getUserInfo();
@@ -117,5 +132,15 @@ class MainController extends Controller
         $request->session()->put('userInfo', $userInfo);
         $request->session()->put('groups', $groupsInfo);
         $request->session()->put('extraUserInfo', $extraUserInfo);
+    }
+
+    protected function getCachedDataportenData(Request $request)
+    {
+        return [
+            'token' => $request->session()->get('token'),
+            'userInfo' => $request->session()->get('userInfo'),
+            'groups' => $request->session()->get('groups'),
+            'extraUserInfo' => $request->session()->get('extraUserInfo'),
+        ];
     }
 }
