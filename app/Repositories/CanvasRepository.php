@@ -45,6 +45,11 @@ class CanvasRepository
         $this->canvasService->addUserToGroupId($userId, $group->getId());
     }
 
+    public function getCourseById(int $courseId)
+    {
+        return $this->canvasService->getCourse($courseId);
+    }
+
     protected function getOrCreateGroup(GroupDto $groupDto): GroupDto
     {
         if ($group = $this->findGroupId($groupDto)) {

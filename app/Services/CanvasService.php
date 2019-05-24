@@ -211,6 +211,19 @@ class CanvasService
         }
     }
 
+    public function getCourse(int $courseId)
+    {
+        try {
+            $url = "courses/{$courseId}";
+            return $this->request($url);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
+            }
+            throw $exception;
+        }
+    }
+
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
     {
         $fullUrl = "{$this->domain}/{$url}";

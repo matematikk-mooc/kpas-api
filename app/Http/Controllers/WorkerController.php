@@ -33,7 +33,7 @@ class WorkerController extends Controller
             force_redirect(route('main.index'));
         }
 
-        $courseId = $request->session()->get('courseId');
+        $courseId = 286;//$request->session()->get('courseId');
         $userInfo = $request->session()->get('userInfo');
         $groups = $request->session()->get('groups');
         $extraUserInfo = $request->session()->get('extraUserInfo');
@@ -45,8 +45,11 @@ class WorkerController extends Controller
         ]);
 
         $canvasUser = $this->canvasRepository->getUserByFeideId($feideId);
+        $canvasCourse = $this->canvasRepository->getCourseById($courseId);
 
-        // printGroupsForCourse($courseId, $dataportenGroups);
+        info('Canvas course', (array)$canvasCourse);
+
+        $groupCategories = $this->canvasRepository->getGroupCategories($courseId);
 
         return view('worker.index', [
             'courseId' => $courseId,
@@ -54,6 +57,7 @@ class WorkerController extends Controller
             'userInfo' => $userInfo,
             'extraUserInfo' => $extraUserInfo,
             'groups' => $groups,
+            'groupCategories' => $groupCategories,
 
         ]);
     }

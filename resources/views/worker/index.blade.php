@@ -12,4 +12,7 @@
 @include('common.dump', ['title' => 'Dataporten groups info', 'data' => $groups])
 <hr/>
 @include('common.dump', ['title' => 'Dataporten extra user info', 'data' => $extraUserInfo])
+<hr/>
+<h3>Canvas <-> Dataporten</h3>
+@include('common.groupmemberships', ['data' => $groupCategories])
 @endsection
