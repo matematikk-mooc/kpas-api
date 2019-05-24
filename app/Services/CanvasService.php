@@ -35,7 +35,7 @@ class CanvasService
         $accountId = config('canvas.account_id');
         try {
             $url = "accounts/{$accountId}/users";
-            $data = ['search' => $feideId];
+            $data = ['search_term' => $feideId];
 
             $response = $this->request($url, 'GET', $data);
 
