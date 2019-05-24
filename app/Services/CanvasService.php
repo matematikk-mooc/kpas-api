@@ -223,16 +223,18 @@ class CanvasService
                 ], JSON_PRETTY_PRINT));
             }
             return $content;
-        } catch (ClientException $e) {
+        } catch (ClientException $exception) {
             if (config('canvas.debug')) {
                 info(json_encode([
                     'url' => $url,
                     'method' => $method,
                     'data' => $data,
                     'headers' => $headers,
-                    'response' => json_decode($e->getResponse()->getBody()->getContents())
+                    'response' => json_decode($exception->getResponse()->getBody()->getContents())
                 ], JSON_PRETTY_PRINT));
             }
+
+            throw $exception;
 
         }
 
