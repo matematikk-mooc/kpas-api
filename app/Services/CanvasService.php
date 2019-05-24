@@ -44,6 +44,8 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
             }
+
+            throw $exception;
         }
     }
 
@@ -67,6 +69,7 @@ class CanvasService
                     $groupDto->getCategoryId()
                 ));
             }
+            throw $exception;
         }
     }
 
@@ -80,6 +83,7 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group category with ID %s not found', $categoryId));
             }
+            throw $exception;
         }
     }
 
@@ -99,6 +103,7 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $sectionDto->getCourseId()));
             }
+            throw $exception;
         }
     }
 
@@ -112,6 +117,7 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
+            throw $exception;
         }
     }
 
@@ -128,6 +134,7 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
+            throw $exception;
         }
     }
 
@@ -149,6 +156,7 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Section with ID %s not found', $sectionId));
             }
+            throw $exception;
         }
     }
 
@@ -166,7 +174,10 @@ class CanvasService
 
             return null;
         } catch (ClientException $exception) {
-            throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
+            }
+            throw $exception;
         }
     }
 
@@ -181,6 +192,7 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
             }
+            throw $exception;
         }
     }
 
@@ -195,6 +207,7 @@ class CanvasService
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
+            throw $exception;
         }
     }
 
