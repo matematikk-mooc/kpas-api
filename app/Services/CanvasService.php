@@ -37,7 +37,9 @@ class CanvasService
             $url = "accounts/{$accountId}/users";
             $data = ['search' => $feideId];
 
-            return is_array($this->request($url, 'GET', $data)) ? $this->request($url, 'GET', $data) : [];
+            $response = $this->request($url, 'GET', $data);
+
+            return is_array($response) ? $response : [];
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
