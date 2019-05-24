@@ -25,6 +25,18 @@ if (!function_exists('dataporten_api_uri')) {
     }
 }
 
+if (!function_exists('dataporten_auth_uri')) {
+    /**
+     * Return trimmed dataporten auth uri
+     *
+     * @return string
+     */
+    function dataporten_auth_uri($uri=null)
+    {
+        return trim(config('dataporten.auth_api_url'), '/') . '/' . ($uri ? trim($uri, '/') : '');
+    }
+}
+
 if(!function_exists('force_redirect')){
 
   function force_redirect($to = '/'){

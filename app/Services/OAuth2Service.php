@@ -9,24 +9,25 @@ class OAuth2Service
 {
     protected $provider;
 
-    public function getAccessToken()
-    {
-        return $this->provider->getAccessToken();
-    }
-
-    public function getProvider(): OAuth2ClientProvider
+    public function setProvider()
     {
         try {
-            return new OAuth2ClientProvider([
+            $this->provider = new OAuth2ClientProvider([
                     'clientId'                => config('dataporten.client_id'),
                     'clientSecret'            => config('dataporten.client_secret'),
                     'redirectUri'             => config('dataporten.redirect_uri'),
-                    'urlAuthorize'            => dataporten_api_uri('oauth/authorization'),
-                    'urlAccessToken'          => dataporten_api_uri('oauth/token'),
+                    'urlAuthorize'            => dataporten_auth_uri('oauth/authorization'),
+                    'urlAccessToken'          => dataporten_auth_uri('oauth/token'),
+                    'urlResourceOwnerDetails' => dataporten_auth_uri('userinfo'),
                     'verify'                  => false,
                 ]);
         } catch (IdentityProviderException $e) {
             throw $e;
         }
+    }
+
+    public function getProvider()
+    {
+        return $this->provider;
     }
 }
