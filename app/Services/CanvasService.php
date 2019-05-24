@@ -215,7 +215,7 @@ class CanvasService
             $content = json_decode($response->getBody()->getContents());
             if (config('canvas.debug')) {
                 info(json_encode([
-                    'url' => $url,
+                    'url' => $fullUrl,
                     'method' => $method,
                     'data' => $data,
                     'headers' => $headers,
@@ -226,7 +226,7 @@ class CanvasService
         } catch (ClientException $exception) {
             if (config('canvas.debug')) {
                 info(json_encode([
-                    'url' => $url,
+                    'url' => $fullUrl,
                     'method' => $method,
                     'data' => $data,
                     'headers' => $headers,
