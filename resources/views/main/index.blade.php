@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-here we go
+<h1>Dataporten</h1>
 @endsection

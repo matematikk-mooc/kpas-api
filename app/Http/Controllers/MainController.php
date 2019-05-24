@@ -58,7 +58,7 @@ class MainController extends Controller
             force_redirect(route('main.mygroups'));
         }
 
-        force_redirect(route('main.worker'));
+        force_redirect(route('worker.index'));
     }
 
     public function pageLogout()
@@ -80,7 +80,7 @@ class MainController extends Controller
         $request->session()
                 ->flush();
 
-        redirect(dataporten_api_uri('logout'));
+        force_redirect(dataporten_api_uri('logout'));
     }
 
     protected function handleMyGroups(Request $request): bool
