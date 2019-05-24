@@ -205,25 +205,39 @@ class CanvasService
         ], $headers);
 
 
-        $response = $this->guzzleClient->request($method, $fullUrl, [
-            'form_params' => $data,
-            'headers' => $headers,
-            'verify' => false,
-        ]);
-
-        $content = json_decode($response->getBody()->getContents());
-
-        if (config('canvas.debug')) {
-            info(json_encode([
-                'url' => $url,
-                'method' => $method,
-                'data' => $data,
+        try {
+            $response = $this->guzzleClient->request($method, $fullUrl, [
+                'form_params' => $data,
                 'headers' => $headers,
-                'response' => $content
-            ], JSON_PRETTY_PRINT));
+                'verify' => false,
+            ]);
+
+            $content = json_decode($response->getBody()->getContents());
+            if (config('canvas.debug')) {
+                info(json_encode([
+                    'url' => $url,
+                    'method' => $method,
+                    'data' => $data,
+                    'headers' => $headers,
+                    'response' => $content
+                ], JSON_PRETTY_PRINT));
+            }
+            return $content;
+        } catch (ClientException $e) {
+            if (config('canvas.debug')) {
+                info(json_encode([
+                    'url' => $url,
+                    'method' => $method,
+                    'data' => $data,
+                    'headers' => $headers,
+                    'response' => json_decode($e->getResponse()->getBody()->getContents())
+                ], JSON_PRETTY_PRINT));
+            }
+
         }
 
-        return $content;
+
+
     }
 
 }
