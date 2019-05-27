@@ -33,7 +33,7 @@ class WorkerController extends Controller
             force_redirect(route('main.index'));
         }
 
-        $courseId = 286;//$request->session()->get('courseId');
+        $courseId = $request->session()->get('courseId');
         $userInfo = $request->session()->get('userInfo');
         $groups = $request->session()->get('groups');
         $extraUserInfo = $request->session()->get('extraUserInfo');
