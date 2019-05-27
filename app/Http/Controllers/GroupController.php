@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Dto\GroupDto;
 use App\Http\Requests\Group\AddUserRequest;
-use App\Http\Requests\Group\GetCategoriesRequest;
 use App\Http\Responses\SuccessResponse;
-use App\Services\CanvasService;
+use App\Repositories\CanvasRepository;
 use App\Services\DataportenService;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Illuminate\Support\Arr;
 
 class GroupController extends Controller
 {
@@ -17,34 +16,37 @@ class GroupController extends Controller
      */
     protected $dataportenService;
     /**
-     * @var CanvasService
+     * @var CanvasRepository
      */
-    protected $canvasService;
+    protected $canvasRepository;
 
-    public function __construct(DataportenService $dataportenService, CanvasService $canvasService)
+    public function __construct(DataportenService $dataportenService, CanvasRepository $canvasRepository)
     {
         $this->dataportenService = $dataportenService;
-        $this->canvasService = $canvasService;
+        $this->canvasRepository = $canvasRepository;
     }
 
     public function addUser(AddUserRequest $request): SuccessResponse
     {
-        $group = new GroupDto(json_decode($request->get('group'), true));
-        $unenrollForm = json_decode($request->get('unenrollFrom'));
+        $group = new GroupDto($request->input('group'));
+        $unenrollForm = $request->input('unenrollFrom', []);
+
+        $this->dataportenService->setAccessKey($request->header('X-Dataporten-Token'));
 
         $dataportenUserInfo = $this->dataportenService->getUserInfo();
 
         $feideId = $this->dataportenService->getFeideId($dataportenUserInfo);
-        $canvasUser = $this->canvasService->getUserByFeideId($feideId);
 
-        $result = $this->canvasService->addUserToGroup($canvasUser->id, $group, $unenrollForm->unenrollnmentIds);
+        $canvasUser = $this->canvasRepository->getUserByFeideId($feideId);
 
-        return new SuccessResponse($result);
+        $this->canvasRepository->addUserToGroup($canvasUser->id, $group, Arr::get($unenrollForm, 'unenrollmentIds', []));
+
+        return new SuccessResponse('Success');
     }
 
     public function categories($groupId): SuccessResponse
     {
-        $result = $this->canvasService->getGroupCategories($groupId);
+        $result = $this->canvasRepository->getGroupCategories($groupId);
 
         return new SuccessResponse($result);
     }

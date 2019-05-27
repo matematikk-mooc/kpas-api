@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Http\Responses\ErrorResponse;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,12 +31,29 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param \Exception $exception
      * @return void
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
         parent::report($exception);
+    }
+
+    /**
+     * Create a response object from the given validation exception.
+     *
+     * @param  \Illuminate\Validation\ValidationException  $e
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function convertValidationExceptionToResponse(ValidationException $e, $request)
+    {
+        if ($e->response) {
+            return $e->response;
+        }
+
+        return response()->json($e->validator->errors()->getMessages(), 422);
     }
 
     /**
@@ -46,6 +65,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+
+        if ($exception instanceof CanvasException) {
+            return (new ErrorResponse($exception->getMessage(), 200))->toResponse($request);
+        }
+
         return parent::render($request, $exception);
     }
 }

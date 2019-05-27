@@ -5,7 +5,7 @@ namespace App\Dto;
 class GroupDto extends AbstractDto
 {
     /** @var integer|null */
-    protected $groupCategoryId;
+    protected $categoryId;
 
     /** @var string|null */
     protected $name;
@@ -16,14 +16,20 @@ class GroupDto extends AbstractDto
     /** @var int|null */
     protected $id;
 
-    public function getGroupCategoryId(): ?int
+    /** @var string|null */
+    protected $membership;
+
+    /** @var int|null */
+    protected $courseId;
+
+    public function getCategoryId(): ?int
     {
-        return $this->groupCategoryId;
+        return $this->categoryId;
     }
 
-    public function setGroupCategoryId(?int $groupCategoryId): void
+    public function setCategoryId(?int $categoryId): void
     {
-        $this->groupCategoryId = $groupCategoryId;
+        $this->categoryId = $categoryId;
     }
 
     public function getName(): ?string
@@ -54,5 +60,25 @@ class GroupDto extends AbstractDto
     public function setId(?int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getMembership(): ?string
+    {
+        return $this->membership;
+    }
+
+    public function setMembership(?string $membership): void
+    {
+        $this->membership = $membership;
+    }
+
+    public function getCourseId(): ?int
+    {
+        return $this->courseId;
+    }
+
+    public function setCourseId(?int $courseId): void
+    {
+        $this->courseId = $courseId;
     }
 }

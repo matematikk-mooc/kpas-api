@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ComposerServiceProvider extends ServiceProvider
 {
-    
+
     /**
      * Register bindings in the container.
      *
@@ -20,9 +20,6 @@ class ComposerServiceProvider extends ServiceProvider
 
     private function layout()
     {
-        View::composer([
-            // ...
-        ], \App\Http\ViewComposers\NavigationComposer::class);
     }
 
 }
