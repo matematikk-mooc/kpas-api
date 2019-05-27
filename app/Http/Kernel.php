@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\ApiToken;
 use App\Http\Middleware\AuthenticateDataporten;
+use Barryvdh\Cors\HandleCors;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -42,6 +43,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
+            HandleCors::class,
         ],
     ];
 
