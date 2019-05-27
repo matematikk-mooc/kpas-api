@@ -96,16 +96,15 @@ class MainController extends Controller
 
     protected function handleCourseId(Request $request): void
     {
-        if (!$request->session()->has('courseId')) {
-            if (!$request->has('course_id') || !is_numeric($request->input('course_id'))) {
-                info('Redirect to the logging out page', [
-                    'fullUrl' => $request->fullUrl(),
-                ]);
-
+        if ($request->has('course_id')) {
+            if(!is_numeric($request->input('course_id'))) {
                 force_redirect(route('main.pageLogout'));
             }
             $courseId = (int)$request->input('course_id');
             $request->session()->put('courseId', $courseId);
+        }
+        if(!$request->session()->has('courseId')) {
+            force_redirect(route('main.pageLogout'));
         }
     }
 
