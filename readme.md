@@ -32,21 +32,6 @@ $ composer install (--no-dev when *{branch} = master*)
 # Set environment
 $ php artisan env:set {mode} (dev, production etc.)
 
-# Run migrations & seeders
-
-$ php artisan migrate --force
-$ php artisan db:seed --force
-$ php artisan passport:install
-
-# Copy passport auth data from table oauth_clients to .env
-
-PASSWORD_CLIENT_ID=
-PASSWORD_CLIENT_SECRET=
-
-# Set permissions (if user has not permissions to write):
-$ chmod 0777 boostrap/cache
-$ chmod 0777 storage
-
 # Generate secret key
 $ php artisan key:generate
 
@@ -58,7 +43,5 @@ $ php artisan key:generate
 # Please perform actions in following order
 $ git pull origin {branch} (that same branch that was used during installation)
 $ composer install (when composer.lock has changed)
-$ php artisan migrate
-$ php artisan db:seed
 # *update `.env` file when necessary*
 ```
