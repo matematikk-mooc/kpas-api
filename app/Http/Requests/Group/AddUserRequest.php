@@ -16,8 +16,8 @@ class AddUserRequest extends FormRequest
             'group.category_id' => 'required|numeric',
             'group.course_id' => 'required|numeric',
             'unenrollFrom' => 'array',
-            'unenrollFrom.unenrollmentIds' => 'array' ,
-            'unenrollFrom.unenrollmentIds.*' => 'numeric' ,
+            'unenrollFrom.unenrollmentIds' => 'array',
+            'unenrollFrom.unenrollmentIds.*' => 'numeric',
         ];
     }
 }

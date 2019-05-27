@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\GroupDto;
 use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\SuccessResponse;
 use App\Http\Requests\Group\AddUserRequest;
@@ -64,10 +65,11 @@ class WorkerController extends Controller
 
     public function store(AddUserRequest $request)
     {
+        $group = $request->input('group');
         $this->canvasRepository
                 ->addUserToGroup(
-                                    $group['user_id'],
-                                    new GroupDto($request->input('group'))
+                                    (int)$group['user_id'],
+                                    new GroupDto($group)
                                 );
 
         return new SuccessResponse('Success');

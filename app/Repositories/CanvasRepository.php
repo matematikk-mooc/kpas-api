@@ -30,7 +30,7 @@ class CanvasRepository
         throw new CanvasException("User with id {$feideId} not found in " .json_encode($result, JSON_PRETTY_PRINT));
     }
 
-    public function addUserToGroup(int $userId, GroupDto $group, array $unenrollnmentIds)
+    public function addUserToGroup(int $userId, GroupDto $group, array $unenrollnmentIds = [])
     {
         $group = $this->getOrCreateGroup($group);
 
