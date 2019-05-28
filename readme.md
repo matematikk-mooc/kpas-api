@@ -30,7 +30,7 @@ $ git pull origin {branch}
 $ composer install (--no-dev when *{branch} = master*)
 
 # Set environment
-$ php artisan env:set {mode} (dev, production etc.)
+$ php artisan env:set {mode} (local, production etc.)
 
 # Generate secret key
 $ php artisan key:generate
