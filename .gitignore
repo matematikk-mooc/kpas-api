@@ -19,3 +19,7 @@ public/images
 public/uploads
 public/mix-manifest.json
 public_html
+
+/diagnostics
+/locks
+/wwwroot
