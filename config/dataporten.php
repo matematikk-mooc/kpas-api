@@ -7,4 +7,5 @@ return [
     'client_secret' => env('DATAPORTEN_SECRET', ''),
     'redirect_uri' => env('DATAPORTEN_REDIRECT_URI', ''),
     'debug' => env('DATAPORTEN_DEBUG', false),
+    'gatekeeper_password' => env('DATAPORTEN_GATEKEEPER_PASSWORD', ''),
 ];
