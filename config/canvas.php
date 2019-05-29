@@ -4,5 +4,4 @@ return [
     'access_key' => env('CANVAS_ACCESS_KEY', ''),
     'account_id' => env('CANVAS_ACCOUNT_ID', ''),
     'debug' => env('CANVAS_DEBUG', false),
-    'api_token' => env('CANVAS_API_TOKEN'),
 ];

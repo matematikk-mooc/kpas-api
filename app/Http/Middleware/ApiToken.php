@@ -16,7 +16,9 @@ class ApiToken
     public function handle($request, Closure $next)
     {
         $token = $request->header('Authorization');
-        if ($token !== config('canvas.api_token')) {
+        $valid = 'Basic ' . base64_encode('dataporten:' . config('dataporten.gatekeeper_password'));
+
+        if ($token !== $valid) {
             return response()->json('Unauthorized', 401);
         }
         return $next($request);
