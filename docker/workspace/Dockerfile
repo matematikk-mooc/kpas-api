@@ -308,14 +308,6 @@ RUN if [ ${INSTALL_PYTHON} = true ]; then \
 
 RUN set -xe; php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
-###########################################################################
-# Run installation script
-###########################################################################
-USER laradock
-
-
-CMD ["/var/www/startup.sh"]
-
 #
 #--------------------------------------------------------------------------
 # Final Touch
@@ -331,3 +323,9 @@ RUN apt-get clean && \
 
 # Set default work directory
 WORKDIR /var/www
+
+USER laradock
+
+USER root
+
+CMD ["/sbin/my_init", "bash -c /var/www/startup.sh"]
