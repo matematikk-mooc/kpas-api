@@ -228,6 +228,14 @@ RUN if [ ${INSTALL_LARAVEL_INSTALLER} = true ]; then \
 
 RUN set -xe; php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
+###########################################################################
+# Run installation script
+###########################################################################
+USER laradock
+
+
+CMD ["/var/www/startup.sh"]
+
 #
 #--------------------------------------------------------------------------
 # Final Touch
