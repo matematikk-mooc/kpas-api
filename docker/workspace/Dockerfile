@@ -313,9 +313,3 @@ RUN apt-get clean && \
 
 # Set default work directory
 WORKDIR /var/www
-
-USER laradock
-
-USER root
-
-CMD ["/sbin/my_init", "bash -c /var/www/startup.sh"]
