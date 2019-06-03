@@ -26,15 +26,11 @@ $ git init
 $ git remote add origin git@github.com:{user}/{repo}.git
 $ git pull origin {branch}
 
-# Download PHP dependencies
-$ composer install (--no-dev when *{branch} = master*)
+# Add execute permission for entry file
+$ chmod +x docker.sh
 
-# Set environment
-$ php artisan env:set {mode} (local, production etc.)
-
-# Generate secret key
-$ php artisan key:generate
-
+# Run entry file
+$ ./docker.sh
 ```
 
 ### Update
