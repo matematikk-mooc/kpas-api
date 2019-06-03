@@ -292,6 +292,8 @@ RUN if [ ${INSTALL_LARAVEL_INSTALLER} = true ]; then \
 # PYTHON:
 ###########################################################################
 
+USER root
+
 ARG INSTALL_PYTHON=false
 
 RUN if [ ${INSTALL_PYTHON} = true ]; then \
