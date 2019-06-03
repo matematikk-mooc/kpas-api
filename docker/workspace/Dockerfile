@@ -175,10 +175,6 @@ COPY ./crontab /etc/cron.d
 
 RUN chmod -R 644 /etc/cron.d
 
-
-
-
-
 ###########################################################################
 # ssh:
 ###########################################################################
@@ -200,7 +196,85 @@ RUN if [ ${INSTALL_WORKSPACE_SSH} = true ]; then \
     && chown -R laradock:laradock /home/laradock/.ssh \
 ;fi
 
+###########################################################################
+# Node / NVM:
+###########################################################################
 
+# Check if NVM needs to be installed
+ARG NODE_VERSION=node
+ENV NODE_VERSION ${NODE_VERSION}
+ARG INSTALL_NODE=false
+ARG INSTALL_NPM_GULP=false
+ARG INSTALL_NPM_BOWER=false
+ARG INSTALL_NPM_VUE_CLI=false
+ARG INSTALL_NPM_ANGULAR_CLI=false
+ARG NPM_REGISTRY
+ENV NPM_REGISTRY ${NPM_REGISTRY}
+ENV NVM_DIR /home/laradock/.nvm
+
+RUN if [ ${INSTALL_NODE} = true ]; then \
+    # Install nvm (A Node Version Manager)
+    mkdir -p $NVM_DIR && \
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash \
+        && . $NVM_DIR/nvm.sh \
+        && nvm install ${NODE_VERSION} \
+        && nvm use ${NODE_VERSION} \
+        && nvm alias ${NODE_VERSION} \
+        && if [ ${NPM_REGISTRY} ]; then \
+        npm config set registry ${NPM_REGISTRY} \
+        ;fi \
+        && if [ ${INSTALL_NPM_GULP} = true ]; then \
+        npm install -g gulp \
+        ;fi \
+        && if [ ${INSTALL_NPM_BOWER} = true ]; then \
+        npm install -g bower \
+        ;fi \
+        && if [ ${INSTALL_NPM_VUE_CLI} = true ]; then \
+        npm install -g @vue/cli \
+        ;fi \
+        && if [ ${INSTALL_NPM_ANGULAR_CLI} = true ]; then \
+        npm install -g @angular/cli \
+        ;fi \
+        && ln -s `npm bin --global` /home/laradock/.node-bin \
+;fi
+
+# Wouldn't execute when added to the RUN statement in the above block
+# Source NVM when loading bash since ~/.profile isn't loaded on non-login shell
+RUN if [ ${INSTALL_NODE} = true ]; then \
+    echo "" >> ~/.bashrc && \
+    echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc && \
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm' >> ~/.bashrc \
+;fi
+
+# Add NVM binaries to root's .bashrc
+USER root
+
+RUN if [ ${INSTALL_NODE} = true ]; then \
+    echo "" >> ~/.bashrc && \
+    echo 'export NVM_DIR="/home/laradock/.nvm"' >> ~/.bashrc && \
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm' >> ~/.bashrc \
+;fi
+
+# Add PATH for node
+ENV PATH $PATH:/home/laradock/.node-bin
+
+# Make it so the node modules can be executed with 'docker-compose exec'
+# We'll create symbolic links into '/usr/local/bin'.
+RUN if [ ${INSTALL_NODE} = true ]; then \
+    find $NVM_DIR -type f -name node -exec ln -s {} /usr/local/bin/node \; && \
+    NODE_MODS_DIR="$NVM_DIR/versions/node/$(node -v)/lib/node_modules" && \
+    ln -s $NODE_MODS_DIR/bower/bin/bower /usr/local/bin/bower && \
+    ln -s $NODE_MODS_DIR/gulp/bin/gulp.js /usr/local/bin/gulp && \
+    ln -s $NODE_MODS_DIR/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -s $NODE_MODS_DIR/npm/bin/npx-cli.js /usr/local/bin/npx && \
+    ln -s $NODE_MODS_DIR/vue-cli/bin/vue /usr/local/bin/vue && \
+    ln -s $NODE_MODS_DIR/vue-cli/bin/vue-init /usr/local/bin/vue-init && \
+    ln -s $NODE_MODS_DIR/vue-cli/bin/vue-list /usr/local/bin/vue-list \
+;fi
+
+RUN if [ ${NPM_REGISTRY} ]; then \
+    . ~/.bashrc && npm config set registry ${NPM_REGISTRY} \
+;fi
 
 ###########################################################################
 # Laravel Installer:
@@ -220,6 +294,18 @@ ARG INSTALL_LARAVEL_INSTALLER=false
 RUN if [ ${INSTALL_LARAVEL_INSTALLER} = true ]; then \
     # Install the Laravel Installer
 	composer global require "laravel/installer" \
+;fi
+
+###########################################################################
+# PYTHON:
+###########################################################################
+
+ARG INSTALL_PYTHON=false
+
+RUN if [ ${INSTALL_PYTHON} = true ]; then \
+  apt-get -y install python python-pip python-dev build-essential  \
+  && python -m pip install --upgrade pip  \
+  && python -m pip install --upgrade virtualenv \
 ;fi
 
 ###########################################################################
