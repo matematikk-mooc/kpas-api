@@ -36,4 +36,7 @@ ADD ./startup.sh /opt/startup.sh
 RUN sed -i 's/\r//g' /opt/startup.sh
 CMD ["/bin/bash", "/opt/startup.sh"]
 
-EXPOSE 80 443
+ARG NGINX_HOST_HTTP_PORT=80
+ARG NGINX_HOST_HTTPS_PORT=443
+
+EXPOSE "${NGINX_HOST_HTTP_PORT}" "${NGINX_HOST_HTTPS_PORT}"
