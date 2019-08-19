@@ -149,7 +149,7 @@ class CanvasService
                     'role_id' => $roleId,
                     'enrollment_state' => "active",
                     'limit_privileges_to_course_section' => "true",
-                    'self_emrolled' => "true",
+                    'self_enrolled' => "true",
                 ],
             ]);
         } catch (ClientException $exception) {
