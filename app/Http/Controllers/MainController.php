@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Responses\SuccessResponse;
 use App\Services\DataportenService;
 use App\Services\OAuth2Service;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;

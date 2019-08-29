@@ -21,4 +21,14 @@ abstract class AbstractDto
         }
 
     }
+
+    public function toArray(): array
+    {
+        $array = [];
+        foreach (get_object_vars($this) as $key => $value) {
+            $array[Str::snake($key)] = $value;
+        }
+
+        return $array;
+    }
 }

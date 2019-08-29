@@ -6,6 +6,7 @@ use App\Dto\GroupDto;
 use App\Http\Requests\Group\AddUserRequest;
 use App\Http\Responses\SuccessResponse;
 use App\Repositories\CanvasRepository;
+use App\Repositories\CanvasDbRepository;
 use App\Services\DataportenService;
 use Illuminate\Support\Arr;
 
@@ -20,7 +21,7 @@ class GroupController extends Controller
      */
     protected $canvasRepository;
 
-    public function __construct(DataportenService $dataportenService, CanvasRepository $canvasRepository)
+    public function __construct(DataportenService $dataportenService, CanvasDbRepository $canvasRepository)
     {
         $this->dataportenService = $dataportenService;
         $this->canvasRepository = $canvasRepository;

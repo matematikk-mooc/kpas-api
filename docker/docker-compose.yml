@@ -6,6 +6,10 @@ networks:
   backend:
     driver: ${NETWORKS_DRIVER}
 
+volumes: 
+  mysql:
+    driver: ${VOLUMES_DRIVER}
+
 services:
 
 ### Workspace Utilities ##################################
@@ -92,6 +96,27 @@ services:
       networks:
         - frontend
         - backend
+
+### MySQL ################################################
+    mysql:
+      build:
+        context: ./mysql
+        args:
+          - MYSQL_VERSION=${MYSQL_VERSION}
+      environment:
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - TZ=${WORKSPACE_TIMEZONE}
+      volumes:
+        - ./mysql:/var/lib/mysql
+        - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+      ports:
+        - "${MYSQL_PORT}:3306"
+      networks:
+        - backend
+
 ### Docker-in-Docker ################################################
     docker-in-docker:
       image: docker:dind
