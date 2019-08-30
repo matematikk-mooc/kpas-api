@@ -46,7 +46,7 @@ ALTER TABLE lti2_tool_proxy
 
 CREATE TABLE lti2_nonce (
   consumer_pk int(11) NOT NULL,
-  value varchar(32) NOT NULL,
+  value varchar(100) NOT NULL,
   expires datetime NOT NULL,
   PRIMARY KEY (consumer_pk, value)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
