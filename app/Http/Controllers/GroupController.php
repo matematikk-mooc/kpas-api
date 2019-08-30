@@ -40,7 +40,7 @@ class GroupController extends Controller
 
         $canvasUser = $this->canvasRepository->getUserByFeideId($feideId);
 
-        $this->canvasRepository->addUserToGroup($canvasUser->id, $group, Arr::get($unenrollForm, 'unenrollmentIds', []));
+        $this->canvasRepository->addUserToGroupInSection($canvasUser->id, $group, Arr::get($unenrollForm, 'unenrollmentIds', []));
 
         return new SuccessResponse('Success');
     }

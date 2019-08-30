@@ -10,3 +10,7 @@ Route::group(['prefix' => 'nsr'], function() {
     Route::get('/communities/{countyId}', 'SchoolsController@communities');
     Route::get('/schools/{communityId}', 'SchoolsController@schools');
 });
+
+Route::group(['prefix' => 'enrollment'], function() {
+    Route::post('/enroll', 'EnrollmentController@enrollUser')->middleware('lti');
+});

@@ -20,7 +20,7 @@ class CustomToolProvider extends ToolProvider
     public function onError(): void
     {
         Log::error($this->reason);
-        die();
+        die($this->reason);
     }
 
     public function onRegister(): void

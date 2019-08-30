@@ -138,7 +138,7 @@ class CanvasService
         }
     }
 
-    public function enroll($userId, $roleId, $courseId, $sectionId)
+    public function enrollToSection($userId, $roleId, $courseId, $sectionId)
     {
         try {
             $url = "sections/{$sectionId}/enrollments";
@@ -155,6 +155,28 @@ class CanvasService
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Section with ID %s not found', $sectionId));
+            }
+            throw $exception;
+        }
+    }
+
+    public function enrollToCourse($userId, $roleId, $courseId)
+    {
+        try {
+            $url = "courses/{$courseId}/enrollments";
+
+            return $this->request($url, "POST", [
+                'enrollment' => [
+                    'user_id' => $userId,
+                    'role_id' => $roleId,
+                    'enrollment_state' => "active",
+                    'limit_privileges_to_course_section' => "true",
+                    'self_enrolled' => "true",
+                ],
+            ]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
             throw $exception;
         }

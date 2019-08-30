@@ -67,7 +67,7 @@ class WorkerController extends Controller
     {
         $group = $request->input('group');
         $this->canvasRepository
-                ->addUserToGroup(
+                ->addUserToGroupInSection(
                                     (int)$group['user_id'],
                                     new GroupDto($group)
                                 );
