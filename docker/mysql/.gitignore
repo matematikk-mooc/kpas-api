@@ -1,0 +1,5 @@
+*.*
+!docker-entrypoint-initdb.d
+!auto.cnf
+!Dockerfile
+!my.cnf
