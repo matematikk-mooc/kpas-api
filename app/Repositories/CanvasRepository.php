@@ -52,7 +52,7 @@ class CanvasRepository
         $this->canvasService->addUserToGroupId($userId, $group->getId());
     }
 
-    public function addUserToCourse(int $userId, int $courseId)
+    public function enrollUserToCourse(int $userId, int $courseId)
     {
         if ($roleId = $this->canvasService->getRoleIdFor("StudentEnrollment")) {
             return $this->canvasService->enrollToCourse($userId, $roleId, $courseId);
@@ -131,5 +131,12 @@ class CanvasRepository
     public function getGroupCategories(int $courseIdId)
     {
         return $this->canvasService->getGroupCategories($courseIdId);
+    }
+
+    public function getUserEnrollments($userId)
+    {
+        $enrollments = $this->canvasService->getEnrollments($userId);
+
+        return $enrollments;
     }
 }

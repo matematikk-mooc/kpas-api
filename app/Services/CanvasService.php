@@ -246,6 +246,19 @@ class CanvasService
         }
     }
 
+    public function getEnrollments(int $userId)
+    {
+        try {
+            $url = "users/{$userId}/enrollments";
+            return $this->request($url);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('User with ID %s not found', $userId));
+            }
+            throw $exception;
+        }
+    }
+
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
     {
         $fullUrl = "{$this->domain}/{$url}";
@@ -287,9 +300,5 @@ class CanvasService
             throw $exception;
 
         }
-
-
-
     }
-
 }
