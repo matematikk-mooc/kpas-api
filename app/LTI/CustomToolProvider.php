@@ -4,6 +4,7 @@ namespace App\LTI;
 
 use Illuminate\Support\Facades\Log;
 use IMSGlobal\LTI\ToolProvider\ToolProvider;
+use App\Exceptions\LtiException;
 
 class CustomToolProvider extends ToolProvider
 {
@@ -20,7 +21,7 @@ class CustomToolProvider extends ToolProvider
     public function onError(): void
     {
         Log::error($this->reason);
-        die($this->reason);
+        throw new LtiException($this->reason);
     }
 
     public function onRegister(): void
