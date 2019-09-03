@@ -10,6 +10,7 @@ class DataNsrService
      * @var Client
      */
     protected $guzzleClient;
+    protected $domain;
 
     public function __construct(Client $guzzleClient)
     {
@@ -42,8 +43,6 @@ class DataNsrService
             'verify' => false,
         ]);
 
-        $content = json_decode($response->getBody()->getContents());
-
-        return $content;
+        return json_decode($response->getBody()->getContents());
     }
 }

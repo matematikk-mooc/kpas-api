@@ -10,13 +10,22 @@ use IMSGlobal\LTI\ToolProvider\DataConnector\DataConnector;
 
 class LtiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('lti')->only('checkAuthorization');
+    }
+
     public function checkAuthorization(Request $request)
     {
-        Authenticator::authenticate();
+        if(app()->environment('local')) {
+            logger('A request from CANVAS', $request->all());
+            logger('An user session', session('settings', []));
+        }
+        return redirect(route('lti.index'));
+    }
 
-        return response()->redirectTo($request->has('path')
-            ? $request->get('path')
-            : route('main.index')
-        );
+    public function index()
+    {
+        return view('lti.index');
     }
 }

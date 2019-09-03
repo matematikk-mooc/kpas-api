@@ -20,7 +20,6 @@ class CustomToolProvider extends ToolProvider
 
     public function onError(): void
     {
-        Log::error($this->reason);
         throw new LtiException($this->reason);
     }
 
