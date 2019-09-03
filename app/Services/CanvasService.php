@@ -259,6 +259,20 @@ class CanvasService
         }
     }
 
+    public function getUsersGroups(int $userId)
+    {
+        try {
+            return $this->request('users/self/groups', 'GET', [
+                'as_user_id' => $userId
+            ]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 401) {
+                throw new CanvasException(sprintf('User with ID %s not found', $userId));
+            }
+            throw $exception;
+        }
+    }
+
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
     {
         $fullUrl = "{$this->domain}/{$url}";

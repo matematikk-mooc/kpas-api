@@ -27,6 +27,14 @@ class GroupController extends Controller
         $this->canvasRepository = $canvasRepository;
     }
 
+    public function getUserGroups(): SuccessResponse
+    {
+        $userId = Arr::get(session('settings'), 'canvas_user_id');
+        $groups = $this->canvasRepository->getUserGroups($userId);
+
+        return new SuccessResponse($groups);
+    }
+
     public function addUser(AddUserRequest $request): SuccessResponse
     {
         $group = new GroupDto($request->input('group'));

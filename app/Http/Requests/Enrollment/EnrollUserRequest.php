@@ -9,6 +9,7 @@ class EnrollUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'role' => 'required|string',
             'county' => 'required|array',
             'county.name' => 'required|string',
             'county.description' => 'required|string',

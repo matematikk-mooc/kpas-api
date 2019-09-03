@@ -34,15 +34,15 @@ class EnrollmentController extends Controller
         $groupCategories = $this->canvasDbRepository->getGroupCategories($courseId);
         $county->setCategoryId($this->findGroupCategory(
             $groupCategories,
-            env('CANVAS_COUNTY_GROUP_CATEGORY_NAME')
+           config('canvas.county_name')
         )->id);
         $community->setCategoryId($this->findGroupCategory(
             $groupCategories,
-            env('CANVAS_COMMUNITY_GROUP_CATEGORY_NAME')
+            config('canvas.community_name')
         )->id);
         $school->setCategoryId($this->findGroupCategory(
             $groupCategories,
-            env('CANVAS_SCHOOL_GROUP_CATEGORY_NAME')
+            config('canvas.school_name')
         )->id);
 
         $groups->push($this->canvasDbRepository->getOrCreateGroup($county));
@@ -55,8 +55,7 @@ class EnrollmentController extends Controller
             $this->canvasDbRepository->addUserToGroup($userId, $group);
         });
 
-
-        $this->canvasDbRepository->enrollUserToCourse($userId, $courseId);
+        $this->canvasDbRepository->enrollUserToCourse($userId, $courseId, $request->get('role'));
 
         return new SuccessResponse([]);
     }
