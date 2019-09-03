@@ -4,4 +4,8 @@ return [
     'access_key' => env('CANVAS_ACCESS_KEY', ''),
     'account_id' => env('CANVAS_ACCOUNT_ID', ''),
     'debug' => env('CANVAS_DEBUG', false),
+    'county_name' => env('CANVAS_COUNTY_GROUP_CATEGORY_NAME', 'Fylke'),
+    'community_name' => env('CANVAS_COMMUNITY_GROUP_CATEGORY_NAME', 'Kommune'),
+    'school_name' => env('CANVAS_SCHOOL_GROUP_CATEGORY_NAME', 'Skole'),
+    'principal_role' => env('CANVAS_PRINCIPAL_ROLE_TYPE', 'Skoleleder'),
 ];
