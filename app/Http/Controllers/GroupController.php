@@ -29,7 +29,7 @@ class GroupController extends Controller
 
     public function getUserGroups(): SuccessResponse
     {
-        $userId = Arr::get(session('settings'), 'canvas_user_id');
+        $userId = Arr::get(session('settings'), 'custom_canvas_user_id');
         $groups = $this->canvasRepository->getUserGroups($userId);
 
         return new SuccessResponse($groups);

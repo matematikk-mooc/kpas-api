@@ -29,7 +29,7 @@ class EnrollmentController extends Controller
 
         $groups = new Collection();
 
-        $courseId = Arr::get(session()->get('settings'), 'canvas_course_id');
+        $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
 
         $groupCategories = $this->canvasDbRepository->getGroupCategories($courseId);
         $county->setCategoryId($this->findGroupCategory(
@@ -49,7 +49,7 @@ class EnrollmentController extends Controller
         $groups->push($this->canvasDbRepository->getOrCreateGroup($community));
         $groups->push($this->canvasDbRepository->getOrCreateGroup($school));
 
-        $userId = Arr::get(session()->get('settings'), 'canvas_user_id');
+        $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
 
         $groups->each(function (GroupDto $group) use ($userId) {
             $this->canvasDbRepository->addUserToGroup($userId, $group);
@@ -62,7 +62,7 @@ class EnrollmentController extends Controller
 
     public function getUserEnrollments(): SuccessResponse
     {
-        $userId = Arr::get(session()->get('settings'), 'canvas_user_id');
+        $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
 
         $data = $this->canvasDbRepository->getUserEnrollments($userId);
 
