@@ -11,7 +11,6 @@ class CustomToolProvider extends ToolProvider
     public function onLaunch(): void
     {
         session(['settings' => $this->resourceLink->getSettings()]);
-        dd($this);
     }
 
     public function onContentItem(): void
