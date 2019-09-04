@@ -135,7 +135,7 @@ class CanvasRepository
     protected function enrollStudentToSection($userId, $courseId, $sectionId)
     {
         if ($roleId = $this->canvasService->getRoleIdFor("StudentEnrollment")) {
-            return $this->canvasService->enroll($userId, $roleId, $courseId, $sectionId);
+            return $this->canvasService->enrollToSection($userId, $roleId, $courseId, $sectionId);
         }
         return null;
     }

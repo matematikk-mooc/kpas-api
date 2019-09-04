@@ -7,6 +7,7 @@ use App\Dto\SectionDto;
 use App\Exceptions\CanvasException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Arr;
 
 class CanvasService
 {
@@ -78,7 +79,7 @@ class CanvasService
         try {
             $url = "group_categories/{$categoryId}/groups";
 
-            return $this->request($url, 'GET', ['per_page' => 999]);
+            return $this->request($url, 'GET', [], [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group category with ID %s not found', $categoryId));
@@ -222,9 +223,7 @@ class CanvasService
     {
         try {
             $url = "courses/{$courseId}/group_categories";
-            return $this->request($url, 'GET', [
-                'per_page' => 999,
-            ]);
+            return $this->request($url, 'GET', [], [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
@@ -273,7 +272,7 @@ class CanvasService
         }
     }
 
-    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
+    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
         $fullUrl = "{$this->domain}/{$url}";
 
@@ -281,24 +280,40 @@ class CanvasService
             'Authorization' => 'Bearer ' . $this->accessKey,
         ], $headers);
 
+        $isFinished = false;
 
         try {
-            $response = $this->guzzleClient->request($method, $fullUrl, [
-                'form_params' => $data,
-                'headers' => $headers,
-                'verify' => false,
-            ]);
-
-            $content = json_decode($response->getBody()->getContents());
-            if (config('canvas.debug')) {
-                info(json_encode([
-                    'url' => $fullUrl,
-                    'method' => $method,
-                    'data' => $data,
+            $content = [];
+            while (!$isFinished) {
+                $response = $this->guzzleClient->request($method, $fullUrl, [
+                    'form_params' => $data,
                     'headers' => $headers,
-                    'response' => $content
-                ], JSON_PRETTY_PRINT));
+                    'verify' => false,
+                ]);
+
+
+                $decodedContent = json_decode($response->getBody()->getContents());
+                $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
+
+
+                if (config('canvas.debug')) {
+                    info(json_encode([
+                        'url' => $fullUrl,
+                        'method' => $method,
+                        'data' => $data,
+                        'headers' => $headers,
+                        'response' => $content
+                    ], JSON_PRETTY_PRINT));
+                }
+
+                $link = $response->getHeader('Link');
+                if (!$paginable || !preg_match('/<([^<]+)>; rel="next"/', $link[0], $matches)) {
+                    $isFinished = true;
+                    continue;
+                }
+                $fullUrl = $matches[1];
             }
+
             return $content;
         } catch (ClientException $exception) {
             if (config('canvas.debug')) {
