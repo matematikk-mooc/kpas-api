@@ -23,37 +23,8 @@ class EnrollmentController extends Controller
 
     public function enrollUser(EnrollUserRequest $request): SuccessResponse
     {
-        $county = new GroupDto($request->input('county'));
-        $community = new GroupDto($request->input('community'));
-        $school = new GroupDto($request->input('school'));
-
-        $groups = new Collection();
-
-        $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
-
-        $groupCategories = $this->canvasDbRepository->getGroupCategories($courseId);
-        $county->setCategoryId($this->findGroupCategory(
-            $groupCategories,
-           config('canvas.county_name')
-        )->id);
-        $community->setCategoryId($this->findGroupCategory(
-            $groupCategories,
-            config('canvas.community_name')
-        )->id);
-        $school->setCategoryId($this->findGroupCategory(
-            $groupCategories,
-            config('canvas.school_name')
-        )->id);
-
-        $groups->push($this->canvasDbRepository->getOrCreateGroup($county));
-        $groups->push($this->canvasDbRepository->getOrCreateGroup($community));
-        $groups->push($this->canvasDbRepository->getOrCreateGroup($school));
-
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
-
-        $groups->each(function (GroupDto $group) use ($userId) {
-            $this->canvasDbRepository->addUserToGroup($userId, $group);
-        });
+        $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
 
         $this->canvasDbRepository->enrollUserToCourse($userId, $courseId, $request->get('role'));
 
@@ -67,12 +38,5 @@ class EnrollmentController extends Controller
         $data = $this->canvasDbRepository->getUserEnrollments($userId);
 
         return new SuccessResponse($data);
-    }
-
-    protected function findGroupCategory($groupCategories, $name)
-    {
-        return collect($groupCategories)->first(function ($groupCategory) use ($name) {
-            return $groupCategory->name === $name;
-        });
     }
 }

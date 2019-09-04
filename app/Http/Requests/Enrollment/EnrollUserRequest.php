@@ -10,15 +10,6 @@ class EnrollUserRequest extends FormRequest
     {
         return [
             'role' => 'required|string',
-            'county' => 'required|array',
-            'county.name' => 'required|string',
-            'county.description' => 'required|string',
-            'community' => 'required|array',
-            'community.name' => 'required|string',
-            'community.description' => 'required|string',
-            'school' => 'required|array',
-            'school.name' => 'required|string',
-            'school.description' => 'required|string',
         ];
     }
 }

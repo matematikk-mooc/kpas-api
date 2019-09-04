@@ -4,6 +4,7 @@ Route::group(['prefix' => 'group'], function() {
     Route::get('/user', 'GroupController@getUserGroups')->middleware('lti');
     Route::post('/user', 'GroupController@addUser')->middleware('auth.dataporten');
     Route::get('/{groupId}/category', 'GroupController@categories');
+    Route::post('/user/bulk', 'GroupController@addUserToGroups')->middleware('lti');
 });
 
 Route::group(['prefix' => 'nsr'], function() {
