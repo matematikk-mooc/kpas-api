@@ -21,7 +21,16 @@ class EnrollmentController extends Controller
         $this->canvasDbRepository = $canvasDbRepository;
     }
 
-    public function enrollUser(EnrollUserRequest $request): SuccessResponse
+    public function index(): SuccessResponse
+    {
+        $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
+
+        $data = $this->canvasDbRepository->getUserEnrollments($userId);
+
+        return new SuccessResponse($data);
+    }
+
+    public function store(EnrollUserRequest $request): SuccessResponse
     {
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
@@ -29,14 +38,5 @@ class EnrollmentController extends Controller
         $this->canvasDbRepository->enrollUserToCourse($userId, $courseId, $request->get('role'));
 
         return new SuccessResponse([]);
-    }
-
-    public function getUserEnrollments(): SuccessResponse
-    {
-        $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
-
-        $data = $this->canvasDbRepository->getUserEnrollments($userId);
-
-        return new SuccessResponse($data);
     }
 }

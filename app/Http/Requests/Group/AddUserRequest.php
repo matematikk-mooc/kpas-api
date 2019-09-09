@@ -9,6 +9,7 @@ class AddUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'role' => 'required|string',
             'group' => 'required|array',
             'group.name' => 'required|string',
             'group.description' => 'required|string',

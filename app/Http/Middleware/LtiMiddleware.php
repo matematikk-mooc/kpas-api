@@ -6,6 +6,7 @@ use App\LTI\Authenticator;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Session;
 
 class LtiMiddleware
 {
@@ -18,6 +19,10 @@ class LtiMiddleware
      */
     public function handle($request, Closure $next)
     {
+        if ($request->has('cookie')) {
+            session()->setId($request->get('cookie'));
+            session()->start();
+        }
         if (!$this->isLtiAuthenticated()) {
             Authenticator::authenticate();
         }

@@ -55,7 +55,7 @@ class CanvasRepository
     public function enrollUserToCourse(int $userId, int $courseId, string $roleName)
     {
         $principalRoleName = config('canvas.principal_role');
-        if ($roleName === $principalRoleName) {
+        if ($roleName !== $principalRoleName) {
             $unenrollmentIds = [];
             $enrollments = collect($this->getUserEnrollments($userId));
             $enrollments->each(function ($enrollment) use ($courseId, $userId, $principalRoleName, &$unenrollmentIds) {
@@ -157,5 +157,17 @@ class CanvasRepository
         $groups = $this->canvasService->getUsersGroups($userId);
 
         return $groups;
+    }
+
+    public function removeUserGroups(int $userId, int $courseId): void
+    {
+        $groups = $this->canvasService->getUsersGroups($userId);
+        $groupsToRemove = collect($groups)->filter(function ($group) use ($courseId) {
+            return $group->course_id === $courseId;
+        });
+
+        $groupsToRemove->each(function ($group) use ($userId) {
+           $this->canvasService->removeUserFromGroup($group->id, $userId);
+        });
     }
 }

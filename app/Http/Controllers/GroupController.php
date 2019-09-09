@@ -19,7 +19,7 @@ class GroupController extends Controller
      */
     protected $dataportenService;
     /**
-     * @var CanvasRepository
+     * @var CanvasRepository|CanvasDbRepository
      */
     protected $canvasRepository;
 
@@ -29,25 +29,40 @@ class GroupController extends Controller
         $this->canvasRepository = $canvasRepository;
     }
 
-    public function getUserGroups(): SuccessResponse
+    public function index(): SuccessResponse
     {
         $userId = Arr::get(session('settings'), 'custom_canvas_user_id');
-        $groups = $this->canvasRepository->getUserGroups($userId);
+        $courseId = Arr::get(session('settings'), 'custom_canvas_course_id');
+        $groups = collect($this->canvasRepository->getUserGroups($userId));
+        $categories = collect($this->canvasRepository->getGroupCategories($courseId));
 
-        return new SuccessResponse($groups);
+        $categorizedGroups = $categories->mapWithKeys(function ($category) use ($groups) {
+            return [$category-> name => $groups->first(function($group) use ($category) {
+                return $group->group_category_id === $category->id;
+            })];
+        });
+
+        return new SuccessResponse($categorizedGroups);
     }
 
-    public function addUserToGroups(AddUserToGroupsRequest $request): SuccessResponse
+    public function bulkStore(AddUserToGroupsRequest $request): SuccessResponse
     {
+        $groups = new Collection();
+
         $county = new GroupDto($request->input('county'));
         $community = new GroupDto($request->input('community'));
         $school = new GroupDto($request->input('school'));
 
-        $groups = new Collection();
-
         $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
 
+        $role = $request->get('role');
+
         $groupCategories = $this->canvasRepository->getGroupCategories($courseId);
+
+        if ($role === config('canvas.principal_role')) {
+            $groups = $this->createPrincipalGroups($groups, $county, $community, $groupCategories, $role);
+        }
+
         $county->setCategoryId($this->findGroupCategory(
             $groupCategories,
             config('canvas.county_name')
@@ -61,11 +76,15 @@ class GroupController extends Controller
             config('canvas.school_name')
         )->id);
 
-        $groups->push($this->canvasRepository->getOrCreateGroup($county));
-        $groups->push($this->canvasRepository->getOrCreateGroup($community));
-        $groups->push($this->canvasRepository->getOrCreateGroup($school));
+        $groups = $groups->merge([$county, $community, $school]);
+
+        $groups = $groups->map(function (GroupDto $group) {
+            return $this->canvasRepository->getOrCreateGroup($group);
+        });
 
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
+
+        $this->canvasRepository->removeUserGroups($userId, $courseId);
 
         $groups->each(function (GroupDto $group) use ($userId) {
             $this->canvasRepository->addUserToGroup($userId, $group);
@@ -74,7 +93,7 @@ class GroupController extends Controller
         return new SuccessResponse($groups->toArray());
     }
 
-    public function addUser(AddUserRequest $request): SuccessResponse
+    public function store(AddUserRequest $request): SuccessResponse
     {
         $group = new GroupDto($request->input('group'));
         $unenrollForm = $request->input('unenrollFrom', []);
@@ -92,17 +111,38 @@ class GroupController extends Controller
         return new SuccessResponse('Success');
     }
 
-    public function categories($groupId): SuccessResponse
-    {
-        $result = $this->canvasRepository->getGroupCategories($groupId);
-
-        return new SuccessResponse($result);
-    }
-
     protected function findGroupCategory($groupCategories, $name)
     {
         return collect($groupCategories)->first(function ($groupCategory) use ($name) {
             return $groupCategory->name === $name;
         });
+    }
+
+    protected function createPrincipalGroups(
+        Collection $groups,
+        GroupDto $county,
+        GroupDto $community,
+        array $groupCategories,
+        string $role
+    ) {
+        $countyLeadersData = $county->toArray();
+        $communityLeadersData = $community->toArray();
+
+        $countyLeadersData['name'] = $role . ' ' . $countyLeadersData['name'];
+        $communityLeadersData['name'] = $role . ' ' . $communityLeadersData['name'];
+        $countyLeaders = new GroupDto($countyLeadersData);
+        $communityLeaders = new GroupDto($communityLeadersData);
+
+        $countyLeaders->setCategoryId($this->findGroupCategory(
+            $groupCategories,
+            config('canvas.county_leaders_name')
+        )->id);
+
+        $communityLeaders->setCategoryId($this->findGroupCategory(
+            $groupCategories,
+            config('canvas.community_leaders_name')
+        )->id);
+
+        return $groups->merge([$communityLeaders, $countyLeaders]);
     }
 }

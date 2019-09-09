@@ -272,6 +272,11 @@ class CanvasService
         }
     }
 
+    public function removeUserFromGroup(int $groupId, int $userId)
+    {
+        return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
+    }
+
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
         $fullUrl = "{$this->domain}/{$url}";
