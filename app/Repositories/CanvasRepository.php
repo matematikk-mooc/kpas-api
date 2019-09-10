@@ -30,7 +30,7 @@ class CanvasRepository
         throw new CanvasException("User with id {$feideId} not found in " .json_encode($result, JSON_PRETTY_PRINT));
     }
 
-    public function addUserToGroup(int $userId, GroupDto $group, array $unenrollnmentIds = [])
+    public function addUserToGroupInSection(int $userId, GroupDto $group, array $unenrollnmentIds = [])
     {
         $group = $this->getOrCreateGroup($group);
 
@@ -40,9 +40,36 @@ class CanvasRepository
             $this->canvasService->unenrollUserFrom($userId, $group->getCourseId(), $unenrollnmentIds);
         }
 
-        $this->enrollStudent($userId, $section->getCourseId(), $section->getId());
+        $this->enrollStudentToSection($userId, $section->getCourseId(), $section->getId());
 
         $this->canvasService->addUserToGroupId($userId, $group->getId());
+    }
+
+    public function addUserToGroup(int $userId, GroupDto $group)
+    {
+        $group = $this->getOrCreateGroup($group);
+
+        $this->canvasService->addUserToGroupId($userId, $group->getId());
+    }
+
+    public function enrollUserToCourse(int $userId, int $courseId, string $roleName)
+    {
+        $principalRoleName = config('canvas.principal_role');
+        if ($roleName !== $principalRoleName) {
+            $unenrollmentIds = [];
+            $enrollments = collect($this->getUserEnrollments($userId));
+            $enrollments->each(function ($enrollment) use ($courseId, $userId, $principalRoleName, &$unenrollmentIds) {
+                if ($enrollment->role === $principalRoleName) {
+                    $unenrollmentIds[] = $enrollment->id;
+                }
+            });
+            $this->canvasService->unenrollUserFrom($userId, $courseId, $unenrollmentIds);
+        }
+
+        if ($roleId = $this->canvasService->getRoleIdFor($roleName)) {
+            return $this->canvasService->enrollToCourse($userId, $roleId, $courseId);
+        }
+        return null;
     }
 
     public function getCourseById(int $courseId)
@@ -105,17 +132,42 @@ class CanvasRepository
         return null;
     }
 
-    protected function enrollStudent($userId, $courseId, $sectionId)
+    protected function enrollStudentToSection($userId, $courseId, $sectionId)
     {
         if ($roleId = $this->canvasService->getRoleIdFor("StudentEnrollment")) {
-            return $this->canvasService->enroll($userId, $roleId, $courseId, $sectionId);
+            return $this->canvasService->enrollToSection($userId, $roleId, $courseId, $sectionId);
         }
         return null;
-
     }
 
     public function getGroupCategories(int $courseIdId)
     {
         return $this->canvasService->getGroupCategories($courseIdId);
+    }
+
+    public function getUserEnrollments($userId)
+    {
+        $enrollments = $this->canvasService->getEnrollments($userId);
+
+        return $enrollments;
+    }
+
+    public function getUserGroups(int $userId)
+    {
+        $groups = $this->canvasService->getUsersGroups($userId);
+
+        return $groups;
+    }
+
+    public function removeUserGroups(int $userId, int $courseId): void
+    {
+        $groups = $this->canvasService->getUsersGroups($userId);
+        $groupsToRemove = collect($groups)->filter(function ($group) use ($courseId) {
+            return $group->course_id === $courseId;
+        });
+
+        $groupsToRemove->each(function ($group) use ($userId) {
+           $this->canvasService->removeUserFromGroup($group->id, $userId);
+        });
     }
 }

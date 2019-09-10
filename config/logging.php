@@ -36,7 +36,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily'],
+            'channels' => ['daily', 'bugsnag'],
         ],
 
         'single' => [
@@ -49,7 +49,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
-            'days' => 14,
+            'days' => 7,
         ],
 
         'slack' => [
@@ -87,6 +87,10 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
+        ],
+
+        'bugsnag' => [
+            'driver' => 'bugsnag',
         ],
     ],
 

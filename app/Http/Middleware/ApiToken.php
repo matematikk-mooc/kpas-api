@@ -15,12 +15,16 @@ class ApiToken
      */
     public function handle($request, Closure $next)
     {
-        $token = $request->header('Authorization');
-        $valid = 'Basic ' . base64_encode('dataporten:' . config('dataporten.gatekeeper_password'));
+        if (env('APP_ENV') === 'production') {
+            $token = $request->header('Authorization');
+            $valid = 'Basic ' . base64_encode('dataporten:' . config('dataporten.gatekeeper_password'));
 
-        if ($token !== $valid) {
-            return response()->json('Unauthorized', 401);
+            if ($token !== $valid) {
+                return response()->json('Unauthorized', 401);
+            }
+            return $next($request);
         }
         return $next($request);
     }
 }
+

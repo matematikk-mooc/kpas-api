@@ -7,6 +7,7 @@ use App\Dto\SectionDto;
 use App\Exceptions\CanvasException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Arr;
 
 class CanvasService
 {
@@ -78,7 +79,7 @@ class CanvasService
         try {
             $url = "group_categories/{$categoryId}/groups";
 
-            return $this->request($url, 'GET', ['per_page' => 999]);
+            return $this->request($url, 'GET', [], [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group category with ID %s not found', $categoryId));
@@ -138,7 +139,7 @@ class CanvasService
         }
     }
 
-    public function enroll($userId, $roleId, $courseId, $sectionId)
+    public function enrollToSection($userId, $roleId, $courseId, $sectionId)
     {
         try {
             $url = "sections/{$sectionId}/enrollments";
@@ -149,12 +150,34 @@ class CanvasService
                     'role_id' => $roleId,
                     'enrollment_state' => "active",
                     'limit_privileges_to_course_section' => "true",
-                    'self_emrolled' => "true",
+                    'self_enrolled' => "true",
                 ],
             ]);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Section with ID %s not found', $sectionId));
+            }
+            throw $exception;
+        }
+    }
+
+    public function enrollToCourse($userId, $roleId, $courseId)
+    {
+        try {
+            $url = "courses/{$courseId}/enrollments";
+
+            return $this->request($url, "POST", [
+                'enrollment' => [
+                    'user_id' => $userId,
+                    'role_id' => $roleId,
+                    'enrollment_state' => "active",
+                    'limit_privileges_to_course_section' => "true",
+                    'self_enrolled' => "true",
+                ],
+            ]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
             throw $exception;
         }
@@ -200,9 +223,7 @@ class CanvasService
     {
         try {
             $url = "courses/{$courseId}/group_categories";
-            return $this->request($url, 'GET', [
-                'per_page' => 999,
-            ]);
+            return $this->request($url, 'GET', [], [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
@@ -224,7 +245,39 @@ class CanvasService
         }
     }
 
-    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
+    public function getEnrollments(int $userId)
+    {
+        try {
+            $url = "users/{$userId}/enrollments";
+            return $this->request($url);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('User with ID %s not found', $userId));
+            }
+            throw $exception;
+        }
+    }
+
+    public function getUsersGroups(int $userId)
+    {
+        try {
+            return $this->request('users/self/groups', 'GET', [
+                'as_user_id' => $userId
+            ]);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 401) {
+                throw new CanvasException(sprintf('User with ID %s not found', $userId));
+            }
+            throw $exception;
+        }
+    }
+
+    public function removeUserFromGroup(int $groupId, int $userId)
+    {
+        return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
+    }
+
+    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
         $fullUrl = "{$this->domain}/{$url}";
 
@@ -232,24 +285,40 @@ class CanvasService
             'Authorization' => 'Bearer ' . $this->accessKey,
         ], $headers);
 
+        $isFinished = false;
 
         try {
-            $response = $this->guzzleClient->request($method, $fullUrl, [
-                'form_params' => $data,
-                'headers' => $headers,
-                'verify' => false,
-            ]);
-
-            $content = json_decode($response->getBody()->getContents());
-            if (config('canvas.debug')) {
-                info(json_encode([
-                    'url' => $fullUrl,
-                    'method' => $method,
-                    'data' => $data,
+            $content = [];
+            while (!$isFinished) {
+                $response = $this->guzzleClient->request($method, $fullUrl, [
+                    'form_params' => $data,
                     'headers' => $headers,
-                    'response' => $content
-                ], JSON_PRETTY_PRINT));
+                    'verify' => false,
+                ]);
+
+
+                $decodedContent = json_decode($response->getBody()->getContents());
+                $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
+
+
+                if (config('canvas.debug')) {
+                    info(json_encode([
+                        'url' => $fullUrl,
+                        'method' => $method,
+                        'data' => $data,
+                        'headers' => $headers,
+                        'response' => $content
+                    ], JSON_PRETTY_PRINT));
+                }
+
+                $link = $response->getHeader('Link');
+                if (!$paginable || !preg_match('/<([^<]+)>; rel="next"/', $link[0], $matches)) {
+                    $isFinished = true;
+                    continue;
+                }
+                $fullUrl = $matches[1];
             }
+
             return $content;
         } catch (ClientException $exception) {
             if (config('canvas.debug')) {
@@ -265,9 +334,5 @@ class CanvasService
             throw $exception;
 
         }
-
-
-
     }
-
 }

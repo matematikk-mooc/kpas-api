@@ -2,6 +2,8 @@
 
 namespace App\Dto;
 
+use Illuminate\Support\Arr;
+
 class GroupDto extends AbstractDto
 {
     /** @var integer|null */
@@ -21,6 +23,9 @@ class GroupDto extends AbstractDto
 
     /** @var int|null */
     protected $courseId;
+
+    /** @var int|null */
+    protected $canvasId;
 
     public function getCategoryId(): ?int
     {
@@ -80,5 +85,25 @@ class GroupDto extends AbstractDto
     public function setCourseId(?int $courseId): void
     {
         $this->courseId = $courseId;
+    }
+
+    public function getCanvasId(): ?int
+    {
+        return $this->canvasId;
+    }
+
+    public function setCanvasId(?int $canvasId): void
+    {
+        $this->canvasId = $canvasId;
+    }
+
+    public function toArray(): array
+    {
+        $array = parent::toArray();
+
+        $array['canvas_id'] = $array['id'];
+        Arr::forget($array, 'id');
+
+        return $array;
     }
 }
