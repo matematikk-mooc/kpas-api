@@ -116,6 +116,7 @@ echo "Laravel deployment"
 
 pushd "$DEPLOYMENT_TARGET"
   curl http://kpas-lti.azurewebsites.net/api/command/migrate
+  echo -e "\n"
   php artisan cache:clear
   php artisan route:clear
   php artisan route:cache
