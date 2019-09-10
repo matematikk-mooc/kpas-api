@@ -56,7 +56,8 @@ return [
             'engine' => null,
             'sslmode' => env('DB_SSLMODE', 'prefer'),
             'options' => (env('MYSQL_SSL')) ? [
-                \PDO::MYSQL_ATTR_SSL_KEY => '/home/site/wwwroot/BaltimoreCyberTrustRoot.crt.pem', 
+                \PDO::MYSQL_ATTR_SSL_CA => base_path('BaltimoreCyberTrustRoot.crt.pem'),
+                \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
             ] : []
         ],
 
