@@ -37,7 +37,7 @@
 
     data() {
       return {
-        role: '',
+        role: process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE,
         groups: {},
         currentGroups: {},
         isLoading: false,
