@@ -108,15 +108,21 @@ if [ -e "$DEPLOYMENT_TARGET/composer.json" ]; then
   php composer-setup.php
   php -r "unlink('composer-setup.php');"
   php composer.phar install $COMPOSER_ARGS
-  php artisan migrate --force
+  exitWithMessageOnError "Composer install failed"
+  popd
+fi
+
+echo "Laravel deployment"
+
+pushd "$DEPLOYMENT_TARGET"
+  curl http://kpas-lti.azurewebsites.net/api/command/migrate
   php artisan cache:clear
   php artisan route:clear
   php artisan route:cache
   php artisan config:clear
   php artisan config:cache
-  exitWithMessageOnError "Composer install failed"
-  popd
-fi
+  exitWithMessageOnError "Laravel deploy failed"
+popd
 
 echo Node deployment
 

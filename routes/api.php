@@ -17,3 +17,7 @@ Route::group(['prefix' => 'enrollment', 'middleware' => 'lti'], function() {
     Route::get('/', 'EnrollmentController@index');
     Route::post('/', 'EnrollmentController@store');
 });
+
+Route::group(['prefix' => 'command'], function() {
+    Route::get('migrate', 'CommandController@migrate');
+});
