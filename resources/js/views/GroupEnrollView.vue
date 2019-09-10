@@ -1,5 +1,8 @@
 <template>
   <div>
+      <role-selector
+        v-model="role"
+      ></role-selector>
       <current-group
         :groups="currentGroups"
       ></current-group>
@@ -17,6 +20,7 @@
 
 <script>
   import api from '../api';
+  import RoleSelector from "../components/RoleSelector";
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
 
@@ -25,6 +29,7 @@
     name: "GroupEnrollView",
 
     components: {
+      RoleSelector,
       GroupSelector,
       CurrentGroup,
     },
