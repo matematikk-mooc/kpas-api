@@ -8,13 +8,13 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css', config('app.enabled_ssl')) }}" rel="stylesheet">
 </head>
 <body>
     <div class="container" id="app">
         @yield('content')
     </div>
     @yield('scripts')
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js', config('app.enabled_ssl')) }}"></script>
 </body>
 </html>

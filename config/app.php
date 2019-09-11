@@ -123,6 +123,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'enabled_ssl' => env('ENABLED_SSL', false),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
