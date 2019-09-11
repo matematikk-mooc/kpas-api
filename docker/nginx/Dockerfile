@@ -12,12 +12,13 @@ RUN if [ ${CHANGE_SOURCE} = true ]; then \
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
 ;fi
 
+#Erlend changed adduser command according to Slack thread client-udir june 5th
 RUN apk update \
     && apk upgrade \
     && apk --update add logrotate \
     && apk add --no-cache openssl \
     && apk add --no-cache bash \
-    && adduser -D -H -u 1000 -s /bin/bash www-data
+    && adduser -D -H -u 1000  -G www-data -s /bin/bash www-data
 
 ARG PHP_UPSTREAM_CONTAINER=php-fpm
 ARG PHP_UPSTREAM_PORT=9000
