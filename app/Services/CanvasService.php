@@ -261,7 +261,8 @@ class CanvasService
     public function getUsersGroups(int $userId)
     {
         try {
-            return $this->request('users/self/groups', 'GET', [
+            $url = "users/self/groups?as_user_id={$userId}";
+            return $this->request($url, 'GET', [
                 'as_user_id' => $userId
             ]);
         } catch (ClientException $exception) {

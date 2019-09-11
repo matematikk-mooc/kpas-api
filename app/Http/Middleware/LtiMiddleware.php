@@ -32,7 +32,7 @@ class LtiMiddleware
     protected function isLtiAuthenticated(): bool
     {
         return session()->has('settings')
-            && Arr::has(session()->get('settings'), [
+            && Arr::has(session()->get('settings', []), [
                 'custom_canvas_user_id',
                 'custom_canvas_course_id',
                 'custom_canvas_user_login_id',

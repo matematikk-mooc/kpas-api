@@ -12,6 +12,7 @@ RUN if [ ${CHANGE_SOURCE} = true ]; then \
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
 ;fi
 
+#Erlend changed adduser command according to Slack thread client-udir june 5th
 RUN apk update \
     && apk upgrade \
     && apk --update add logrotate \

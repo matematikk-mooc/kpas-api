@@ -1,7 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'group'], function() {
-    Route::get('/user', 'GroupController@index')->middleware(['session', 'lti']);
+    Route::get('/user', 'GroupController@index')->middleware('lti');
     Route::post('/user', 'GroupController@store')->middleware('auth.dataporten');
     Route::get('/{groupId}/category', 'GroupCategoryController@index');
     Route::post('/user/bulk', 'GroupController@bulkStore')->middleware('lti');
