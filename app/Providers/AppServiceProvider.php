@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '80') {
-            $_SERVER['HTTPS'] = 'ok';
+            $_SERVER['HTTPS'] = 'on';
             $_SERVER['SERVER_PORT'] = 443;
         }
     }
