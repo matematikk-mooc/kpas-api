@@ -15,17 +15,12 @@ class LtiController extends Controller
         $this->middleware('lti')->only('checkAuthorization');
     }
 
-    public function checkAuthorization(Request $request)
+    public function index(Request $request)
     {
         if(app()->environment('local')) {
             logger('A request from CANVAS', $request->all());
             logger('An user session', session('settings', []));
         }
-        return redirect(route('lti.index'));
-    }
-
-    public function index()
-    {
         return view('lti.index');
     }
 }
