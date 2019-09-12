@@ -1,6 +1,6 @@
 <?php
 
-Route::post('/', 'LtiController@checkAuthorization')->name('lti.index');
+Route::post('/', 'LtiController@index')->name('lti.index');
 
 Route::get('/', 'MainController@index')->name('main.index');
 Route::get('/logout', 'MainController@logout')->name('main.logout');
