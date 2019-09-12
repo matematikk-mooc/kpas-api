@@ -12,7 +12,7 @@ class LtiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('lti')->only('checkAuthorization');
+        $this->middleware('lti')->only('index');
     }
 
     public function index(Request $request)
