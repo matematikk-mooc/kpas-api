@@ -1,10 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="alert alert-info mb-4">
-    <group-enroll-view
-        v-if="window.cookie"
-    ></group-enroll-view>
+<div class="card">
+    <div class="card-body">
+        <group-enroll-view
+            v-if="window.cookie">
+        </group-enroll-view>
+    </div>
 </div>
 @endsection
 

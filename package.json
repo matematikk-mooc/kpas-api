@@ -28,6 +28,7 @@
         "css-url-regex": "^3.3.1",
         "for-own": "^1.0.0",
         "lodash.tail": "^4.1.1",
-        "mixin-object": "^3.0.0"
+        "mixin-object": "^3.0.0",
+        "select2": "^4.0.10"
     }
 }

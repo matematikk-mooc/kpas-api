@@ -2,6 +2,7 @@
     <div>
         Du er registrert som {{ isPrincipal ? 'skoleleder' : 'deltager'}}
         <button
+          class="btn btn-primary ml-1"
           @click="isPrincipal = !isPrincipal"
         >
             Bli {{ isPrincipal ? 'deltager' : 'skoleleder' }}
