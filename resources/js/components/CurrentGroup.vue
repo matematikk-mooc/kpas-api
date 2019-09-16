@@ -1,11 +1,12 @@
 <template>
-    <ul>
+    <ul class="list-group mt-3 mb-3">
         <li
+          class="list-group-item"
           v-for="(group, name) in groups"
           v-if="group"
           :key="name"
         >
-            {{ name }}: {{ group.name.split(':')[group.name.split(':').length - 1] }}
+            <strong>{{ name }}:</strong> {{ group.name.split(':')[group.name.split(':').length - 1] }}
         </li>
     </ul>
 </template>

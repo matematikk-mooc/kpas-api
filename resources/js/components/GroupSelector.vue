@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <label>
-          Fylke:
+    <div class="row pt-3 pb-3 border-top mt-3">
+        <label class="select-county col-sm">
+          Fylke:<br/>
             <select
               v-model="chosenCounty"
               :disabled="!counties.length"
@@ -14,8 +14,8 @@
                 ></option>
             </select>
         </label>
-        <label>
-          Kommune:
+        <label class="select-community col-sm">
+          Kommune:<br/>
             <select
               v-model="chosenCommunity"
               :disabled="!communities.length"
@@ -28,8 +28,8 @@
                 ></option>
             </select>
         </label>
-        <label>
-            Schole:
+        <label class="select-school col-sm">
+            Schole:<br/>
             <select
               v-model="chosenSchool"
               :disabled="!schools.length"

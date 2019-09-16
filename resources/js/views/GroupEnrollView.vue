@@ -9,12 +9,13 @@
       <group-selector
         v-model="groups"
       ></group-selector>
-      <span v-if="isLoading">Loading....</span>
       <button
+        class="btn btn-primary"
         @click="enroll"
       >
         Bli med
       </button>
+      <span v-if="isLoading" class="ml-3">Lasting....</span>
   </div>
 </template>
 
@@ -88,4 +89,30 @@
       await this.getGroups();
     },
   }
+
+  $(document).ready(function() {
+    const properties = {
+        width: '100%',
+    };
+
+    let s1 = $('.select-county select').select2(properties);
+    let s2 = $('.select-community select').select2(properties);
+    let s3 = $('.select-school select').select2(properties);
+
+    s1.on('select2:select', function (e) {
+        var event = new Event('change');
+        e.target.dispatchEvent(event);
+    });
+
+    s2.on('select2:select', function (e) {
+        var event = new Event('change');
+        e.target.dispatchEvent(event);
+    });
+
+    s3.on('select2:select', function (e) {
+        var event = new Event('change');
+        e.target.dispatchEvent(event);
+    });
+  });
+
 </script>

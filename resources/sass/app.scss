@@ -1,9 +1,17 @@
 // Variables
 @import 'variables';
 
-// Bootstrap
 @import '~bootstrap/scss/bootstrap';
+@import '~select2/dist/css/select2.min.css';
+
+body {
+    background-color: #ffffff;
+}
 
 .container {
     padding-top:2em;
+}
+
+.card {
+    border: 0 none;
 }
