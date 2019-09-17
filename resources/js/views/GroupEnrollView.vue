@@ -6,11 +6,21 @@
       <current-group
         :groups="currentGroups"
       ></current-group>
+      <faculty-selector
+        :faculties="faculties"
+
+        v-model="faculty"
+      />
       <group-selector
         v-model="groups"
       ></group-selector>
       <button
-        class="btn btn-primary"
+        class="btn"
+        :disabled="!isReady"
+        :class="{
+          'btn-primary': isReady,
+          'btn-secondary disabled': !isReady,
+        }"
         @click="enroll"
       >
         Bli med
@@ -24,6 +34,7 @@
   import RoleSelector from "../components/RoleSelector";
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
+  import FacultySelector from "../components/FacultySelector";
 
 
   export default {
@@ -33,20 +44,30 @@
       RoleSelector,
       GroupSelector,
       CurrentGroup,
+      FacultySelector,
     },
 
     computed: {
       groupsAreSet() {
         return Object.keys(this.groups).length
       },
+
+      isReady() {
+        return this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
+      }
     },
 
     data() {
       return {
         role: process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE,
-        groups: {},
-        currentGroups: {},
+        groups: [],
+        currentGroups: [],
+        faculties: [
+          'asd',
+          'asdd',
+        ],
         isLoading: false,
+        faculty: null,
       }
     },
 
@@ -56,6 +77,7 @@
           const params = Object.assign({}, this.groups, {
             cookie: window.cookie,
             role: this.role,
+            faculty: this.faculty,
           });
           await api.post('/group/user/bulk', params);
         }
@@ -69,10 +91,12 @@
       },
 
       async enroll() {
-        this.isLoading = true;
-        await Promise.all([this.addUserGroups(), this.enrollUser()]);
-        await this.getGroups();
-        this.isLoading = false;
+        if (this.isReady) {
+          this.isLoading = true;
+          await Promise.all([this.addUserGroups(), this.enrollUser()]);
+          await this.getGroups();
+          this.isLoading = false;
+        }
       },
 
       async getGroups() {
@@ -83,10 +107,19 @@
         });
         this.currentGroups = response.data.result;
       },
+
+      async getFaculties() {
+        const response = await api.get('/faculties', {
+          params: {
+            cookie: window.cookie,
+          }
+        });
+        this.faculties = response.data.result;
+      }
     },
 
     async created() {
-      await this.getGroups();
+      await Promise.all([this.getGroups(), this.getFaculties()]);
     },
   }
 
