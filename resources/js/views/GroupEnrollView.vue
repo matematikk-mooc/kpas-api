@@ -119,7 +119,11 @@
     },
 
     async created() {
-      await Promise.all([this.getGroups(), this.getFaculties()]);
+      if (window.cookie === '') {
+        window.location.reload();
+      } else {
+        await Promise.all([this.getGroups(), this.getFaculties()]);
+      }
     },
   }
 
