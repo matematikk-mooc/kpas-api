@@ -93,9 +93,15 @@
       async enroll() {
         if (this.isReady) {
           this.isLoading = true;
-          await Promise.all([this.addUserGroups(), this.enrollUser()]);
-          await this.getGroups();
-          this.isLoading = false;
+          try {
+            await this.enrollUser();
+            await this.addUserGroups();
+            await this.getGroups();
+          } catch (e) {
+
+          } finally {
+            this.isLoading = false;
+          }
         }
       },
 
