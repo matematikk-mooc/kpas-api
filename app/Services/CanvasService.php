@@ -273,6 +273,7 @@ class CanvasService
                     return $item->enrollments;
                 }
             }
+            return [];
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
