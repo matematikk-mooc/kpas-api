@@ -147,11 +147,14 @@ class CanvasRepository
         return $this->canvasService->getGroupCategories($courseIdId);
     }
 
-    public function getUserEnrollments($userId)
+    public function getUserEnrollments(int $userId)
     {
-        $enrollments = $this->canvasService->getEnrollments($userId);
+        return $this->canvasService->getEnrollments($userId);
+    }
 
-        return $enrollments;
+    public function getUserEnrollmentsByCourse(string $userLogin, int $courseId)
+    {
+        return $this->canvasService->getEnrollmentsByCourse($userLogin, $courseId);
     }
 
     public function getUserGroups(int $userId)
