@@ -69,7 +69,9 @@ class CanvasRepository
         if ($roleId = $this->canvasService->getRoleIdFor($roleName)) {
             return $this->canvasService->enrollToCourse($userId, $roleId, $courseId);
         }
-        return null;
+
+
+        throw new CanvasException(sprintf('Role with name %s not found!', $roleName));
     }
 
     public function getCourseById(int $courseId)
