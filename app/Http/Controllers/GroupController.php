@@ -57,24 +57,18 @@ class GroupController extends Controller
 
         $role = $request->get('role');
 
-        $groupCategories = $this->canvasRepository->getGroupCategories($courseId);
-
         if ($role === config('canvas.principal_role')) {
-            $groups = $this->createPrincipalGroups($groups, $county, $community, $groupCategories, $role);
+            $groups = $this->createPrincipalGroups($groups, $county, $community, $role);
         }
 
-        $county->setCategoryId($this->findGroupCategory(
-            $groupCategories,
-            config('canvas.county_name')
-        )->id);
-        $community->setCategoryId($this->findGroupCategory(
-            $groupCategories,
-            config('canvas.community_name')
-        )->id);
-        $school->setCategoryId($this->findGroupCategory(
-            $groupCategories,
-            config('canvas.school_name')
-        )->id);
+        if ($request->has('faculty')) {
+            $faculties = $this->createFacultyGroups($county, $community, $request->get('faculty'));
+            $groups = $groups->merge($faculties);
+        }
+
+        $county->setCategoryId($this->getFromSession('custom_county_category_id'));
+        $community->setCategoryId($this->getFromSession('custom_community_category_id'));
+        $school->setCategoryId($this->getFromSession('custom_school_category_id'));
 
         $groups = $groups->merge([$county, $community, $school]);
 
@@ -83,8 +77,6 @@ class GroupController extends Controller
         });
 
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
-
-        $this->canvasRepository->removeUserGroups($userId, $courseId);
 
         $groups->each(function (GroupDto $group) use ($userId) {
             $this->canvasRepository->addUserToGroup($userId, $group);
@@ -111,38 +103,42 @@ class GroupController extends Controller
         return new SuccessResponse('Success');
     }
 
-    protected function findGroupCategory($groupCategories, $name)
-    {
-        return collect($groupCategories)->first(function ($groupCategory) use ($name) {
-            return $groupCategory->name === $name;
-        });
-    }
-
     protected function createPrincipalGroups(
         Collection $groups,
         GroupDto $county,
         GroupDto $community,
-        array $groupCategories,
         string $role
-    ) {
-        $countyLeadersData = $county->toArray();
-        $communityLeadersData = $community->toArray();
+    )
+    {
+        $countyLeaders = $this->createPrefixedGroup($county, $role);
+        $communityLeaders = $this->createPrefixedGroup($community, $role);
 
-        $countyLeadersData['name'] = $role . ' ' . $countyLeadersData['name'];
-        $communityLeadersData['name'] = $role . ' ' . $communityLeadersData['name'];
-        $countyLeaders = new GroupDto($countyLeadersData);
-        $communityLeaders = new GroupDto($communityLeadersData);
-
-        $countyLeaders->setCategoryId($this->findGroupCategory(
-            $groupCategories,
-            config('canvas.county_leaders_name')
-        )->id);
-
-        $communityLeaders->setCategoryId($this->findGroupCategory(
-            $groupCategories,
-            config('canvas.community_leaders_name')
-        )->id);
+        $countyLeaders->setCategoryId($this->getFromSession('custom_county_principals_category_id'));
+        $communityLeaders->setCategoryId($this->getFromSession('custom_community_principals_category_id'));
 
         return $groups->merge([$communityLeaders, $countyLeaders]);
+    }
+
+    protected function createFacultyGroups(GroupDto $county, GroupDto $community, $faculty)
+    {
+        $countyFaculty = $this->createPrefixedGroup($county, $faculty);
+        $communityFaculty = $this->createPrefixedGroup($community, $faculty);
+
+        $countyFaculty->setCategoryId($this->getFromSession('custom_county_faculty_category_id'));
+        $communityFaculty->setCategoryId($this->getFromSession('custom_community_faculty_category_id'));
+
+        return [$countyFaculty, $communityFaculty];
+    }
+
+    protected function createPrefixedGroup(GroupDto $dto, string $prefix): GroupDto
+    {
+        $dto = new GroupDto($dto->toArray());
+        $dto->setName($prefix . ' ' . $dto->getName());
+        return $dto;
+    }
+
+    protected function getFromSession(string $key)
+    {
+        return Arr::get(session('settings'), $key);
     }
 }
