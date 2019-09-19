@@ -23,9 +23,10 @@ class EnrollmentController extends Controller
 
     public function index(): SuccessResponse
     {
-        $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
+        $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
+        $userLogin = Arr::get(session()->get('settings'), 'custom_canvas_user_login_id');
 
-        $data = $this->canvasDbRepository->getUserEnrollments($userId);
+        $data = $this->canvasDbRepository->getUserEnrollmentsByCourse($userLogin, $courseId);
 
         return new SuccessResponse($data);
     }

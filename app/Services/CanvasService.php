@@ -258,6 +258,30 @@ class CanvasService
         }
     }
 
+    public function getEnrollmentsByCourse(string $userLogin, int $courseId)
+    {
+        try {
+            $url = "courses/{$courseId}/users?search_term={$userLogin}&include[]=enrollments";
+            $result = $this->request($url);
+
+            if(empty($result)) {
+                throw new CanvasException('No results found');
+            }
+
+            foreach($result as $item) {
+                if($item->login_id == $userLogin) {
+                    return $item->enrollments;
+                }
+            }
+            return [];
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
+            }
+            throw $exception;
+        }
+    }
+
     public function getUsersGroups(int $userId)
     {
         try {
