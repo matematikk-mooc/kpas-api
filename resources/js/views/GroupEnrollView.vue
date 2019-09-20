@@ -3,9 +3,6 @@
       <role-selector
         v-model="role"
       ></role-selector>
-      <current-group
-        :groups="currentGroups"
-      ></current-group>
       <faculty-selector
         :faculties="faculties"
 
@@ -61,7 +58,6 @@
       return {
         role: process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE,
         groups: [],
-        currentGroups: [],
         faculties: [
           'asd',
           'asdd',
@@ -96,22 +92,12 @@
           try {
             await this.enrollUser();
             await this.addUserGroups();
-            await this.getGroups();
           } catch (e) {
 
           } finally {
             this.isLoading = false;
           }
         }
-      },
-
-      async getGroups() {
-        const response = await api.get('/group/user', {
-          params: {
-            cookie: window.cookie,
-          }
-        });
-        this.currentGroups = response.data.result;
       },
 
       async getFaculties() {
@@ -128,7 +114,7 @@
       if (window.cookie === '') {
         window.location.reload();
       } else {
-        await Promise.all([this.getGroups(), this.getFaculties()]);
+        await this.getFaculties();
       }
     },
   }
