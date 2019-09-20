@@ -10,4 +10,5 @@ return [
     'county_leaders_name' => env('CANVAS_SCHOOL_LEADER_COUNTY_GROUP_CATEGORY_NAME', 'Skole'),
     'community_leaders_name' => env('CANVAS_SCHOOL_LEADER_COMMUNITY_GROUP_CATEGORY_NAME', 'Skole'),
     'principal_role' => env('CANVAS_PRINCIPAL_ROLE_TYPE', 'Skoleleder'),
+    'student_role' => env('CANVAS_STUDENT_ROLE_TYPE', 'Student'),
 ];
