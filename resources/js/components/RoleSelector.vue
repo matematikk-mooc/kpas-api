@@ -31,7 +31,7 @@
 
     watch: {
       isPrincipal(value) {
-        this.$emit('input', value ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : 'Student');
+        this.$emit('input', value ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE);
       },
     },
   }
