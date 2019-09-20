@@ -51,7 +51,10 @@ class SchoolsController extends Controller
 
     protected function sortByName(array $data, string $key = 'Navn'): array
     {
-        return collect($data)->sortBy($key)->values()->toArray();
+        return collect($data)
+            ->sortBy($key)
+            ->values()
+            ->toArray();
     }
 
     protected function isSchool($school): bool
