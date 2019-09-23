@@ -29,12 +29,12 @@
             </select>
         </label>
         <label class="select-school col-sm">
-            Schole:<br/>
+            Skole:<br/>
             <select
               v-model="chosenSchool"
               :disabled="!schools.length"
             >
-                <option value="" selected disabled>--- Schole ---</option>
+                <option value="" selected disabled>--- Skole ---</option>
                 <option
                     v-for="school in schools"
                     :value="school"
