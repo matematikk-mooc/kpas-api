@@ -1,5 +1,5 @@
 <template>
-    <ul class="list-group mt-3 mb-3">
+    <ul class="list-group mt-3 mb-3" v-if="groups">
         <li
           class="list-group-item"
           v-for="(group, name) in groups"

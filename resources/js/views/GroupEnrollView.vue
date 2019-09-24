@@ -55,7 +55,7 @@
       return {
         role: process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE,
         groups: [],
-        currentGroups: [{name:"Test"}],
+        currentGroups: null,
         faculties: [
           'asd',
           'asdd',
@@ -65,6 +65,14 @@
       }
     },
     methods: {
+      categorizeGroups(groups, categories) {
+        var result = {};
+        groups.forEach(function(group) {
+          var category = categories.find(category => category.id == group.group_category_id);   
+          result[category.name] = group;
+        }); 
+        return result;
+      },
       async addUserGroups() {
         if (this.groupsAreSet) {
           const params = Object.assign({}, this.groups, {
@@ -93,6 +101,15 @@
           }
         }
       },
+      async getGroups() {
+        const response = await api.get('/group/user', {
+          params: {
+            cookie: window.cookie,
+          }
+        });
+        this.categories = response.data.result;
+      },
+
       async getFaculties() {
         const response = await api.get('/faculties', {
           params: {
@@ -103,12 +120,12 @@
       }
     },
     async created() {
+      var self = this;
       window.addEventListener('message', function(e) {
         try {
           var msg = JSON.parse(e.data);
           if(msg.subject == "kpas-lti.usergroups") {
-            this.currentGroups = msg.groups;
-            console.log(msg);
+            self.currentGroups = self.categorizeGroups(msg.groups, self.categories);
           }
         } catch(e) {
           console.log("kpas-lti: ignoring message");
@@ -118,7 +135,7 @@
       if (window.cookie === '') {
         window.location.reload();
       } else {
-        await this.getFaculties();
+        await Promise.all([this.getGroups(), this.getFaculties()]);
         const getusergroupsMessage = {
           subject: 'kpas-lti.getusergroups'
         }
