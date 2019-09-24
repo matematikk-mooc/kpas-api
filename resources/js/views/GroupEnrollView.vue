@@ -3,6 +3,9 @@
       <role-selector
         v-model="role"
       ></role-selector>
+      <current-group
+        :groups="currentGroups"
+      ></current-group>
       <faculty-selector
         :faculties="faculties"
 
@@ -32,32 +35,27 @@
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
-
-
   export default {
     name: "GroupEnrollView",
-
     components: {
       RoleSelector,
       GroupSelector,
       CurrentGroup,
       FacultySelector,
     },
-
     computed: {
       groupsAreSet() {
         return Object.keys(this.groups).length
       },
-
       isReady() {
         return this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
       }
     },
-
     data() {
       return {
         role: process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE,
         groups: [],
+        currentGroups: [{name:"Test"}],
         faculties: [
           'asd',
           'asdd',
@@ -66,7 +64,6 @@
         faculty: null,
       }
     },
-
     methods: {
       async addUserGroups() {
         if (this.groupsAreSet) {
@@ -78,14 +75,12 @@
           await api.post('/group/user/bulk', params);
         }
       },
-
       async enrollUser() {
         await api.post('/enrollment', {
           role: this.role,
           cookie: window.cookie,
         });
       },
-
       async enroll() {
         if (this.isReady) {
           this.isLoading = true;
@@ -93,13 +88,11 @@
             await this.enrollUser();
             await this.addUserGroups();
           } catch (e) {
-
           } finally {
             this.isLoading = false;
           }
         }
       },
-
       async getFaculties() {
         const response = await api.get('/faculties', {
           params: {
@@ -109,39 +102,48 @@
         this.faculties = response.data.result;
       }
     },
-
     async created() {
+      window.addEventListener('message', function(e) {
+        try {
+          var msg = JSON.parse(e.data);
+          if(msg.subject == "kpas-lti.usergroups") {
+            this.currentGroups = msg.groups;
+            console.log(msg);
+          }
+        } catch(e) {
+          console.log("kpas-lti: ignoring message");
+        }
+      }, false);
+
       if (window.cookie === '') {
         window.location.reload();
       } else {
         await this.getFaculties();
+        const getusergroupsMessage = {
+          subject: 'kpas-lti.getusergroups'
+        }
+        window.parent.postMessage(JSON.stringify(getusergroupsMessage), "*");        
       }
     },
   }
-
   $(document).ready(function() {
     const properties = {
         width: '100%',
     };
-
     let s1 = $('.select-county select').select2(properties);
     let s2 = $('.select-community select').select2(properties);
     let s3 = $('.select-school select').select2(properties);
-
     s1.on('select2:select', function (e) {
         var event = new Event('change');
         e.target.dispatchEvent(event);
     });
-
     s2.on('select2:select', function (e) {
         var event = new Event('change');
         e.target.dispatchEvent(event);
     });
-
     s3.on('select2:select', function (e) {
         var event = new Event('change');
         e.target.dispatchEvent(event);
     });
   });
-
 </script>
