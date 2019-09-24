@@ -56,15 +56,16 @@
         role: process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE,
         groups: [],
         currentGroups: null,
-        faculties: [
-          'asd',
-          'asdd',
-        ],
+        faculties: [],
         isLoading: false,
         faculty: null,
       }
     },
     methods: {
+      iframeresize() {
+        var h = $("body").height();
+        parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
+      },
       getUsersGroups() {
         const getusergroupsMessage = {
           subject: 'kpas-lti.getusergroups'
@@ -133,6 +134,10 @@
           var msg = JSON.parse(e.data);
           if(msg.subject == "kpas-lti.usergroups") {
             self.currentGroups = self.categorizeGroups(msg.groups, self.categories);
+            this.$nextTick(function () {
+              // DOM updated
+              this.iframeresize();
+            });
           }
         } catch(e) {
           console.log("kpas-lti: ignoring message");
@@ -140,11 +145,14 @@
       }, false);
 
       if (window.cookie === '') {
+        console.log("No cookie, reloading KPAS-LTI.")
         window.location.reload();
       } else {
+        console.log("KPAS-LTI cookie found.")
         await Promise.all([this.getGroups(), this.getFaculties()]);
-        this.getUsersGroups();
       }
+      console.log("Get users groups.");
+      this.getUsersGroups();
     },
   }
   $(document).ready(function() {
