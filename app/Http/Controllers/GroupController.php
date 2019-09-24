@@ -36,6 +36,7 @@ class GroupController extends Controller
         //It is not possible to fetch groups for a user with the token we have.
         //        $groups = collect($this->canvasRepository->getUserGroups($userId));
         $categories = collect($this->canvasRepository->getGroupCategories($courseId));
+        logger("Returning categories: " . $categories);
         return new SuccessResponse($categories);
 
         //Old way below. Note that this endpoint now returns the categories and that the client has to
@@ -89,6 +90,10 @@ class GroupController extends Controller
         });
 
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
+
+        $currentGroups = $request->input('currentGroups');
+        //logger("CurrentGroups" . print_r($currentGroups, true));
+        $this->canvasRepository->removeUserFromGroups($userId, $currentGroups); 
 
         $groups->each(function (GroupDto $group) use ($userId) {
             $this->canvasRepository->addUserToGroup($userId, $group);

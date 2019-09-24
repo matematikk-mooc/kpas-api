@@ -23,9 +23,9 @@
         }"
         @click="enroll"
       >
-        Bli med
+        Oppdater
       </button>
-      <span v-if="isLoading" class="ml-3">Lasting....</span>
+      <span v-if="isLoading" class="ml-3">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.</span>
   </div>
 </template>
 
@@ -67,10 +67,25 @@
         parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
       },
       getUsersGroups() {
+        console.log("Get users groups.");
         const getusergroupsMessage = {
           subject: 'kpas-lti.getusergroups'
         }
         window.parent.postMessage(JSON.stringify(getusergroupsMessage), "*");        
+      },
+      updateCurrentGroups() {
+        console.log("updateCurrentGroups");
+        if(this.categories && this.usersGroups) {
+          this.currentGroups = this.categorizeGroups(this.usersGroups, this.categories);
+          this.$nextTick(function () {
+            // DOM updated
+            this.iframeresize();
+          });
+        } else if(this.categories) {
+          console.log("groups not ready yet.");
+        } else {
+          console.log("categories not ready yet.");
+        }
       },
       categorizeGroups(groups, categories) {
         var result = {};
@@ -86,6 +101,7 @@
             cookie: window.cookie,
             role: this.role,
             faculty: this.faculty,
+            currentGroups: this.currentGroups
           });
           await api.post('/group/user/bulk', params);
         }
@@ -116,6 +132,8 @@
           }
         });
         this.categories = response.data.result;
+        console.log("Categories received.");
+        this.updateCurrentGroups();
       },
 
       async getFaculties() {
@@ -129,7 +147,6 @@
     },
     async mounted() {
       var self = this;
-      await Promise.all([self.getGroups(), self.getFaculties()]);
       $(document).ready(function() {
         console.log("KPAS-LTI document ready.");
         const properties = {
@@ -150,24 +167,24 @@
             var event = new Event('change');
             e.target.dispatchEvent(event);
         });
-        console.log("Get users groups.");
-        self.getUsersGroups();
       });
+      self.getUsersGroups();
     },
     async created() {
-      var self = this;
-      window.addEventListener('message', function(e) {
+      console.log("LTI listening for messages from parent.");
+      window.addEventListener('message', function(evt) {
         try {
-          var msg = JSON.parse(e.data);
+          var msg = JSON.parse(evt.data);
           if(msg.subject == "kpas-lti.usergroups") {
-            self.currentGroups = self.categorizeGroups(msg.groups, self.categories);
-            this.$nextTick(function () {
-              // DOM updated
-              this.iframeresize();
-            });
+            console.log("Storing groups.");
+            self.usersGroups = msg.groups;
+            self.updateCurrentGroups();
+          } else if(msg.subject == "kpas-lti.ltiparentready") {
+              self.getUsersGroups();
           }
         } catch(e) {
-          console.log("kpas-lti: ignoring message " + e. data);
+          console.log("kpas-lti: exception parsing message " + e);
+          console.log("When processing " + evt.data);
         }
       }, false);
 
@@ -175,7 +192,10 @@
         console.log("No cookie, reloading KPAS-LTI.")
         window.location.reload();
       } else {
+        var self = this;
         console.log("KPAS-LTI cookie found.")
+        console.log("Hent kategorier...");
+        await Promise.all([self.getGroups(), self.getFaculties()]);
       }
     },
   }
