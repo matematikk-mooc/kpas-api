@@ -33,6 +33,8 @@ class EnrollmentController extends Controller
 
     public function store(EnrollUserRequest $request): SuccessResponse
     {
+        $settings = session()->get('settings');
+        logger($settings);
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
 

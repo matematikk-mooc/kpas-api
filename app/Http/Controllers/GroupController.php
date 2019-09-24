@@ -70,8 +70,12 @@ class GroupController extends Controller
         }
 
         if ($request->has('faculty')) {
-            $faculties = $this->createFacultyGroups($county, $community, $request->get('faculty'));
-            $groups = $groups->merge($faculties);
+            $faculty = $request->get('faculty');
+            if($faculty != "") {
+                logger("Request has faculty:" . $request);
+                $faculties = $this->createFacultyGroups($county, $community, $faculty);
+                $groups = $groups->merge($faculties);
+            }
         }
 
         $county->setCategoryId($this->getFromSession('custom_county_category_id'));

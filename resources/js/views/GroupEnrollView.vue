@@ -65,6 +65,12 @@
       }
     },
     methods: {
+      getUsersGroups() {
+        const getusergroupsMessage = {
+          subject: 'kpas-lti.getusergroups'
+        }
+        window.parent.postMessage(JSON.stringify(getusergroupsMessage), "*");        
+      },
       categorizeGroups(groups, categories) {
         var result = {};
         groups.forEach(function(group) {
@@ -98,6 +104,7 @@
           } catch (e) {
           } finally {
             this.isLoading = false;
+            this.getUsersGroups();
           }
         }
       },
@@ -136,10 +143,7 @@
         window.location.reload();
       } else {
         await Promise.all([this.getGroups(), this.getFaculties()]);
-        const getusergroupsMessage = {
-          subject: 'kpas-lti.getusergroups'
-        }
-        window.parent.postMessage(JSON.stringify(getusergroupsMessage), "*");        
+        this.getUsersGroups();
       }
     },
   }
