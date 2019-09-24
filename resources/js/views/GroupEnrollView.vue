@@ -127,6 +127,33 @@
         this.faculties = response.data.result;
       }
     },
+    async mounted() {
+      var self = this;
+      await Promise.all([self.getGroups(), self.getFaculties()]);
+      $(document).ready(function() {
+        console.log("KPAS-LTI document ready.");
+        const properties = {
+            width: '100%',
+        };
+        let s1 = $('.select-county select').select2(properties);
+        let s2 = $('.select-community select').select2(properties);
+        let s3 = $('.select-school select').select2(properties);
+        s1.on('select2:select', function (e) {
+            var event = new Event('change');
+            e.target.dispatchEvent(event);
+        });
+        s2.on('select2:select', function (e) {
+            var event = new Event('change');
+            e.target.dispatchEvent(event);
+        });
+        s3.on('select2:select', function (e) {
+            var event = new Event('change');
+            e.target.dispatchEvent(event);
+        });
+        console.log("Get users groups.");
+        self.getUsersGroups();
+      });
+    },
     async created() {
       var self = this;
       window.addEventListener('message', function(e) {
@@ -140,7 +167,7 @@
             });
           }
         } catch(e) {
-          console.log("kpas-lti: ignoring message");
+          console.log("kpas-lti: ignoring message " + e. data);
         }
       }, false);
 
@@ -149,30 +176,7 @@
         window.location.reload();
       } else {
         console.log("KPAS-LTI cookie found.")
-        await Promise.all([this.getGroups(), this.getFaculties()]);
       }
-      console.log("Get users groups.");
-      this.getUsersGroups();
     },
   }
-  $(document).ready(function() {
-    const properties = {
-        width: '100%',
-    };
-    let s1 = $('.select-county select').select2(properties);
-    let s2 = $('.select-community select').select2(properties);
-    let s3 = $('.select-school select').select2(properties);
-    s1.on('select2:select', function (e) {
-        var event = new Event('change');
-        e.target.dispatchEvent(event);
-    });
-    s2.on('select2:select', function (e) {
-        var event = new Event('change');
-        e.target.dispatchEvent(event);
-    });
-    s3.on('select2:select', function (e) {
-        var event = new Event('change');
-        e.target.dispatchEvent(event);
-    });
-  });
 </script>
