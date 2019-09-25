@@ -31,18 +31,27 @@ class GroupController extends Controller
 
     public function index(): SuccessResponse
     {
-        $userId = Arr::get(session('settings'), 'custom_canvas_user_id');
+//        $userId = Arr::get(session('settings'), 'custom_canvas_user_id');
         $courseId = Arr::get(session('settings'), 'custom_canvas_course_id');
-        $groups = collect($this->canvasRepository->getUserGroups($userId));
+        //It is not possible to fetch groups for a user with the token we have.
+        //        $groups = collect($this->canvasRepository->getUserGroups($userId));
         $categories = collect($this->canvasRepository->getGroupCategories($courseId));
+        logger("Returning categories: " . $categories);
+        return new SuccessResponse($categories);
 
+        //Old way below. Note that this endpoint now returns the categories and that the client has to
+        //fetch the users groups and then merge it with the categories. So this method should be renamed from
+        //group to groupcategories or something like that.
+        /*
         $categorizedGroups = $categories->mapWithKeys(function ($category) use ($groups) {
             return [$category-> name => $groups->first(function($group) use ($category) {
                 return $group->group_category_id === $category->id;
             })];
         });
+        logger('categorizedGroups:' . $categorizedGroups);
 
         return new SuccessResponse($categorizedGroups);
+        */
     }
 
     public function bulkStore(AddUserToGroupsRequest $request): SuccessResponse
@@ -62,8 +71,12 @@ class GroupController extends Controller
         }
 
         if ($request->has('faculty')) {
-            $faculties = $this->createFacultyGroups($county, $community, $request->get('faculty'));
-            $groups = $groups->merge($faculties);
+            $faculty = $request->get('faculty');
+            if($faculty != "") {
+                logger("Request has faculty:" . $request);
+                $faculties = $this->createFacultyGroups($county, $community, $faculty);
+                $groups = $groups->merge($faculties);
+            }
         }
 
         $county->setCategoryId($this->getFromSession('custom_county_category_id'));
@@ -77,6 +90,10 @@ class GroupController extends Controller
         });
 
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
+
+        $currentGroups = $request->input('currentGroups');
+        //logger("CurrentGroups" . print_r($currentGroups, true));
+        $this->canvasRepository->removeUserFromGroups($userId, $currentGroups); 
 
         $groups->each(function (GroupDto $group) use ($userId) {
             $this->canvasRepository->addUserToGroup($userId, $group);

@@ -107,9 +107,12 @@
 
     watch:{
       async chosenCounty(county) {
+        this.communities = [];
+        this.schools = [];
         await this.getCommunities(county.Fylkesnr);
       },
       async chosenCommunity(community) {
+        this.schools = [];
         await this.getSchools(community.Kommunenr);
       },
       chosenSchool() {

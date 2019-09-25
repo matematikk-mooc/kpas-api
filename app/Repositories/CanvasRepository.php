@@ -164,6 +164,14 @@ class CanvasRepository
         return $groups;
     }
 
+    public function removeUserFromGroups(int $userId, $groupsToRemove): void
+    {
+        foreach ($groupsToRemove as $category => $group) {
+            logger("Remove from category " . $category . " group id " . $group["id"]);
+            $this->canvasService->removeUserFromGroup($group["id"], $userId);
+         };
+    }
+
     public function removeUserGroups(int $userId, int $courseId): void
     {
         $groups = $this->canvasService->getUsersGroups($userId);
