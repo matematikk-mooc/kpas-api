@@ -166,6 +166,10 @@ class CanvasRepository
 
     public function removeUserFromGroups(int $userId, $groupsToRemove): void
     {
+        if(!$groupsToRemove)
+        {
+            return;
+        }
         foreach ($groupsToRemove as $category => $group) {
             logger("Remove from category " . $category . " group id " . $group["id"]);
             $this->canvasService->removeUserFromGroup($group["id"], $userId);
