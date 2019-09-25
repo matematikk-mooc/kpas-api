@@ -27,7 +27,11 @@ class SchoolsController extends Controller
 
     public function communities(string $countyId): SuccessResponse
     {
-        $communities = $this->dataNsrService->getCommunities($countyId);
+        $communities = collect($this->dataNsrService->getCommunities($countyId))->filter(function ($community, $key) {
+            return !$community->ErNedlagt;
+        })
+        ->values()
+        ->toArray();
 
         return new SuccessResponse($this->sortByName($communities));
     }
