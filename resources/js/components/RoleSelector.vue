@@ -1,37 +1,27 @@
 <template>
-    <div>
-        Du er registrert som {{ isPrincipal ? 'skoleleder' : 'deltager'}}
-        <button
-          class="btn btn-primary ml-1"
-          @click="isPrincipal = !isPrincipal"
-        >
-            Bli {{ isPrincipal ? 'deltager' : 'skoleleder' }}
-        </button>
+  <div>
+      <h2>Velg ny rolle og/eller grupper nedenfor</h2>
+      <input type="radio" id="radioSkoleleder" name="role" value="1" v-model="wantToBePrincipal">
+      <label for="radioSkoleleder">Skoleeier/-leder</label>
+      <br>
+      <input type="radio" id="deltager" name="role" value="0" v-model="wantToBePrincipal">
+      <label for="deltager">Deltager</label>
     </div>
 </template>
 
 <script>
-  import api from '../api';
-
   export default {
     name: "RoleSelector",
 
     data() {
       return {
-        isPrincipal: false,
+        wantToBePrincipal: 0,
       };
     },
-
-    async created() {
-      const result = await api.get('/enrollment/', {
-        params: { cookie: window.cookie }
-      });
-      this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE);
-    },
-
+  
     watch: {
-      isPrincipal(value) {
-        this.$emit('input', value ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE);
+      wantToBePrincipal(value) {
+        this.$emit('input', value);
       },
     },
   }

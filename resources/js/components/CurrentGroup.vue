@@ -9,6 +9,9 @@
             <strong>{{ name }}:</strong> {{ group.name.split(':')[group.name.split(':').length - 1] }}
         </li>
     </ul>
+    <p v-else>
+      Laster inn dine gruppemedlemskap...
+    </p>  
 </template>
 
 <script>

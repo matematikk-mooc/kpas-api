@@ -1,8 +1,12 @@
 <template>
   <div>
-      <role-selector
-        v-model="role"
-      ></role-selector>
+      <h2>Din rolle</h2>
+      <current-role
+        :isPrincipal="isPrincipal"
+      ></current-role>
+
+      <hr/>
+      <h2>Dine grupper</h2>
       <current-group
         :groups="currentGroups"
       ></current-group>
@@ -11,6 +15,12 @@
 
         v-model="faculty"
       />
+      <role-selector
+        :studentText="studentText"
+        :principalText="principalText"
+        v-model="wantToBePrincipal"
+      ></role-selector>
+
       <group-selector
         v-model="groups"
       ></group-selector>
@@ -32,6 +42,7 @@
 <script>
   import api from '../api';
   import RoleSelector from "../components/RoleSelector";
+  import CurrentRole from "../components/CurrentRole";
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
@@ -39,6 +50,7 @@
     name: "GroupEnrollView",
     components: {
       RoleSelector,
+      CurrentRole,
       GroupSelector,
       CurrentGroup,
       FacultySelector,
@@ -49,11 +61,18 @@
       },
       isReady() {
         return this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
+      },
+      studentText() {
+        return "deltager"; 
+      },
+      principalText() {
+        return "skoleeier/-leder";
       }
     },
     data() {
       return {
-        role: process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE,
+        isPrincipal: false,
+        wantToBePrincipal: false,
         groups: [],
         currentGroups: null,
         faculties: [],
@@ -61,10 +80,14 @@
         faculty: null,
       }
     },
+    
     methods: {
       iframeresize() {
         var h = $("body").height();
         parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
+      },
+      getRoleText(isPrincipal) {
+        return isPrincipal ? "skoleeier/-leder" : "deltager";
       },
       getUsersGroups() {
         console.log("Get users groups.");
@@ -99,7 +122,7 @@
         if (this.groupsAreSet) {
           const params = Object.assign({}, this.groups, {
             cookie: window.cookie,
-            role: this.role,
+            role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
             faculty: this.faculty,
             currentGroups: this.currentGroups
           });
@@ -108,11 +131,13 @@
       },
       async enrollUser() {
         await api.post('/enrollment', {
-          role: this.role,
+          role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
           cookie: window.cookie,
         });
+        this.isPrincipal = !this.isPrincipal;
       },
       async enroll() {
+        console.log("WTBP:" + this.wantToBePrincipal);
         if (this.isReady) {
           this.isLoading = true;
           try {
@@ -124,6 +149,13 @@
             this.getUsersGroups();
           }
         }
+      },
+      async getRole() {
+        const result = await api.get('/enrollment/', {
+          params: { cookie: window.cookie }
+        });
+        this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE);
+        this.wantToBePrincipal = this.isPrincipal;
       },
       async getGroups() {
         const response = await api.get('/group/user', {
