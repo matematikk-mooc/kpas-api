@@ -12,11 +12,10 @@
 <script>
   export default {
     name: "RoleSelector",
-
     data() {
       return {
         wantToBePrincipal: false,
-      };
+      }
     },
   
     watch: {

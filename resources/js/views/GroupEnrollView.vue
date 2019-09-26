@@ -16,8 +16,6 @@
         v-model="faculty"
       />
       <role-selector
-        :studentText="studentText"
-        :principalText="principalText"
         v-model="wantToBePrincipal"
       ></role-selector>
 
@@ -155,7 +153,7 @@
         const result = await api.get('/enrollment/', {
           params: { cookie: window.cookie }
         });
-        this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE);
+        this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
         this.wantToBePrincipal = this.isPrincipal;
       },
       async getGroups() {
@@ -228,7 +226,7 @@
         var self = this;
         console.log("KPAS-LTI cookie found.")
         console.log("Hent kategorier...");
-        await Promise.all([self.getGroups(), self.getFaculties()]);
+        await Promise.all([self.getGroups(), self.getFaculties(), self.getRole()]);
       }
     },
   }
