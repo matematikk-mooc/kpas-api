@@ -11,16 +11,15 @@
         :groups="currentGroups"
         :groupsLoaded="currentGroupsLoaded"
       ></current-group>
-      <faculty-selector
-        :faculties="faculties"
-
-        v-model="faculty"
-      />
+      <hr/>
       <role-selector
         :isPrincipal="isPrincipal"
         v-model="wantToBePrincipal"
       ></role-selector>
-
+      <faculty-selector
+        :faculties="faculties"
+        v-model="faculty"
+      />
       <group-selector
         :courseId="courseId"
         v-model="groups"
