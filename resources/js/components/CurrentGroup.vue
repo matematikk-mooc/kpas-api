@@ -1,5 +1,5 @@
 <template>
-    <ul class="list-group mt-3 mb-3" v-if="groups">
+    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded">
         <li
           class="list-group-item"
           v-for="(group, name) in groups"
@@ -10,7 +10,7 @@
         </li>
     </ul>
     <p v-else>
-      Laster inn dine gruppemedlemskap...
+      Laster inn dine grupper...
     </p>  
 </template>
 
@@ -20,6 +20,7 @@
 
     props: {
       groups: Object,
+      groupsLoaded: Boolean
     },
   }
 </script>

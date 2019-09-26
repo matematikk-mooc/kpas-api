@@ -9,6 +9,7 @@
       <h2>Dine grupper</h2>
       <current-group
         :groups="currentGroups"
+        :groupsLoaded="currentGroupsLoaded"
       ></current-group>
       <faculty-selector
         :faculties="faculties"
@@ -69,6 +70,9 @@
     },
     data() {
       return {
+        currentGroupsLoaded: false,
+        groupsLoaded: false,
+        categoriesLoaded: false,
         isPrincipal: false,
         wantToBePrincipal: false,
         groups: [],
@@ -96,17 +100,22 @@
       },
       updateCurrentGroups() {
         console.log("updateCurrentGroups");
+        if(!this.categoriesLoaded) {
+          console.log("categories not ready yet.");
+          return;
+        }
+        if(!this.groupsLoaded) {
+          console.log("groups not ready yet.");
+          return;
+        }
         if(this.categories && this.usersGroups) {
           this.currentGroups = this.categorizeGroups(this.usersGroups, this.categories);
           this.$nextTick(function () {
             // DOM updated
             this.iframeresize();
           });
-        } else if(this.categories) {
-          console.log("groups not ready yet.");
-        } else {
-          console.log("categories not ready yet.");
         }
+        this.currentGroupsLoaded = true;
       },
       categorizeGroups(groups, categories) {
         var result = {};
@@ -163,6 +172,8 @@
           }
         });
         this.categories = response.data.result;
+        this.categoriesLoaded = true;
+
         console.log("Categories received.");
         this.updateCurrentGroups();
       },
@@ -203,12 +214,14 @@
     },
     async created() {
       console.log("LTI listening for messages from parent.");
+      var self = this;
       window.addEventListener('message', function(evt) {
         try {
           var msg = JSON.parse(evt.data);
           if(msg.subject == "kpas-lti.usergroups") {
             console.log("Storing groups.");
             self.usersGroups = msg.groups;
+            self.groupsLoaded = true;
             self.updateCurrentGroups();
           } else if(msg.subject == "kpas-lti.ltiparentready") {
               self.getUsersGroups();
@@ -223,7 +236,6 @@
         console.log("No cookie, reloading KPAS-LTI.")
         window.location.reload();
       } else {
-        var self = this;
         console.log("KPAS-LTI cookie found.")
         console.log("Hent kategorier...");
         await Promise.all([self.getGroups(), self.getFaculties(), self.getRole()]);
