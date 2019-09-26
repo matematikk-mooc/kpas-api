@@ -50,6 +50,9 @@
 
   export default {
     name: "GroupSelector",
+    props: {
+      courseId: Number
+    },
 
     data() {
       return {
@@ -82,15 +85,15 @@
       async assignToGroups() {
         const county = {
           name: this.chosenCounty.Navn,
-          description: `county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`
+          description: `courseId:${this.courseId}:county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`
         };
         const community = {
           name: `${this.chosenCounty.Navn}:${this.chosenCommunity.Navn}`,
-          description: `community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
+          description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
         };
         const school = {
           name: `${this.chosenCounty.Navn}:${this.chosenCommunity.Navn}:${this.chosenSchool.Navn}`,
-          description: `school:${this.chosenSchool.NSRId}:${this.chosenSchool.OrgNr}`,
+          description: `courseId:${this.courseId}:school:${this.chosenSchool.NSRId}:${this.chosenSchool.OrgNr}`,
         };
 
         this.$emit('input', {

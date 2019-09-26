@@ -12,13 +12,21 @@
 <script>
   export default {
     name: "RoleSelector",
+    props: {
+        isPrincipal: Boolean
+    },
     data() {
       return {
         wantToBePrincipal: false,
       }
     },
-  
+    created() {
+      this.wantToBePrincipal = this.isPrincipal;
+    },
     watch: {
+      isPrincipal(value) {
+        this.wantToBePrincipal = value;
+      },
       wantToBePrincipal(value) {
         this.$emit('input', value);
       },

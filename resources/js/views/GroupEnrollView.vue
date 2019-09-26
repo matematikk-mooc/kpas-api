@@ -17,10 +17,12 @@
         v-model="faculty"
       />
       <role-selector
+        :isPrincipal="isPrincipal"
         v-model="wantToBePrincipal"
       ></role-selector>
 
       <group-selector
+        :courseId="courseId"
         v-model="groups"
       ></group-selector>
       <button
@@ -70,6 +72,7 @@
     },
     data() {
       return {
+        courseId: -1,
         currentGroupsLoaded: false,
         groupsLoaded: false,
         categoriesLoaded: false,
@@ -172,6 +175,7 @@
           }
         });
         this.categories = response.data.result;
+        this.courseId = this.categories[0].course_id;
         this.categoriesLoaded = true;
 
         console.log("Categories received.");
