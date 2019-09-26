@@ -122,8 +122,9 @@
       },
       categorizeGroups(groups, categories) {
         var result = {};
+        var self = this;
         groups.forEach(function(group) {
-          var category = categories.find(category => category.id == group.group_category_id);   
+          var category = categories.find(category => category.id == group.group_category_id && self.courseId == group.course_id);   
           result[category.name] = group;
         }); 
         return result;
