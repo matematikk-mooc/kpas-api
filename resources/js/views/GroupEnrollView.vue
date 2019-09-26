@@ -145,7 +145,6 @@
           role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
           cookie: window.cookie,
         });
-        this.isPrincipal = !this.isPrincipal;
       },
       async enroll() {
         console.log("WTBP:" + this.wantToBePrincipal);
