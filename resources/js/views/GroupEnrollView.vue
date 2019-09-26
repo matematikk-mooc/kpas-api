@@ -143,7 +143,7 @@
           try {
             await this.enrollUser();
             await this.addUserGroups();
-            this.isPrincipal = !this.isPrincipal;
+            this.isPrincipal = !this.wantToBePrincipal;
           } catch (e) {
           } finally {
             this.isLoading = false;
