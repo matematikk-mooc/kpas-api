@@ -23,7 +23,9 @@ class LtiMiddleware
             session()->setId($request->get('cookie'));
             session()->start();
         }
-        if (!$this->isLtiAuthenticated()) {
+        if (!$this->isLtiAuthenticated()
+            || ($request->has('lti_message_type') && $this->checkIds($request))
+        ) {
             Authenticator::authenticate();
         }
         return $next($request);
@@ -37,5 +39,10 @@ class LtiMiddleware
                 'custom_canvas_course_id',
                 'custom_canvas_user_login_id',
             ]);
+    }
+
+    protected function checkIds($request): bool
+    {
+        return Arr::get(session()->get('settings'), 'custom_canvas_user_id') !== $request->get('custom_canvas_user_id');
     }
 }
