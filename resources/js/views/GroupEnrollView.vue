@@ -135,7 +135,9 @@
         var self = this;
         groups.forEach(function(group) {
           var category = categories.find(category => category.id == group.group_category_id && self.courseId == group.course_id);   
-          result[category.name] = group;
+          if(category) {
+            result[category.name] = group;
+          }
         }); 
         return result;
       },
