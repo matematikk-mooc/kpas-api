@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card">
-    <div class="card-body">
+<div>
+    <div>
         <group-enroll-view>
         </group-enroll-view>
     </div>

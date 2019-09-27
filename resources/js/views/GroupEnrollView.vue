@@ -3,6 +3,7 @@
       <h2>Din rolle</h2>
       <current-role
         :isPrincipal="isPrincipal"
+        :information="information"
       ></current-role>
 
       <hr/>
@@ -35,7 +36,7 @@
       >
         Oppdater
       </button>
-      <span v-if="isLoading" class="ml-3">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.</span>
+      <span v-if="isLoading" class="ml-3">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span>
   </div>
 </template>
 
@@ -71,6 +72,7 @@
     },
     data() {
       return {
+        information: "Laster inn din rolle...",
         courseId: -1,
         currentGroupsLoaded: false,
         groupsLoaded: false,
@@ -91,7 +93,16 @@
         parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
       },
       getRoleText(isPrincipal) {
-        return isPrincipal ? "skoleeier/-leder" : "deltager";
+        return isPrincipal ? "leder/eier" : "lærer/deltager";
+      },
+      getPrincipalInformation() {
+        return "<div class='alert alert-info' Du er registrert som leder/eier.</div> <p>Som leder/eier får du se innhold som hjelper deg å lede arbeidet med fagfornyelsen \
+        i din organisasjon.</p><p>\
+        Dette innholdet er markert med et eget ikon: <img src='https://kompetanseudirno.azureedge.net/udirdesign/bitmaps/usertie.png'>\
+        <p>Dersom du ikke er leder/eier kan du velge å bli lærer/deltager i stedet. Dette gjør du lenger ned på denne siden.</p></div>";
+      },
+      getParticipantInformation() {
+        return "Du er registrert som lærer/deltager.";
       },
       getUsersGroups() {
         console.log("Get users groups.");
@@ -153,6 +164,11 @@
             await this.enrollUser();
             await this.addUserGroups();
             this.isPrincipal = this.wantToBePrincipal;
+            if(this.isPrincipal) {
+              this.information = "<div class='alert alert-success'>Du er nå registrert som skoleleder. <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
+            } else {
+              this.information = "<div class='alert alert-success'>Du er nå registrert som deltager. <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
+            }
           } catch (e) {
           } finally {
             this.isLoading = false;
@@ -165,6 +181,11 @@
           params: { cookie: window.cookie }
         });
         this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
+        if(this.principal) {
+          this.information = this.getPrincipalInformation();
+        } else {
+          this.information = this.getParticipantInformation();
+        }
         this.wantToBePrincipal = this.isPrincipal;
       },
       async getGroups() {
