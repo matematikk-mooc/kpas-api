@@ -7,7 +7,7 @@
           v-if="group"
           :key="name"
         >
-            <strong>{{ name }}:</strong> {{ group.name.split(':')[group.name.split(':').length - 1] }}
+            <strong>{{ name }}:</strong> {{ group.name }}
         </li>
         <div 
     </ul>

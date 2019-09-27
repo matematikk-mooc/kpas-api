@@ -88,11 +88,11 @@
           description: `courseId:${this.courseId}:county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`
         };
         const community = {
-          name: `${this.chosenCounty.Navn}:${this.chosenCommunity.Navn}`,
+          name: `${this.chosenCommunity.Navn}`,
           description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
         };
         const school = {
-          name: `${this.chosenCounty.Navn}:${this.chosenCommunity.Navn}:${this.chosenSchool.Navn}`,
+          name: `${this.chosenSchool.Navn}`,
           description: `courseId:${this.courseId}:school:${this.chosenSchool.NSRId}:${this.chosenSchool.OrgNr}`,
         };
 
