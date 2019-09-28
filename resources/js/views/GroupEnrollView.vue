@@ -96,10 +96,7 @@
         return isPrincipal ? "leder/eier" : "lærer/deltager";
       },
       getPrincipalInformation() {
-        return "<div class='alert alert-info' Du er registrert som leder/eier.</div> <p>Som leder/eier får du se innhold som hjelper deg å lede arbeidet med fagfornyelsen \
-        i din organisasjon.</p><p>\
-        Dette innholdet er markert med et eget ikon: <img src='https://kompetanseudirno.azureedge.net/udirdesign/bitmaps/usertie.png'>\
-        <p>Dersom du ikke er leder/eier kan du velge å bli lærer/deltager i stedet. Dette gjør du lenger ned på denne siden.</p></div>";
+        return "Du er registrert som leder/eier.";
       },
       getParticipantInformation() {
         return "Du er registrert som lærer/deltager.";
@@ -183,7 +180,7 @@
           params: { cookie: window.cookie }
         });
         this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
-        if(this.principal) {
+        if(this.isPrincipal) {
           this.information = this.getPrincipalInformation();
         } else {
           this.information = this.getParticipantInformation();
