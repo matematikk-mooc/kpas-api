@@ -69,6 +69,9 @@ class Handler extends ExceptionHandler
         if ($exception instanceof CanvasException) {
             return (new ErrorResponse($exception->getMessage(), 200))->toResponse($request);
         }
+        if ($exception instanceof LtiException) {
+            return response()->view('errors.ltierror', ["message"=>$exception->getMessage()], 403);
+        }
 
         return parent::render($request, $exception);
     }
