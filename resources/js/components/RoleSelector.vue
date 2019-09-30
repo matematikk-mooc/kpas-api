@@ -33,6 +33,7 @@
       },
       wantToBePrincipal(value) {
         this.$emit('input', value);
+        this.iframeresize();
       },
     },
   }
