@@ -31,10 +31,12 @@ class GroupController extends Controller
 
     public function index(): SuccessResponse
     {
+        logger("GroupController.index");
 //        $userId = Arr::get(session('settings'), 'custom_canvas_user_id');
         $courseId = Arr::get(session('settings'), 'custom_canvas_course_id');
         //It is not possible to fetch groups for a user with the token we have.
         //        $groups = collect($this->canvasRepository->getUserGroups($userId));
+        logger("custom_canvas_course_id:" . $courseId);
         $categories = collect($this->canvasRepository->getGroupCategories($courseId));
         logger("Returning categories: " . $categories);
         return new SuccessResponse($categories);
@@ -78,6 +80,8 @@ class GroupController extends Controller
                 $groups = $groups->merge($faculties);
             }
         }
+
+        logger(session('settings'));
 
         $county->setCategoryId($this->getFromSession('custom_county_category_id'));
         $community->setCategoryId($this->getFromSession('custom_community_category_id'));

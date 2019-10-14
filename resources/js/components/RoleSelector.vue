@@ -30,10 +30,10 @@
     watch: {
       isPrincipal(value) {
         this.wantToBePrincipal = value;
+        this.$parent.iframeresize();
       },
       wantToBePrincipal(value) {
         this.$emit('input', value);
-        this.iframeresize();
       },
     },
   }

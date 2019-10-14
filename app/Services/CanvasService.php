@@ -275,6 +275,7 @@ class CanvasService
             }
             return [];
         } catch (ClientException $exception) {
+            logger("CanvasService.getEnrollmentsByCourse: ".$exception->getMessage());
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
@@ -343,9 +344,10 @@ class CanvasService
                 }
                 $fullUrl = $matches[1];
             }
-
+            logger("CanvasService: returning content");
             return $content;
         } catch (ClientException $exception) {
+            logger("CanvasService.request exception:");
             if (config('canvas.debug')) {
                 info(json_encode([
                     'url' => $fullUrl,

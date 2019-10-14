@@ -5,13 +5,18 @@
         :isPrincipal="isPrincipal"
         :information="information"
       ></current-role>
-
+      <div v-if="roleError"
+        class="alert alert-danger">{{roleError}}
+      </div>
       <hr/>
       <h2>Dine grupper</h2>
       <current-group
         :groups="currentGroups"
         :groupsLoaded="currentGroupsLoaded"
       ></current-group>
+      <div v-if="groupError"
+        class="alert alert-danger">{{groupError}}
+      </div>
       <hr/>
       <role-selector
         :isPrincipal="isPrincipal"
@@ -84,13 +89,34 @@
         faculties: [],
         isLoading: false,
         faculty: null,
+        roleError: '',
+        groupError: '',
       }
     },
     
     methods: {
+      clearError(errorType) {
+          if(errorType == "roleError") {
+            this.roleError = "";
+          } else if(errorType == "groupError") {
+            this.groupError = "";
+          }
+          this.iframeresize();
+      },
+      reportError(errorType,e) {
+          var errorMsg = e + " Prøv igjen senere og ta kontakt med kompetansesupport@udir.no dersom feilen vedvarer.";
+          if(errorType == "roleError") {
+            this.roleError = errorMsg;
+          } else if(errorType == "groupError") {
+            this.groupError = errorMsg;
+          }
+          this.iframeresize();
+      },
       iframeresize() {
-        var h = $("body").height();
-        parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
+        this.$nextTick(function () {
+          var h = $("body").height();
+          parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
+        });
       },
       getRoleText(isPrincipal) {
         return isPrincipal ? "leder/eier" : "lærer/deltager";
@@ -120,10 +146,7 @@
         }
         if(this.categories && this.usersGroups) {
           this.currentGroups = this.categorizeGroups(this.usersGroups, this.categories);
-          this.$nextTick(function () {
-            // DOM updated
-            this.iframeresize();
-          });
+          this.iframeresize();
         }
         this.currentGroupsLoaded = true;
       },
@@ -146,14 +169,24 @@
             faculty: this.faculty,
             currentGroups: this.currentGroups
           });
-          await api.post('/group/user/bulk', params);
+          try {
+            await api.post('/group/user/bulk', params);
+            this.clearError("groupError");
+          } catch(e) {
+            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");            
+          }
         }
       },
       async enrollUser() {
-        await api.post('/enrollment', {
-          role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
-          cookie: window.cookie,
-        });
+        try {
+          await api.post('/enrollment', {
+            role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
+            cookie: window.cookie,
+          });
+          this.clearError("roleError");
+        } catch(e) {
+          this.reportError("roleError", "Kunne ikke oppdatere rollen.");            
+        }
       },
       async enroll() {
         console.log("WTBP:" + this.wantToBePrincipal);
@@ -176,29 +209,41 @@
         }
       },
       async getRole() {
-        const result = await api.get('/enrollment/', {
-          params: { cookie: window.cookie }
-        });
-        this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
-        if(this.isPrincipal) {
-          this.information = this.getPrincipalInformation();
-        } else {
-          this.information = this.getParticipantInformation();
+        try {
+          const result = await api.get('/enrollment/', {
+            params: { cookie: window.cookie }
+          });
+          this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
+          if(this.isPrincipal) {
+            this.information = this.getPrincipalInformation();
+          } else {
+            this.information = this.getParticipantInformation();
+          }
+          this.wantToBePrincipal = this.isPrincipal;
+          this.clearError("roleError");
+        } catch(e)
+        {
+          this.reportError("roleError", "Kunne ikke hente rolle.");
         }
-        this.wantToBePrincipal = this.isPrincipal;
       },
       async getGroups() {
-        const response = await api.get('/group/user', {
-          params: {
-            cookie: window.cookie,
-          }
-        });
-        this.categories = response.data.result;
-        this.courseId = this.categories[0].course_id;
-        this.categoriesLoaded = true;
+        try {
+          const response = await api.get('/group/user', {
+            params: {
+              cookie: window.cookie,
+            }
+          });
+          this.categories = response.data.result;
+          this.courseId = this.categories[0].course_id;
+          this.categoriesLoaded = true;
 
-        console.log("Categories received.");
-        this.updateCurrentGroups();
+          console.log("Categories received.");
+          this.updateCurrentGroups();
+          this.clearError("groupError");
+        } catch(e)
+        {
+          this.reportError("groupError", "Kunne ikke hente grupper.");
+        }
       },
 
       async getFaculties() {
@@ -232,6 +277,7 @@
             var event = new Event('change');
             e.target.dispatchEvent(event);
         });
+        self.iframeresize();
       });
       self.getUsersGroups();
     },

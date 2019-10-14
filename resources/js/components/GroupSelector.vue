@@ -1,4 +1,5 @@
 <template>
+  <div>
     <div class="row pt-3 pb-3 border-top mt-3">
         <label class="select-county col-sm">
           Fylke:<br/>
@@ -43,6 +44,10 @@
             </select>
         </label>
     </div>
+    <div v-if="error"
+      class="alert alert-danger">{{error}}
+    </div>
+  </div>
 </template>
 
 <script>
@@ -63,23 +68,49 @@
         chosenCounty: null,
         chosenCommunity: null,
         chosenSchool: null,
+        error: '',
       }
     },
 
     methods: {
+      clearError() {
+        this.error = "";
+      },
+      reportError(e) {
+          this.error = e + " Prøv igjen senere og ta kontakt med kompetansesupport@udir.no dersom feilen vedvarer.";
+          this.$parent.iframeresize();
+      },
       async getCounties() {
-        const result = await api.get('/nsr/counties');
-        this.counties = result.data.result;
+        try {
+          const result = await api.get('/nsr/counties');
+          this.counties = result.data.result;
+          this.clearError();
+        } catch(e)
+        {
+          this.reportError("Kunne ikke hente fylker fra nasjonalt skoleregister.");
+        }
       },
 
       async getCommunities(countyNo) {
-        const result = await api.get(`/nsr/communities/${countyNo}`);
-        this.communities = result.data.result;
+        try {
+          const result = await api.get(`/nsr/communities/${countyNo}`);
+          this.communities = result.data.result;
+          this.clearError();
+        } catch(e)
+        {
+          this.reportError("Kunne ikke hente kommuner fra nasjonalt skoleregister.");
+        }
       },
 
       async getSchools(communityNo) {
-        const result = await api.get(`/nsr/schools/${communityNo}`);
-        this.schools = result.data.result;
+        try {
+          const result = await api.get(`/nsr/schools/${communityNo}`);
+          this.schools = result.data.result;
+          this.clearError();
+        } catch(e)
+        {
+          this.reportError("Kunne ikke hente skoler fra nasjonalt skoleregister.");
+        }
       },
 
       async assignToGroups() {

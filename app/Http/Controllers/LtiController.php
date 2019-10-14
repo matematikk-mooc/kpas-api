@@ -17,6 +17,7 @@ class LtiController extends Controller
 
     public function index(Request $request)
     {
+        logger("LtiController.index");
         if(app()->environment('local')) {
             logger('A request from CANVAS', $request->all());
             logger('An user session', session('settings', []));

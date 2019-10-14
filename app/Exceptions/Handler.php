@@ -65,14 +65,18 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        logger("Start rendering.");
 
+//If we want to provide detailed error messages to the user when we are unable to retrieve information from Canvas, enable this code.
         if ($exception instanceof CanvasException) {
-            return (new ErrorResponse($exception->getMessage(), 200))->toResponse($request);
+            logger("Canvas exception: ". $exception->getMessage());
+            return (new ErrorResponse($exception->getMessage(), 403))->toResponse($request);
         }
+        
+        //Display custom error page when LTI fails. Probably because 3d party cookies are disabled on client side.
         if ($exception instanceof LtiException) {
             return response()->view('errors.ltierror', ["message"=>$exception->getMessage()], 403);
         }
-
         return parent::render($request, $exception);
     }
 
