@@ -69,7 +69,7 @@
         return this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
       },
       studentText() {
-        return "deltager"; 
+        return "deltager";
       },
       principalText() {
         return "skoleeier/-leder";
@@ -93,7 +93,7 @@
         groupError: '',
       }
     },
-    
+
     methods: {
       clearError(errorType) {
           if(errorType == "roleError") {
@@ -132,7 +132,7 @@
         const getusergroupsMessage = {
           subject: 'kpas-lti.getusergroups'
         }
-        window.parent.postMessage(JSON.stringify(getusergroupsMessage), "*");        
+        window.parent.postMessage(JSON.stringify(getusergroupsMessage), "*");
       },
       updateCurrentGroups() {
         console.log("updateCurrentGroups");
@@ -154,11 +154,11 @@
         var result = {};
         var self = this;
         groups.forEach(function(group) {
-          var category = categories.find(category => category.id == group.group_category_id && self.courseId == group.course_id);   
+          var category = categories.find(category => category.id == group.group_category_id && self.courseId == group.course_id);
           if(category) {
             result[category.name] = group;
           }
-        }); 
+        });
         return result;
       },
       async addUserGroups() {
@@ -173,7 +173,7 @@
             await api.post('/group/user/bulk', params);
             this.clearError("groupError");
           } catch(e) {
-            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");            
+            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");
           }
         }
       },
@@ -185,7 +185,7 @@
           });
           this.clearError("roleError");
         } catch(e) {
-          this.reportError("roleError", "Kunne ikke oppdatere rollen.");            
+          this.reportError("roleError", "Kunne ikke oppdatere rollen.");
         }
       },
       async enroll() {
@@ -301,14 +301,8 @@
         }
       }, false);
 
-      if (window.cookie === '') {
-        console.log("No cookie, reloading KPAS-LTI.")
-        window.location.reload();
-      } else {
-        console.log("KPAS-LTI cookie found.")
-        console.log("Hent kategorier...");
-        await Promise.all([self.getGroups(), self.getFaculties(), self.getRole()]);
-      }
+      console.log("Hent kategorier...");
+      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole()]);
     },
   }
 </script>

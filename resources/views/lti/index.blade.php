@@ -10,5 +10,5 @@
 @endsection
 
 @section('scripts')
-    <script>window.cookie = '{{ request()->cookie(config('session.cookie')) }}';</script>
+    <script>window.cookie = '{{ session()->getId() }}';</script>
 @endsection
