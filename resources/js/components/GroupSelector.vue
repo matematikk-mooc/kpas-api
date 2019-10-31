@@ -43,6 +43,9 @@
                 ></option>
             </select>
         </label>
+      <span v-tooltip.top-center="`
+      Alle firmaer som er registrert med næringskode 85 (undervisning) i Brønnøysundregisteret vises i listen over skoler.
+      `">&#9432;</span>
     </div>
     <div v-if="error"
       class="alert alert-danger">{{error}}
@@ -52,6 +55,7 @@
 
 <script>
   import api from '../api';
+  import { VTooltip} from 'v-tooltip';
 
   export default {
     name: "GroupSelector",
