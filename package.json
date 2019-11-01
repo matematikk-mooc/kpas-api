@@ -29,6 +29,7 @@
         "for-own": "^1.0.0",
         "lodash.tail": "^4.1.1",
         "mixin-object": "^3.0.0",
-        "select2": "^4.0.10"
+        "select2": "^4.0.10",
+        "v-tooltip": "^2.0.2"
     }
 }

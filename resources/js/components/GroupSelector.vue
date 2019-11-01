@@ -43,6 +43,9 @@
                 ></option>
             </select>
         </label>
+      <span v-tooltip.top-center="`
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister. 
+      `">&#9432;</span>
     </div>
     <div v-if="error"
       class="alert alert-danger">{{error}}
@@ -52,6 +55,7 @@
 
 <script>
   import api from '../api';
+  import { VTooltip} from 'v-tooltip';
 
   export default {
     name: "GroupSelector",
