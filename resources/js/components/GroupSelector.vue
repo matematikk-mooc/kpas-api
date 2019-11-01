@@ -44,7 +44,7 @@
             </select>
         </label>
       <span v-tooltip.top-center="`
-      Alle firmaer som er registrert med næringskode 85 (undervisning) i Brønnøysundregisteret vises i listen over skoler.
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister. 
       `">&#9432;</span>
     </div>
     <div v-if="error"
