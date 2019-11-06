@@ -49,6 +49,24 @@ class CanvasService
             throw $exception;
         }
     }
+    public function getStatistics(string $courseId): array
+    {
+        try {
+            $url = "courses/{$courseId}";
+            $data = ['include[]' => "total_students"];
+
+            $response = $this->request($url, 'GET', $data);
+            logger(print_R($response, true));
+
+            return ['antallBrukere' => $response->total_students];
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Statistics for course with ID %s not found', $courseId));
+            }
+
+            throw $exception;
+        }
+    }
 
     public function createGroup(GroupDto $groupDto): GroupDto
     {
