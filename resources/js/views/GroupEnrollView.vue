@@ -66,7 +66,7 @@
         return Object.keys(this.groups).length
       },
       isReady() {
-        return this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
+        return !this.isLoading && this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
       },
       studentText() {
         return "deltager";
