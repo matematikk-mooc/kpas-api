@@ -2,6 +2,10 @@
 
 Route::post('/', 'LtiController@index')->name('lti.index');
 
+Route::group(['prefix' => 'statistics'], function() {
+    Route::get('/{courseId}', 'StatisticsController@webindex');
+});
+
 Route::view('/cookiecheck', 'cookiecheck.cookiecheck');
 Route::view('/cookiecheckcomplete', 'cookiecheck.cookiecheckcomplete');
 

@@ -13,16 +13,31 @@ class StatisticsController extends Controller
     {
         $this->canvasDbRepository = $canvasDbRepository;
     }
-    public function index(int $courseId): SuccessResponse
+    public function getGroupStatistics(int $courseId)
     {
-        logger("StatisticsController.index");
         $categories = $this->canvasDbRepository->getGroupCategories($courseId);
         $groupStatistics = array();
         foreach ($categories as $category) {
             $groupStatistics[$category->name] = $this->canvasDbRepository->getNoOfGroups($category->id);
         }
-        $totalStudents = $this->canvasDbRepository->getTotalStudents($courseId);
-        $statistics = collect([$totalStudents, $groupStatistics]);
-        return new SuccessResponse($statistics);
+        return $groupStatistics;
+    }
+    public function getStatistics($courseId) 
+    {
+        $data = $this->canvasDbRepository->getTotalStudents($courseId);
+        $groupStatistics = $this->getGroupStatistics($courseId);
+        $data["groups"] = $groupStatistics;
+        return $data;
+    }
+    public function index(int $courseId): SuccessResponse
+    {
+        logger("StatisticsController.index");
+        $data = $this->getStatistics($courseId);
+        return new SuccessResponse($data);
+    }
+    public function webindex(int $courseId)
+    {
+        $data = $this->getStatistics($courseId);
+        return view('statistics.statistics', $data);
     }
 }
