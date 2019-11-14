@@ -46,6 +46,8 @@ class LtiMiddleware
 
     protected function checkIds($request): bool
     {
-        return Arr::get(session()->get('settings'), 'custom_canvas_user_id') !== $request->get('custom_canvas_user_id');
+        return 
+        ((Arr::get(session()->get('settings'), 'custom_canvas_user_id') !== $request->get('custom_canvas_user_id')) ||
+        (Arr::get(session()->get('settings'), 'custom_canvas_course_id') !== $request->get('custom_canvas_course_id')));
     }
 }
