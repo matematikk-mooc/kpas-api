@@ -3,20 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\SuccessResponse;
-use App\Services\CanvasService;
+use App\Repositories\CanvasDbRepository;
 
 class StatisticsController extends Controller
 {
     protected $canvasDbRepository;
 
-    public function __construct(CanvasService $canvasService)
+    public function __construct(CanvasDbRepository $canvasDbRepository)
     {
-        $this->canvasService = $canvasService;
+        $this->canvasDbRepository = $canvasDbRepository;
     }
-    public function index(string $courseId): SuccessResponse
+    public function index(int $courseId): SuccessResponse
     {
         logger("StatisticsController.index");
-        $statistics = collect($this->canvasService->getStatistics($courseId));
+        $categories = $this->canvasDbRepository->getGroupCategories($courseId);
+        $groupStatistics = array();
+        foreach ($categories as $category) {
+            $groupStatistics[$category->name] = $this->canvasDbRepository->getNoOfGroups($category->id);
+        }
+        $totalStudents = $this->canvasDbRepository->getTotalStudents($courseId);
+        $statistics = collect([$totalStudents, $groupStatistics]);
         return new SuccessResponse($statistics);
     }
 }
