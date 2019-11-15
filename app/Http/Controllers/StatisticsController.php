@@ -3,20 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\SuccessResponse;
-use App\Services\CanvasService;
+use App\Repositories\CanvasDbRepository;
 
 class StatisticsController extends Controller
 {
     protected $canvasDbRepository;
 
-    public function __construct(CanvasService $canvasService)
+    public function __construct(CanvasDbRepository $canvasDbRepository)
     {
-        $this->canvasService = $canvasService;
+        $this->canvasDbRepository = $canvasDbRepository;
     }
-    public function index(string $courseId): SuccessResponse
+    public function getGroupStatistics(int $courseId)
+    {
+        $categories = $this->canvasDbRepository->getGroupCategories($courseId);
+        $groupStatistics = array();
+        foreach ($categories as $category) {
+            $groupStatistics[$category->name] = $this->canvasDbRepository->getNoOfGroups($category->id);
+        }
+        return $groupStatistics;
+    }
+    public function getStatistics($courseId) 
+    {
+        $data = $this->canvasDbRepository->getTotalStudents($courseId);
+        $groupStatistics = $this->getGroupStatistics($courseId);
+        $data["groups"] = $groupStatistics;
+        return $data;
+    }
+    public function index(int $courseId): SuccessResponse
     {
         logger("StatisticsController.index");
-        $statistics = collect($this->canvasService->getStatistics($courseId));
-        return new SuccessResponse($statistics);
+        $data = $this->getStatistics($courseId);
+        return new SuccessResponse($data);
+    }
+    public function webindex(int $courseId)
+    {
+        $data = $this->getStatistics($courseId);
+        return view('statistics.statistics', $data);
     }
 }

@@ -40,6 +40,11 @@ class CanvasDbRepository extends CanvasRepository
         return $group;
     }
 
+    public function getNoOfGroups(int $categoryId) : int
+    {
+        return Group::where('category_id', $categoryId)->count();
+    }
+
     /**
      * @param array $data
      * @return Model|Group|null

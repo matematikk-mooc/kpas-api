@@ -49,7 +49,7 @@ class CanvasService
             throw $exception;
         }
     }
-    public function getStatistics(string $courseId): array
+    public function getTotalStudents(string $courseId): array
     {
         try {
             $url = "courses/{$courseId}";
