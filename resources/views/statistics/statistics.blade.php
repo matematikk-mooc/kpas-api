@@ -1,4 +1,8 @@
+<!DOCTYPE html>
 <html>
+<head>
+<meta http-equiv="refresh" content="600"/>
+</head>
 <body>
 <center>
 <h1>Kompetansepakke fagfornyelsen</h1>
@@ -14,6 +18,12 @@
     <tr><td>{{ $key }}</td><td> {{ $value }}</td></th>
 @endforeach
 </table>
+<p>
+Antall grupper viser hvor mange grupper det er i hver gruppekategori.
+</p>
+<p>
+    <i><font color="red">Dette er en side under utvikling... vi jobber med det grafiske designet...</font></i>
+</p>
 
 </center>
 </body>
