@@ -91,6 +91,20 @@ class CanvasService
             throw $exception;
         }
     }
+    public function getGroup(int $groupId)
+    {
+        logger("getGroup " . $groupId);
+        try {
+            $url = "groups/{$groupId}";
+
+            return $this->request($url, 'GET');
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
+            }
+            throw $exception;
+        }
+    }
 
     public function getGroups(int $categoryId): array
     {
