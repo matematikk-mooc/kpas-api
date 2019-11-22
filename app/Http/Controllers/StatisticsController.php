@@ -35,6 +35,25 @@ class StatisticsController extends Controller
         $data = $this->getStatistics($courseId);
         return new SuccessResponse($data);
     }
+    public function courseCount(int $courseId) : SuccessResponse 
+    {
+        $data = $this->canvasDbRepository->getTotalStudents($courseId);
+        return new SuccessResponse($data);
+    }
+    public function groupCategory(int $categoryId): SuccessResponse
+    {
+        logger("StatisticsController.groupCategory");
+        $groups = $this->canvasDbRepository->getGroupsInGroupCategory($categoryId);
+//        logger(print_R($groups, true));
+        $data["groups"] = $groups;
+        return new SuccessResponse($data);
+    }
+    public function groupCategoryCount(int $categoryId): SuccessResponse
+    {
+        logger("StatisticsController.groupCategoryCount");
+        $data = $this->canvasDbRepository->getNoOfGroups($categoryId);
+        return new SuccessResponse($data);
+    }
     public function webindex(int $courseId)
     {
         $data = $this->getStatistics($courseId);
