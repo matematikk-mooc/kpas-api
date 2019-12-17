@@ -56,7 +56,7 @@ class StatisticsController extends Controller
     }
     public function webindex(int $courseId)
     {
-        $data = $this->getStatistics($courseId);
+        $data = $this->canvasDbRepository->getTotalStudents($courseId);
         return view('statistics.statistics', $data);
     }
 }
