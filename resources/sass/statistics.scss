@@ -1,0 +1,42 @@
+.wrapper {
+    width:100%;
+}
+.header_Rectangle {
+  width: 100%;
+  height: 80px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  border: solid 1px #979797;
+  background-color: #eed0c3;
+}
+.header_Logo {
+    background-image: url(https://kompetanseudirno.azureedge.net/udirdesign/Ny-Udir-Logo-RGB-Pos.png);
+    background-repeat: no-repeat;
+    background-size: contain;    
+    width:165px;
+    height:65px;
+    margin-left:10%;
+    margin-top:10px;
+}
+.main_Rectangle {
+    width: 740px;
+    height: 300px;
+    border-radius: 8px;
+    border: solid 1px #979797;
+    background-color: #bac6d8;
+    margin: 10%;
+}
+
+
+  .Antall-Brukere {
+    width: 461px;
+    height: 45px;
+    font-family: Helvetica;
+    font-size: 36px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #000000;
+    margin: 10%;
+  }  
