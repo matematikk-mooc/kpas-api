@@ -205,6 +205,10 @@
           } finally {
             this.isLoading = false;
             this.getUsersGroups();
+            const updateMessage = {
+              subject: 'kpas-lti.update'
+            }
+            window.parent.postMessage(JSON.stringify(updateMessage), "*");
           }
         }
       },
