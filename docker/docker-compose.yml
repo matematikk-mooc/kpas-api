@@ -72,6 +72,7 @@ services:
         - backend
       links:
         - docker-in-docker
+        - mysql
 
 ### NGINX Server #########################################
     nginx:
