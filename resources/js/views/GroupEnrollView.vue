@@ -24,7 +24,7 @@
         v-model="wantToBePrincipal"
       ></role-selector>
     <hr/>
-      <h2>Velg fakultet</h2>
+      <h2>Velg grupper</h2>
       <faculty-selector
         :faculties="faculties"
         v-model="faculty"
