@@ -6,6 +6,7 @@
 
 body {
     background-color: #eaeaea;
+    margin-bottom: 5em;
 }
 
 .container {
@@ -18,14 +19,14 @@ body {
 .tooltip {
     display: block !important;
     z-index: 10000;
-  
+
     .tooltip-inner {
       background: white;
       color:black;
       border-radius: 16px;
       padding: 5px 10px 4px;
     }
-  
+
     .tooltip-arrow {
       width: 0;
       height: 0;
@@ -35,10 +36,10 @@ body {
       border-color: black;
       z-index: 1;
     }
-  
+
     &[x-placement^="top"] {
       margin-bottom: 5px;
-  
+
       .tooltip-arrow {
         border-width: 5px 5px 0 5px;
         border-left-color: transparent !important;
@@ -50,10 +51,10 @@ body {
         margin-bottom: 0;
       }
     }
-  
+
     &[x-placement^="bottom"] {
       margin-top: 5px;
-  
+
       .tooltip-arrow {
         border-width: 0 5px 5px 5px;
         border-left-color: transparent !important;
@@ -65,10 +66,10 @@ body {
         margin-bottom: 0;
       }
     }
-  
+
     &[x-placement^="right"] {
       margin-left: 5px;
-  
+
       .tooltip-arrow {
         border-width: 5px 5px 5px 0;
         border-left-color: transparent !important;
@@ -80,10 +81,10 @@ body {
         margin-right: 0;
       }
     }
-  
+
     &[x-placement^="left"] {
       margin-right: 5px;
-  
+
       .tooltip-arrow {
         border-width: 5px 0 5px 5px;
         border-top-color: transparent !important;
@@ -95,13 +96,13 @@ body {
         margin-right: 0;
       }
     }
-  
+
     &[aria-hidden='true'] {
       visibility: hidden;
       opacity: 0;
       transition: opacity .15s, visibility .15s;
     }
-  
+
     &[aria-hidden='false'] {
       visibility: visible;
       opacity: 1;
@@ -109,4 +110,3 @@ body {
     }
   }
 
-  
