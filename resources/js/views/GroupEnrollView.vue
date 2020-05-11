@@ -18,14 +18,18 @@
         class="alert alert-danger">{{groupError}}
       </div>
       <hr/>
+      <h2>Velg rolle</h2>
       <role-selector
         :isPrincipal="isPrincipal"
         v-model="wantToBePrincipal"
       ></role-selector>
+    <hr/>
+      <h2>Velg fakultet</h2>
       <faculty-selector
         :faculties="faculties"
         v-model="faculty"
       />
+    <hr/>
       <group-selector
         :courseId="courseId"
         v-model="groups"

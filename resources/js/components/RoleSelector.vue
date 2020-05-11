@@ -1,12 +1,11 @@
 <template>
   <div>
-      <h2>Velg ny rolle og/eller grupper nedenfor</h2>
       <input type="radio" id="radioSkoleleder" name="role" v-bind:value="true" v-model="wantToBePrincipal">
       <label for="radioSkoleleder">Leder/eier</label>
       <br>
       <input type="radio" id="deltager" name="role" v-bind:value="false" v-model="wantToBePrincipal">
       <label for="deltager">Lærer/deltager</label>
-    <div v-if="wantToBePrincipal" class="alert alert-info">NB! Dersom du er skoleeier må du velge tilhørighet til en gitt skole, 
+    <div v-if="wantToBePrincipal" class="alert alert-info">NB! Dersom du er skoleeier må du velge tilhørighet til en gitt skole,
       selv om du har ansvar for alle skolene. For ledere/eiere vil diskusjonen foregå på fylkesnivå.
     </div>
 
