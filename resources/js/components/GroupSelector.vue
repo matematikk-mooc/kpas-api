@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row pt-3 pb-3 border-top mt-3">
+    <div class="row pt-3 pb-3 mt-3">
         <label class="select-county col-sm">
           Fylke:<br/>
             <select
@@ -44,7 +44,7 @@
             </select>
         </label>
       <span v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister. 
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
       `">&#9432;</span>
     </div>
     <div v-if="error"
