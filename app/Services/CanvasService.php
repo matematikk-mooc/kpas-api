@@ -394,4 +394,18 @@ class CanvasService
 
         }
     }
+
+    public function getExternalToolsByCourseId(int $courseId){
+        try {
+            $url = "courses/{$courseId}/external_tools";
+            $response = $this->request($url, 'GET');
+
+            return is_array($response) ? $response : [];
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
+            }
+            throw $exception;
+        }
+    }
 }

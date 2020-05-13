@@ -192,4 +192,8 @@ class CanvasRepository
            $this->canvasService->removeUserFromGroup($group->id, $userId);
         });
     }
+
+    public function getExternalToolsByCourseId(int $courseId){
+        return $this->canvasService->getExternalToolsByCourseId($courseId);
+    }
 }

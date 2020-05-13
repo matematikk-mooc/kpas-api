@@ -1,5 +1,9 @@
 <?php
 
+Route::group(['prefix' => 'course'], function() {
+    Route::get('/{courseId}/iskpascourse', 'CourseController@index');
+});
+
 Route::group(['prefix' => 'group'], function() {
     Route::get('/user', 'GroupController@index')->middleware('lti');
     Route::post('/user', 'GroupController@store')->middleware('auth.dataporten');
