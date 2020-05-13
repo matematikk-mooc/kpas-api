@@ -28,7 +28,7 @@ class CourseController extends Controller
         $this->toolProvider = new CustomToolProvider($dataConnector);
     }
 
-    public function index($courseId): SuccessResponse
+    public function index(int $courseId): SuccessResponse
     {
         $externalTools = $this->canvasDbRepository->getExternalToolsByCourseId($courseId);
         $consumers = $this->toolProvider->getConsumers();
