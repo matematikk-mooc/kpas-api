@@ -1,7 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'course'], function() {
-    Route::get('/{courseId}/iskpascourse', 'CourseController@index');
+    Route::get('/{courseId}/isudircourse', 'CourseController@index');
 });
 
 Route::group(['prefix' => 'group'], function() {
