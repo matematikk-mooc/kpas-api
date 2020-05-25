@@ -41,3 +41,5 @@ $ git pull origin {branch} (that same branch that was used during installation)
 $ composer install (when composer.lock has changed)
 # *update `.env` file when necessary*
 ```
+### Test
+docker hub build test
