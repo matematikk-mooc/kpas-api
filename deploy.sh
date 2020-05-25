@@ -69,7 +69,7 @@ fi
 
 initializeDeploymentConfig() {
     if [ ! -e "$COMPOSER_ARGS" ]; then
-        COMPOSER_ARGS="--no-interaction --prefer-dist --optimize-autoloader --no-progress --no-dev --verbose"
+        COMPOSER_ARGS="--no-progress --no-dev --verbose"
         echo "No COMPOSER_ARGS variable declared in App Settings, using the default settings"
     else
         echo "Using COMPOSER_ARGS variable declared in App Setting"
@@ -88,7 +88,6 @@ if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
     "$KUDU_SYNC_CMD" -v 50 -f "$DEPLOYMENT_SOURCE" -t "$DEPLOYMENT_TARGET" -n "$NEXT_MANIFEST_PATH" -p "$PREVIOUS_MANIFEST_PATH" -i ".git;.hg;.deployment;deploy.sh"
     exitWithMessageOnError "Kudu Sync failed"
 fi
-
 
 # 3. Initialize Composer Config
 initializeDeploymentConfig
