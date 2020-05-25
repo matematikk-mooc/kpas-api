@@ -31,6 +31,19 @@ class CanvasService
         $this->guzzleClient = $guzzleClient;
     }
 
+    public function getAccountInfoById(int $accountId){
+        try {
+            $url = "accounts/{$accountId}";
+            return $this->request($url, 'GET');
+
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
+            }
+            throw $exception;
+        }
+    }
+
     public function getUsersByFeideId(string $feideId): array
     {
         $accountId = config('canvas.account_id');
@@ -395,17 +408,18 @@ class CanvasService
         }
     }
 
-    public function getExternalToolsByCourseId(int $courseId){
-        try {
-            $url = "courses/{$courseId}/external_tools";
-            $response = $this->request($url, 'GET');
+    public function accountIsChildOf(int $udirCanvasParentAccountId, int $subAccountId)
+    {
+        if ($udirCanvasParentAccountId == $subAccountId){
+            return true;
+        }
 
-            return is_array($response) ? $response : [];
-        } catch (ClientException $exception) {
-            if ($exception->getCode() === 404) {
-                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
-            }
-            throw $exception;
+        $accountInfo = $this->getAccountInfoById($subAccountId);
+        $parentAccountId = $accountInfo->parent_account_id;
+        if (!(isset($parentAccountId))){
+            return false;
+        }else{
+            return $this->accountIsChildOf($udirCanvasParentAccountId, $parentAccountId);
         }
     }
 }

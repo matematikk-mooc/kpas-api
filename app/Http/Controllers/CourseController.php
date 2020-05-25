@@ -2,51 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CanvasException;
+use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\SuccessResponse;
-use App\LTI\CustomToolProvider;
-use App\Repositories\CanvasDbRepository;
-use Illuminate\Support\Facades\DB;
-use IMSGlobal\LTI\ToolProvider\DataConnector\DataConnector;
+use App\Services\CanvasService;
+use Illuminate\Contracts\Support\Responsable;
 
 class CourseController extends Controller
 {
 
     /**
-     * @var CanvasDbRepository
+     * @var CanvasService
      */
-    private $canvasDbRepository;
-    /**
-     * @var CustomToolProvider
-     */
-    private $toolProvider;
+    private $canvasService;
 
-    public function __construct(CanvasDbRepository $canvasDbRepository)
+    public function __construct(CanvasService $canvasService)
     {
-        $this->canvasDbRepository = $canvasDbRepository;
-        $db = DB::connection()->getPdo();
-        $dataConnector = DataConnector::getDataConnector('', $db, 'pdo');
-        $this->toolProvider = new CustomToolProvider($dataConnector);
+        $this->canvasService = $canvasService;
     }
 
-    public function index(int $courseId): SuccessResponse
+    public function index(int $courseId): Responsable
     {
-        $externalTools = $this->canvasDbRepository->getExternalToolsByCourseId($courseId);
-        $consumers = $this->toolProvider->getConsumers();
-        $consumerKeys = [];
-
-        foreach ($consumers as $consumer){
-            $consumerKey = $consumer->getKey();
-            if (isset($consumerKey)) {
-                array_push($consumerKeys, $consumerKey);
-            }
+        try {
+            $courseInfo = $this->canvasService->getCourse($courseId);
+        } catch (CanvasException $e) {
+            return new ErrorResponse("Could not find course with supplied ID.");
         }
 
-        foreach($externalTools as $externalTool){
-            $externalToolKey = $externalTool->consumer_key;
-            if (in_array($externalToolKey, $consumerKeys)){
-                return new SuccessResponse(true);
-            }
+        $courseOwnerId = $courseInfo->account_id;
+        $udirCanvasParentAccountId = config('canvas.account_id');
+
+        try {
+            $courseOwnerIsChildAccountOfUdir = $this->canvasService->accountIsChildOf($udirCanvasParentAccountId, $courseOwnerId);
+        } catch (CanvasException $e) {
+            return new ErrorResponse("Could not determine parent account of owner to course with supplied ID.");
         }
-        return new SuccessResponse(false);
+
+        return new SuccessResponse($courseOwnerIsChildAccountOfUdir);
     }
 }
