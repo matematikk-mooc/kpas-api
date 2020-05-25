@@ -136,12 +136,13 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   echo "Found package.json"
   # shellcheck disable=SC2164
   pushd "$DEPLOYMENT_TARGET"
+  # shellcheck disable=SC2164
   cd ~
-  #curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh
-  #chmod +x nodesource_setup.sh
-  #./nodesource_setup.sh
-  #apt-get install nodejs
-  #npm install -g npm@6.14.5
+  curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh
+  chmod +x nodesource_setup.sh
+  ./nodesource_setup.sh
+  apt-get install nodejs
+  npm install -g npm@6.14.5
   npm install --production
   npm run production
   exitWithMessageOnError "Node install failed"
