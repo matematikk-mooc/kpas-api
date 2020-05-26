@@ -1,0 +1,26 @@
+version: '3'
+
+networks:
+  backend_canvas-net:
+    external: true
+
+services:
+### PHP-FPM ##############################################
+
+    php-fpm:
+      build:
+        args:
+          - INSTALL_XDEBUG=true
+          - IDE_PHP_DEBUG_PORT=9001
+          - IDE_HOST_IP=172.17.0.1
+      networks:
+        - backend_canvas-net
+      links:
+        - mysql
+
+### NGINX Server #########################################
+    nginx:
+      ports:
+        - 8000:80
+        - 4430:443
+
