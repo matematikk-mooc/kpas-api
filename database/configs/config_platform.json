@@ -18,7 +18,7 @@
         "private_key_file": "/jwt_key_kpas/jwtRS256.key",
         "kid": "JR9RMsY5UNxHiKosV6S4wncBVO2HwN56aXuGsyEUz4k",
         "deployment": [
-            "726:f09987c2cb606670aa991e460f7b9cb497d987e8"
+            "729:f09987c2cb606670aa991e460f7b9cb497d987e8"
         ]
     }
 }
