@@ -2,7 +2,9 @@
 
 namespace App\Ltiv3;
 
+use App\Exceptions\LtiException;
 use IMSGlobal\LTI;
+
 class LTI3_Database implements LTI\Database
 {
     public function __construct()
@@ -20,15 +22,22 @@ class LTI3_Database implements LTI\Database
         if (empty($_SESSION['iss']) || empty($_SESSION['iss'][$iss])) {
             return false;
         }
-        return LTI\LTI_Registration::new()
-            ->set_auth_login_url($_SESSION['iss'][$iss]['auth_login_url'])
-            ->set_auth_token_url($_SESSION['iss'][$iss]['auth_token_url'])
-            #->set_auth_server($_SESSION['iss'][$iss]['auth_server'])
-            ->set_client_id($_SESSION['iss'][$iss]['client_id'])
-            ->set_key_set_url($_SESSION['iss'][$iss]['key_set_url'])
-            ->set_kid($_SESSION['iss'][$iss]['kid'])
-            ->set_issuer($iss)
-            ->set_tool_private_key($this->private_key($iss));
+        try {
+            $registration = LTI\LTI_Registration::new()
+                ->set_auth_login_url($_SESSION['iss'][$iss]['auth_login_url'])
+                ->set_auth_token_url($_SESSION['iss'][$iss]['auth_token_url'])
+                #->set_auth_server($_SESSION['iss'][$iss]['auth_server'])
+                ->set_client_id($_SESSION['iss'][$iss]['client_id'])
+                ->set_key_set_url($_SESSION['iss'][$iss]['key_set_url'])
+                ->set_kid($_SESSION['iss'][$iss]['kid'])
+                ->set_issuer($iss)
+                ->set_tool_private_key($this->private_key($iss));
+
+        } catch (\Exception $e) {
+            throw new LtiException("The platform is not registered : " . $e->getMessage());
+        }
+
+        return $registration;
     }
 
     public function find_deployment($iss, $deployment_id)

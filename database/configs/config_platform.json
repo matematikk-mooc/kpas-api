@@ -1,0 +1,24 @@
+{
+    "https://canvas.instructure.com": {
+        "client_id": "10000000000010",
+        "auth_login_url": "https://canvaslocal.example.com/api/lti/authorize_redirect",
+        "auth_token_url": "https://canvaslocal.example.com/login/oauth2/token",
+        "key_set_url": "https://canvaslocal.example.com/api/lti/security/jwks",
+        "private_key_file": "/jwt_key_kpas/jwtRS256.key",
+        "kid": "JR9RMsY5UNxHiKosV6S4wncBVO2HwN56aXuGsyEUz4k",
+        "deployment": [
+            "7:c9d7d100bb177c0e54f578e7ac538cd9f7a3e4ad"
+        ]
+    },
+    "https://canvas.test.instructure.com": {
+        "client_id": "37270000000000002",
+        "auth_login_url": "https://bibsys.test.instructure.com/api/lti/authorize_redirect",
+        "auth_token_url": "https://bibsys.test.instructure.com/login/oauth2/token",
+        "key_set_url": "https://bibsys.test.instructure.com/api/lti/security/jwks",
+        "private_key_file": "/jwt_key_kpas/jwtRS256.key",
+        "kid": "JR9RMsY5UNxHiKosV6S4wncBVO2HwN56aXuGsyEUz4k",
+        "deployment": [
+            "726:f09987c2cb606670aa991e460f7b9cb497d987e8"
+        ]
+    }
+}
