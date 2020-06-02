@@ -27,9 +27,8 @@ class LtiMiddleware
         }
 
 
-        if (!$this->isLtiAuthenticated()
-            || ($request->has('lti_message_type') && $this->checkIds($request))
-        ) {
+        if (!$this->isLtiAuthenticated() || $this->checkIds($request))
+        {
             logger("LtiMiddleware: Trying to authenticate.");
             Authenticator::authenticate();
         }
