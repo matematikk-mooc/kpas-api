@@ -74,9 +74,11 @@ class Lti3Controller extends Controller
         $launch->get_launch_data();
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
 
-        Arr::set($settings, 'settings.custom_canvas_user_id', $settings['canvas_user_id']);
-        Arr::set($settings, 'settings.custom_canvas_course_id', $settings['canvas_course_id']);
-
+        Arr::set($settings, 'settings.canvas_user_id', (string)$settings['canvas_user_id']);
+        Arr::set($settings, 'settings.canvas_user_id', (string)$settings['canvas_course_id']);
+        foreach ($settings as $key => $value) {
+            Arr::set($settings, 'settings.custom_'.$key, $value);
+        }
         session(['settings' => $settings]);
     }
 
