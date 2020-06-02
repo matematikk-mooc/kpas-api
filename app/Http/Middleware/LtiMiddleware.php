@@ -19,16 +19,14 @@ class LtiMiddleware
      */
     public function handle($request, Closure $next)
     {
-
         if ($request->has('cookie')) {
             logger("LtiMiddleware has cookie.");
             session()->setId($request->get('cookie'));
             session()->start();
         }
-
-
-        if (!$this->isLtiAuthenticated() || $this->checkIds($request))
-        {
+        if (!$this->isLtiAuthenticated()
+            || ($request->has('lti_message_type') && $this->checkIds($request))
+        ) {
             logger("LtiMiddleware: Trying to authenticate.");
             Authenticator::authenticate();
         }
@@ -42,7 +40,7 @@ class LtiMiddleware
             && Arr::has(session()->get('settings', []), [
                 'custom_canvas_user_id',
                 'custom_canvas_course_id',
-               # 'custom_canvas_user_login_id', This field containes user's email address
+                'custom_canvas_user_login_id',
             ]);
     }
 
