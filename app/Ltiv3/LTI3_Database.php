@@ -9,11 +9,7 @@ class LTI3_Database implements LTI\Database
 {
     public function __construct()
     {
-        if (request()->has('cookie')) {
-            logger("LtiMiddleware has cookie.");
-            session()->setId(request()->get('cookie'));
-            session()->start();
-        }
+        session()->start();
         $_SESSION['iss'] = [];
         $reg_configs = array_diff(scandir(database_path("configs")), array('..', '.', '.DS_Store'));
         foreach ($reg_configs as $key => $reg_config) {
