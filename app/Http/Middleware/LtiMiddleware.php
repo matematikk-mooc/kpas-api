@@ -24,10 +24,10 @@ class LtiMiddleware
             session()->setId($request->get('cookie'));
             session()->start();
         }
-        if (Arr::get(session()->get('settings'), 'custom_canvas_user_id')) {
-            // custom_canvas_user_id found
-            return $next($request);
-        }
+//        if (Arr::get(session()->get('settings'), 'custom_canvas_user_id')) {
+//            // custom_canvas_user_id found
+//            return $next($request);
+//        }
         if (!$this->isLtiAuthenticated()
             || ($request->has('lti_message_type') && $this->checkIds($request))
         ) {
