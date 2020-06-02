@@ -22,9 +22,7 @@ class Lti3Controller extends Controller
 {
 
 
-    private $jwt;
-
-    public function __construct()
+     public function __construct()
     {
         $this->middleware('lti3')->only('index');
     }
@@ -56,6 +54,19 @@ class Lti3Controller extends Controller
         } catch (\Exception $e) {
             throw new LtiException("Error at LTIv3 launch :" . $e->getMessage());
         }
+
+        $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
+        $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
+        $settings["canvas_course_id"] = (string)$settings['canvas_course_id'];
+
+        $settings_new = [];
+
+        foreach ($settings as $key => $value) {
+            Arr::set($settings_new, 'settings.custom_'.$key, $value);
+        }
+        session(['settings' => $settings_new]);
+        logger("Lti3Middleware has settings.");
+
         $this->parse_token($launch);
         if ($launch->is_resource_launch()) {
             return view('lti.index');
@@ -72,14 +83,8 @@ class Lti3Controller extends Controller
     protected function parse_token($launch)
     {
         $launch->get_launch_data();
-        $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
 
-        Arr::set($settings, 'settings.canvas_user_id', (string)$settings['canvas_user_id']);
-        Arr::set($settings, 'settings.canvas_user_id', (string)$settings['canvas_course_id']);
-        foreach ($settings as $key => $value) {
-            Arr::set($settings, 'settings.custom_'.$key, $value);
-        }
-        session(['settings' => $settings]);
+        logger("Lti3Middleware has settings.");
     }
 
 }
