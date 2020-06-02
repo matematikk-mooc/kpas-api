@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\LtiException;
 use App\Ltiv3\LTI3_Database;
-use Firebase\JWT\JWT;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use IMSGlobal\LTI;
-use IMSGlobal\LTI\LTI_Exception;
 
 /**
  * @lti3 LTI v 1.3 request management
@@ -22,7 +20,7 @@ class Lti3Controller extends Controller
 {
 
 
-     public function __construct()
+    public function __construct()
     {
         $this->middleware('lti3')->only('index');
     }
@@ -62,9 +60,10 @@ class Lti3Controller extends Controller
         $settings_new = [];
 
         foreach ($settings as $key => $value) {
-            Arr::set($settings_new, 'settings.custom_'.$key, $value);
+            Arr::set($settings_new, 'settings.custom_' . $key, $value);
         }
-        session(['settings' => $settings_new]);
+        session(['settings' => $settings_new['settings']]);
+
         logger("Lti3Middleware has settings.");
 
         $this->parse_token($launch);
@@ -77,6 +76,7 @@ class Lti3Controller extends Controller
         }
         return view('lti.index');
     }
+
     /*
      *  Parse id_token
      * */
