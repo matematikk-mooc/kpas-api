@@ -19,11 +19,14 @@ class LtiMiddleware
      */
     public function handle($request, Closure $next)
     {
+
         if ($request->has('cookie')) {
             logger("LtiMiddleware has cookie.");
             session()->setId($request->get('cookie'));
             session()->start();
         }
+
+
         if (!$this->isLtiAuthenticated()
             || ($request->has('lti_message_type') && $this->checkIds($request))
         ) {
@@ -40,13 +43,13 @@ class LtiMiddleware
             && Arr::has(session()->get('settings', []), [
                 'custom_canvas_user_id',
                 'custom_canvas_course_id',
-                'custom_canvas_user_login_id',
+               # 'custom_canvas_user_login_id', This field containes user's email address
             ]);
     }
 
     protected function checkIds($request): bool
     {
-        return 
+        return
         ((Arr::get(session()->get('settings'), 'custom_canvas_user_id') !== $request->get('custom_canvas_user_id')) ||
         (Arr::get(session()->get('settings'), 'custom_canvas_course_id') !== $request->get('custom_canvas_course_id')));
     }

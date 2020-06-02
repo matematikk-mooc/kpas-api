@@ -20,11 +20,6 @@ class Lti3Middleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->has('cookie')) {
-            logger("Lti3Middleware has cookie.");
-            session()->setId($request->get('cookie'));
-            session()->start();
-        }
         try {
             LTI\LTI_OIDC_Login::new(new LTI3_Database())
                 ->do_oidc_login_redirect($request->input("target_link_uri"), $request->toArray())

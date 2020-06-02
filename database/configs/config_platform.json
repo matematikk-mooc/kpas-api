@@ -1,13 +1,13 @@
 {
     "https://canvas.instructure.com": {
-        "client_id": "10000000000010",
-        "auth_login_url": "https://canvaslocal.example.com/api/lti/authorize_redirect",
-        "auth_token_url": "https://canvaslocal.example.com/login/oauth2/token",
-        "key_set_url": "https://canvaslocal.example.com/api/lti/security/jwks",
+        "client_id": "10000000000023",
+        "auth_login_url": "https://localhost:3000/api/lti/authorize_redirect",
+        "auth_token_url": "https://localhost:3000/login/oauth2/token",
+        "key_set_url": "https://localhost:3000/api/lti/security/jwks",
         "private_key_file": "/jwt_key_kpas/jwtRS256.key",
-        "kid": "JR9RMsY5UNxHiKosV6S4wncBVO2HwN56aXuGsyEUz4k",
+        "kid": "2018-05-18T22:33:20Z",
         "deployment": [
-            "7:c9d7d100bb177c0e54f578e7ac538cd9f7a3e4ad"
+            "23:35b23d7061f6864f4d5ee67bf552c73079d30577"
         ]
     },
     "https://canvas.test.instructure.com": {
@@ -18,7 +18,7 @@
         "private_key_file": "/jwt_key_kpas/jwtRS256.key",
         "kid": "2020-03-01T00:00:00Z",
         "deployment": [
-            "732:f09987c2cb606670aa991e460f7b9cb497d987e8"
+            "734:f09987c2cb606670aa991e460f7b9cb497d987e8"
         ]
     }
 }
