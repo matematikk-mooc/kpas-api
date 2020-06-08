@@ -1,5 +1,12 @@
 <?php
 
+
+Route::get('user_activity', 'EnrollmentActivityController@index');
+Route::get('user_activity/{course_id}', 'EnrollmentActivityController@show');
+Route::post('user_activity', 'EnrollmentActivityController@store');
+Route::delete('user_activity/{course_id}', 'EnrollmentActivityController@delete');
+
+
 Route::group(['prefix' => 'group'], function() {
     Route::get('/user', 'GroupController@index')->middleware('lti');
     Route::post('/user', 'GroupController@store')->middleware('auth.dataporten');
