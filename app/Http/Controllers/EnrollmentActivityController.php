@@ -13,9 +13,19 @@ class EnrollmentActivityController extends Controller
         return EnrollmentActivity::all();
     }
 
-    public function show(int $course_id)
+    public function show(int $course_id, Request $request)
     {
-        return EnrollmentActivity::where('course_id', '=', $course_id)->first();
+        $enrollment = EnrollmentActivity::where('course_id', '=', $course_id);
+
+        if ($request->has('from')) {
+            $enrollment->where('activity_date', '>=', $request->from);
+        }
+
+        if ($request->has('to')) {
+            $enrollment->where('activity_date', '<=', $request->to);
+        }
+
+        return $enrollment->get();
 
     }
 
