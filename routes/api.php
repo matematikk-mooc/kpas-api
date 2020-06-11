@@ -1,6 +1,19 @@
 <?php
 
 
+
+# get schools api
+Route::get('counties', 'SkolerController@all_filke');
+Route::get('communities', 'SkolerController@all_kommune');
+Route::get('communities/{fylkesnr}', 'SkolerController@kommuner');
+Route::get('schools', 'SkolerController@all_skole');
+Route::get('schools/{kommunenr}', 'SkolerController@skoler');
+# post new data to school api
+Route::post('counties', 'SkolerController@store_fylke');
+Route::post('communities', 'SkolerController@store_kommune');
+Route::post('schools', 'SkolerController@store_skole');
+
+
 Route::get('user_activity', 'EnrollmentActivityController@index');
 Route::get('user_activity/{course_id}', 'EnrollmentActivityController@show');
 Route::post('user_activity', 'EnrollmentActivityController@store');
