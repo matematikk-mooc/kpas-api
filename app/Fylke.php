@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Filker extends Model
+class Fylke extends Model
 {
     //
     public $incrementing = false;

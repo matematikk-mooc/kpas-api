@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Filker;
+use App\Fylke;
 use App\Kommune;
 use App\Skole;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,11 +11,11 @@ use Illuminate\Http\Request;
 class SkolerController extends Controller
 {
     /**
-     * @return Filker[]|Collection
+     * @return Fylker[]|Collection
      */
-    public function all_filke()
+    public function all_fylke()
     {
-        return Filker::all()->sortBy('Navn');
+        return Fylke::all()->sortBy('Navn');
     }
     /**
      * @return Kommune[]|Collection
@@ -32,7 +32,7 @@ class SkolerController extends Controller
         return Skole::where('ErSkole', true)->orderBy('Navn', 'ASC')->get();
     }
     /**
-     * Kommuner i Filke
+     * Kommuner i Fylke
      * @param string $fylkesnr
      * @return Kommune[]|Collection
      */
@@ -55,20 +55,20 @@ class SkolerController extends Controller
     }
 
     /**
-     *  Post Filke
+     *  Post Fylke
      * @param Request $request
-     * @return Filker
+     * @return Fylke
      */
     public function store_fylke(Request $request)
     {
-        return Filker::updateOrCreate($request->all())->get();
+        return Fylke::updateOrCreate($request->all())->get();
 
     }
 
     /**
      *  Post Kommune
      * @param Request $request
-     * @return Filker
+     * @return Fylker
      */
     public function store_kommune(Request $request)
     {

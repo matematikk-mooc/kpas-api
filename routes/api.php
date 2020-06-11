@@ -3,7 +3,7 @@
 
 
 # get schools api
-Route::get('counties', 'SkolerController@all_filke');
+Route::get('counties', 'SkolerController@all_fylke');
 Route::get('communities', 'SkolerController@all_kommune');
 Route::get('communities/{fylkesnr}', 'SkolerController@kommuner');
 Route::get('schools', 'SkolerController@all_skole');

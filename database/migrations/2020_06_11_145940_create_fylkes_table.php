@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFilkersTable extends Migration
+class CreateFylkesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateFilkersTable extends Migration
      */
     public function up()
     {
-        Schema::create('filkers', function (Blueprint $table) {
+        Schema::create('fylkes', function (Blueprint $table) {
             $table->string('Fylkesnr');
             $table->string('Navn');
             $table->string('OrgNr');
             $table->string('OrgNrFylkesmann');
             $table->timestamps();
-
         });
     }
 
@@ -30,6 +29,6 @@ class CreateFilkersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('filkers');
+        Schema::dropIfExists('fylkes');
     }
 }
