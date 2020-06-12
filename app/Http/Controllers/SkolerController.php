@@ -84,7 +84,7 @@ class SkolerController extends Controller
      * @param Request $request
      * @return Skole
      */
-    public function store_skole(Request $request): Skole
+    public function store_skole(Request $request)
     {
         return Skole::updateOrCreate($request->all())->get();
 
