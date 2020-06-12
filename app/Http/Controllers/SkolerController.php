@@ -11,12 +11,13 @@ use Illuminate\Http\Request;
 class SkolerController extends Controller
 {
     /**
-     * @return Fylker[]|Collection
+     * @return Fylke[]|Collection
      */
     public function all_fylke()
     {
         return Fylke::all()->sortBy('Navn');
     }
+
     /**
      * @return Kommune[]|Collection
      */
@@ -24,6 +25,7 @@ class SkolerController extends Controller
     {
         return Kommune::all()->sortBy('Navn');
     }
+
     /**
      * @return Skole[]|Collection
      */
@@ -31,6 +33,7 @@ class SkolerController extends Controller
     {
         return Skole::where('ErSkole', true)->orderBy('Navn', 'ASC')->get();
     }
+
     /**
      * Kommuner i Fylke
      * @param string $fylkesnr
@@ -81,7 +84,7 @@ class SkolerController extends Controller
      * @param Request $request
      * @return Skole
      */
-    public function store_skole(Request $request)
+    public function store_skole(Request $request): Skole
     {
         return Skole::updateOrCreate($request->all())->get();
 
