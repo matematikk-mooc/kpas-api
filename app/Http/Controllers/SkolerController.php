@@ -73,7 +73,7 @@ class SkolerController extends Controller
      */
     public function barnehager(string $kommunenr)
     {
-        $skoler = Barnehage::wherewhere("KommuneNr", $kommunenr);
+        $skoler = Barnehage::where("KommuneNr", $kommunenr);
         return $skoler->orderBy('Navn', 'ASC')->get();
     }
 
