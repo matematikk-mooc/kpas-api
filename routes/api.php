@@ -1,5 +1,4 @@
 <?php
-
 # get schools api
 
 Route::group(['prefix' => 'nsr'], function () {
