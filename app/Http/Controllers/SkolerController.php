@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Barnehage;
 use App\Fylke;
 use App\Kommune;
 use App\Skole;
@@ -35,6 +36,14 @@ class SkolerController extends Controller
     }
 
     /**
+     * @return Barnehage[]|Collection
+     */
+    public function all_barnehage()
+    {
+        return Barnehage::all()->sortBy('Navn');
+    }
+
+    /**
      * Kommuner i Fylke
      * @param string $fylkesnr
      * @return Kommune[]|Collection
@@ -54,6 +63,17 @@ class SkolerController extends Controller
     public function skoler(string $kommunenr)
     {
         $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
+        return $skoler->orderBy('Navn', 'ASC')->get();
+    }
+    /**
+     * Barnehager i kommune
+     *
+     * @param string $kommunenr
+     * @return Skole[]|Collection
+     */
+    public function barnehager(string $kommunenr)
+    {
+        $skoler = Barnehage::where("KommuneNr", $kommunenr);
         return $skoler->orderBy('Navn', 'ASC')->get();
     }
 
@@ -87,6 +107,17 @@ class SkolerController extends Controller
     public function store_skole(Request $request)
     {
         return Skole::updateOrCreate($request->all())->get();
+
+    }
+
+    /**
+     *  Post Barnehage
+     * @param Request $request
+     * @return Barnehage
+     */
+    public function store_barnehage(Request $request)
+    {
+        return Barnehage::updateOrCreate($request->all())->get();
 
     }
 }

@@ -6,10 +6,14 @@ Route::get('communities', 'SkolerController@all_kommune');
 Route::get('communities/{fylkesnr}', 'SkolerController@kommuner');
 Route::get('schools', 'SkolerController@all_skole');
 Route::get('schools/{kommunenr}', 'SkolerController@skoler');
+Route::get('kindergartens', 'SkolerController@all_barnehage');
+Route::get('kindergartens/{kommunenr}', 'SkolerController@barnehager');
+
 # post new data to school api
 Route::post('counties', 'SkolerController@store_fylke');
 Route::post('communities', 'SkolerController@store_kommune');
 Route::post('schools', 'SkolerController@store_skole');
+Route::post('kindergartens', 'SkolerController@store_barnehage');
 
 
 Route::get('user_activity', 'EnrollmentActivityController@index');
