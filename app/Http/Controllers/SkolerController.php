@@ -9,6 +9,15 @@ use App\Kommune;
 use App\Skole;
 use Illuminate\Http\Request;
 
+function format_return_data($data)
+{
+    return collect($data)
+        ->sortBy('Navn')
+        ->unique('Navn')
+        ->values()
+        ->toArray();
+}
+
 class SkolerController extends Controller
 {
     /**
@@ -16,8 +25,9 @@ class SkolerController extends Controller
      */
     public function all_fylke()
     {
-        $all_fylke = Fylke::all()->sortBy('Navn');
-        return new SuccessResponse($all_fylke);
+        $all_fylke = Fylke::all();
+
+        return new SuccessResponse(format_return_data($all_fylke));
     }
 
     /**
@@ -26,7 +36,7 @@ class SkolerController extends Controller
     public function all_kommune()
     {
         $all_kommune = Kommune::all()->sortBy('Navn');
-        return new SuccessResponse($all_kommune);
+        return new SuccessResponse(format_return_data($all_kommune));
     }
 
     /**
@@ -35,7 +45,7 @@ class SkolerController extends Controller
     public function all_skole()
     {
         $skoler = Skole::where('ErSkole', true)->orderBy('Navn', 'ASC')->get();
-        return new SuccessResponse($skoler);
+        return new SuccessResponse(format_return_data($skoler));
     }
 
     /**
@@ -44,7 +54,7 @@ class SkolerController extends Controller
     public function all_barnehage()
     {
         $all_barnehage = Barnehage::all()->sortBy('Navn');
-        return new SuccessResponse($all_barnehage);
+        return new SuccessResponse(format_return_data($all_barnehage));
     }
 
     /**
@@ -54,8 +64,9 @@ class SkolerController extends Controller
      */
     public function kommuner(string $fylkesnr)
     {
-        $kommuner = Kommune::where('Fylkesnr', $fylkesnr);
-        return new SuccessResponse($kommuner->orderBy('Navn', 'ASC')->get());
+        $kommuner = Kommune::where('Fylkesnr', $fylkesnr)->get();
+        $kommuner = format_return_data($kommuner);
+        return new SuccessResponse($kommuner);
     }
 
     /**
@@ -66,8 +77,9 @@ class SkolerController extends Controller
      */
     public function skoler(string $kommunenr)
     {
-        $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
-        return new SuccessResponse($skoler->orderBy('Navn', 'ASC')->get());
+        $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr)->get();
+        $skoler = format_return_data($skoler);
+        return new SuccessResponse($skoler);
     }
 
     /**
@@ -78,8 +90,9 @@ class SkolerController extends Controller
      */
     public function barnehager(string $kommunenr)
     {
-        $skoler = Barnehage::where("KommuneNr", $kommunenr);
-        return new SuccessResponse($skoler->orderBy('Navn', 'ASC')->get());
+        $skoler = Barnehage::where("KommuneNr", $kommunenr)->get();
+        $skoler = format_return_data($skoler);
+        return new SuccessResponse($skoler);
     }
 
     /**
@@ -90,7 +103,6 @@ class SkolerController extends Controller
     public function store_fylke(Request $request)
     {
         return new SuccessResponse(Fylke::updateOrCreate($request->all())->get());
-
     }
 
     /**
