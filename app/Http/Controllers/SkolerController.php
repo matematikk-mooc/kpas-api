@@ -4,120 +4,125 @@ namespace App\Http\Controllers;
 
 use App\Barnehage;
 use App\Fylke;
+use App\Http\Responses\SuccessResponse;
 use App\Kommune;
 use App\Skole;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class SkolerController extends Controller
 {
     /**
-     * @return Fylke[]|Collection
+     * @return SuccessResponse
      */
     public function all_fylke()
     {
-        return Fylke::all()->sortBy('Navn');
+        $all_fylke = Fylke::all()->sortBy('Navn');
+        return new SuccessResponse($all_fylke);
     }
 
     /**
-     * @return Kommune[]|Collection
+     * @return SuccessResponse
      */
     public function all_kommune()
     {
-        return Kommune::all()->sortBy('Navn');
+        $all_kommune = Kommune::all()->sortBy('Navn');
+        return new SuccessResponse($all_kommune);
     }
 
     /**
-     * @return Skole[]|Collection
+     * @return SuccessResponse
      */
     public function all_skole()
     {
-        return Skole::where('ErSkole', true)->orderBy('Navn', 'ASC')->get();
+        $skoler = Skole::where('ErSkole', true)->orderBy('Navn', 'ASC')->get();
+        return new SuccessResponse($skoler);
     }
 
     /**
-     * @return Barnehage[]|Collection
+     * @return SuccessResponse
      */
     public function all_barnehage()
     {
-        return Barnehage::all()->sortBy('Navn');
+        $all_barnehage = Barnehage::all()->sortBy('Navn');
+        return new SuccessResponse($all_barnehage);
     }
 
     /**
      * Kommuner i Fylke
      * @param string $fylkesnr
-     * @return Kommune[]|Collection
+     * @return SuccessResponse
      */
     public function kommuner(string $fylkesnr)
     {
         $kommuner = Kommune::where('Fylkesnr', $fylkesnr);
-        return $kommuner->orderBy('Navn', 'ASC')->get();
+        return new SuccessResponse($kommuner->orderBy('Navn', 'ASC')->get());
     }
 
     /**
      * skoler i kommune
      *
      * @param string $kommunenr
-     * @return Skole[]|Collection
+     * @return SuccessResponse
      */
     public function skoler(string $kommunenr)
     {
         $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
-        return $skoler->orderBy('Navn', 'ASC')->get();
+        return new SuccessResponse($skoler->orderBy('Navn', 'ASC')->get());
     }
+
     /**
      * Barnehager i kommune
      *
      * @param string $kommunenr
-     * @return Skole[]|Collection
+     * @return SuccessResponse
      */
     public function barnehager(string $kommunenr)
     {
         $skoler = Barnehage::where("KommuneNr", $kommunenr);
-        return $skoler->orderBy('Navn', 'ASC')->get();
+        return new SuccessResponse($skoler->orderBy('Navn', 'ASC')->get());
     }
 
     /**
      *  Post Fylke
      * @param Request $request
-     * @return Fylke
+     * @return SuccessResponse
      */
     public function store_fylke(Request $request)
     {
-        return Fylke::updateOrCreate($request->all())->get();
+        return new SuccessResponse(Fylke::updateOrCreate($request->all())->get());
 
     }
 
     /**
      *  Post Kommune
      * @param Request $request
-     * @return Fylker
+     * @return SuccessResponse
      */
     public function store_kommune(Request $request)
     {
-        return Kommune::updateOrCreate($request->all())->get();
+        return new SuccessResponse(Kommune::updateOrCreate($request->all())->get());
 
     }
 
     /**
      *  Post Skole
      * @param Request $request
-     * @return Skole
+     * @return SuccessResponse
      */
     public function store_skole(Request $request)
     {
-        return Skole::updateOrCreate($request->all())->get();
+        return new SuccessResponse(Skole::updateOrCreate($request->all())->get());
 
     }
 
     /**
      *  Post Barnehage
      * @param Request $request
-     * @return Barnehage
+     * @return SuccessResponse
      */
     public function store_barnehage(Request $request)
     {
-        return Barnehage::updateOrCreate($request->all())->get();
+        return new SuccessResponse(Barnehage::updateOrCreate($request->all())->get());
 
     }
 }
