@@ -20,7 +20,7 @@
         "encore/laravel-admin": "^1.7",
         "facade/ignition": "^1.6",
         "fideloper/proxy": "^4.0",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "~6.0",
         "highsolutions/laravel-environments": "*",
         "imsglobal/lti": "^3.0",
         "imsglobal/lti-1p3-tool": "dev-master",

@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class SkolerController extends Controller
 {
     /**
-     * @return Fylker[]|Collection
+     * @return Fylke[]|Collection
      */
     public function all_fylke()
     {

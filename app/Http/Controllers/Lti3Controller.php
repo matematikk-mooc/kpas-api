@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CanvasException;
 use App\Exceptions\LtiException;
 use App\Ltiv3\LTI3_Database;
+use App\Services\CanvasService;
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -57,9 +60,15 @@ class Lti3Controller extends Controller
         $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
         $settings["canvas_course_id"] = (string)$settings['canvas_course_id'];
         $settings["canvas_user_login_id"] = $launch->get_launch_data()['email'];
+        try {
+            $settings = $this->get_categories($settings);
+
+        } catch (CanvasException $e) {
+            throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
+
+        }
 
         $settings_new = [];
-
         foreach ($settings as $key => $value) {
             Arr::set($settings_new, 'settings.custom_' . $key, $value);
         }
@@ -67,25 +76,40 @@ class Lti3Controller extends Controller
 
         logger("Lti3Middleware has settings.");
 
-        $this->parse_token($launch);
-        if ($launch->is_resource_launch()) {
-            return view('lti.index');
-        } else if ($launch->is_deep_link_launch()) {
-            echo 'Deep Linking Launch!';
-        } else {
-            echo 'Unknown launch type';
-        }
         return view('lti.index');
     }
 
-    /*
-     *  Parse id_token
-     * */
-    protected function parse_token($launch)
+    /**
+     *  Get categories for a given course from canvas api
+     * @param $settings
+     * @return array
+     * @throws CanvasException
+     */
+    private function get_categories($settings)
     {
-        $launch->get_launch_data();
+        $course = $settings["canvas_course_id"];
+        $client = new Client();
+        $canvas_service = new CanvasService($client);
+        $categories = collect($canvas_service->getGroupCategories($course));
+        foreach ($categories as $value) {
+            if ($value->name == "Fylke") {
+                $settings["county_category_id"] = (string)$value->id;
+            } elseif ($value->name == "Skole") {
+                $settings["school_category_id"] = (string)$value->id;
+            } elseif ($value->name == "Kommune") {
+                $settings["community_category_id"] = (string)$value->id;
+            } elseif ($value->name == "Faggruppe i kommunen") {
+                $settings["county_faculty_category_id"] = (string)$value->id;
+            } elseif ($value->name == "Faggruppe i fylket") {
+                $settings["community_faculty_category_id"] = (string)$value->id;
+            } elseif ($value->name == "Leder/eier (fylke)") {
+                $settings["county_principals_category_id"] = (string)$value->id;
+            } elseif ($value->name == "Leder/eier (kommune") {
+                $settings["community_principals_category_id"] = (string)$value->id;
+            }
+        }
+        return $settings;
 
-        logger("Lti3Middleware has settings.");
     }
 
 }
