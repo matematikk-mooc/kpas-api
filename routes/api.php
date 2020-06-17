@@ -1,6 +1,14 @@
 <?php
+
 # get schools api
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/run_scheduler', function () {
+
+    Artisan::call('schedule:run');
+    return 'OK';
+});
 Route::group(['prefix' => 'nsr'], function () {
     # Route::get('/counties', 'SchoolsController@counties');
     Route::get('/counties', 'SkolerController@all_fylke');
