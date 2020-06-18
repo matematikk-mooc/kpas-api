@@ -69,6 +69,7 @@
 
 <script>
   import api from '../api';
+  import { VTooltip} from 'v-tooltip';
 
   export default {
     name: "GroupSelector",
