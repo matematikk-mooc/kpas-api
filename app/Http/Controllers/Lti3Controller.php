@@ -95,15 +95,17 @@ class Lti3Controller extends Controller
             if ($value->name == "Fylke") {
                 $settings["county_category_id"] = (string)$value->id;
             } elseif ($value->name == "Skole") {
+                $settings["institution_category_type"] = "school";
                 $settings["institution_category_id"] = (string)$value->id;
             } elseif ($value->name == "Barnehage") {
-                $settings["community_category_id"] = (string)$value->id;
+                $settings["institution_category_type"] = "kindergarten";
+                $settings["institution_category_id"] = (string)$value->id;
             } elseif ($value->name == "Kommune") {
                 $settings["community_category_id"] = (string)$value->id;
             } elseif ($value->name == "Faggruppe i kommunen") {
-                $settings["county_faculty_category_id"] = (string)$value->id;
-            } elseif ($value->name == "Faggruppe i fylket") {
                 $settings["community_faculty_category_id"] = (string)$value->id;
+            } elseif ($value->name == "Faggruppe i fylket") {
+                $settings["county_faculty_category_id"] = (string)$value->id;
             } elseif ($value->name == "Leder/eier (fylke)") {
                 $settings["county_principals_category_id"] = (string)$value->id;
             } elseif ($value->name == "Leder/eier (kommune") {
