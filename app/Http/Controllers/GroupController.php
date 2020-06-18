@@ -62,7 +62,7 @@ class GroupController extends Controller
 
         $county = new GroupDto($request->input('county'));
         $community = new GroupDto($request->input('community'));
-        $institution = new GroupDto($request->input('school'));
+        $institution = new GroupDto($request->input('institution'));
 
         $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
 
