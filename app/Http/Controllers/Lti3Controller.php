@@ -63,7 +63,7 @@ class Lti3Controller extends Controller
         try {
             $settings = $this->get_categories($settings);
 
-        } catch (CanvasException $e) {
+        } catch (\Exception $e) {
             throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
 
         }
@@ -83,14 +83,19 @@ class Lti3Controller extends Controller
      *  Get categories for a given course from canvas api
      * @param $settings
      * @return array
-     * @throws CanvasException
+     * @throws LtiException
      */
     private function get_categories($settings)
     {
         $course = $settings["canvas_course_id"];
         $client = new Client();
         $canvas_service = new CanvasService($client);
-        $categories = collect($canvas_service->getGroupCategories($course));
+        try {
+            $categories = collect($canvas_service->getGroupCategories($course));
+
+        } catch (\Exception $e) {
+            throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
+        }
         foreach ($categories as $value) {
             if ($value->name == "Fylke") {
                 $settings["county_category_id"] = (string)$value->id;

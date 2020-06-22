@@ -11,14 +11,14 @@
         ]
     },
     "https://canvas.test.instructure.com": {
-        "client_id": "37270000000000004",
+        "client_id": "37270000000000001",
         "auth_login_url": "https://bibsys.test.instructure.com/api/lti/authorize_redirect",
         "auth_token_url": "https://bibsys.test.instructure.com/login/oauth2/token",
         "key_set_url": "https://bibsys.test.instructure.com/api/lti/security/jwks",
         "private_key_file": "/jwt_key_kpas/jwtRS256.key",
         "kid": "2020-03-01T00:00:00Z",
         "deployment": [
-            "734:f09987c2cb606670aa991e460f7b9cb497d987e8"
+            "722:cdaf0064f5cec4b9fbab7b552276e2a5805861f1"
         ]
     }
 }
