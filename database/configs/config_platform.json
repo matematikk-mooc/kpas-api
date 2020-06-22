@@ -1,11 +1,11 @@
 {
     "https://canvas.instructure.com": {
-        "client_id": "10000000000024",
-        "auth_login_url": "https://canvaslocal.example.com/api/lti/authorize_redirect",
-        "auth_token_url": "https://canvaslocal.example.com/login/oauth2/token",
-        "key_set_url": "https://bibsys.test.instructure.com/api/lti/security/jwks",
+        "client_id": "10000000000026",
+        "auth_login_url": "https://kpaslocal.example.com:3000/api/lti/authorize_redirect",
+        "auth_token_url": "https://kpaslocal.example.com:3000/login/oauth2/token",
+        "key_set_url": "https://canvas.instructure.com/api/lti/security/jwks",
         "private_key_file": "/jwt_key_kpas/jwtRS256.key",
-        "kid": "2020-03-01T00:00:00Z",
+        "kid": "2020-04-01T00:00:04Z",
         "deployment": [
             "24:35b23d7061f6864f4d5ee67bf552c73079d30577"
         ]

@@ -62,7 +62,7 @@ class GroupController extends Controller
 
         $county = new GroupDto($request->input('county'));
         $community = new GroupDto($request->input('community'));
-        $school = new GroupDto($request->input('school'));
+        $institution = new GroupDto($request->input('institution'));
 
         $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
 
@@ -85,9 +85,9 @@ class GroupController extends Controller
 
         $county->setCategoryId($this->getFromSession('custom_county_category_id'));
         $community->setCategoryId($this->getFromSession('custom_community_category_id'));
-        $school->setCategoryId($this->getFromSession('custom_school_category_id'));
+        $institution->setCategoryId($this->getFromSession('custom_institution_category_id'));
 
-        $groups = $groups->merge([$county, $community, $school]);
+        $groups = $groups->merge([$county, $community, $institution]);
 
         $groups = $groups->map(function (GroupDto $group) {
             return $this->canvasRepository->getOrCreateGroup($group);
@@ -97,7 +97,7 @@ class GroupController extends Controller
 
         $currentGroups = $request->input('currentGroups');
         //logger("CurrentGroups" . print_r($currentGroups, true));
-        $this->canvasRepository->removeUserFromGroups($userId, $currentGroups); 
+        $this->canvasRepository->removeUserFromGroups($userId, $currentGroups);
 
         $groups->each(function (GroupDto $group) use ($userId) {
             $this->canvasRepository->addUserToGroup($userId, $group);
