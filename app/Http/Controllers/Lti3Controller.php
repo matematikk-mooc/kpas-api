@@ -107,13 +107,13 @@ class Lti3Controller extends Controller
                 $settings["institution_category_id"] = (string)$value->id;
             } elseif ($value->name == "Kommune") {
                 $settings["community_category_id"] = (string)$value->id;
-            } elseif ($value->name == "Faggruppe i kommunen") {
+            } elseif ($value->name == "Faggruppe kommune") {
                 $settings["community_faculty_category_id"] = (string)$value->id;
-            } elseif ($value->name == "Faggruppe i fylket") {
+            } elseif ($value->name == "Faggruppe fylke") {
                 $settings["county_faculty_category_id"] = (string)$value->id;
             } elseif ($value->name == "Leder/eier (fylke)") {
                 $settings["county_principals_category_id"] = (string)$value->id;
-            } elseif ($value->name == "Leder/eier (kommune") {
+            } elseif ($value->name == "Leder/eier (kommune)") {
                 $settings["community_principals_category_id"] = (string)$value->id;
             }
         }
