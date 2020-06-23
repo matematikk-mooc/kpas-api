@@ -30,5 +30,5 @@ docker/mysql/auto.cnf
 docker/mysql/ib_logfile0
 docker/mysql/ib_logfile1
 docker/mysql/ibdata1
-/database/configs/
-/app/Ltiv3/jwt_key_kpas/
+database/configs/*
+app/Ltiv3/jwt_key_kpas/*
