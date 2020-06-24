@@ -2,9 +2,17 @@
 
 # get schools api
 
-Route::post('/institution', 'LtiController@institution_type');
+use Illuminate\Support\Facades\Artisan;
 
-Route::get('/run_scheduler', 'SkolerController@run_scheduler');
+Route::post('institution', function () {
+    return session('settings.custom_institution_category_type');
+})->middleware('lti');
+
+Route::get('/run_scheduler', function () {
+
+    Artisan::call('schedule:run');
+    return 'OK';
+});
 
 Route::group(['prefix' => 'nsr'], function () {
     # Route::get('/counties', 'SchoolsController@counties');
