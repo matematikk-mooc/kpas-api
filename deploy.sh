@@ -145,6 +145,8 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   #npm install -g npm@6.14.5
   cd "$DEPLOYMENT_TARGET"
   npm -v
+  npm install css-unit-converter
+
   npm update
   npm install --production
   npm run production
