@@ -4,9 +4,7 @@
 
 use Illuminate\Support\Arr;
 
-Route::post('institution', function () {
-    return session('settings.custom_institution_category_type');
-})->middleware('lti');
+Route::post('/institution', 'LtiController@institution_type');
 
 use Illuminate\Support\Facades\Artisan;
 

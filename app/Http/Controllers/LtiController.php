@@ -24,4 +24,7 @@ class LtiController extends Controller
         }
         return view('lti.index');
     }
+    public function institution_type(){
+        return session('settings.custom_institution_category_type');
+    }
 }
