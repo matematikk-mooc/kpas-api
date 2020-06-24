@@ -24,14 +24,14 @@ Route::group(['prefix' => 'nsr'], function () {
     #Route::get('/schools/{communityId}', 'SchoolsController@schools');
     Route::get('/schools/{kommunenr}', 'SkolerController@skoler');
 });
-
-Route::get('counties', 'SkolerController@all_fylke');
-Route::get('communities', 'SkolerController@all_kommune');
-Route::get('communities/{fylkesnr}', 'SkolerController@kommuner');
-Route::get('schools', 'SkolerController@all_skole');
-Route::get('schools/{kommunenr}', 'SkolerController@skoler');
-Route::get('kindergartens', 'SkolerController@all_barnehage');
-Route::get('kindergartens/{kommunenr}', 'SkolerController@barnehager');
+//
+//Route::get('counties', 'SkolerController@all_fylke');
+//Route::get('communities', 'SkolerController@all_kommune');
+//Route::get('communities/{fylkesnr}', 'SkolerController@kommuner');
+//Route::get('schools', 'SkolerController@all_skole');
+//Route::get('schools/{kommunenr}', 'SkolerController@skoler');
+//Route::get('kindergartens', 'SkolerController@all_barnehage');
+//Route::get('kindergartens/{kommunenr}', 'SkolerController@barnehager');
 
 # post new data to school api
 Route::post('counties', 'SkolerController@store_fylke');
