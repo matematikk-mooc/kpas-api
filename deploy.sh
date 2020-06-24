@@ -142,7 +142,7 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   #chmod +x nodesource_setup.sh
   #./nodesource_setup.sh
   #apt-get install nodejs
-  npm install -g npm@6.14.5
+  #npm install -g npm@6.14.5
   cd "$DEPLOYMENT_TARGET"
   npm -v
   npm install --production
