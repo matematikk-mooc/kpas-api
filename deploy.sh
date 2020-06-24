@@ -144,6 +144,7 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   #apt-get install nodejs
   #npm install -g npm@6.14.5
   cd "$DEPLOYMENT_TARGET"
+  npm -v
   npm install --production
   npm run production
   exitWithMessageOnError "Node install failed"
