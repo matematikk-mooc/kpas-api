@@ -8,6 +8,7 @@ use App\Http\Responses\SuccessResponse;
 use App\Kommune;
 use App\Skole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 function format_return_data($data)
 {
@@ -136,5 +137,16 @@ class SkolerController extends Controller
     {
         return new SuccessResponse(Barnehage::updateOrCreate($request->all())->get());
 
+    }
+
+    /**
+     * run scheduler fetching data from nsr
+     * @param Request $request
+     * @return string
+     */
+    public function run_scheduler(Request $request)
+    {
+        Artisan::call('schedule:run');
+        return 'OK';
     }
 }
