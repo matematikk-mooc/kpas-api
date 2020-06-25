@@ -4,15 +4,15 @@
 
 use Illuminate\Support\Facades\Artisan;
 
+
 Route::post('institution', function () {
     return session('settings.custom_institution_category_type');
 })->middleware('lti');
 
-Route::get('/run_scheduler', function () {
-
+Route::post('/run_scheduler', function () {
     Artisan::call('schedule:run');
     return 'OK';
-});
+})->middleware('token_auth');
 
 Route::group(['prefix' => 'nsr'], function () {
     # Route::get('/counties', 'SchoolsController@counties');
@@ -25,24 +25,10 @@ Route::group(['prefix' => 'nsr'], function () {
 Route::get('kindergartens', 'SkolerController@all_barnehage');
 Route::get('kindergartens/{kommunenr}', 'SkolerController@barnehager');
 
-//
-//Route::get('counties', 'SkolerController@all_fylke');
-//Route::get('communities', 'SkolerController@all_kommune');
-//Route::get('communities/{fylkesnr}', 'SkolerController@kommuner');
-//Route::get('schools', 'SkolerController@all_skole');
-//Route::get('schools/{kommunenr}', 'SkolerController@skoler');
 
-# post new data to school api
-Route::post('counties', 'SkolerController@store_fylke');
-Route::post('communities', 'SkolerController@store_kommune');
-Route::post('schools', 'SkolerController@store_skole');
-Route::post('kindergartens', 'SkolerController@store_barnehage');
-
-
-Route::get('user_activity', 'EnrollmentActivityController@index');
-Route::get('user_activity/{course_id}', 'EnrollmentActivityController@show');
-Route::post('user_activity', 'EnrollmentActivityController@store');
-Route::delete('user_activity/{course_id}', 'EnrollmentActivityController@delete');
+Route::get('user_activity', 'EnrollmentActivityController@index')->middleware('token_auth');
+Route::get('user_activity/{course_id}', 'EnrollmentActivityController@show')->middleware('token_auth');
+Route::post('user_activity', 'EnrollmentActivityController@store')->middleware('token_auth');
 
 
 Route::group(['prefix' => 'group'], function () {
