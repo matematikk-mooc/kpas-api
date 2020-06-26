@@ -26,8 +26,8 @@ Route::get('kindergartens', 'SkolerController@all_barnehage');
 Route::get('kindergartens/{kommunenr}', 'SkolerController@barnehager');
 
 
-Route::get('user_activity', 'EnrollmentActivityController@index')->middleware('token_auth');
-Route::get('user_activity/{course_id}', 'EnrollmentActivityController@show')->middleware('token_auth');
+Route::get('user_activity', 'EnrollmentActivityController@index');
+Route::get('user_activity/{course_id}', 'EnrollmentActivityController@show');
 Route::post('user_activity', 'EnrollmentActivityController@store')->middleware('token_auth');
 
 
