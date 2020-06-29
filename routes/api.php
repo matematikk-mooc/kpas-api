@@ -15,13 +15,12 @@ Route::post('/run_scheduler', function () {
 })->middleware('token_auth');
 
 Route::group(['prefix' => 'nsr'], function () {
-    # Route::get('/counties', 'SchoolsController@counties');
     Route::get('/counties', 'SkolerController@all_fylke');
-    # Route::get('/communities/{countyId}', 'SchoolsController@communities');
-    Route::get('/communities/{fylkesnr}', 'SkolerController@kommuner');
-    #Route::get('/schools/{communityId}', 'SchoolsController@schools');
-    Route::get('/schools/{kommunenr}', 'SkolerController@skoler');
+    Route::get('/counties/{fylkesnr}/communities', 'SkolerController@kommuner');
+    Route::get('/counties/{fylkesnr}/schools', 'SkolerController@skoler_by_county');
+    Route::get('/communities/{kommunenr}/schools', 'SkolerController@skoler_by_community');
 });
+
 Route::get('kindergartens', 'SkolerController@all_barnehage');
 Route::get('kindergartens/{kommunenr}', 'SkolerController@barnehager');
 

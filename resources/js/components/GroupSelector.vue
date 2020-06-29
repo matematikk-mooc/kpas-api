@@ -123,7 +123,7 @@
 
       async getCommunities(countyNo) {
         try {
-          const result = await api.get(`/nsr/communities/${countyNo}`);
+          const result = await api.get(`/nsr/counties/${countyNo}/communities`);
           this.communities = result.data.result;
           this.clearError();
         } catch (e) {
@@ -133,7 +133,7 @@
 
       async getSchools(communityNo) {
         try {
-          const result = await api.get(`/nsr/schools/${communityNo}`);
+          const result = await api.get(`/nsr/communities/${communityNo}/schools`);
           this.schools = result.data.result;
           this.clearError();
         } catch (e) {
