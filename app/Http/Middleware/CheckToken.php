@@ -14,6 +14,7 @@ class CheckToken
      * @param Request $request
      * @param Closure $next
      * @return mixed
+     * @throws LtiException
      */
     public function handle($request, Closure $next)
     {
