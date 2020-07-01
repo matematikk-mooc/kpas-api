@@ -9,5 +9,5 @@ class Kommune extends Model
     //
     public $incrementing = false;
     protected $primaryKey = 'Kommunenr';
-    protected $fillable = ['Fylkesnr', 'Navn', 'OrgNr', 'Kommunenr'];
+    protected $fillable = ['Fylkesnr', 'Navn', 'OrgNr', 'Kommunenr', 'ErNedlagt'];
 }
