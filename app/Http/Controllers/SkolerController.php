@@ -14,7 +14,6 @@ function format_return_data($data)
 {
     return collect($data)
         ->sortBy('Navn')
-        ->unique('Navn')
         ->values()
         ->toArray();
 }
@@ -65,7 +64,7 @@ class SkolerController extends Controller
      */
     public function kommuner(string $fylkesnr)
     {
-        $kommuner = Kommune::where('Fylkesnr', $fylkesnr)->get();
+        $kommuner = Kommune::where('ErNedlagt', true)->where('Fylkesnr', $fylkesnr)->get();
         $kommuner = format_return_data($kommuner);
         return new SuccessResponse($kommuner);
     }
@@ -91,7 +90,7 @@ class SkolerController extends Controller
      */
     public function skoler_by_county(string $fylkesNr)
     {
-        $kommuner = Kommune::where('Fylkesnr', $fylkesNr)->get();
+        $kommuner = Kommune::where('ErNedlagt', true)->where('Fylkesnr', $fylkesNr)->get();
         $all_schools_for_county = array();
 
         foreach ($kommuner as $kommune) {
