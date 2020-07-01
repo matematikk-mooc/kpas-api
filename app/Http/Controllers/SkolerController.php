@@ -77,7 +77,8 @@ class SkolerController extends Controller
      */
     public function skoler_by_community(string $kommunenr)
     {
-        $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr)->get();
+        $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
+        $skoler = $skoler->where('ErGrunnSkole', true)->orWhere('ErVideregaaendeSkole', true)->get();
         $skoler = format_return_data($skoler);
         return new SuccessResponse($skoler);
     }
@@ -95,7 +96,8 @@ class SkolerController extends Controller
 
         foreach ($kommuner as $kommune) {
             $kommunenr = $kommune->Kommunenr;
-            $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr)->get();
+            $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
+            $skoler = $skoler->where('ErGrunnSkole', true)->orWhere('ErVideregaaendeSkole', true)->get();
             $skoler = format_return_data($skoler);
             $all_schools_for_county = array_merge($all_schools_for_county, $skoler);
         }
