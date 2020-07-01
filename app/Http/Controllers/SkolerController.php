@@ -10,6 +10,18 @@ use App\Skole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
+function filter_obsolete_counties($data)
+{
+    $obsolete_counties = ["Østfold", "Akershus", "Hedmark", "Oppland", "Buskerud", "Vestfold", "Telemark", "Aust-Agder", "Vest-Agder", "Hordaland", "Bergen*", "Sogn og Fjordane", "Sør-Trøndelag", "Nord-Trøndelag", "Troms", "Finnmark"];
+    $valid_counties = [];
+    foreach ($data as $county) {
+        if (!in_array($county->Navn, $obsolete_counties)) {
+            array_push($valid_counties, $county);
+        }
+    }
+    return $valid_counties;
+}
+
 function format_return_data($data)
 {
     return collect($data)
@@ -26,7 +38,7 @@ class SkolerController extends Controller
     public function all_fylke()
     {
         $all_fylke = Fylke::all();
-
+        $all_fylke = filter_obsolete_counties($all_fylke);
         return new SuccessResponse(format_return_data($all_fylke));
     }
 
