@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Artisan;
 
 function filter_obsolete_counties($data)
 {
-    $obsolete_counties = ["Østfold", "Akershus", "Hedmark", "Oppland", "Buskerud", "Vestfold", "Telemark", "Aust-Agder", "Vest-Agder", "Hordaland", "Bergen*", "Sogn og Fjordane", "Sør-Trøndelag", "Nord-Trøndelag", "Troms", "Finnmark"];
+    $obsolete_counties = ["01", "02", "04", "05", "06", "46", "08", "09", "10", "12", "14", "16", "17", "54","19", "20"];
     $valid_counties = [];
     foreach ($data as $county) {
-        if (!in_array($county->Navn, $obsolete_counties)) {
+        if (!in_array($county->Fylkesnr, $obsolete_counties)) {
             array_push($valid_counties, $county);
         }
     }
