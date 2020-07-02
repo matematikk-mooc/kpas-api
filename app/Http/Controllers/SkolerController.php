@@ -65,7 +65,7 @@ class SkolerController extends Controller
      */
     public function all_barnehage()
     {
-        $all_barnehage = Barnehage::all()->sortBy('Navn');
+        $all_barnehage = Barnehage::where("ErBarnehage", true)->orderBy('Navn', 'ASC')->get();
         return new SuccessResponse(format_return_data($all_barnehage));
     }
 
@@ -129,7 +129,7 @@ class SkolerController extends Controller
      */
     public function barnehager(string $kommunenr)
     {
-        $skoler = Barnehage::where("KommuneNr", $kommunenr)->get();
+        $skoler = Barnehage::where("KommuneNr", $kommunenr)->where("ErBarnehage", true)->get();
         $skoler = format_return_data($skoler);
         return new SuccessResponse($skoler);
     }
