@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Artisan;
 
 function filter_obsolete_counties($data)
 {
-    $obsolete_counties = ["01", "02", "04", "05", "06", "46", "08", "09", "10", "12", "14", "16", "17", "54","19", "20"];
+    $obsolete_counties = ["01", "02", "04", "05", "06", "07", "08", "09", "10", "12", "13", "14", "16", "17", "19", "20"];
     $valid_counties = [];
     foreach ($data as $county) {
         if (!in_array($county->Fylkesnr, $obsolete_counties)) {
