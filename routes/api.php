@@ -16,6 +16,8 @@ Route::post('/run_scheduler', function () {
 
 Route::group(['prefix' => 'nsr'], function () {
     Route::get('/counties', 'SkolerController@all_fylke');
+    Route::get('/counties/{fylkesnr}', 'SkolerController@fylke');
+    Route::get('/communities/{kommunenr}', 'SkolerController@kommune');
     Route::get('/counties/{fylkesnr}/communities', 'SkolerController@kommuner');
     Route::get('/counties/{fylkesnr}/schools', 'SkolerController@skoler_by_county');
     Route::get('/communities/{kommunenr}/schools', 'SkolerController@skoler_by_community');
