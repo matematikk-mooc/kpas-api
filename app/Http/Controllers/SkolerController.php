@@ -77,8 +77,8 @@ class SkolerController extends Controller
     public function fylke(string $fylkesnr)
     {
         $fylke = Fylke::where('Fylkesnr', $fylkesnr)->first();
-        $fylke = format_return_data($fylke);
-        return new SuccessResponse($fylke);
+        $fylke = format_return_data(array($fylke));
+        return new SuccessResponse($fylke[0]);
     }
 
     /**
@@ -89,8 +89,8 @@ class SkolerController extends Controller
     public function kommune(string $kommunenr)
     {
         $kommune = Kommune::where('Kommunenr', $kommunenr)->first();
-        $kommune = format_return_data($kommune);
-        return new SuccessResponse($kommune);
+        $kommune = format_return_data(array($kommune));
+        return new SuccessResponse($kommune[0]);
     }
 
     /**
