@@ -1,0 +1,141 @@
+version: '3'
+
+networks:
+  frontend:
+    driver: ${NETWORKS_DRIVER}
+  backend:
+    driver: ${NETWORKS_DRIVER}
+  backend_canvas-net:
+    external: true
+  dockernet:
+    external: true
+
+volumes:
+  mysql:
+    driver: ${VOLUMES_DRIVER}
+
+services:
+
+  ### Workspace Utilities ##################################
+  workspace:
+    build:
+      context: ./workspace
+      args:
+        - LARADOCK_PHP_VERSION=${PHP_VERSION}
+        - COMPOSER_GLOBAL_INSTALL=${WORKSPACE_COMPOSER_GLOBAL_INSTALL}
+        - COMPOSER_AUTH=${WORKSPACE_COMPOSER_AUTH}
+        - COMPOSER_REPO_PACKAGIST=${WORKSPACE_COMPOSER_REPO_PACKAGIST}
+        - INSTALL_NODE=${WORKSPACE_INSTALL_NODE}
+        - INSTALL_WORKSPACE_SSH=${WORKSPACE_INSTALL_WORKSPACE_SSH}
+        - INSTALL_LARAVEL_INSTALLER=${WORKSPACE_INSTALL_LARAVEL_INSTALLER}
+        - INSTALL_PYTHON=${WORKSPACE_INSTALL_PYTHON}
+        - NPM_REGISTRY=${WORKSPACE_NPM_REGISTRY}
+        - PUID=${WORKSPACE_PUID}
+        - PGID=${WORKSPACE_PGID}
+        - TZ=${WORKSPACE_TIMEZONE}
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
+    extra_hosts:
+      - "dockerhost:${DOCKER_HOST_IP}"
+    ports:
+      - "${WORKSPACE_SSH_PORT}:22"
+    tty: true
+    environment:
+      - DOCKER_HOST=tcp://docker-in-docker:2375
+    networks:
+      - frontend
+      - backend
+    links:
+      - docker-in-docker
+
+  ### PHP-FPM ##############################################
+  php-fpm:
+    build:
+      context: ./php-fpm
+      dockerfile: ./Dockerfile.dev
+      args:
+        - LARADOCK_PHP_VERSION=${PHP_VERSION}
+        - INSTALL_XDEBUG=true
+        - XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST}
+        - XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT}
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - ./php-fpm/php${PHP_VERSION}.ini:/usr/local/etc/php/php.ini
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
+    expose:
+      - "9000"
+    extra_hosts:
+      - "dockerhost:${DOCKER_HOST_IP}"
+    environment:
+      - DOCKER_HOST=tcp://docker-in-docker:2375
+      - FAKETIME=${PHP_FPM_FAKETIME}
+    depends_on:
+      - workspace
+    networks:
+      - backend
+      - backend_canvas-net
+      - dockernet
+    links:
+      - docker-in-docker
+      - mysql
+
+  ### NGINX Server #########################################
+  nginx:
+    build:
+      context: ./nginx
+      args:
+        - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
+        - PHP_UPSTREAM_PORT=${NGINX_PHP_UPSTREAM_PORT}
+        - CHANGE_SOURCE=${CHANGE_SOURCE}
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
+      - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
+      - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
+      - ${NGINX_SSL_PATH}:/etc/nginx/ssl
+    ports:
+      - 8000:80
+      - 4430:443
+    depends_on:
+      - php-fpm
+    networks:
+      - frontend
+      - backend
+
+  ### MySQL ################################################
+  mysql:
+    build:
+      context: ./mysql
+      args:
+        - MYSQL_VERSION=${MYSQL_VERSION}
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${WORKSPACE_TIMEZONE}
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - backend
+
+  ### Docker-in-Docker ################################################
+  docker-in-docker:
+    image: docker:dind
+    privileged: true
+    volumes:
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+    expose:
+      - 2375
+    networks:
+      - backend
