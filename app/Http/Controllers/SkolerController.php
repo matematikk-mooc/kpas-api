@@ -70,6 +70,30 @@ class SkolerController extends Controller
     }
 
     /**
+     * Fylke
+     * @param string $fylkesnr
+     * @return SuccessResponse
+     */
+    public function fylke(string $fylkesnr)
+    {
+        $fylke = Fylke::where('Fylkesnr', $fylkesnr)->first();
+        $fylke = format_return_data($fylke);
+        return new SuccessResponse($fylke);
+    }
+
+    /**
+     * Kommune
+     * @param string $kommunenr
+     * @return SuccessResponse
+     */
+    public function kommune(string $kommunenr)
+    {
+        $kommune = Kommune::where('Kommunenr', $kommunenr)->first();
+        $kommune = format_return_data($kommune);
+        return new SuccessResponse($kommune);
+    }
+
+    /**
      * Kommuner i Fylke
      * @param string $fylkesnr
      * @return SuccessResponse
