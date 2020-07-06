@@ -56,7 +56,17 @@ class SkolerController extends Controller
      */
     public function all_skole()
     {
-        $skoler = Skole::where('ErSkole', true)->orderBy('Navn', 'ASC')->get();
+        if ( isset($_GET['only_high_schools']) ) {
+            $onlyHighSchools = filter_var($_GET['only_high_schools'], FILTER_VALIDATE_BOOLEAN);
+        } else{
+            $onlyHighSchools = false;
+        }
+        if ($onlyHighSchools) {
+            $skoler = Skole::where('ErSkole', true)->where('ErVideregaaendeSkole', true)->orderBy('Navn', 'ASC')->get();
+        } else {
+            $skoler = Skole::where('ErSkole', true)->orderBy('Navn', 'ASC')->get();
+        }
+
         return new SuccessResponse(format_return_data($skoler));
     }
 
