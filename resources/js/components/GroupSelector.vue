@@ -175,8 +175,9 @@
     async created() {
       await this.getInstitution();
       await this.getCounties();
-
-
+    },
+    updated() {
+      this.$emit('update');
     },
 
     watch: {
