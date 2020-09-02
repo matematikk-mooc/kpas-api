@@ -149,7 +149,7 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   npm install --save
   npm install css-unit-converter
   npm install --production
-  npm run production
+  npm run production-with-no-cross-env
   exitWithMessageOnError "Node install failed"
   # shellcheck disable=SC2164
   popd
