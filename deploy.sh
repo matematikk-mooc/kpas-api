@@ -116,7 +116,7 @@ echo "Laravel deployment"
 
 # shellcheck disable=SC2164
 pushd "$DEPLOYMENT_TARGET"
-curl http://kpas-lti-staging-kpas.azurewebsites.net/api/command/migrate
+curl https://kpas-lti.azurewebsites.net//api/command/migrate
 echo -e "\n"
 php artisan cache:clear
 php artisan route:clear
