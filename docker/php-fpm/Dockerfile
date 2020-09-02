@@ -62,6 +62,8 @@ RUN set -xe; \
 ###########################################################################
 
 ARG INSTALL_XDEBUG=false
+ARG IDE_PHP_DEBUG_PORT
+ARG IDE_HOST_IP
 
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
   # Install the xdebug extension
@@ -78,7 +80,9 @@ COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN sed -i "s/xdebug.remote_autostart=0/xdebug.remote_autostart=1/" /usr/local/etc/php/conf.d/xdebug.ini && \
     sed -i "s/xdebug.remote_enable=0/xdebug.remote_enable=1/" /usr/local/etc/php/conf.d/xdebug.ini && \
-    sed -i "s/xdebug.cli_color=0/xdebug.cli_color=1/" /usr/local/etc/php/conf.d/xdebug.ini
+    sed -i "s/xdebug.cli_color=0/xdebug.cli_color=1/" /usr/local/etc/php/conf.d/xdebug.ini && \
+    sed -i "s|xdebug.remote_port=9000|xdebug.remote_port=${IDE_PHP_DEBUG_PORT}|" /usr/local/etc/php/conf.d/xdebug.ini && \
+   sed -i "s|; xdebug.remote_host=dockerhost|xdebug.remote_host=${IDE_HOST_IP}|" /usr/local/etc/php/conf.d/xdebug.ini
 
 
 ###########################################################################

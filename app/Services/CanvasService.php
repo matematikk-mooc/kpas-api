@@ -31,6 +31,19 @@ class CanvasService
         $this->guzzleClient = $guzzleClient;
     }
 
+    public function getAccountInfoById(int $accountId){
+        try {
+            $url = "accounts/{$accountId}";
+            return $this->request($url, 'GET');
+
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
+            }
+            throw $exception;
+        }
+    }
+
     public function getUsersByFeideId(string $feideId): array
     {
         $accountId = config('canvas.account_id');
@@ -392,6 +405,21 @@ class CanvasService
 
             throw $exception;
 
+        }
+    }
+
+    public function accountIsChildOf(int $udirCanvasParentAccountId, int $subAccountId)
+    {
+        if ($udirCanvasParentAccountId == $subAccountId){
+            return true;
+        }
+
+        $accountInfo = $this->getAccountInfoById($subAccountId);
+        $parentAccountId = $accountInfo->parent_account_id;
+        if (!(isset($parentAccountId))){
+            return false;
+        }else{
+            return $this->accountIsChildOf($udirCanvasParentAccountId, $parentAccountId);
         }
     }
 }
