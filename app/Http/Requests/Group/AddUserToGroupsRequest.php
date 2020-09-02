@@ -15,9 +15,9 @@ class AddUserToGroupsRequest extends FormRequest
             'community' => 'required|array',
             'community.name' => 'required|string',
             'community.description' => 'required|string',
-            'school' => 'required|array',
-            'school.name' => 'required|string',
-            'school.description' => 'required|string',
+            'institution' => 'required|array',
+            'institution.name' => 'required|string',
+            'institution.description' => 'required|string',
             'faculty' => 'string|nullable',
         ];
     }

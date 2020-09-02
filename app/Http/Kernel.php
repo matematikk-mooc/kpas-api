@@ -4,6 +4,8 @@ namespace App\Http;
 
 use App\Http\Middleware\ApiToken;
 use App\Http\Middleware\AuthenticateDataporten;
+use App\Http\Middleware\CheckToken;
+use App\Http\Middleware\Lti3Middleware;
 use App\Http\Middleware\LtiMiddleware;
 use Barryvdh\Cors\HandleCors;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -68,6 +70,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'lti' => LtiMiddleware::class,
+        'lti3' => Lti3Middleware::class,
+        'token_auth' => CheckToken::class,
     ];
 
     /**

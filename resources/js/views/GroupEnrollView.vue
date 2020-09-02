@@ -31,6 +31,7 @@
       />
     <hr/>
       <group-selector
+        @update="updateSelectStyles"
         :courseId="courseId"
         v-model="groups"
       ></group-selector>
@@ -99,6 +100,30 @@
     },
 
     methods: {
+      updateSelectStyles(){
+        var self = this;
+        console.log("KPAS-LTI document ready.");
+        const properties = {
+          width: '100%',
+        };
+        let s1 = $('.select-county select').select2(properties);
+        let s2 = $('.select-community select').select2(properties);
+        let s3 = $('.select-school select').select2(properties);
+        s1.on('select2:select', function (e) {
+          var event = new Event('change');
+          e.target.dispatchEvent(event);
+        });
+        s2.on('select2:select', function (e) {
+          var event = new Event('change');
+          e.target.dispatchEvent(event);
+        });
+        s3.on('select2:select', function (e) {
+          var event = new Event('change');
+          e.target.dispatchEvent(event);
+        });
+        self.iframeresize();
+        self.getUsersGroups();
+      },
       clearError(errorType) {
           if(errorType == "roleError") {
             this.roleError = "";
@@ -262,32 +287,6 @@
         });
         this.faculties = response.data.result;
       }
-    },
-    async mounted() {
-      var self = this;
-      $(document).ready(function() {
-        console.log("KPAS-LTI document ready.");
-        const properties = {
-            width: '100%',
-        };
-        let s1 = $('.select-county select').select2(properties);
-        let s2 = $('.select-community select').select2(properties);
-        let s3 = $('.select-school select').select2(properties);
-        s1.on('select2:select', function (e) {
-            var event = new Event('change');
-            e.target.dispatchEvent(event);
-        });
-        s2.on('select2:select', function (e) {
-            var event = new Event('change');
-            e.target.dispatchEvent(event);
-        });
-        s3.on('select2:select', function (e) {
-            var event = new Event('change');
-            e.target.dispatchEvent(event);
-        });
-        self.iframeresize();
-      });
-      self.getUsersGroups();
     },
     async created() {
       console.log("LTI listening for messages from parent.");
