@@ -6,6 +6,10 @@
 /.idea
 /.vscode
 /.env
+/database/configs/config_platform.json
+/database/configs/*
+/app/Ltiv3/jwt_key_kpas/*
+
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -30,5 +34,7 @@ docker/mysql/auto.cnf
 docker/mysql/ib_logfile0
 docker/mysql/ib_logfile1
 docker/mysql/ibdata1
+
 database/configs/*
 app/Ltiv3/jwt_key_kpas/*
+
