@@ -146,9 +146,9 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   cd "$DEPLOYMENT_TARGET"
   npm -v
   npm update
+  npm install --save
   npm install css-unit-converter
   npm install --production
-  npm install --global cross-env
   npm run production
   exitWithMessageOnError "Node install failed"
   # shellcheck disable=SC2164
