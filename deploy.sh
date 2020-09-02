@@ -148,8 +148,8 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   npm install css-unit-converter
 
   npm update
-  npm rebuild
-  npm install --production
+  npm install --production --no-bin-links
+  npm install -g cross-env
   npm run production
   exitWithMessageOnError "Node install failed"
   # shellcheck disable=SC2164
