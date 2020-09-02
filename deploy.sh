@@ -116,7 +116,7 @@ echo "Laravel deployment"
 
 # shellcheck disable=SC2164
 pushd "$DEPLOYMENT_TARGET"
-curl https://kpas-lti.azurewebsites.net//api/command/migrate
+curl https://kpas-lti.azurewebsites.net/api/command/migrate
 echo -e "\n"
 php artisan cache:clear
 php artisan route:clear
@@ -148,8 +148,7 @@ if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
   npm install css-unit-converter
 
   npm update
-  npm install --production --no-bin-links
-  npm install -g cross-env
+  npm install --production
   npm run production
   exitWithMessageOnError "Node install failed"
   # shellcheck disable=SC2164
