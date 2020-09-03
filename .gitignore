@@ -6,6 +6,7 @@
 /.idea
 /.vscode
 /.env
+/database/configs/config_platform.json
 /app/Ltiv3/jwt_key_kpas/*
 
 .phpunit.result.cache
