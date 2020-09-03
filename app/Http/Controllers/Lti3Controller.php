@@ -122,7 +122,12 @@ class Lti3Controller extends Controller
 
     public function institution()
     {
-        return Arr::get(session()->get('settings'), 'custom_institution_category_type');
+        $institution = Arr::get(session()->get('settings'), 'custom_institution_category_type');
+        if ($institution) {
+            return $institution;
+        } else {
+            return "school";
+        }
     }
 
 }
