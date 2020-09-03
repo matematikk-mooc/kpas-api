@@ -11,9 +11,13 @@ class LTI3_Database implements LTI\Database
     {
         session()->start();
         $_SESSION['iss'] = [];
-        $reg_configs = array_diff(scandir(database_path("configs")), array('..', '.', '.DS_Store'));
-        foreach ($reg_configs as $key => $reg_config) {
-            $_SESSION['iss'] = array_merge($_SESSION['iss'], json_decode(file_get_contents(database_path("configs") . "/$reg_config"), true));
+        try {
+            $reg_configs = array_diff(scandir(database_path("configs")), array('..', '.', '.DS_Store'));
+            foreach ($reg_configs as $key => $reg_config) {
+                $_SESSION['iss'] = array_merge($_SESSION['iss'], json_decode(file_get_contents(database_path("configs") . "/$reg_config"), true));
+            }
+        } catch (\Exception $e) {
+            throw new LtiException("LTI v1.3 configuration error  : " . $e->getMessage());
         }
     }
 
