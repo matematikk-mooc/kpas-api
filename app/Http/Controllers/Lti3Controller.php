@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\CanvasException;
 use App\Exceptions\LtiException;
 use App\Ltiv3\LTI3_Database;
 use App\Services\CanvasService;
@@ -119,6 +118,16 @@ class Lti3Controller extends Controller
         }
         return $settings;
 
+    }
+
+    public function institution()
+    {
+        $institution = Arr::get(session()->get('settings'), 'custom_institution_category_type');
+        if ($institution) {
+            return $institution;
+        } else {
+            return "school";
+        }
     }
 
 }

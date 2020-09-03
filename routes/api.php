@@ -2,17 +2,10 @@
 
 # get schools api
 
-use Illuminate\Support\Facades\Artisan;
 
+Route::post('institution', 'Lti3Controller@institution')->middleware('lti');
 
-Route::post('institution', function () {
-    return session('settings.custom_institution_category_type');
-})->middleware('lti');
-
-Route::post('/run_scheduler', function () {
-    Artisan::call('schedule:run');
-    return 'OK';
-})->middleware('token_auth');
+Route::post('/run_scheduler', 'CommandController@run_scheduler')->middleware('token_auth');
 
 Route::group(['prefix' => 'nsr'], function () {
     Route::get('/counties', 'SkolerController@all_fylke');
