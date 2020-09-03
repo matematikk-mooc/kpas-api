@@ -120,9 +120,9 @@ class Lti3Controller extends Controller
 
     }
 
-    private function institution()
+    public function institution()
     {
-        return session('settings.custom_institution_category_type');
+        return Arr::get(session()->get('settings'), 'custom_institution_category_type');
     }
 
 }
