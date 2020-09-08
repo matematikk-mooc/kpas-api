@@ -124,9 +124,6 @@ class SkolerController extends Controller
     public function skoler_by_community(string $kommunenr)
     {
         $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
-        $skoler = $skoler->where(function ($query) {
-            $query->where('ErSkole', true);
-        })->get();
         $skoler = format_return_data($skoler);
         return new SuccessResponse($skoler);
     }
