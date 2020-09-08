@@ -125,7 +125,7 @@ class SkolerController extends Controller
     {
         $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
         $skoler = $skoler->where(function ($query) {
-            $query->where('ErGrunnskole', true)->orWhere('ErVideregaaendeSkole', true);
+            $query->where('ErSkole', true);
         })->get();
         $skoler = format_return_data($skoler);
         return new SuccessResponse($skoler);
