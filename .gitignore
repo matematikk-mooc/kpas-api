@@ -1,3 +1,6 @@
+.gitignore
+.env.local
+.DS_Store
 /node_modules
 /public/hot
 /public/storage
