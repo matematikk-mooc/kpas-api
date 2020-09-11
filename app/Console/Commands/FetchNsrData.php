@@ -45,7 +45,9 @@ class FetchNsrData extends Command
         $nsr = new DataNsrService($client);
         $nsr->store_counties();
         $nsr->store_communities();
-        $nsr->store_schools();
+        logger("Store schools");
+//        $nsr->store_schools();
+        logger("Store kindergartens");
         $nsr->store_kindergartens();
     }
 
