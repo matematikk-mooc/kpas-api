@@ -49,7 +49,6 @@ class DataNsrService
 
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [])
     {
-        logger($url);
         $fullUrl = $this->domain . $url;
         $response = $this->guzzleClient->request($method, $fullUrl, [
             'form_params' => $data,
@@ -73,7 +72,6 @@ class DataNsrService
                 'verify' => false,
             ]);
         } catch (Exception $e) {
-            logger($e);
         }
 
         return json_decode($response->getBody()->getContents());
@@ -87,7 +85,6 @@ class DataNsrService
             try {
                 Fylke::updateOrCreate($county);
             } catch (\Exception $e) {
-                logger($e);
             }
         }
 
@@ -104,7 +101,6 @@ class DataNsrService
                 $filter_fields = filter_institution_fields($community, $community_keys);
                 Kommune::updateOrCreate($filter_fields);
             } catch (\Exception $e) {
-                logger($e);
             }
         }
 
@@ -126,9 +122,8 @@ class DataNsrService
                 Arr::set($school, 'Kommunenr', $value->KommuneNr);
                 try {
                     $filter_fields = filter_institution_fields($school, $school_keys);
-                    $model->UpdateSkole($filter_fields);
+                    Skole::updateOrCreate($filter_fields);
                 } catch (\Exception $e) {
-                    logger($e);
                 }
             }
         }
@@ -143,9 +138,8 @@ class DataNsrService
             $kindergarten = (array)$value;
             try {
                 $filter_fields = filter_institution_fields($kindergarten, $kindergartens_keys);
-                $model->UpdateBarnehage($filter_fields);
+                Barnehage::updateOrCreate($filter_fields);
             } catch (\Exception $e) {
-                logger($e);
             }
         }
     }

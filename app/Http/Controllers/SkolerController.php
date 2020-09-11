@@ -64,7 +64,7 @@ class SkolerController extends Controller
         if ($onlyHighSchools) {
             $skoler = Skole::where('ErSkole', true)->where('ErVideregaaendeSkole', true)->orderBy('Navn', 'ASC')->get();
         } else {
-            $skoler = Skole::where('ErSkole', true)->orderBy('FulltNavn', 'ASC')->get();
+            $skoler = Skole::where('ErSkole', true)->orderBy('Navn', 'ASC')->get();
         }
 
         return new SuccessResponse(format_return_data($skoler));
@@ -75,7 +75,7 @@ class SkolerController extends Controller
      */
     public function all_barnehage()
     {
-        $all_barnehage = Barnehage::where("ErBarnehage", true)->orderBy('FulltNavn', 'ASC')->get();
+        $all_barnehage = Barnehage::where("ErBarnehage", true)->orderBy('Navn', 'ASC')->get();
         return new SuccessResponse(format_return_data($all_barnehage));
     }
 

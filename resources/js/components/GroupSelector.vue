@@ -39,7 +39,7 @@
           <option
             v-for="school in schools"
             :value="school"
-            v-text="school.FulltNavn"
+            v-text="school.Navn"
           ></option>
         </select>
       </label>
@@ -53,7 +53,7 @@
           <option
             v-for="kindergarten in kindergartens"
             :value="kindergarten"
-            v-text="kindergarten.FulltNavn"
+            v-text="kindergarten.Navn"
           ></option>
         </select>
       </label>

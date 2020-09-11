@@ -9,10 +9,5 @@ class Skole extends Model
     //
     public $incrementing = false;
     protected $primaryKey = 'NSRId';
-    protected $fillable = ['Kommunenr', 'Navn', 'FulltNavn', 'OrgNr', 'NSRId','ErSkole', 'ErSkoleEier', 'ErGrunnSkole', 'ErPrivatSkole','ErOffentligSkole', 'ErVideregaaendeSkole'];
-
-    public function UpdateSkole($school) {
-        $key[$this->getKeyName()] = $school[$this->getKeyName()];
-        Skole::updateOrCreate($key, $school);
-    }
+    protected $fillable = ['Kommunenr', 'Navn', 'OrgNr', 'NSRId','ErSkole', 'ErSkoleEier', 'ErGrunnSkole', 'ErPrivatSkole','ErOffentligSkole', 'ErVideregaaendeSkole'];
 }
