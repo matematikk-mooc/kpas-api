@@ -268,6 +268,7 @@ class CanvasService
     {
         try {
             $url = "courses/{$courseId}/group_categories";
+            logger($url);
             return $this->request($url, 'GET', [], [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {

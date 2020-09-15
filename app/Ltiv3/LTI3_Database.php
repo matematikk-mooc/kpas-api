@@ -46,6 +46,8 @@ class LTI3_Database implements LTI\Database
 
     public function find_deployment($iss, $deployment_id)
     {
+        logger($deployment_id);
+        logger($_SESSION['iss'][$iss]['deployment']);
         if (!in_array($deployment_id, $_SESSION['iss'][$iss]['deployment'])) {
             return false;
         }
