@@ -13,6 +13,6 @@ class Skole extends Model
 
     public function UpdateSkole($school) {
         $key[$this->getKeyName()] = $school[$this->getKeyName()];
-        Skole::updateOrCreate($key, $school);
+        Skole::updateOrCreate($key, $school); 
     }
 }
