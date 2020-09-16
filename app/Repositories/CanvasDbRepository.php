@@ -12,7 +12,6 @@ class CanvasDbRepository extends CanvasRepository
 {
     protected $searchablecolumns = [
         'id',
-        'name',
         'description',
         'category_id',
     ];
