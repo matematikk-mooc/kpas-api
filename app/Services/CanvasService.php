@@ -307,6 +307,7 @@ class CanvasService
     {
         try {
             $url = "courses/{$courseId}/users?search_term={$userLogin}&include[]=enrollments";
+            logger($url);
             $result = $this->request($url);
 
             if(empty($result)) {
@@ -314,7 +315,7 @@ class CanvasService
             }
 
             foreach($result as $item) {
-                if($item->login_id == $userLogin) {
+                if($item->id == $userLogin) {
                     return $item->enrollments;
                 }
             }

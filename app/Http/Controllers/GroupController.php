@@ -90,6 +90,7 @@ class GroupController extends Controller
         $groups = $groups->merge([$county, $community, $institution]);
 
         $groups = $groups->map(function (GroupDto $group) {
+            logger("getOrCreateGroup" . $group->getName());
             return $this->canvasRepository->getOrCreateGroup($group);
         });
 
