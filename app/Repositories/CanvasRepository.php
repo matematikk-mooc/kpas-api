@@ -57,7 +57,7 @@ class CanvasRepository
         $principalRoleName = config('canvas.principal_role');
         if ($roleName !== $principalRoleName) {
             $unenrollmentIds = [];
-            $enrollments = collect($this->getUserEnrollmentsByCourse($userLoginId, $courseId));
+            $enrollments = collect($this->getUserEnrollmentsByCourse($userId, $courseId));
             $enrollments->each(function ($enrollment) use ($courseId, $userId, $principalRoleName, &$unenrollmentIds) {
                 if ($enrollment->role === $principalRoleName) {
                     $unenrollmentIds[] = $enrollment->id;
