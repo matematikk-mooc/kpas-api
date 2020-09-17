@@ -12,7 +12,6 @@ class CanvasDbRepository extends CanvasRepository
 {
     protected $searchablecolumns = [
         'id',
-        'name',
         'description',
         'category_id',
     ];
@@ -29,6 +28,7 @@ class CanvasDbRepository extends CanvasRepository
 
     public function getOrCreateGroup(GroupDto $groupDto): GroupDto
     {
+        logger("getOrCreateGroup in category" . $groupDto->getCategoryId());
         if ($group = $this->findGroupId($groupDto)) {
             return $group;
         }

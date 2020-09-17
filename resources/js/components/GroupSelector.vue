@@ -160,7 +160,7 @@
           description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
         };
         const institution = {
-          name: `${this.chosenInstitution.Navn}`,
+          name: `${this.chosenInstitution.FulltNavn}`,
           description: `courseId:${this.courseId}:${this.institution}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
         };
 

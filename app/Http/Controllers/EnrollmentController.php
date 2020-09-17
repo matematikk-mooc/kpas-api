@@ -24,11 +24,14 @@ class EnrollmentController extends Controller
     public function index(): SuccessResponse
     {
         logger("EnrollmentController.index");
+        $settings = session()->get('settings');
+        logger($settings);
         $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
         $userLogin = Arr::get(session()->get('settings'), 'custom_canvas_user_login_id');
+        $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
 
-        $data = $this->canvasDbRepository->getUserEnrollmentsByCourse($userLogin, $courseId);
-        logger("EnrollmentController return success.");
+        $data = $this->canvasDbRepository->getUserEnrollmentsByCourse($userId, $courseId);
+        logger("EnrollmentController return success:" . print_r($data, true));
         return new SuccessResponse($data);
     }
 
