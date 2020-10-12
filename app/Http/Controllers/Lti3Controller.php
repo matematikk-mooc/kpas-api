@@ -58,7 +58,6 @@ class Lti3Controller extends Controller
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
         $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
         $settings["canvas_course_id"] = (string)$settings['canvas_course_id'];
-        $settings["canvas_user_login_id"] = $launch->get_launch_data()['email'];
         try {
             $settings = $this->get_categories($settings);
 

@@ -27,7 +27,6 @@ class EnrollmentController extends Controller
         $settings = session()->get('settings');
         logger($settings);
         $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
-        $userLogin = Arr::get(session()->get('settings'), 'custom_canvas_user_login_id');
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
 
         $data = $this->canvasDbRepository->getUserEnrollmentsByCourse($userId, $courseId);
@@ -41,9 +40,8 @@ class EnrollmentController extends Controller
         logger($settings);
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
-        $userLoginId = Arr::get(session()->get('settings'), 'custom_canvas_user_login_id');
 
-        $this->canvasDbRepository->enrollUserToCourse($userId, $userLoginId, $courseId, $request->get('role'));
+        $this->canvasDbRepository->enrollUserToCourse($userId, $courseId, $request->get('role'));
 
         return new SuccessResponse([]);
     }

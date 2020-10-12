@@ -304,10 +304,10 @@ class CanvasService
         }
     }
 
-    public function getEnrollmentsByCourse(string $userLogin, int $courseId)
+    public function getEnrollmentsByCourse(string $userId, int $courseId)
     {
         try {
-            $url = "courses/{$courseId}/users?search_term={$userLogin}&include[]=enrollments";
+            $url = "courses/{$courseId}/users?search_term={$userId}&include[]=enrollments";
             logger($url);
             $result = $this->request($url);
 
@@ -316,7 +316,7 @@ class CanvasService
             }
 
             foreach($result as $item) {
-                if($item->id == $userLogin) {
+                if($item->id == $userId) {
                     return $item->enrollments;
                 }
             }
