@@ -50,5 +50,4 @@ class FetchNsrData extends Command
         logger("Store kindergartens");
         $nsr->store_kindergartens();
     }
-
 }
