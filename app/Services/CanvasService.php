@@ -369,10 +369,8 @@ class CanvasService
                     'verify' => false,
                 ]);
 
-
                 $decodedContent = json_decode($response->getBody()->getContents());
                 $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
-
 
                 if (config('canvas.debug')) {
                     info(json_encode([
@@ -404,9 +402,7 @@ class CanvasService
                     'response' => json_decode($exception->getResponse()->getBody()->getContents())
                 ], JSON_PRETTY_PRINT));
             }
-
             throw $exception;
-
         }
     }
 
