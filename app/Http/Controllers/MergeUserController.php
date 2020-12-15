@@ -17,13 +17,13 @@ class MergeUserController extends Controller {
 
     public function __construct(CanvasRepository $canvasRepository)
     {
-        // $this->middleware('lti'); or lti3?
+        $this->middleware('lti');
         $this->canvasRepository = $canvasRepository;
     }
 
     public function createToken(Request $request) {
-        $userId = 162520; // TODO: Get user id from LTI3 middleware
-        // $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
+        // $userId = 162520; // TODO: Get user id from LTI3 middleware
+        $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("Creating token for user $userId");
         
         $codeEntry = CanvasUserMergeToken::firstOrNew([
@@ -39,8 +39,8 @@ class MergeUserController extends Controller {
     }
 
     public function mergeUser(Request $request) {
-        $toUserId = 123; // TODO: Get user id from LTI3 middleware
-        // $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
+        // $toUserId = 123; // TODO: Get user id from LTI3 middleware
+        $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("User $toUserId sent request to merge user");
         
         $parsedToken = $this->parseToken($request);
@@ -61,8 +61,8 @@ class MergeUserController extends Controller {
     }
 
     public function getCourseIntersection(Request $request) {
-        $toUserId = 164954; //TODO: Get user id from LTI3 middleware
-        // $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
+        // $toUserId = 164954; //TODO: Get user id from LTI3 middleware
+        $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("User $toUserId sent request to get course intersection");
         $parsedToken = $this->parseToken($request);
 
