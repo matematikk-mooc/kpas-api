@@ -169,6 +169,10 @@ class CanvasRepository
         return $groups;
     }
 
+    public function mergeUsers(int $fromUserId, int $toUserId) {
+        $user = $this->canvasService->mergeUsers($fromUserId, $toUserId);
+    }
+
     public function removeUserFromGroups(int $userId, $groupsToRemove): void
     {
         if(!$groupsToRemove)

@@ -56,8 +56,8 @@ Route::group(['prefix' => 'command'], function () {
 
 Route::prefix('user')->group(function () {
     Route::prefix('merge')->group(function () {
-        Route::get('/token', [MergeUserController::class, 'createToken']);
-        Route::get('/intersection', [MergeUserController::class, 'getCourseIntersection']);
-        Route::get('/perform', [MergeUserController::class, 'mergeUser']);
+        Route::get('/token', [MergeUserController::class, 'createToken'])->middleware('lti');
+        Route::get('/intersection', [MergeUserController::class, 'getCourseIntersection'])->middleware('lti');
+        Route::get('/perform', [MergeUserController::class, 'mergeUser'])->middleware('lti');
     });
 });
