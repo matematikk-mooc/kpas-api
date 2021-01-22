@@ -74,6 +74,10 @@ class Lti3Controller extends Controller
 
         logger("Lti3Middleware has settings.");
 
+        $kpasUserView = $settings['kpas_user_view'];
+        if ($kpasUserView == 'user_management') {
+            return view('usermerge.index');
+        }
         return view('lti.index');
     }
 

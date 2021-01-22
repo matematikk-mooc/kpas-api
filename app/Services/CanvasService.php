@@ -295,7 +295,7 @@ class CanvasService
     {
         try {
             $url = "users/{$userId}/enrollments";
-            return $this->request($url);
+            return $this->request($url, 'GET', [], [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('User with ID %s not found', $userId));
@@ -343,6 +343,11 @@ class CanvasService
             }
             throw $exception;
         }
+    }
+
+    public function mergeUsers(int $fromUserId, int $toUserId) {
+        $url = "users/$fromUserId/merge_into/$toUserId";
+        return $this->request($url, 'PUT');
     }
 
     public function removeUserFromGroup(int $groupId, int $userId)

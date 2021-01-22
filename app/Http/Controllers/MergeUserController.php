@@ -6,6 +6,7 @@ use App\Models\CanvasUserMergeToken;
 use App\Utils\Token;
 use App\Repositories\CanvasRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 use DateTimeImmutable;
 
@@ -17,12 +18,10 @@ class MergeUserController extends Controller {
 
     public function __construct(CanvasRepository $canvasRepository)
     {
-        $this->middleware('lti');
         $this->canvasRepository = $canvasRepository;
     }
 
     public function createToken(Request $request) {
-        // $userId = 162520; // TODO: Get user id from LTI3 middleware
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("Creating token for user $userId");
         
@@ -39,7 +38,6 @@ class MergeUserController extends Controller {
     }
 
     public function mergeUser(Request $request) {
-        // $toUserId = 123; // TODO: Get user id from LTI3 middleware
         $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("User $toUserId sent request to merge user");
         
@@ -49,8 +47,12 @@ class MergeUserController extends Controller {
         }
 
         $fromUserId = $parsedToken->userId;
+        if ($fromUserId == $toUserId) {
+            return response('Cannot merge user with itself', 400);
+        }
+
         if($this->validateToken($fromUserId, $parsedToken->token)) {
-            // TODO do merge call to Canvas
+            $this->canvasRepository->mergeUsers($fromUserId, $toUserId);
             CanvasUserMergeToken::destroy($fromUserId);
             logger("Merged user $fromUserId into $toUserId");
             return response('', 200);
@@ -61,7 +63,6 @@ class MergeUserController extends Controller {
     }
 
     public function getCourseIntersection(Request $request) {
-        // $toUserId = 164954; //TODO: Get user id from LTI3 middleware
         $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("User $toUserId sent request to get course intersection");
         $parsedToken = $this->parseToken($request);
@@ -93,7 +94,7 @@ class MergeUserController extends Controller {
         return array_values(array_intersect($fromCourseIds, $toCourseIds));
     }
 
-    private function parseToken(Request $request): ParsedToken {
+    private function parseToken(Request $request): ?ParsedToken {
         $idToken = $request->header('X-merge-token');
 
         if (is_null($idToken)) {

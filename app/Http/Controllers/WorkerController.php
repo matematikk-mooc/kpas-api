@@ -59,7 +59,6 @@ class WorkerController extends Controller
             'extraUserInfo' => $extraUserInfo,
             'groups' => $groups,
             'groupCategories' => $groupCategories,
-
         ]);
     }
 
