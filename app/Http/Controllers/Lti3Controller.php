@@ -76,6 +76,7 @@ class Lti3Controller extends Controller
 
         $kpasUserView = $settings['kpas_user_view'];
         if ($kpasUserView == 'user_management') {
+            logger("Display user management view.");
             return view('usermerge.index');
         }
         return view('lti.index');

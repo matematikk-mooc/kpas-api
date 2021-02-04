@@ -10,6 +10,18 @@ use Illuminate\Support\Arr;
 
 use DateTimeImmutable;
 
+class KpasCanvasCourse
+{
+    public $courseId;
+    public $courseName;
+
+    public function __construct($courseId, $courseName)
+    {
+        $this->courseId = $courseId;
+        $this->courseName = $courseName;        
+    }
+}
+
 class MergeUserController extends Controller {
     private const CODE_TIMEOUT_SECONDS = 30 * 60;
     private const ID_TOKEN_DELIMITER = '-';
@@ -84,14 +96,26 @@ class MergeUserController extends Controller {
         $fromEnrollments = $this->canvasRepository->getUserEnrollments($parsedToken->userId);
         $toEnrollments = $this->canvasRepository->getUserEnrollments($toUserId);
 
+
         $fromCourseIds = array_map($getCourseIdFun, $fromEnrollments);
         $toCourseIds = array_map($getCourseIdFun, $toEnrollments);
 
+        //A user can be enrolled in the same course with different roles.
         $fromCourseIds = array_unique($fromCourseIds);
         $toCourseIds = array_unique($toCourseIds);
 
         logger("Returning intersection of courses for user $fromUserId and $toUserId");
-        return array_values(array_intersect($fromCourseIds, $toCourseIds));
+        $conflicts = array_values(array_intersect($fromCourseIds, $toCourseIds));
+
+        $course_conflicts = array();
+        foreach ($conflicts as $conflict) {
+            $canvasCourse = $this->canvasRepository->getCourseById($conflict);
+            //logger(print_r($canvasCourse, true));
+            $conflictCourse = new KpasCanvasCourse($canvasCourse->id, $canvasCourse->name);
+
+            array_push($course_conflicts, $conflictCourse);
+        }
+        return $course_conflicts;
     }
 
     private function parseToken(Request $request): ?ParsedToken {
