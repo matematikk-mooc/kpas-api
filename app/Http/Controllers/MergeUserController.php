@@ -55,12 +55,12 @@ class MergeUserController extends Controller {
         
         $parsedToken = $this->parseToken($request);
         if (is_null($parsedToken)) {
-            return response('', 403);
+            return response('Ugyldig kode.', 403);
         }
 
         $fromUserId = $parsedToken->userId;
         if ($fromUserId == $toUserId) {
-            return response('Cannot merge user with itself', 400);
+            return response('Kan ikke slå brukeren sammen med seg selv.', 400);
         }
 
         if($this->validateToken($fromUserId, $parsedToken->token)) {
@@ -70,7 +70,7 @@ class MergeUserController extends Controller {
             return response('', 200);
         } else {
             logger("Got invalid token from $toUserId");
-            return response('', 403);
+            return response('Ugyldig kode.', 403);
         }
     }
 
@@ -80,13 +80,13 @@ class MergeUserController extends Controller {
         $parsedToken = $this->parseToken($request);
 
         if (is_null($parsedToken)) {
-            return response('', 403);
+            return response('Ugyldig kode.', 403);
         }
 
         $fromUserId = $parsedToken->userId;
         if(!$this->validateToken($fromUserId, $parsedToken->token)) {
             logger("Got invalid token from $toUserId");
-            return response('', 403);
+            return response('Ugyldig kode.', 403);
         }
 
         $getCourseIdFun = function ($enrollment) {
@@ -95,7 +95,6 @@ class MergeUserController extends Controller {
 
         $fromEnrollments = $this->canvasRepository->getUserEnrollments($parsedToken->userId);
         $toEnrollments = $this->canvasRepository->getUserEnrollments($toUserId);
-
 
         $fromCourseIds = array_map($getCourseIdFun, $fromEnrollments);
         $toCourseIds = array_map($getCourseIdFun, $toEnrollments);
