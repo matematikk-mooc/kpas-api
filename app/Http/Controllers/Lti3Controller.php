@@ -57,13 +57,16 @@ class Lti3Controller extends Controller
 
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
         $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
-        $settings["canvas_course_id"] = (string)$settings['canvas_course_id'];
-        try {
-            $settings = $this->get_categories($settings);
+        $kpasUserView = (string)$settings['kpas_user_view'];
 
-        } catch (\Exception $e) {
-            throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
+        if ($kpasUserView != 'user_management') {
+            $settings["canvas_course_id"] = (string)$settings['canvas_course_id'];
+            try {
+                $settings = $this->get_categories($settings);
 
+            } catch (\Exception $e) {
+                throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
+            }
         }
 
         $settings_new = [];
@@ -74,8 +77,8 @@ class Lti3Controller extends Controller
 
         logger("Lti3Middleware has settings.");
 
-        $kpasUserView = $settings['kpas_user_view'];
         if ($kpasUserView == 'user_management') {
+            logger("Display user management view.");
             return view('usermerge.index');
         }
         return view('lti.index');

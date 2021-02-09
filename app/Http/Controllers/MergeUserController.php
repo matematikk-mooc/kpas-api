@@ -10,6 +10,18 @@ use Illuminate\Support\Arr;
 
 use DateTimeImmutable;
 
+class KpasCanvasCourse
+{
+    public $courseId;
+    public $courseName;
+
+    public function __construct($courseId, $courseName)
+    {
+        $this->courseId = $courseId;
+        $this->courseName = $courseName;        
+    }
+}
+
 class MergeUserController extends Controller {
     private const CODE_TIMEOUT_SECONDS = 30 * 60;
     private const ID_TOKEN_DELIMITER = '-';
@@ -43,12 +55,12 @@ class MergeUserController extends Controller {
         
         $parsedToken = $this->parseToken($request);
         if (is_null($parsedToken)) {
-            return response('', 403);
+            return response('Ugyldig kode.', 403);
         }
 
         $fromUserId = $parsedToken->userId;
         if ($fromUserId == $toUserId) {
-            return response('Cannot merge user with itself', 400);
+            return response('Kan ikke slå brukeren sammen med seg selv.', 400);
         }
 
         if($this->validateToken($fromUserId, $parsedToken->token)) {
@@ -58,7 +70,7 @@ class MergeUserController extends Controller {
             return response('', 200);
         } else {
             logger("Got invalid token from $toUserId");
-            return response('', 403);
+            return response('Ugyldig kode.', 403);
         }
     }
 
@@ -68,13 +80,13 @@ class MergeUserController extends Controller {
         $parsedToken = $this->parseToken($request);
 
         if (is_null($parsedToken)) {
-            return response('', 403);
+            return response('Ugyldig kode.', 403);
         }
 
         $fromUserId = $parsedToken->userId;
         if(!$this->validateToken($fromUserId, $parsedToken->token)) {
             logger("Got invalid token from $toUserId");
-            return response('', 403);
+            return response('Ugyldig kode.', 403);
         }
 
         $getCourseIdFun = function ($enrollment) {
@@ -87,11 +99,22 @@ class MergeUserController extends Controller {
         $fromCourseIds = array_map($getCourseIdFun, $fromEnrollments);
         $toCourseIds = array_map($getCourseIdFun, $toEnrollments);
 
+        //A user can be enrolled in the same course with different roles.
         $fromCourseIds = array_unique($fromCourseIds);
         $toCourseIds = array_unique($toCourseIds);
 
         logger("Returning intersection of courses for user $fromUserId and $toUserId");
-        return array_values(array_intersect($fromCourseIds, $toCourseIds));
+        $conflicts = array_values(array_intersect($fromCourseIds, $toCourseIds));
+
+        $course_conflicts = array();
+        foreach ($conflicts as $conflict) {
+            $canvasCourse = $this->canvasRepository->getCourseById($conflict);
+            //logger(print_r($canvasCourse, true));
+            $conflictCourse = new KpasCanvasCourse($canvasCourse->id, $canvasCourse->name);
+
+            array_push($course_conflicts, $conflictCourse);
+        }
+        return $course_conflicts;
     }
 
     private function parseToken(Request $request): ?ParsedToken {
