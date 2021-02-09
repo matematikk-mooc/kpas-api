@@ -3,15 +3,24 @@
     <br>
     <div v-if="mergeError" class="alert alert-danger">{{ mergeError }}</div>
     <div v-if="usersMerged" class='alert alert-success'>Sammenslåingen av brukerne var vellykket.</div>
+    <div v-if="codeCopied"
+    class="alert alert-info alert-dismissible">
+  <a 
+    @click="copyCodeAlertDismissed"
+    href="#" class="close" data-dismiss="alert" aria-label="close">&times;
+  </a>
+Koden ble kopiert til utklippstavlen.
+    </div>
 
     <div v-if="!moveContentState && !fetchContentState">
       <h3>Hva ønsker du å gjøre?</h3>
+      <p>Du kan flytte innhold fra en bruker til en annen.</p>
       <button class="kpas-button"
             @click="moveContent"
           >
         Flytt innhold fra denne brukeren over til en annen
       </button>
-      <br><br>
+      &nbsp;&nbsp;
       <button
             class="kpas-button"
             @click="fetchContent"
@@ -33,7 +42,19 @@ sammenslåingkode ved å trykke på knappen nedenfor.
           Generer sammenslåingskode
         </button>
       <span v-if="isGeneratingToken" class="ml-3">Genererer kode <div class="spinner-border text-danger"></div></span>
-      &nbsp;&nbsp;&nbsp;<span v-show="tokenGenerated" class="show-token">{{ tokenData }} </span>
+      &nbsp;&nbsp;&nbsp;
+      <span 
+        id="generated-token"
+        v-show="tokenGenerated" 
+        class="show-token alert alert-success">{{ tokenData }}
+      </span>&nbsp;&nbsp;
+        <button
+          v-if="tokenGenerated"
+          class="kpas-button"
+          @click="copyToken"
+        >
+        Kopiér koden
+        </button>
       </div>
       <br>
       <div v-show="tokenGenerated" class="show-token-instructions">
@@ -108,6 +129,7 @@ export default {
       canMergeUsers: false,
       tokenGenerated: false,
       tokenData: "",
+      codeCopied: false,
       conflicts: null,
       conflictsLoaded: false,
       fetchContentState: false,
@@ -145,10 +167,25 @@ export default {
     fetchContent() {
       this.fetchContentState = true;
     },
+    copyCodeAlertDismissed() {
+        this.codeCopied = false;
+    },
+    copyToken() {
+        var containerId = "generated-token";
+        var range = document.createRange();
+        range.selectNode(document.getElementById(containerId));
+        window.getSelection().removeAllRanges(); // clear current selection
+        window.getSelection().addRange(range); // to select text
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges();// to deselect    
+        this.codeCopied = true;
+    },
     async fetchToken() {
       try {
         this.clearError("mergeError");
+        this.codeCopied = false;
         this.isGeneratingToken = true;
+        this.tokenGenerated = false;
         this.tokenData = "";
         console.log("Getting token");
         const token = await api.get("/user/merge/token", {
@@ -213,6 +250,29 @@ export default {
         this.reportError("mergeError", e.response.data);
       }
     },
+  },
+  async created() {
+    console.log("LTI listening for messages from parent.");
+    var self = this;
+    const getBgColorMessage = {
+      subject: 'kpas-lti.getBgColor'
+    }
+    window.parent.postMessage(JSON.stringify(getBgColorMessage), "*");
+
+    window.addEventListener('message', function(evt) {
+      try {
+        if(evt.data) {
+          var msg = JSON.parse(evt.data);
+          if(msg.subject == "kpas-lti.ltibgcolor" && msg.bgColor) {
+              console.log("KPAS-LTI received LTP parent ready.");
+              document.body.style.backgroundColor = msg.bgColor;
+          }
+        }
+      } catch(e) {
+        console.log("kpas-lti: exception parsing message " + e);
+        console.log("When processing " + evt.data);
+      }
+    }, false);
   },
 };
 </script>

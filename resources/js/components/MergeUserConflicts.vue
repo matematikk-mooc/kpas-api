@@ -18,7 +18,7 @@
   export default {
     name: "MergeUserConflicts",
     props: {
-      conflicts: Object,
+      conflicts: Array,
       conflictsLoaded: Boolean
     },
   }
