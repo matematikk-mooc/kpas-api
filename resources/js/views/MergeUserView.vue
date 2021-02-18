@@ -12,8 +12,12 @@
 Koden ble kopiert til utklippstavlen.
     </div>
 
+    <div v-if="moveContentState">
+    </div>
+    <div v-if="fetchContentState">
+    </div>
     <div v-if="!moveContentState && !fetchContentState">
-      <h3>Hva ønsker du å gjøre?</h3>
+      <h3>Slå sammen brukere</h3>
       <p>Du kan flytte innhold fra en bruker til en annen.</p>
       <button class="kpas-button"
             @click="moveContent"
@@ -29,7 +33,12 @@ Koden ble kopiert til utklippstavlen.
       </button>
     </div>
     <div v-if="moveContentState">
-      <h3>Flytt innhold til en annen bruker</h3>
+      <h3>
+      <a href="#"
+      @click="startOver">Slå sammen brukere 
+      </a>
+> Flytt innhold til en annen bruker
+</h3>
 For å flytte innhold fra denne brukeren over til en annen generer du først en
 sammenslåingkode ved å trykke på knappen nedenfor.
       <br><br>
@@ -63,7 +72,12 @@ sammenslåingkode ved å trykke på knappen nedenfor.
       </div>
     </div>
     <div v-if="fetchContentState">
-      <h3>Hent innhold fra en annen bruker over til denne</h3>
+      <h3>
+      <a href="#"
+      @click="startOver">Slå sammen brukere 
+      </a>
+> Hent innhold fra en annen bruker over til denne
+</h3>
 Skriv inn koden du har laget for brukeren du ønsker å hente innhold fra. Dersom du ikke har en slik kode
 må du først logge inn som brukeren du vil hente innhold fra og velge "Flytt innhold fra denne brukeren over til en annen"      <div>
 <br>
@@ -160,6 +174,10 @@ export default {
           "*"
         );
       });
+    },
+    startOver() {
+      this.fetchContentState = false;
+      this.moveContentState = false;
     },
     moveContent() {
       this.moveContentState = true;
