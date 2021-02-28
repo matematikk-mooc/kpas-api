@@ -10,7 +10,9 @@ class GrepController extends Controller
 {
     private function getGF5() 
     {
-        $sparql = new EasyRdf\Sparql\Client('http://sandkasse-data.udir.no:7200/repositories/KL06_201906_2102');
+        $sparqlEndpoint = env("GREP_SPARQL_ENDPOINT", "");
+        logger("SPARQL ENDPOINT:" . $sparqlEndpoint);
+        $sparql = new EasyRdf\Sparql\Client($sparqlEndpoint);
         $query = '
         PREFIX u: <http://psi.udir.no/ontologi/kl06/>
         PREFIX d: <http://psi.udir.no/kl06/>

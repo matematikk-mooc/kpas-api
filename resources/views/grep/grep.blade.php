@@ -5,6 +5,7 @@
     </head>
     <body>
     <h1>Digitale ferdigheter i fag</h1>
+    Kompetansemål som er knyttet til grunnleggende digitale ferdigheter.
     @foreach ($grep as $g)
         @if($loop->first OR $g->lpKode != $grep[$loop->index-1]->lpKode)
             @if(!$loop->first)
