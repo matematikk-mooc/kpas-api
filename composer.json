@@ -17,6 +17,7 @@
         "ext-json": "*",
         "barryvdh/laravel-cors": "^0.11.3",
         "bugsnag/bugsnag-laravel": "^2.0",
+        "easyrdf/easyrdf": "^1.1",
         "encore/laravel-admin": "^1.7",
         "facade/ignition": "^1.6",
         "fideloper/proxy": "^4.0",
