@@ -40,6 +40,11 @@ Route::group(['prefix' => 'statistics'], function () {
     Route::get('/groupCategory/{categoryId}/count', 'StatisticsController@groupCategoryCount');
 });
 
+Route::group(['prefix' => 'vimeo'], function () {
+    Route::get('/{vimeoId}', 'VimeoController@index');
+});
+
+
 Route::group(['prefix' => 'enrollment', 'middleware' => 'lti'], function () {
     Route::get('/', 'EnrollmentController@index');
     Route::post('/', 'EnrollmentController@store');
