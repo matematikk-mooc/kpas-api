@@ -25,13 +25,15 @@ class VimeoController extends Controller
         $transcript = '<?xml version="1.0" encoding="utf-8" ?><transcript>';
         foreach ($subtitlesArray as $subtitle) {
             $start = $subtitle["start"];
-            $end = $subtitle["end"];
+            $dur = $subtitle["end"] - $subtitle["start"];
             $lines = $subtitle["lines"];
+            $xmlLines = "";
             foreach ($lines as $line) {
                 logger($line);
-                $transcript .= '<text start="' . $start .'" end="'. $end .'">' . $line . "</text>";
+                $xmlLines .= $line;
             }
-         }
+            $transcript .= '<text start="' . $start .'" dur="'. $dur .'">' . $xmlLines . "</text>";
+        }
          $transcript .= "</transcript>";
          //        return new SuccessResponse($result["body"]);
         return new SuccessXmlResponse($transcript);
