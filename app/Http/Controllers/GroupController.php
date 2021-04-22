@@ -143,13 +143,22 @@ class GroupController extends Controller
 
     protected function createFacultyGroups(GroupDto $county, GroupDto $community, $faculty)
     {
-        $countyFaculty = $this->createPrefixedGroup($county, $faculty);
-        $communityFaculty = $this->createPrefixedGroup($community, $faculty);
+        $countyFaculty = $this->createPrefixedFacultyGroup($county, $faculty);
+        $communityFaculty = $this->createPrefixedFacultyGroup($community, $faculty);
 
         $countyFaculty->setCategoryId($this->getFromSession('custom_county_faculty_category_id'));
         $communityFaculty->setCategoryId($this->getFromSession('custom_community_faculty_category_id'));
 
         return [$countyFaculty, $communityFaculty];
+    }
+
+    protected function createPrefixedFacultyGroup(GroupDto $dto, string $faculty): GroupDto
+    {
+        $dto = $this->createPrefixedGroup($dto, $faculty);
+        $dto = new GroupDto($dto->toArray());
+        $facultyStripped = strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $faculty));
+        $dto->setDescription('faculty:' . $facultyStripped . ':' . $dto->getDescription());
+        return $dto;
     }
 
     protected function createPrefixedGroup(GroupDto $dto, string $prefix): GroupDto

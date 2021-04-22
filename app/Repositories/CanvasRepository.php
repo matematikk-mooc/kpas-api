@@ -52,13 +52,13 @@ class CanvasRepository
         $this->canvasService->addUserToGroupId($userId, $group->getId());
     }
 
-    public function enrollUserToCourse(int $userId, $userLoginId, int $courseId, string $roleName)
+    public function enrollUserToCourse(int $userId, int $courseId, string $roleName)
     {
         $principalRoleName = config('canvas.principal_role');
         if ($roleName !== $principalRoleName) {
             $unenrollmentIds = [];
             $enrollments = collect($this->getUserEnrollmentsByCourse($userId, $courseId));
-            $enrollments->each(function ($enrollment) use ($courseId, $userId, $principalRoleName, &$unenrollmentIds) {
+            $enrollments->each(function ($enrollment) use ($principalRoleName, &$unenrollmentIds) {
                 if ($enrollment->role === $principalRoleName) {
                     $unenrollmentIds[] = $enrollment->id;
                 }
@@ -152,9 +152,9 @@ class CanvasRepository
         return $this->canvasService->getEnrollments($userId);
     }
 
-    public function getUserEnrollmentsByCourse(string $userLogin, int $courseId)
+    public function getUserEnrollmentsByCourse(string $userId, int $courseId)
     {
-        return $this->canvasService->getEnrollmentsByCourse($userLogin, $courseId);
+        return $this->canvasService->getEnrollmentsByCourse($userId, $courseId);
     }
 
     public function getTotalStudents(int $courseId): array
@@ -167,6 +167,10 @@ class CanvasRepository
         $groups = $this->canvasService->getUsersGroups($userId);
 
         return $groups;
+    }
+
+    public function mergeUsers(int $fromUserId, int $toUserId) {
+        $user = $this->canvasService->mergeUsers($fromUserId, $toUserId);
     }
 
     public function removeUserFromGroups(int $userId, $groupsToRemove): void

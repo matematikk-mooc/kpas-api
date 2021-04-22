@@ -295,7 +295,7 @@ class CanvasService
     {
         try {
             $url = "users/{$userId}/enrollments";
-            return $this->request($url);
+            return $this->request($url, 'GET', [], [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('User with ID %s not found', $userId));
@@ -304,10 +304,10 @@ class CanvasService
         }
     }
 
-    public function getEnrollmentsByCourse(string $userLogin, int $courseId)
+    public function getEnrollmentsByCourse(string $userId, int $courseId)
     {
         try {
-            $url = "courses/{$courseId}/users?search_term={$userLogin}&include[]=enrollments";
+            $url = "courses/{$courseId}/users?search_term={$userId}&include[]=enrollments";
             logger($url);
             $result = $this->request($url);
 
@@ -316,7 +316,7 @@ class CanvasService
             }
 
             foreach($result as $item) {
-                if($item->id == $userLogin) {
+                if($item->id == $userId) {
                     return $item->enrollments;
                 }
             }
@@ -345,6 +345,11 @@ class CanvasService
         }
     }
 
+    public function mergeUsers(int $fromUserId, int $toUserId) {
+        $url = "users/$fromUserId/merge_into/$toUserId";
+        return $this->request($url, 'PUT');
+    }
+
     public function removeUserFromGroup(int $groupId, int $userId)
     {
         return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
@@ -369,10 +374,8 @@ class CanvasService
                     'verify' => false,
                 ]);
 
-
                 $decodedContent = json_decode($response->getBody()->getContents());
                 $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
-
 
                 if (config('canvas.debug')) {
                     info(json_encode([
@@ -404,9 +407,7 @@ class CanvasService
                     'response' => json_decode($exception->getResponse()->getBody()->getContents())
                 ], JSON_PRETTY_PRINT));
             }
-
             throw $exception;
-
         }
     }
 
