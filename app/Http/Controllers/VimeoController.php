@@ -2,24 +2,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\SuccessXmlResponse;
-use Vimeo\Laravel\Facades\Vimeo;
-use GuzzleHttp\Client;
-
+use App\Http\Responses\ErrorResponse;
+use App\Repositories\SubtitlesRepository;
 //https://github.com/mantas-done/subtitles
 use \Done\Subtitles\Subtitles;
 
 class VimeoController extends Controller
 {
-    public function index(int $vimeoId): SuccessXmlResponse
+    public function index(int $vimeoId)
     {
-        $href = "/videos/" . $vimeoId . "/texttracks";
-        logger($href);
-        $result = Vimeo::request($href, [], 'GET');
-        $vttHref = $result["body"]["data"][0]["link"];
-        logger($vttHref);
-        $client = new Client();
-        $res = $client->request('GET', $vttHref, []);
-        $vtt = $res->getBody();
+        $subtitles = SubtitlesRepository::getOrCreateSubtitles($vimeoId);
+        if(!$subtitles) {
+            return new ErrorResponse("No subtitles available.");            
+        }
+        $vtt = $subtitles->raw_subtitles;
+
         $subtitles = Subtitles::load($vtt, 'vtt');
         $subtitlesArray = $subtitles->getInternalFormat();
         $transcript = '<?xml version="1.0" encoding="utf-8" ?><transcript>';
@@ -30,7 +27,7 @@ class VimeoController extends Controller
             $xmlLines = "";
             foreach ($lines as $line) {
                 logger($line);
-                $xmlLines .= $line;
+                $xmlLines .= $line . " ";
             }
             $transcript .= '<text start="' . $start .'" dur="'. $dur .'">' . $xmlLines . "</text>";
         }
