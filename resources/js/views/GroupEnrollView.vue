@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div v-if="everythingIsReady">
       <h2>Din rolle</h2>
       <current-role
         :isPrincipal="isPrincipal"
+        :institution="institution"
         :information="information"
       ></current-role>
       <div v-if="roleError"
@@ -21,6 +22,7 @@
       <h2>Velg rolle</h2>
       <role-selector
         :isPrincipal="isPrincipal"
+        :institution="institution"
         v-model="wantToBePrincipal"
       ></role-selector>
     <hr/>
@@ -33,6 +35,7 @@
       <group-selector
         @update="updateSelectStyles"
         :courseId="courseId"
+        :institution="institution"
         v-model="groups"
       ></group-selector>
       <button
@@ -47,6 +50,9 @@
         Oppdater
       </button>
       <span v-if="isLoading" class="ml-3">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span>
+  </div>
+  <div v-else>
+      <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
   </div>
 </template>
 
@@ -82,6 +88,7 @@
     },
     data() {
       return {
+        everythingIsReady: false,
         information: "Laster inn din rolle...",
         courseId: -1,
         currentGroupsLoaded: false,
@@ -89,6 +96,7 @@
         categoriesLoaded: false,
         isPrincipal: false,
         wantToBePrincipal: false,
+        institution: null,
         groups: [],
         currentGroups: null,
         faculties: [],
@@ -100,6 +108,9 @@
     },
 
     methods: {
+      mounted() {
+        self.iframeresize();
+      },
       updateSelectStyles(){
         var self = this;
         console.log("KPAS-LTI document ready.");
@@ -143,18 +154,18 @@
       },
       iframeresize() {
         this.$nextTick(function () {
-          var h = $("body").height();
+          var h = window.innerHeight;
           parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
         });
       },
       getRoleText(isPrincipal) {
-        return isPrincipal ? "leder/eier" : "lærer/deltager";
+        return isPrincipal ? "leder/eier" : "deltager";
       },
       getPrincipalInformation() {
         return "Du er registrert som leder/eier.";
       },
       getParticipantInformation() {
-        return "Du er registrert som lærer/deltager.";
+        return "Du er registrert som deltager.";
       },
       getUsersGroups() {
         console.log("Get users groups.");
@@ -201,9 +212,25 @@
           try {
             await api.post('/group/user/bulk', params);
             this.clearError("groupError");
+            this.iframeresize();
           } catch(e) {
             this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");
+            this.iframeresize();
           }
+        }
+      },
+      async getInstitution() {
+        try {
+          const result = await api.post('/institution', {
+            cookie: window.cookie,
+          });
+          this.institution = result.data;
+          console.log("Institution type:" + this.institution);
+          this.clearError();
+          this.iframeresize();
+        } catch (e) {
+          this.reportError("Kunne ikke hente institution type.");
+          this.iframeresize();
         }
       },
       async enrollUser() {
@@ -213,8 +240,10 @@
             cookie: window.cookie,
           });
           this.clearError("roleError");
+          this.iframeresize();
         } catch(e) {
           this.reportError("roleError", "Kunne ikke oppdatere rollen.");
+          this.iframeresize();
         }
       },
       async enroll() {
@@ -225,8 +254,12 @@
             await this.enrollUser();
             await this.addUserGroups();
             this.isPrincipal = this.wantToBePrincipal;
+            var leaderTerm = "skoleleder";
+            if(this.institution == "kindergarten") {
+              leaderTerm = "barnehageleder";
+            }
             if(this.isPrincipal) {
-              this.information = "<div class='alert alert-success'>Du er nå registrert som skoleleder. <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
+              this.information = "<div class='alert alert-success'>Du er nå registrert som " + leaderTerm + ". <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
             } else {
               this.information = "<div class='alert alert-success'>Du er nå registrert som deltager. <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
             }
@@ -291,6 +324,11 @@
     async created() {
       console.log("LTI listening for messages from parent.");
       var self = this;
+      const getBgColorMessage = {
+        subject: 'kpas-lti.getBgColor'
+      }
+      window.parent.postMessage(JSON.stringify(getBgColorMessage), "*");
+
       window.addEventListener('message', function(evt) {
         try {
           var msg = JSON.parse(evt.data);
@@ -299,6 +337,10 @@
             self.usersGroups = msg.groups;
             self.groupsLoaded = true;
             self.updateCurrentGroups();
+          }
+          else if(msg.subject == "kpas-lti.ltibgcolor" && msg.bgColor) {
+              console.log("KPAS-LTI received LTP parent ready.");
+              document.body.style.backgroundColor = msg.bgColor;
           } else if(msg.subject == "kpas-lti.ltiparentready") {
               self.getUsersGroups();
           }
@@ -309,7 +351,9 @@
       }, false);
 
       console.log("Hent kategorier...");
-      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole()]);
+      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution()]);
+      console.log("KPAS ready to display.");
+      self.everythingIsReady = true;
     },
   }
 </script>
