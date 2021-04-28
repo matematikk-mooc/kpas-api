@@ -4,9 +4,8 @@
       <label for="radioSkoleleder">Leder/eier</label>
       <br>
       <input type="radio" id="deltager" name="role" v-bind:value="false" v-model="wantToBePrincipal">
-      <label for="deltager">Lærer/deltager</label>
-    <div v-if="wantToBePrincipal" class="alert alert-info">NB! Dersom du er skoleeier må du velge tilhørighet til en gitt skole,
-      selv om du har ansvar for alle skolene. For ledere/eiere vil diskusjonen foregå på fylkesnivå.
+      <label for="deltager">Deltager</label>
+    <div v-if="wantToBePrincipal" class="alert alert-info">{{principalWarning}}
     </div>
 
     </div>
@@ -16,11 +15,21 @@
   export default {
     name: "RoleSelector",
     props: {
-        isPrincipal: Boolean
+        isPrincipal: Boolean,
+        institution: String
     },
     data() {
       return {
         wantToBePrincipal: false,
+      }
+    },
+    computed: {
+      principalWarning() {
+        if(this.institution == "school") {
+          return "NB! Dersom du er skoleeier må du velge tilhørighet til en gitt skole, selv om du har ansvar for alle skolene. For ledere/eiere vil diskusjonen foregå på fylkesnivå.";
+        } else if(this.institution == "kindergarten") {
+          return "NB! Dersom du er barnehageeier må du velge tilhørighet til en gitt barnehage, selv om du har ansvar for alle barnehagene. For ledere/eiere vil diskusjonen foregå på fylkesnivå.";
+        }
       }
     },
     created() {

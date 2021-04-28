@@ -57,8 +57,11 @@
           ></option>
         </select>
       </label>
-      <span v-tooltip.top-center="`
+      <span v-if="institution === 'school'" v-tooltip.top-center="`
       Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
+      `">&#9432;</span>
+      <span v-else v-tooltip.top-center="`
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
       `">&#9432;</span>
     </div>
     <div v-if="error"
@@ -74,7 +77,8 @@
   export default {
     name: "GroupSelector",
     props: {
-      courseId: Number
+      courseId: Number,
+      institution: String
     },
 
     data() {
@@ -84,7 +88,6 @@
         communities: [],
         schools: [],
         kindergartens: [],
-        institution: null,
         chosenCounty: null,
         chosenCommunity: null,
         chosenInstitution: null,
@@ -109,18 +112,6 @@
           this.reportError("Kunne ikke hente fylker fra nasjonalt skoleregister.");
         }
       },
-      async getInstitution() {
-        try {
-          const result = await api.post('/institution', {
-            cookie: window.cookie,
-          });
-          this.institution = result.data;
-          this.clearError();
-        } catch (e) {
-          this.reportError("Kunne ikke hente institution type.");
-        }
-      },
-
       async getCommunities(countyNo) {
         try {
           const result = await api.get(`/nsr/counties/${countyNo}/communities`);
@@ -173,7 +164,6 @@
     },
 
     async created() {
-      await this.getInstitution();
       await this.getCounties();
     },
     updated() {
@@ -184,6 +174,7 @@
       async chosenCounty(county) {
         this.communities = [];
         this.schools = [];
+        this.kindergartens = [];
         await this.getCommunities(county.Fylkesnr);
       },
       async chosenCommunity(community) {
