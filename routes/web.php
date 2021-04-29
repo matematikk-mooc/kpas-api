@@ -8,6 +8,10 @@ Route::group(['prefix' => 'statistics'], function() {
     Route::get('/{courseId}', 'StatisticsController@webindex');
 });
 
+Route::group(['prefix' => 'grep'], function() {
+    Route::get('/gf5', 'GrepController@gf5');
+});
+
 Route::view('/cookiecheck', 'cookiecheck.cookiecheck');
 Route::view('/cookiecheckcomplete', 'cookiecheck.cookiecheckcomplete');
 

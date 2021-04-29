@@ -1,8 +1,5 @@
 <template>
-    <div v-if="isPrincipal">
-        <span v-html="information"></span>
-    </div>
-    <div v-else>
+    <div>
         <span v-html="information"></span>
     </div>
 </template>
@@ -13,6 +10,6 @@
     props: {
         isPrincipal: Boolean,
         information: String
-    },
+    }
   }
 </script>

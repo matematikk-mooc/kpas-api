@@ -23,6 +23,7 @@ try {
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('group-enroll-view', require('./views/GroupEnrollView').default);
+Vue.component('merge-user-view', require('./views/MergeUserView').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

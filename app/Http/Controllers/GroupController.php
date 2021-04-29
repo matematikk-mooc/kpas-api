@@ -69,6 +69,12 @@ class GroupController extends Controller
         $role = $request->get('role');
 
         if ($role === config('canvas.principal_role')) {
+            //KURSP-378 temporary fix
+
+            logger("Group description: " . $institution->getDescription());
+            if((strpos($institution->getDescription(), 'kindergarten') !== false)) {
+                $role = "Leder";
+            }
             $groups = $this->createPrincipalGroups($groups, $county, $community, $role);
         }
 
