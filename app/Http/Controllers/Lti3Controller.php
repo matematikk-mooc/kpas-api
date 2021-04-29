@@ -57,7 +57,11 @@ class Lti3Controller extends Controller
 
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
         $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
-        $kpasUserView = (string)$settings['kpas_user_view'];
+        
+        $kpasUserView = "group_management";
+        if(isset($settings['kpas_user_view'])) {
+            $kpasUserView = (string)$settings['kpas_user_view'];
+        }
 
         if ($kpasUserView != 'user_management') {
             $settings["canvas_course_id"] = (string)$settings['canvas_course_id'];
