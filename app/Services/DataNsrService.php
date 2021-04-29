@@ -69,14 +69,21 @@ class DataNsrService
         }
 
         // For each distinct fylkesnummer, fetch enheter again to also get longitude and latitude
+        $i = 0;
         foreach ($fylkesnummer as $id => $ignore) {
             if (!is_numeric($id)) {
+                logger("Invalid county number:" .$id);
                 continue;
             }
 
             // Add lengde and breddegrad from fylke-call to enhet
             $inFylke = $this->request($domain, "enheter/fylke/$id");
             foreach ($inFylke as $enhetInFylke) {
+                $i++;
+                if(!($i % 1000)) {
+                    logger("GetEnheter processed " . $i);
+                }
+    
                 if (!isset($idToEnhet[$enhetInFylke->NSRId])) {
                     continue;
                 }
@@ -142,6 +149,7 @@ class DataNsrService
         $school_keys = $model->getFillable();
         $org = $this->getSchools();
 
+        $i = 0;
         foreach ($org as $value) {
             if ($value->ErSkole ||
                 $value->ErSkoleEier ||
@@ -149,16 +157,22 @@ class DataNsrService
                 $value->ErPrivatSkole ||
                 $value->ErOffentligSkole)
             {
+                $i++;
+                if(!($i % 1000)) {
+                    logger("store_schools processed " . $i);
+                }
                 $school = (array) $value;
                 Arr::set($school, 'Kommunenr', $value->KommuneNr);
                 try {
                     $filter_fields = filter_institution_fields($school, $school_keys);
                     $model->UpdateSkole($filter_fields);
                 } catch (\Exception $e) {
+                    logger("Failure when processing school:" . print_r($value, true));
                     logger($e);
                 }
             }
         }
+        logger("store_schools complete.");
     }
 
     public function store_kindergartens()
@@ -167,15 +181,22 @@ class DataNsrService
         $kindergartens_keys = $model->getFillable();
         $org = $this->getKindergartens();
 
+        $i = 0;
         foreach ($org as $value) {
+            $i++;
+            if(!($i % 1000)) {
+                logger("store_kindergartens processed " . $i);
+            }
             $kindergarten = (array) $value;
             try {
                 $filter_fields = filter_institution_fields($kindergarten, $kindergartens_keys);
                 $model->UpdateBarnehage($filter_fields);
             } catch (\Exception $e) {
+                logger("Failure when processing kindergarten:" . print_r($value, true));
                 logger($e);
             }
         }
+        logger("store_kindergartens complete.");
     }
 }
 
