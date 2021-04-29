@@ -26,9 +26,9 @@
     computed: {
       principalWarning() {
         if(this.institution == "school") {
-          return "NB! Dersom du er skoleeier må du velge tilhørighet til en gitt skole, selv om du har ansvar for alle skolene. For ledere/eiere vil diskusjonen foregå på fylkesnivå.";
+          return "NB! Dersom du er skoleeier må du velge tilhørighet til en gitt skole, selv om du har ansvar for alle skolene.";
         } else if(this.institution == "kindergarten") {
-          return "NB! Dersom du er barnehageeier må du velge tilhørighet til en gitt barnehage, selv om du har ansvar for alle barnehagene. For ledere/eiere vil diskusjonen foregå på fylkesnivå.";
+          return "NB! Dersom du er barnehageeier må du velge tilhørighet til en gitt barnehage, selv om du har ansvar for alle barnehagene.";
         }
       }
     },
