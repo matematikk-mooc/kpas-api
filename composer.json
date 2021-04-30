@@ -25,7 +25,7 @@
         "highsolutions/laravel-environments": "*",
         "imsglobal/lti": "^3.0",
         "imsglobal/lti-1p3-tool": "dev-master",
-        "laravel/framework": "5.8.*",
+        "laravel/framework": "6.20.*",
         "laravel/tinker": "^1.0",
         "league/oauth2-client": "^2.4",
         "mantas-done/subtitles": "^0.3.10",
