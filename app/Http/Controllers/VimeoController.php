@@ -15,27 +15,32 @@ class VimeoController extends Controller
         $href = "/videos/" . $vimeoId . "/texttracks";
         logger($href);
         $result = Vimeo::request($href, [], 'GET');
-        $vttHref = $result["body"]["data"][0]["link"];
-        logger($vttHref);
-        $client = new Client();
-        $res = $client->request('GET', $vttHref, []);
-        $vtt = $res->getBody();
-        $subtitles = Subtitles::load($vtt, 'vtt');
-        $subtitlesArray = $subtitles->getInternalFormat();
+        $languagesAvailable = $result["body"]["data"];
+        logger($languagesAvailable);
         $transcript = '<?xml version="1.0" encoding="utf-8" ?><transcript>';
-        foreach ($subtitlesArray as $subtitle) {
-            $start = $subtitle["start"];
-            $dur = $subtitle["end"] - $subtitle["start"];
-            $lines = $subtitle["lines"];
-            $xmlLines = "";
-            foreach ($lines as $line) {
-                logger($line);
-                $xmlLines .= $line;
+        foreach($languagesAvailable as $languageAvailable) {         
+            $transcript .= '<language lang="' . $languageAvailable["language"] . '">';
+            $vttHref = $languageAvailable["link"];
+            logger($vttHref);
+            $client = new Client();
+            $res = $client->request('GET', $vttHref, []);
+            $vtt = $res->getBody();
+            $subtitles = Subtitles::load($vtt, 'vtt');
+            $subtitlesArray = $subtitles->getInternalFormat();
+            foreach ($subtitlesArray as $subtitle) {
+                $start = $subtitle["start"];
+                $dur = $subtitle["end"] - $subtitle["start"];
+                $lines = $subtitle["lines"];
+                $xmlLines = "";
+                foreach ($lines as $line) {
+                    logger($line);
+                    $xmlLines .= $line . " ";
+                }
+                $transcript .= '<text start="' . $start .'" dur="'. $dur .'">' . $xmlLines . "</text>";
             }
-            $transcript .= '<text start="' . $start .'" dur="'. $dur .'">' . $xmlLines . "</text>";
+            $transcript .= "</language>";
         }
-         $transcript .= "</transcript>";
-         //        return new SuccessResponse($result["body"]);
+        $transcript .= "</transcript>";
         return new SuccessXmlResponse($transcript);
     }
 }
