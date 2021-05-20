@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\SuccessXmlResponse;
-use App\Http\Responses\ErrorResponse;
+use App\Http\Responses\ErrorXmlResponse;
 use App\Repositories\SubtitlesRepository;
 //https://github.com/mantas-done/subtitles
 use \Done\Subtitles\Subtitles;
@@ -12,8 +12,9 @@ class VimeoController extends Controller
     public function index(int $vimeoId)
     {
         $subtitles = SubtitlesRepository::getOrCreateSubtitles($vimeoId);
-        if($subtitles->isEmpty()) {
-            return new ErrorResponse("No subtitles available.");            
+
+        if($subtitles->count() && !$subtitles->first()["language"]) {
+            return new ErrorXmlResponse("Videotranskript er dessverre ikke tilgjengelig for denne videoen.");            
         }
         logger(print_r($subtitles, true));
         $transcript = '<?xml version="1.0" encoding="utf-8" ?><transcript>';
@@ -27,7 +28,6 @@ class VimeoController extends Controller
                 $lines = $vtt_subtitle["lines"];
                 $xmlLines = "";
                 foreach ($lines as $line) {
-                    logger($line);
                     $xmlLines .= $line . " ";
                 }
                 $transcript .= '<text start="' . $start .'" dur="'. $dur .'">' . $xmlLines . "</text>";

@@ -14,9 +14,9 @@ class CreateSubtitlesTable extends Migration
     public function up()
     {
         Schema::create('subtitles', function (Blueprint $table) {
-            $table->string('videoId');
-            $table->string('language');
-            $table->text('raw_subtitles');
+            $table->string('videoId');;
+            $table->string('language')->nullable();
+            $table->text('raw_subtitles')->nullable();
             $table->timestamps();
         });
     }
