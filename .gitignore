@@ -39,3 +39,6 @@ docker/mysql/ibdata1
 
 app/Ltiv3/jwt_key_kpas/*
 database/configs/config_platform.json
+
+composer-setup.php
+composer.phar

@@ -48,7 +48,9 @@ class Lti3Controller extends Controller
      */
     public function launch(Request $request)
     {
-        $launch = LTI\LTI_Message_Launch::new(new LTI3_Database());
+        $config_directory = $request->query("config_directory", "configs");
+        logger("LTI3Controller config directory:". $config_directory);
+        $launch = LTI\LTI_Message_Launch::new(new LTI3_Database($config_directory));
         try {
             $launch->validate();
         } catch (\Exception $e) {
