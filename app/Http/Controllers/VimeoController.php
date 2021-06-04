@@ -16,7 +16,6 @@ class VimeoController extends Controller
         if($subtitles->count() && !$subtitles->first()["language"]) {
             return new ErrorXmlResponse("Videotranskript er dessverre ikke tilgjengelig for denne videoen.");            
         }
-        logger(print_r($subtitles, true));
         $transcript = '<?xml version="1.0" encoding="utf-8" ?><transcript>';
         foreach($subtitles as $subtitle) {         
             $vtt_subtitles = Subtitles::load($subtitle["raw_subtitles"], 'vtt');
