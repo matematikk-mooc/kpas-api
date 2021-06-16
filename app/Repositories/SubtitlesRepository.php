@@ -20,7 +20,7 @@ class SubtitlesRepository
         //logger("getOrCreateSubtitles:" . $href);
         $result = Vimeo::request($href, [], 'GET');
         //logger("getOrCreateSubtitles" . print_r($result, true));
-        if(!isset($result["body"]) || !isset($result["body"]["data"]))
+        if(!isset($result["body"]) || !isset($result["body"]["data"]) || !count($result["body"]["data"]))
         {
             return self::createNoSubtitles($videoId);
         }
