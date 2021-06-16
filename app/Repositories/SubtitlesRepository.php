@@ -10,7 +10,7 @@ class SubtitlesRepository
 {
     public static function getOrCreateSubtitles(int $videoId)
     {
-        $subtitles = self::getSutitlesFromDatabase($videoId);
+        $subtitles = self::getSubtitlesFromDatabase($videoId);
         if ($subtitles->isNotEmpty()) 
         {
             return $subtitles;
@@ -20,23 +20,23 @@ class SubtitlesRepository
         //logger("getOrCreateSubtitles:" . $href);
         $result = Vimeo::request($href, [], 'GET');
         //logger("getOrCreateSubtitles" . print_r($result, true));
-        if(!isset($result["body"]) || !isset($result["body"]["data"]) || !count($result["body"]["data"]))
-        {
-            return self::createNoSubtitles($videoId);
+        if(!isset($result["body"]) || !isset($result["body"]["data"]) || !count($result["body"]["data"])) {
+            self::createNoSubtitles($videoId);
+        } else {
+            $languagesAvailable = $result["body"]["data"];
+            //logger($languagesAvailable);
+            foreach($languagesAvailable as $languageAvailable) {         
+                $vttHref = $languageAvailable["link"];
+                //logger($vttHref);
+                $client = new Client();
+                $res = $client->request('GET', $vttHref, []);
+                $vtt = $res->getBody();
+                self::createSubtitles($videoId, $vtt, $languageAvailable["language"]);
+            }
         }
-        $languagesAvailable = $result["body"]["data"];
-        //logger($languagesAvailable);
-        foreach($languagesAvailable as $languageAvailable) {         
-            $vttHref = $languageAvailable["link"];
-            //logger($vttHref);
-            $client = new Client();
-            $res = $client->request('GET', $vttHref, []);
-            $vtt = $res->getBody();
-            self::createSubtitles($videoId, $vtt, $languageAvailable["language"]);
-        }
-        return self::getSutitlesFromDatabase($videoId);
+        return self::getSubtitlesFromDatabase($videoId);
     }
-    private static function getSutitlesFromDatabase(int $videoId)
+    private static function getSubtitlesFromDatabase(int $videoId)
     {
         return Subtitles::where('videoId', $videoId)->get();
     }
@@ -47,7 +47,7 @@ class SubtitlesRepository
         $subtitles->videoId = $videoId;
         $subtitles->raw_subtitles = $vtt;
         $subtitles->language = $language;
-        $subtitles->save();        
+        $subtitles->save();
         return $subtitles;
     }
     private static function createNoSubtitles($videoId): Subtitles 
@@ -55,7 +55,7 @@ class SubtitlesRepository
         $subtitles = new Subtitles;
 
         $subtitles->videoId = $videoId;
-        $subtitles->save();        
+        $subtitles->save();
         return $subtitles;
     }
 }
