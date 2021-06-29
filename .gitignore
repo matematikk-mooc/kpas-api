@@ -10,6 +10,7 @@
 /.vscode
 /.env
 /database/configs/config_platform.json
+/database/configs_user_management/*
 /app/Ltiv3/jwt_key_kpas/*
 
 .phpunit.result.cache
