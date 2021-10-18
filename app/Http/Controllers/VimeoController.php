@@ -29,7 +29,8 @@ class VimeoController extends Controller
                 foreach ($lines as $line) {
                     $xmlLines .= $line . " ";
                 }
-                $transcript .= '<text start="' . $start .'" dur="'. $dur .'">' . $xmlLines . "</text>";
+                $xmlLinesStripped = strip_tags($xmlLines);
+                $transcript .= '<text start="' . $start .'" dur="'. $dur .'"><![CDATA[' . $xmlLinesStripped . "]]></text>";
             }
             $transcript .= "</language>";
         }
