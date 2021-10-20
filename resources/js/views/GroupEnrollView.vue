@@ -162,7 +162,7 @@
       },
       iframeresize() {
         this.$nextTick(function () {
-          var h = window.innerHeight;
+          var h = document.body.clientHeight + 100;
           parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
         });
       },
