@@ -58,19 +58,31 @@ class GroupController extends Controller
 
     public function bulkStore(AddUserToGroupsRequest $request): SuccessResponse
     {
+        logger(session('settings'));
+
         $groups = new Collection();
 
         $county = new GroupDto($request->input('county'));
-        $community = new GroupDto($request->input('community'));
-        $institution = new GroupDto($request->input('institution'));
+        logger("County group:" . print_r($request->input('county'), true));
+        $county->setCategoryId($this->getFromSession('custom_county_category_id'));
 
-        $courseId = Arr::get(session()->get('settings'), 'custom_canvas_course_id');
+        $community = new GroupDto($request->input('community'));
+        $community->setCategoryId($this->getFromSession('custom_community_category_id'));
+
+        $groups = $groups->merge([$county, $community]);
+
+        $institutionPresent =  $request->has('institutionType');
+        logger("INSTITUTION present: " . $institutionPresent ? "true" : "false");
+
+        if($institutionPresent) {
+            $institution = new GroupDto($request->input('institution'));
+            $institution->setCategoryId($this->getFromSession('custom_institution_category_id'));
+            $groups = $groups->merge($institution);
+        }
 
         $role = $request->get('role');
-
-        if ($role === config('canvas.principal_role')) {
+        if ($institutionPresent  && ($role === config('canvas.principal_role'))) {
             //KURSP-378 temporary fix
-
             logger("Group description: " . $institution->getDescription());
             if((strpos($institution->getDescription(), 'kindergarten') !== false)) {
                 $role = "Leder";
@@ -82,18 +94,11 @@ class GroupController extends Controller
             $faculty = $request->get('faculty');
             if($faculty != "") {
                 logger("Request has faculty:" . $request);
-                $faculties = $this->createFacultyGroups($county, $community, $faculty);
+                $courseId = $request->get('courseId');
+                $faculties = $this->createFacultyGroups($courseId, $county, $community, $faculty);
                 $groups = $groups->merge($faculties);
             }
         }
-
-        logger(session('settings'));
-
-        $county->setCategoryId($this->getFromSession('custom_county_category_id'));
-        $community->setCategoryId($this->getFromSession('custom_community_category_id'));
-        $institution->setCategoryId($this->getFromSession('custom_institution_category_id'));
-
-        $groups = $groups->merge([$county, $community, $institution]);
 
         $groups = $groups->map(function (GroupDto $group) {
             logger("getOrCreateGroup" . $group->getName());
@@ -110,6 +115,8 @@ class GroupController extends Controller
             $this->canvasRepository->addUserToGroup($userId, $group);
         });
 
+        //Note that the response does not contain the groups because they are objects.
+        //Could be fixed, but the frontend doesn't use the answer as of today.
         return new SuccessResponse($groups->toArray());
     }
 
@@ -147,7 +154,7 @@ class GroupController extends Controller
         return $groups->merge([$communityLeaders, $countyLeaders]);
     }
 
-    protected function createFacultyGroups(GroupDto $county, GroupDto $community, $faculty)
+    protected function createFacultyGroups($courseId, GroupDto $county, GroupDto $community, $faculty)
     {
         $countyFaculty = $this->createPrefixedFacultyGroup($county, $faculty);
         $communityFaculty = $this->createPrefixedFacultyGroup($community, $faculty);
@@ -155,14 +162,29 @@ class GroupController extends Controller
         $countyFaculty->setCategoryId($this->getFromSession('custom_county_faculty_category_id'));
         $communityFaculty->setCategoryId($this->getFromSession('custom_community_faculty_category_id'));
 
+        $nationalCategoryId = $this->getFromSession('custom_national_faculty_category_id');
+        if($nationalCategoryId) {
+            logger("Create national faculty group.");
+            $facultyStripped = $this->getStrippedFacultyName($faculty);
+            $nationalFacultyDescription = "faculty:" . $facultyStripped . ":courseId:" . $courseId . ":national" ; 
+            $nationalFacultyArray = array("Name"=>$faculty, "Description"=>$nationalFacultyDescription);
+            $nationalFaculty = new GroupDto($nationalFacultyArray);
+            $nationalFaculty->setCategoryId($nationalCategoryId);
+            return [$nationalFaculty, $countyFaculty, $communityFaculty];
+        }
+
         return [$countyFaculty, $communityFaculty];
+    }
+
+    protected function getStrippedFacultyName($faculty) {
+        return strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $faculty));
     }
 
     protected function createPrefixedFacultyGroup(GroupDto $dto, string $faculty): GroupDto
     {
         $dto = $this->createPrefixedGroup($dto, $faculty);
         $dto = new GroupDto($dto->toArray());
-        $facultyStripped = strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $faculty));
+        $facultyStripped = $this->getStrippedFacultyName($faculty);
         $dto->setDescription('faculty:' . $facultyStripped . ':' . $dto->getDescription());
         return $dto;
     }

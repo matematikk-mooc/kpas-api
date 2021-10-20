@@ -3,7 +3,7 @@
       <h2>Din rolle</h2>
       <current-role
         :isPrincipal="isPrincipal"
-        :institution="institution"
+        :institutionType="institutionType"
         :information="information"
       ></current-role>
       <div v-if="roleError"
@@ -22,7 +22,9 @@
       <h2>Velg rolle</h2>
       <role-selector
         :isPrincipal="isPrincipal"
-        :institution="institution"
+        :institutionType="institutionType"
+        :leaderDescription="leaderDescription"
+        :participantDescription="participantDescription"
         v-model="wantToBePrincipal"
       ></role-selector>
     <hr/>
@@ -35,7 +37,7 @@
       <group-selector
         @update="updateSelectStyles"
         :courseId="courseId"
-        :institution="institution"
+        :institutionType="institutionType"
         v-model="groups"
       ></group-selector>
       <button
@@ -80,10 +82,10 @@
         return !this.isLoading && this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
       },
       studentText() {
-        return "deltager";
+        return this.participantDescription;
       },
       principalText() {
-        return "skoleeier/-leder";
+        return this.leaderDescription;
       }
     },
     data() {
@@ -96,7 +98,9 @@
         categoriesLoaded: false,
         isPrincipal: false,
         wantToBePrincipal: false,
-        institution: null,
+        institutionType: null,
+        leaderDescription: null,
+        participantDescription: null,
         groups: [],
         currentGroups: null,
         faculties: [],
@@ -159,13 +163,13 @@
         });
       },
       getRoleText(isPrincipal) {
-        return isPrincipal ? "leder/eier" : "deltager";
+        return isPrincipal ? this.leaderDescription : this.participantDescription;
       },
       getPrincipalInformation() {
-        return "Du er registrert som leder/eier.";
+        return "Du er registrert som: " + this.leaderDescription;
       },
       getParticipantInformation() {
-        return "Du er registrert som deltager.";
+        return "Du er registrert som: " + this.participantDescription;
       },
       getUsersGroups() {
         console.log("Get users groups.");
@@ -203,11 +207,13 @@
       },
       async addUserGroups() {
         if (this.groupsAreSet) {
-          const params = Object.assign({}, this.groups, {
+          const params = Object.assign({}, 
+            this.groups, {
             cookie: window.cookie,
             role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
             faculty: this.faculty,
-            currentGroups: this.currentGroups
+            currentGroups: this.currentGroups,
+            courseId: this.courseId
           });
           try {
             await api.post('/group/user/bulk', params);
@@ -224,8 +230,9 @@
           const result = await api.post('/institution', {
             cookie: window.cookie,
           });
-          this.institution = result.data;
-          console.log("Institution type:" + this.institution);
+          this.institutionType = result.data.result.institutionType;
+          this.leaderDescription= result.data.result.institutionLeaderDescription;
+          this.participantDescription = result.data.result.institutionParticipantDescription;
           this.clearError();
           this.iframeresize();
         } catch (e) {
@@ -254,15 +261,8 @@
             await this.enrollUser();
             await this.addUserGroups();
             this.isPrincipal = this.wantToBePrincipal;
-            var leaderTerm = "skoleleder";
-            if(this.institution == "kindergarten") {
-              leaderTerm = "barnehageleder";
-            }
-            if(this.isPrincipal) {
-              this.information = "<div class='alert alert-success'>Du er nå registrert som " + leaderTerm + ". <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
-            } else {
-              this.information = "<div class='alert alert-success'>Du er nå registrert som deltager. <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
-            }
+            var leaderTerm = this.leaderDescription;
+            this.information = "<div class='alert alert-success'>Du er nå registrert som " + leaderTerm + ". <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
           } catch (e) {
           } finally {
             this.isLoading = false;
@@ -352,6 +352,7 @@
 
       console.log("Hent kategorier...");
       await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution()]);
+      this.iframeresize();
       console.log("KPAS ready to display.");
       self.everythingIsReady = true;
     },
