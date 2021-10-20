@@ -5,7 +5,7 @@
       <br>
       <input type="radio" id="deltager" name="role" v-bind:value="false" v-model="wantToBePrincipal">
       <label for="deltager">{{participantDescription}}</label>
-    <div v-if="wantToBePrincipal" class="alert alert-info">{{principalWarning}}
+    <div v-if="wantToBePrincipal && institutionType" class="alert alert-info">{{principalWarning}}
     </div>
 
     </div>

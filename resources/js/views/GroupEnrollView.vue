@@ -52,6 +52,9 @@
         Oppdater
       </button>
       <span v-if="isLoading" class="ml-3">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span>
+      <p>
+      <div v-if="submitSuccess" class='alert alert-success'>Operasjonen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
+      </p>
   </div>
   <div v-else>
       <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
@@ -108,6 +111,7 @@
         faculty: null,
         roleError: '',
         groupError: '',
+        submitSuccess: false
       }
     },
 
@@ -257,12 +261,17 @@
         console.log("WTBP:" + this.wantToBePrincipal);
         if (this.isReady) {
           this.isLoading = true;
+          this.submitSuccess = false;
           try {
             await this.enrollUser();
             await this.addUserGroups();
             this.isPrincipal = this.wantToBePrincipal;
-            var leaderTerm = this.leaderDescription;
-            this.information = "<div class='alert alert-success'>Du er nå registrert som " + leaderTerm + ". <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
+            if(this.isPrincipal) {
+              this.information = this.getPrincipalInformation();
+            } else {
+              this.information = this.getParticipantInformation();
+            }
+            this.submitSuccess = true; 
           } catch (e) {
           } finally {
             this.isLoading = false;
