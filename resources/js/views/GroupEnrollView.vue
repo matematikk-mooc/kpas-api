@@ -40,17 +40,21 @@
         :institutionType="institutionType"
         v-model="groups"
       ></group-selector>
-      <button
-        class="btn"
-        :disabled="!isReady"
-        :class="{
-          'btn-primary': isReady,
-          'btn-secondary disabled': !isReady,
-        }"
-        @click="enroll"
-      >
-        Oppdater
-      </button>
+    <hr/>
+      <div>
+        <button
+          class="btn"
+          :disabled="!isReady"
+          :class="{
+            'btn-primary': isReady,
+            'btn-secondary disabled': !isReady,
+          }"
+          @click="enroll"
+        >
+          Oppdater
+        </button>
+      </div>
+
       <span v-if="isLoading" class="ml-3">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span>
       <p>
       <div v-if="submitSuccess" class='alert alert-success'>Operasjonen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>

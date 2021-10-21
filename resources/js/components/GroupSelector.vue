@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="row pt-3 pb-3 mt-3">
-      <label v-bind:style=" chosenCounty ? 'border: none;' : 'padding: 10px; border: 1px solid red;' " class="select-county col-sm">
+    <div v-bind:style=" chosenCounty && chosenCommunity && (chosenInstituion || !institutionType)? 'border: none;' : 'padding: 10px; border: 1px solid red;' " >
+      <label class="select-county col-sm">
         Fylke:<br/>
         <select
           v-model="chosenCounty"
@@ -15,7 +15,7 @@
           ></option>
         </select>
       </label>
-      <label v-bind:style=" chosenCommunity ? 'border: none;' : 'padding: 10px; border: 1px solid red;' "  class="select-community col-sm">
+      <label class="select-community col-sm">
         Kommune:<br/>
         <select
           v-model="chosenCommunity"
@@ -29,7 +29,7 @@
           ></option>
         </select>
       </label>
-      <label v-bind:style=" chosenInstitution ? 'border: none;' : 'padding: 10px; border: 1px solid red;' " class="select-school col-sm" v-if="institutionType === 'school'">
+      <label class="select-school col-sm" v-if="institutionType === 'school'">
         Skole:<br/>
         <select
           v-model="chosenInstitution"
@@ -43,7 +43,7 @@
           ></option>
         </select>
       </label>
-      <label v-bind:style=" chosenInstitution ? 'border: none;' : 'padding: 10px; border: 1px solid red;' " class="select-school col-sm" v-if="institutionType === 'kindergarten'">
+      <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
         Barnehage:<br/>
         <select
           v-model="chosenInstitution"
