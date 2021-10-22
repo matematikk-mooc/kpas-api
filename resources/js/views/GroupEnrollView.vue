@@ -55,9 +55,11 @@
         </button>
       </div>
 
-      <span v-if="isLoading" class="ml-3">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span>
       <p>
-      <div v-if="submitSuccess" class='alert alert-success'>Operasjonen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
+      <div v-if="isLoading" class="alert alert-warning">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></div>
+      <div v-if="enrollResult == ENROLL_FAILED" class='alert alert-danger'>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
+      <div v-if="groupResult == ADDTO_GROUPS_FAILED" class='alert alert-danger'>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
+      <div v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
       </p>
   </div>
   <div v-else>
@@ -115,7 +117,8 @@
         faculty: null,
         roleError: '',
         groupError: '',
-        submitSuccess: false
+        enrollResult: 0,
+        groupResult: 0
       }
     },
 
@@ -174,10 +177,10 @@
         return isPrincipal ? this.leaderDescription : this.participantDescription;
       },
       getPrincipalInformation() {
-        return "Du er registrert som: " + this.leaderDescription;
+        return this.leaderDescription;
       },
       getParticipantInformation() {
-        return "Du er registrert som: " + this.participantDescription;
+        return this.participantDescription;
       },
       getUsersGroups() {
         console.log("Get users groups.");
@@ -221,14 +224,17 @@
             role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
             faculty: this.faculty,
             currentGroups: this.currentGroups,
+            institutionType: this.institutionType,
             courseId: this.courseId
           });
           try {
-            await api.post('/group/user/bulk', params);
+            const result = await api.post('/group/user/bulk', params);
             this.clearError("groupError");
             this.iframeresize();
+            this.groupResult = this.ADDED_TO_GROUPS; 
           } catch(e) {
-            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");
+            this.groupResult = this.ADDTO_GROUPS_FAILED;
+//            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");
             this.iframeresize();
           }
         }
@@ -256,8 +262,10 @@
           });
           this.clearError("roleError");
           this.iframeresize();
+          this.enrollResult = this.ENROLLED;
         } catch(e) {
-          this.reportError("roleError", "Kunne ikke oppdatere rollen.");
+          this.enrollResult = this.ENROLL_FAILED;
+//          this.reportError("roleError", "Kunne ikke oppdatere rollen.");
           this.iframeresize();
         }
       },
@@ -265,7 +273,8 @@
         console.log("WTBP:" + this.wantToBePrincipal);
         if (this.isReady) {
           this.isLoading = true;
-          this.submitSuccess = false;
+          this.enrollResult = 0;
+          this.groupResult = 0;
           try {
             await this.enrollUser();
             await this.addUserGroups();
@@ -275,8 +284,8 @@
             } else {
               this.information = this.getParticipantInformation();
             }
-            this.submitSuccess = true; 
           } catch (e) {
+            console.log("Failed to update user information.");
           } finally {
             this.isLoading = false;
             this.getUsersGroups();
@@ -335,6 +344,11 @@
       }
     },
     async created() {
+      this.ENROLLED = 1;
+      this.ADDED_TO_GROUPS = 2;
+      this.ENROLL_FAILED = 3;
+      this.ADDTO_GROUPS_FAILED = 4;
+
       console.log("LTI listening for messages from parent.");
       var self = this;
       const getBgColorMessage = {

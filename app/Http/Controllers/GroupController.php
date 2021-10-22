@@ -77,7 +77,7 @@ class GroupController extends Controller
         if($institutionPresent) {
             $institution = new GroupDto($request->input('institution'));
             $institution->setCategoryId($this->getFromSession('custom_institution_category_id'));
-            $groups = $groups->merge($institution);
+            $groups = $groups->merge([$institution]);
         }
 
         $role = $request->get('role');
@@ -100,6 +100,7 @@ class GroupController extends Controller
             }
         }
 
+        logger(print_r($groups, true));
         $groups = $groups->map(function (GroupDto $group) {
             logger("getOrCreateGroup" . $group->getName());
             return $this->canvasRepository->getOrCreateGroup($group);

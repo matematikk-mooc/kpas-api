@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:style=" chosenFaculty ? 'border: none;' : 'padding: 10px; border: 1px solid red;' ">
+  <div v-bind:style=" chosenFaculty || !faculties.length ? 'border: none;' : 'padding: 10px; border: 1px solid red;' ">
     <div
       v-for="faculty in faculties"
       :key="faculty"

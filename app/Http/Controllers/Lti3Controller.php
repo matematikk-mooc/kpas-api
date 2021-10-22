@@ -108,6 +108,8 @@ class Lti3Controller extends Controller
         } catch (\Exception $e) {
             throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
         }
+
+        logger("get_categories: " . print_r($categories, true));
         foreach ($categories as $value) {
             if ($value->name == "Fylke") {
                 $settings["county_category_id"] = (string)$value->id;
@@ -125,7 +127,7 @@ class Lti3Controller extends Controller
                 $settings["county_faculty_category_id"] = (string)$value->id;
             } elseif ($value->name == "Faggruppe nasjonalt") {
                 $settings["national_faculty_category_id"] = (string)$value->id;
-            } elseif ($value->name == "Faggruppe nasjonalt") {
+            } elseif ($value->name == "Leder/eier (fylke)") {
                 $settings["county_principals_category_id"] = (string)$value->id;
             } elseif ($value->name == "Leder/eier (kommune)") {
                 $settings["community_principals_category_id"] = (string)$value->id;
@@ -148,6 +150,7 @@ class Lti3Controller extends Controller
         logger($customInstitutionParticipantDescription);
         logger($customInstitutionLeaderDescription);
 
+        $institution["institutionType"] = $customInstitutionType;
         $institution["institutionLeaderDescription"] = $customInstitutionLeaderDescription ? $customInstitutionLeaderDescription : "Leder/eier";
         $institution["institutionParticipantDescription"] = $customInstitutionParticipantDescription ? $customInstitutionParticipantDescription : "Deltager";
         logger(print_r($institution, true));
