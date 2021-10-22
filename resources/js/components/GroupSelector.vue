@@ -1,6 +1,14 @@
 <template>
   <div>
-    <div class="row pt-3 pb-3 mt-3">
+    <div v-bind:style=" chosenCounty && chosenCommunity && (chosenInstitution || !institutionType)? 'border: none;' : 'padding: 10px; border: 1px solid red;' " >
+
+      <span v-if="institutionType === 'school'" v-tooltip.top-center="`
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
+      `">&#9432;</span>
+      <span v-else-if="institutionType === 'kindergarten'" v-tooltip.top-center="`
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
+      `">&#9432;</span>
+
       <label class="select-county col-sm">
         Fylke:<br/>
         <select
@@ -29,7 +37,7 @@
           ></option>
         </select>
       </label>
-      <label class="select-school col-sm" v-if="institution === 'school'">
+      <label class="select-school col-sm" v-if="institutionType === 'school'">
         Skole:<br/>
         <select
           v-model="chosenInstitution"
@@ -43,7 +51,7 @@
           ></option>
         </select>
       </label>
-      <label class="select-school col-sm" v-if="institution === 'kindergarten'">
+      <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
         Barnehage:<br/>
         <select
           v-model="chosenInstitution"
@@ -57,12 +65,6 @@
           ></option>
         </select>
       </label>
-      <span v-if="institution === 'school'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
-      `">&#9432;</span>
-      <span v-else v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
-      `">&#9432;</span>
     </div>
     <div v-if="error"
          class="alert alert-danger">{{error}}
@@ -78,7 +80,7 @@
     name: "GroupSelector",
     props: {
       courseId: Number,
-      institution: String
+      institutionType: String
     },
 
     data() {
@@ -150,9 +152,17 @@
           name: `${this.chosenCommunity.Navn}`,
           description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
         };
+        if(!this.institutionType) {
+          this.$emit('input', {
+            county,
+            community
+          })
+          return;
+        }
+
         const institution = {
           name: `${this.chosenInstitution.FulltNavn}`,
-          description: `courseId:${this.courseId}:${this.institution}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
+          description: `courseId:${this.courseId}:${this.institutionType}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
         };
 
         this.$emit('input', {
@@ -178,13 +188,18 @@
         await this.getCommunities(county.Fylkesnr);
       },
       async chosenCommunity(community) {
-        if (this.institution === "school") {
+        if(!this.institutionType) {
+          this.assignToGroups();
+          return;
+        }
+        
+        if (this.institutionType === "school") {
           this.schools = [];
           await this.getSchools(community.Kommunenr);
-        } else if (this.institution === "kindergarten") {
+        } else if (this.institutionType === "kindergarten") {
           this.kindergartens = [];
           await this.getKindergartens(community.Kommunenr);
-        }
+        } 
       },
       chosenInstitution() {
         this.assignToGroups();

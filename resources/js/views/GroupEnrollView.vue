@@ -3,7 +3,7 @@
       <h2>Din rolle</h2>
       <current-role
         :isPrincipal="isPrincipal"
-        :institution="institution"
+        :institutionType="institutionType"
         :information="information"
       ></current-role>
       <div v-if="roleError"
@@ -22,7 +22,9 @@
       <h2>Velg rolle</h2>
       <role-selector
         :isPrincipal="isPrincipal"
-        :institution="institution"
+        :institutionType="institutionType"
+        :leaderDescription="leaderDescription"
+        :participantDescription="participantDescription"
         v-model="wantToBePrincipal"
       ></role-selector>
     <hr/>
@@ -35,21 +37,30 @@
       <group-selector
         @update="updateSelectStyles"
         :courseId="courseId"
-        :institution="institution"
+        :institutionType="institutionType"
         v-model="groups"
       ></group-selector>
-      <button
-        class="btn"
-        :disabled="!isReady"
-        :class="{
-          'btn-primary': isReady,
-          'btn-secondary disabled': !isReady,
-        }"
-        @click="enroll"
-      >
-        Oppdater
-      </button>
-      <span v-if="isLoading" class="ml-3">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span>
+    <hr/>
+      <div>
+        <button
+          class="btn"
+          :disabled="!isReady"
+          :class="{
+            'btn-primary': isReady,
+            'btn-secondary disabled': !isReady,
+          }"
+          @click="enroll"
+        >
+          Oppdater
+        </button>
+      </div>
+
+      <p>
+      <div v-if="isLoading" class="alert alert-warning">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></div>
+      <div v-if="enrollResult == ENROLL_FAILED" class='alert alert-danger'>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
+      <div v-if="groupResult == ADDTO_GROUPS_FAILED" class='alert alert-danger'>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
+      <div v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
+      </p>
   </div>
   <div v-else>
       <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
@@ -80,10 +91,10 @@
         return !this.isLoading && this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
       },
       studentText() {
-        return "deltager";
+        return this.participantDescription;
       },
       principalText() {
-        return "skoleeier/-leder";
+        return this.leaderDescription;
       }
     },
     data() {
@@ -96,7 +107,9 @@
         categoriesLoaded: false,
         isPrincipal: false,
         wantToBePrincipal: false,
-        institution: null,
+        institutionType: null,
+        leaderDescription: null,
+        participantDescription: null,
         groups: [],
         currentGroups: null,
         faculties: [],
@@ -104,6 +117,8 @@
         faculty: null,
         roleError: '',
         groupError: '',
+        enrollResult: 0,
+        groupResult: 0
       }
     },
 
@@ -154,18 +169,18 @@
       },
       iframeresize() {
         this.$nextTick(function () {
-          var h = window.innerHeight;
+          var h = document.body.clientHeight + 100;
           parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
         });
       },
       getRoleText(isPrincipal) {
-        return isPrincipal ? "leder/eier" : "deltager";
+        return isPrincipal ? this.leaderDescription : this.participantDescription;
       },
       getPrincipalInformation() {
-        return "Du er registrert som leder/eier.";
+        return this.leaderDescription;
       },
       getParticipantInformation() {
-        return "Du er registrert som deltager.";
+        return this.participantDescription;
       },
       getUsersGroups() {
         console.log("Get users groups.");
@@ -203,18 +218,22 @@
       },
       async addUserGroups() {
         if (this.groupsAreSet) {
-          const params = Object.assign({}, this.groups, {
+          const params = Object.assign({}, 
+            this.groups, {
             cookie: window.cookie,
             role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
             faculty: this.faculty,
-            currentGroups: this.currentGroups
+            currentGroups: this.currentGroups,
+            courseId: this.courseId
           });
           try {
-            await api.post('/group/user/bulk', params);
+            const result = await api.post('/group/user/bulk', params);
             this.clearError("groupError");
             this.iframeresize();
+            this.groupResult = this.ADDED_TO_GROUPS; 
           } catch(e) {
-            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");
+            this.groupResult = this.ADDTO_GROUPS_FAILED;
+//            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");
             this.iframeresize();
           }
         }
@@ -224,8 +243,9 @@
           const result = await api.post('/institution', {
             cookie: window.cookie,
           });
-          this.institution = result.data;
-          console.log("Institution type:" + this.institution);
+          this.institutionType = result.data.result.institutionType;
+          this.leaderDescription= result.data.result.institutionLeaderDescription;
+          this.participantDescription = result.data.result.institutionParticipantDescription;
           this.clearError();
           this.iframeresize();
         } catch (e) {
@@ -241,8 +261,10 @@
           });
           this.clearError("roleError");
           this.iframeresize();
+          this.enrollResult = this.ENROLLED;
         } catch(e) {
-          this.reportError("roleError", "Kunne ikke oppdatere rollen.");
+          this.enrollResult = this.ENROLL_FAILED;
+//          this.reportError("roleError", "Kunne ikke oppdatere rollen.");
           this.iframeresize();
         }
       },
@@ -250,20 +272,19 @@
         console.log("WTBP:" + this.wantToBePrincipal);
         if (this.isReady) {
           this.isLoading = true;
+          this.enrollResult = 0;
+          this.groupResult = 0;
           try {
             await this.enrollUser();
             await this.addUserGroups();
             this.isPrincipal = this.wantToBePrincipal;
-            var leaderTerm = "skoleleder";
-            if(this.institution == "kindergarten") {
-              leaderTerm = "barnehageleder";
-            }
             if(this.isPrincipal) {
-              this.information = "<div class='alert alert-success'>Du er nå registrert som " + leaderTerm + ". <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
+              this.information = this.getPrincipalInformation();
             } else {
-              this.information = "<div class='alert alert-success'>Du er nå registrert som deltager. <p>Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</p></div>";
+              this.information = this.getParticipantInformation();
             }
           } catch (e) {
+            console.log("Failed to update user information.");
           } finally {
             this.isLoading = false;
             this.getUsersGroups();
@@ -322,6 +343,11 @@
       }
     },
     async created() {
+      this.ENROLLED = 1;
+      this.ADDED_TO_GROUPS = 2;
+      this.ENROLL_FAILED = 3;
+      this.ADDTO_GROUPS_FAILED = 4;
+
       console.log("LTI listening for messages from parent.");
       var self = this;
       const getBgColorMessage = {
@@ -352,6 +378,7 @@
 
       console.log("Hent kategorier...");
       await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution()]);
+      this.iframeresize();
       console.log("KPAS ready to display.");
       self.everythingIsReady = true;
     },
