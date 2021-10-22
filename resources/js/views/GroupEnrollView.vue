@@ -224,7 +224,6 @@
             role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
             faculty: this.faculty,
             currentGroups: this.currentGroups,
-            institutionType: this.institutionType,
             courseId: this.courseId
           });
           try {

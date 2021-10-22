@@ -58,7 +58,7 @@ class GroupController extends Controller
 
     public function bulkStore(AddUserToGroupsRequest $request): SuccessResponse
     {
-        logger(session('settings'));
+        logger("bulkStore: " . print_r(session('settings'),true));
 
         $groups = new Collection();
 
@@ -71,7 +71,7 @@ class GroupController extends Controller
 
         $groups = $groups->merge([$county, $community]);
 
-        $institutionPresent =  $request->has('institutionType');
+        $institutionPresent =  $request->has('institution');
         logger("INSTITUTION present: " . $institutionPresent ? "true" : "false");
 
         if($institutionPresent) {
