@@ -11,6 +11,7 @@
 /.env
 /database/configs/config_platform.json
 /database/configs_user_management/*
+/database/configs_laerefag/*
 /app/Ltiv3/jwt_key_kpas/*
 
 .phpunit.result.cache
