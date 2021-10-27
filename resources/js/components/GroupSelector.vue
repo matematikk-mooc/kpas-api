@@ -176,6 +176,8 @@
 
     watch: {
       async chosenCounty(county) {
+        delete this.selectedgroups.community;
+        delete this.selectedgroups.institution;
         this.selectedgroups.county = this.getCountyGroup();
 
         this.communities = [];
