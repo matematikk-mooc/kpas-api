@@ -36,6 +36,7 @@
     <hr/>
       <group-selector
         @update="updateSelectStyles"
+        @updateGroups="updateGroups"
         :courseId="courseId"
         :institutionType="institutionType"
         v-model="groups"
@@ -58,6 +59,7 @@
       <p>
       <div v-if="isLoading" class="alert alert-warning">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></div>
       <div v-if="enrollResult == ENROLL_FAILED" class='alert alert-danger'>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
+      <div v-if="getRoleResult == ENROLL_GET_FAILED" class='alert alert-danger'>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</div>
       <div v-if="groupResult == ADDTO_GROUPS_FAILED" class='alert alert-danger'>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
       <div v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
       </p>
@@ -84,12 +86,6 @@
       FacultySelector,
     },
     computed: {
-      groupsAreSet() {
-        return Object.keys(this.groups).length
-      },
-      isReady() {
-        return !this.isLoading && this.groupsAreSet && (this.faculties.length === 0 || this.faculty !== null);
-      },
       studentText() {
         return this.participantDescription;
       },
@@ -114,11 +110,14 @@
         currentGroups: null,
         faculties: [],
         isLoading: false,
+        isReady: false,
         faculty: null,
         roleError: '',
         groupError: '',
         enrollResult: 0,
-        groupResult: 0
+        roleIsSet: true,
+        groupResult: 0,
+        getRoleResult: 0,
       }
     },
 
@@ -126,9 +125,20 @@
       mounted() {
         self.iframeresize();
       },
+      groupsAreSet() {
+        var noOfGroups = Object.keys(this.groups).length;
+        return this.institutionType ?  noOfGroups === 3 : noOfGroups === 2;
+      },
+      updateGroups(selectedGroups) {
+        this.groups = selectedGroups;
+        this.isReady = !this.isLoading && 
+                        this.groupsAreSet() &&
+                        this.roleIsSet && 
+                        this.getRoleResult != this.ENROLL_GET_FAILED &&
+                        (this.faculties.length === 0 || this.faculty !== null);        
+      },
       updateSelectStyles(){
         var self = this;
-        console.log("KPAS-LTI document ready.");
         const properties = {
           width: '100%',
         };
@@ -148,7 +158,6 @@
           e.target.dispatchEvent(event);
         });
         self.iframeresize();
-        self.getUsersGroups();
       },
       clearError(errorType) {
           if(errorType == "roleError") {
@@ -161,7 +170,9 @@
       reportError(errorType,e) {
           var errorMsg = e + " Prøv igjen senere og ta kontakt med kompetansesupport@udir.no dersom feilen vedvarer.";
           if(errorType == "roleError") {
+            this.roleIsSet = false;
             this.roleError = errorMsg;
+            this.role
           } else if(errorType == "groupError") {
             this.groupError = errorMsg;
           }
@@ -217,7 +228,7 @@
         return result;
       },
       async addUserGroups() {
-        if (this.groupsAreSet) {
+        if (this.groupsAreSet()) {
           const params = Object.assign({}, 
             this.groups, {
             cookie: window.cookie,
@@ -310,9 +321,11 @@
           this.clearError("roleError");
         } catch(e)
         {
+          this.getRoleResult = this.ENROLL_GET_FAILED;
           this.reportError("roleError", "Kunne ikke hente rolle.");
         }
       },
+      //Note that this method gets the group categories.
       async getGroups() {
         try {
           const response = await api.get('/group/user', {
@@ -347,13 +360,13 @@
       this.ADDED_TO_GROUPS = 2;
       this.ENROLL_FAILED = 3;
       this.ADDTO_GROUPS_FAILED = 4;
+      this.ENROLL_GET_FAILED = 5;
 
       console.log("LTI listening for messages from parent.");
       var self = this;
       const getBgColorMessage = {
         subject: 'kpas-lti.getBgColor'
       }
-      window.parent.postMessage(JSON.stringify(getBgColorMessage), "*");
 
       window.addEventListener('message', function(evt) {
         try {
@@ -368,13 +381,14 @@
               console.log("KPAS-LTI received LTP parent ready.");
               document.body.style.backgroundColor = msg.bgColor;
           } else if(msg.subject == "kpas-lti.ltiparentready") {
-              self.getUsersGroups();
           }
         } catch(e) {
-          console.log("kpas-lti: exception parsing message " + e);
-          console.log("When processing " + evt.data);
         }
       }, false);
+
+      self.getUsersGroups();
+
+      window.parent.postMessage(JSON.stringify(getBgColorMessage), "*");
 
       console.log("Hent kategorier...");
       await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution()]);

@@ -86,6 +86,7 @@
     data() {
       return {
         isLoading: false,
+        selectedgroups: {},
         counties: [],
         communities: [],
         schools: [],
@@ -143,33 +144,26 @@
         }
       },
 
-      async assignToGroups() {
-        const county = {
+      getCountyGroup() {
+        return {
           name: this.chosenCounty.Navn,
           description: `courseId:${this.courseId}:county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`
         };
-        const community = {
+      },
+      getCommunityGroup() {
+        return {
           name: `${this.chosenCommunity.Navn}`,
           description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
         };
-        if(!this.institutionType) {
-          this.$emit('input', {
-            county,
-            community
-          })
-          return;
-        }
-
-        const institution = {
+      },
+      getInstitutionGroup() {
+        return {
           name: `${this.chosenInstitution.FulltNavn}`,
           description: `courseId:${this.courseId}:${this.institutionType}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
         };
-
-        this.$emit('input', {
-          county,
-          community,
-          institution,
-        })
+      },
+      async assignToGroups() {
+        this.$emit('updateGroups', this.selectedgroups);
       },
     },
 
@@ -182,16 +176,20 @@
 
     watch: {
       async chosenCounty(county) {
+        this.selectedgroups.county = this.getCountyGroup();
+
         this.communities = [];
         this.schools = [];
         this.kindergartens = [];
+
+        this.assignToGroups();
+
         await this.getCommunities(county.Fylkesnr);
       },
       async chosenCommunity(community) {
-        if(!this.institutionType) {
-          this.assignToGroups();
-          return;
-        }
+        delete this.selectedgroups.institution;
+        this.selectedgroups.community = this.getCommunityGroup();
+        this.assignToGroups();
         
         if (this.institutionType === "school") {
           this.schools = [];
@@ -201,7 +199,8 @@
           await this.getKindergartens(community.Kommunenr);
         } 
       },
-      chosenInstitution() {
+      async chosenInstitution(institution) {
+        this.selectedgroups.institution = this.getInstitutionGroup();
         this.assignToGroups();
       }
     }
