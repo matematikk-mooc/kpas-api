@@ -30,6 +30,7 @@
     <hr/>
       <h2>Velg grupper</h2>
       <faculty-selector
+        @updateFaculty="updateFaculty"
         :faculties="faculties"
         v-model="faculty"
       />
@@ -91,7 +92,7 @@
       },
       principalText() {
         return this.leaderDescription;
-      }
+      },
     },
     data() {
       return {
@@ -129,13 +130,19 @@
         var noOfGroups = Object.keys(this.groups).length;
         return this.institutionType ?  noOfGroups === 3 : noOfGroups === 2;
       },
-      updateGroups(selectedGroups) {
-        this.groups = selectedGroups;
+      updateIsReady() {
         this.isReady = !this.isLoading && 
                         this.groupsAreSet() &&
                         this.roleIsSet && 
                         this.getRoleResult != this.ENROLL_GET_FAILED &&
                         (this.faculties.length === 0 || this.faculty !== null);        
+      },
+      updateFaculty() {
+        this.updateIsReady();
+      },
+      updateGroups(selectedGroups) {
+        this.groups = selectedGroups;
+        this.updateIsReady();
       },
       updateSelectStyles(){
         var self = this;
