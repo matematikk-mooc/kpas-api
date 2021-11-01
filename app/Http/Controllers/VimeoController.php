@@ -30,7 +30,8 @@ class VimeoController extends Controller
                     $xmlLines .= $line . " ";
                 }
                 $xmlLinesStripped = strip_tags($xmlLines);
-                $transcript .= '<text start="' . $start .'" dur="'. $dur .'"><![CDATA[' . $xmlLinesStripped . "]]></text>";
+                $xmlLinesStrippedFromControlCharacters = preg_replace('/[\x00-\x1F\x7F]/', '', $xmlLinesStripped);
+                $transcript .= '<text start="' . $start .'" dur="'. $dur .'"><![CDATA[' . $xmlLinesStrippedFromControlCharacters . "]]></text>";
             }
             $transcript .= "</language>";
         }

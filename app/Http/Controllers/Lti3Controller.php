@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use IMSGlobal\LTI;
+use App\Http\Responses\SuccessResponse;
 
 /**
  * @lti3 LTI v 1.3 request management
@@ -107,6 +108,8 @@ class Lti3Controller extends Controller
         } catch (\Exception $e) {
             throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
         }
+
+        logger("get_categories: " . print_r($categories, true));
         foreach ($categories as $value) {
             if ($value->name == "Fylke") {
                 $settings["county_category_id"] = (string)$value->id;
@@ -122,6 +125,8 @@ class Lti3Controller extends Controller
                 $settings["community_faculty_category_id"] = (string)$value->id;
             } elseif ($value->name == "Faggruppe fylke") {
                 $settings["county_faculty_category_id"] = (string)$value->id;
+            } elseif ($value->name == "Faggruppe nasjonalt") {
+                $settings["national_faculty_category_id"] = (string)$value->id;
             } elseif ($value->name == "Leder/eier (fylke)") {
                 $settings["county_principals_category_id"] = (string)$value->id;
             } elseif ($value->name == "Leder/eier (kommune)") {
@@ -134,12 +139,23 @@ class Lti3Controller extends Controller
 
     public function institution()
     {
-        $institution = Arr::get(session()->get('settings'), 'custom_institution_category_type');
-        if ($institution) {
-            return $institution;
-        } else {
-            return "school";
-        }
+        logger("===========");
+        logger("INSTITUTION");
+        logger("===========");
+        logger(print_r(session()->get('settings'), true));
+        $customInstitutionType = Arr::get(session()->get('settings'), 'custom_institution_category_type');
+        $customInstitutionLeaderDescription = Arr::get(session()->get('settings'), 'custom_institution_leader_description');
+        $customInstitutionParticipantDescription = Arr::get(session()->get('settings'), 'custom_institution_participant_description');
+
+        logger($customInstitutionParticipantDescription);
+        logger($customInstitutionLeaderDescription);
+
+        $institution["institutionType"] = $customInstitutionType;
+        $institution["institutionLeaderDescription"] = $customInstitutionLeaderDescription ? $customInstitutionLeaderDescription : "Leder/eier";
+        $institution["institutionParticipantDescription"] = $customInstitutionParticipantDescription ? $customInstitutionParticipantDescription : "Deltager";
+        logger(print_r($institution, true));
+
+        return new SuccessResponse($institution);
     }
 
 }

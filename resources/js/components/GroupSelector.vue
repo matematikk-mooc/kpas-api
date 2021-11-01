@@ -1,6 +1,14 @@
 <template>
   <div>
-    <div class="row pt-3 pb-3 mt-3">
+    <div v-bind:style=" chosenCounty && chosenCommunity && (chosenInstitution || !institutionType)? 'border: none;' : 'padding: 10px; border: 1px solid red;' " >
+
+      <span v-if="institutionType === 'school'" v-tooltip.top-center="`
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
+      `">&#9432;</span>
+      <span v-else-if="institutionType === 'kindergarten'" v-tooltip.top-center="`
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
+      `">&#9432;</span>
+
       <label class="select-county col-sm">
         Fylke:<br/>
         <select
@@ -29,7 +37,7 @@
           ></option>
         </select>
       </label>
-      <label class="select-school col-sm" v-if="institution === 'school'">
+      <label class="select-school col-sm" v-if="institutionType === 'school'">
         Skole:<br/>
         <select
           v-model="chosenInstitution"
@@ -43,7 +51,7 @@
           ></option>
         </select>
       </label>
-      <label class="select-school col-sm" v-if="institution === 'kindergarten'">
+      <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
         Barnehage:<br/>
         <select
           v-model="chosenInstitution"
@@ -57,12 +65,6 @@
           ></option>
         </select>
       </label>
-      <span v-if="institution === 'school'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
-      `">&#9432;</span>
-      <span v-else v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
-      `">&#9432;</span>
     </div>
     <div v-if="error"
          class="alert alert-danger">{{error}}
@@ -78,12 +80,13 @@
     name: "GroupSelector",
     props: {
       courseId: Number,
-      institution: String
+      institutionType: String
     },
 
     data() {
       return {
         isLoading: false,
+        selectedgroups: {},
         counties: [],
         communities: [],
         schools: [],
@@ -141,25 +144,26 @@
         }
       },
 
-      async assignToGroups() {
-        const county = {
+      getCountyGroup() {
+        return {
           name: this.chosenCounty.Navn,
           description: `courseId:${this.courseId}:county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`
         };
-        const community = {
+      },
+      getCommunityGroup() {
+        return {
           name: `${this.chosenCommunity.Navn}`,
           description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
         };
-        const institution = {
+      },
+      getInstitutionGroup() {
+        return {
           name: `${this.chosenInstitution.FulltNavn}`,
-          description: `courseId:${this.courseId}:${this.institution}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
+          description: `courseId:${this.courseId}:${this.institutionType}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
         };
-
-        this.$emit('input', {
-          county,
-          community,
-          institution,
-        })
+      },
+      async assignToGroups() {
+        this.$emit('updateGroups', this.selectedgroups);
       },
     },
 
@@ -172,21 +176,33 @@
 
     watch: {
       async chosenCounty(county) {
+        delete this.selectedgroups.community;
+        delete this.selectedgroups.institution;
+        this.selectedgroups.county = this.getCountyGroup();
+
         this.communities = [];
         this.schools = [];
         this.kindergartens = [];
+
+        this.assignToGroups();
+
         await this.getCommunities(county.Fylkesnr);
       },
       async chosenCommunity(community) {
-        if (this.institution === "school") {
+        delete this.selectedgroups.institution;
+        this.selectedgroups.community = this.getCommunityGroup();
+        this.assignToGroups();
+        
+        if (this.institutionType === "school") {
           this.schools = [];
           await this.getSchools(community.Kommunenr);
-        } else if (this.institution === "kindergarten") {
+        } else if (this.institutionType === "kindergarten") {
           this.kindergartens = [];
           await this.getKindergartens(community.Kommunenr);
-        }
+        } 
       },
-      chosenInstitution() {
+      async chosenInstitution(institution) {
+        this.selectedgroups.institution = this.getInstitutionGroup();
         this.assignToGroups();
       }
     }

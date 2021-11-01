@@ -114,20 +114,23 @@ class DataNsrService
 
     public function store_counties()
     {
+        logger("store_counties");
+        $model = new Fylke();
         $counties = $this->getCounties();
         foreach ($counties as $value) {
             $county = (array)$value;
             try {
-                Fylke::updateOrCreate($county);
+                $model->UpdateFylke($county);
             } catch (\Exception $e) {
                 logger($e);
             }
         }
-
+        logger("store_counties complete.");
     }
 
     public function store_communities()
     {
+        logger("store_communities");
         $model = new Kommune();
         $community_keys = $model->getFillable();
         $communities = $this->getCommunities();
@@ -135,12 +138,12 @@ class DataNsrService
             $community = (array)$value;
             try {
                 $filter_fields = filter_institution_fields($community, $community_keys);
-                Kommune::updateOrCreate($filter_fields);
+                $model->UpdateKommune($filter_fields);
             } catch (\Exception $e) {
                 logger($e);
             }
         }
-
+        logger("store_communities complete.");
     }
 
     public function store_schools()
