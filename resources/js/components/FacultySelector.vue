@@ -35,6 +35,7 @@
     watch: {
       chosenFaculty(value) {
         this.$emit('input', value);
+        this.$emit('updateFaculty');
       }
     }
   }
