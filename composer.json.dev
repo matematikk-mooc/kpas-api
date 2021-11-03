@@ -8,8 +8,8 @@
     ],
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/matematikk-mooc/lti-1-3-php-library"
+            "type": "path",
+            "url": "vendor-repo/lti-1-3-php-library"
         }
     ],
     "require": {
