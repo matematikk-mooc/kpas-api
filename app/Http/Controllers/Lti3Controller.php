@@ -58,6 +58,15 @@ class Lti3Controller extends Controller
             throw new LtiException("Error at LTIv3 launch :" . $e->getMessage());
         }
 
+        if ($launch->is_resource_launch()) {
+            logger('Resource Launch!');
+        } else if ($launch->is_deep_link_launch()) {
+            logger('Deep Linking Launch!');
+            return view('main.deep')->withId($launch->get_launch_id());
+        } else {
+            logger('Unknown launch type');
+        }        
+
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
         $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
         
