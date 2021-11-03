@@ -13,6 +13,7 @@
 /database/configs_user_management/*
 /database/configs_laerefag/*
 /app/Ltiv3/jwt_key_kpas/*
+/vendor-repo/lti-1-3-php-library/*
 
 .phpunit.result.cache
 Homestead.json

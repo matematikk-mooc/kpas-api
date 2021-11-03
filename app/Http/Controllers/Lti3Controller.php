@@ -167,4 +167,16 @@ class Lti3Controller extends Controller
         return new SuccessResponse($institution);
     }
 
+    public function kpas_settings()
+    {
+        logger("===========");
+        logger("SETTINGS");
+        logger("===========");
+        $customDeep = Arr::get(session()->get('settings'), 'custom_deep');
+        logger("Deep: " . $customDeep);
+
+        $kpasSettings["deep"] = $customDeep;
+
+        return new SuccessResponse($kpasSettings);
+    }
 }
