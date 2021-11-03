@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bcbc7b78f483abea8a1923f6f54c20be",
+    "content-hash": "b8486e0026883c6cddad5f2222388318",
     "packages": [
         {
             "name": "ankitpokhrel/tus-php",
@@ -2184,15 +2184,22 @@
         {
             "name": "imsglobal/lti-1p3-tool",
             "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matematikk-mooc/lti-1-3-php-library.git",
+                "reference": "eb6a4fba895ac42d9344b0371b50c5eceedb4983"
+            },
             "dist": {
-                "type": "path",
-                "url": "vendor-repo/lti-1-3-php-library",
-                "reference": "3a192de99f3783d76caea462b0d04db28569c123"
+                "type": "zip",
+                "url": "https://api.github.com/repos/matematikk-mooc/lti-1-3-php-library/zipball/eb6a4fba895ac42d9344b0371b50c5eceedb4983",
+                "reference": "eb6a4fba895ac42d9344b0371b50c5eceedb4983",
+                "shasum": ""
             },
             "require": {
                 "fproject/php-jwt": "^4.0",
                 "phpseclib/phpseclib": "^2.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -2205,9 +2212,10 @@
                     "email": "ims.m@rtin.dev"
                 }
             ],
-            "transport-options": {
-                "relative": true
-            }
+            "support": {
+                "source": "https://github.com/matematikk-mooc/lti-1-3-php-library/tree/master"
+            },
+            "time": "2021-11-03T21:54:50+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -2960,16 +2968,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.13.0",
+            "version": "v4.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "50953a2691a922aa1769461637869a0a2faa3f53"
+                "reference": "63a79e8daa781cac14e5195e63ed8ae231dd10fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/50953a2691a922aa1769461637869a0a2faa3f53",
-                "reference": "50953a2691a922aa1769461637869a0a2faa3f53",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/63a79e8daa781cac14e5195e63ed8ae231dd10fd",
+                "reference": "63a79e8daa781cac14e5195e63ed8ae231dd10fd",
                 "shasum": ""
             },
             "require": {
@@ -3010,9 +3018,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v4.13.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.13.1"
             },
-            "time": "2021-09-20T12:20:58+00:00"
+            "time": "2021-11-03T20:52:16+00:00"
         },
         {
             "name": "opis/closure",
