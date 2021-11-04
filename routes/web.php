@@ -12,6 +12,8 @@ Route::group(['prefix' => 'grep'], function() {
     Route::get('/gf5', 'GrepController@gf5');
 });
 
+Route::get('/deep', 'DeepController@index');
+
 Route::view('/cookiecheck', 'cookiecheck.cookiecheck');
 Route::view('/cookiecheckcomplete', 'cookiecheck.cookiecheckcomplete');
 
