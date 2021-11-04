@@ -175,7 +175,7 @@ class Lti3Controller extends Controller
         $customDeep = Arr::get(session()->get('settings'), 'custom_deep');
         logger("Deep: " . $customDeep);
 
-        $kpasSettings["deep"] = $customDeep;
+        $kpasSettings["deep"] = $customDeep ? $customDeep : false;
 
         return new SuccessResponse($kpasSettings);
     }

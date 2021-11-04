@@ -63,7 +63,7 @@
       <div v-if="getRoleResult == ENROLL_GET_FAILED" class='alert alert-danger'>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</div>
       <div v-if="groupResult == ADDTO_GROUPS_FAILED" class='alert alert-danger'>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
       <div v-if="enrollResult == ENROLLED && !settings.deep && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
-      <div v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket!</div>
+      <div v-if="enrollResult == ENROLLED && settings.deep && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket!</div>
       </p>
   </div>
   <div v-else>
