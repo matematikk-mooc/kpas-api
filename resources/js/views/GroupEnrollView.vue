@@ -101,6 +101,7 @@
         information: "Laster inn din rolle...",
         courseId: -1,
         currentGroupsLoaded: false,
+        connectedToParent: false,
         groupsLoaded: false,
         categoriesLoaded: false,
         isPrincipal: false,
@@ -201,12 +202,25 @@
       getParticipantInformation() {
         return this.participantDescription;
       },
+      postMessageToParent(subject) {
+        const message = {
+          subject: subject
+        };
+        window.parent.postMessage(JSON.stringify(message), "*");
+      },
       getUsersGroups() {
         console.log("Get users groups.");
-        const getusergroupsMessage = {
-          subject: 'kpas-lti.getusergroups'
+        this.postMessageToParent('kpas-lti.getusergroups');
+      },
+      getBgColor() {
+        this.postMessageToParent('kpas-lti.getBgColor');
+      },
+      connectToParent() {
+        if(this.connectedToParent === true) {
+          return;
         }
-        window.parent.postMessage(JSON.stringify(getusergroupsMessage), "*");
+        this.postMessageToParent('kpas-lti.connect');
+        window.setTimeout(this.connectToParent, 500);
       },
       updateCurrentGroups() {
         console.log("updateCurrentGroups");
@@ -382,9 +396,6 @@
 
       console.log("LTI listening for messages from parent.");
       var self = this;
-      const getBgColorMessage = {
-        subject: 'kpas-lti.getBgColor'
-      }
 
       window.addEventListener('message', function(evt) {
         try {
@@ -396,17 +407,19 @@
             self.updateCurrentGroups();
           }
           else if(msg.subject == "kpas-lti.ltibgcolor" && msg.bgColor) {
-              console.log("KPAS-LTI received LTP parent ready.");
-              document.body.style.backgroundColor = msg.bgColor;
+            console.log("Received background color.");
+            document.body.style.backgroundColor = msg.bgColor;
           } else if(msg.subject == "kpas-lti.ltiparentready") {
+            self.connectedToParent = true;
+            self.getBgColor();
+            self.getUsersGroups();
           }
         } catch(e) {
+          //This message is not for us.
         }
       }, false);
 
-      self.getUsersGroups();
-
-      window.parent.postMessage(JSON.stringify(getBgColorMessage), "*");
+      self.connectToParent();
 
       console.log("Hent kategorier...");
       await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution(), self.getSettings()]);
