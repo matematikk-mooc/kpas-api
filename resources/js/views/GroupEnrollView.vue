@@ -62,7 +62,8 @@
       <div v-if="enrollResult == ENROLL_FAILED" class='alert alert-danger'>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
       <div v-if="getRoleResult == ENROLL_GET_FAILED" class='alert alert-danger'>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</div>
       <div v-if="groupResult == ADDTO_GROUPS_FAILED" class='alert alert-danger'>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
-      <div v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
+      <div v-if="enrollResult == ENROLLED && !settings.deep && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
+      <div v-if="enrollResult == ENROLLED && settings.deep && groupResult == ADDED_TO_GROUPS" class='alert alert-success'>Oppdateringen var vellykket!</div>
       </p>
   </div>
   <div v-else>
@@ -100,6 +101,7 @@
         information: "Laster inn din rolle...",
         courseId: -1,
         currentGroupsLoaded: false,
+        connectedToParent: false,
         groupsLoaded: false,
         categoriesLoaded: false,
         isPrincipal: false,
@@ -200,12 +202,25 @@
       getParticipantInformation() {
         return this.participantDescription;
       },
+      postMessageToParent(subject) {
+        const message = {
+          subject: subject
+        };
+        window.parent.postMessage(JSON.stringify(message), "*");
+      },
       getUsersGroups() {
         console.log("Get users groups.");
-        const getusergroupsMessage = {
-          subject: 'kpas-lti.getusergroups'
+        this.postMessageToParent('kpas-lti.getusergroups');
+      },
+      getBgColor() {
+        this.postMessageToParent('kpas-lti.getBgColor');
+      },
+      connectToParent() {
+        if(this.connectedToParent === true) {
+          return;
         }
-        window.parent.postMessage(JSON.stringify(getusergroupsMessage), "*");
+        this.postMessageToParent('kpas-lti.connect');
+        window.setTimeout(this.connectToParent, 500);
       },
       updateCurrentGroups() {
         console.log("updateCurrentGroups");
@@ -360,7 +375,17 @@
           }
         });
         this.faculties = response.data.result;
+      },
+      async getSettings() {
+        const response = await api.get('/settings', {
+          params: {
+            cookie: window.cookie,
+          }
+        });
+        this.settings = response.data.result;
+        console.log(this.settings);
       }
+
     },
     async created() {
       this.ENROLLED = 1;
@@ -371,9 +396,6 @@
 
       console.log("LTI listening for messages from parent.");
       var self = this;
-      const getBgColorMessage = {
-        subject: 'kpas-lti.getBgColor'
-      }
 
       window.addEventListener('message', function(evt) {
         try {
@@ -385,20 +407,22 @@
             self.updateCurrentGroups();
           }
           else if(msg.subject == "kpas-lti.ltibgcolor" && msg.bgColor) {
-              console.log("KPAS-LTI received LTP parent ready.");
-              document.body.style.backgroundColor = msg.bgColor;
+            console.log("Received background color.");
+            document.body.style.backgroundColor = msg.bgColor;
           } else if(msg.subject == "kpas-lti.ltiparentready") {
+            self.connectedToParent = true;
+            self.getBgColor();
+            self.getUsersGroups();
           }
         } catch(e) {
+          //This message is not for us.
         }
       }, false);
 
-      self.getUsersGroups();
-
-      window.parent.postMessage(JSON.stringify(getBgColorMessage), "*");
+      self.connectToParent();
 
       console.log("Hent kategorier...");
-      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution()]);
+      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution(), self.getSettings()]);
       this.iframeresize();
       console.log("KPAS ready to display.");
       self.everythingIsReady = true;
