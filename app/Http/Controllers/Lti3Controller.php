@@ -62,7 +62,7 @@ class Lti3Controller extends Controller
             logger('Resource Launch!');
         } else if ($launch->is_deep_link_launch()) {
             logger('Deep Linking Launch!');
-            return view('main.deep')->withId($launch->get_launch_id());
+            return view('main.deep')->withId($launch->get_launch_id())->withConfigDirectory($config_directory);
         } else {
             logger('Unknown launch type');
         }        
