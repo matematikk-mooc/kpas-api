@@ -81,12 +81,19 @@ class GroupController extends Controller
         }
 
         $role = $request->get('role');
-        if ($institutionPresent  && ($role === config('canvas.principal_role'))) {
-            //KURSP-378 temporary fix
-            logger("Group description: " . $institution->getDescription());
-            if((strpos($institution->getDescription(), 'kindergarten') !== false)) {
-                $role = "Leder";
+        if ($role === config('canvas.principal_role')) {
+            //KURSP-378 temporary fix - customInstitutionLeaderDescription should be used instead in future.
+            if($institutionPresent) {
+                logger("Group description: " . $institution->getDescription());
+                if((strpos($institution->getDescription(), 'kindergarten') !== false)) {
+                    $role = "Leder";
+                }
             }
+            $customInstitutionLeaderDescription = Arr::get(session()->get('settings'), 'custom_institution_leader_description');
+            if($customInstitutionLeaderDescription) {
+                $role = $customInstitutionLeaderDescription;
+            }
+
             $groups = $this->createPrincipalGroups($groups, $county, $community, $role);
         }
 
