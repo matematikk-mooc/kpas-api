@@ -48,7 +48,6 @@ Route::group(['prefix' => 'vimeo'], function () {
 
 Route::get('kpasinfo', 'KpasInfoController@index');
 
-
 Route::group(['prefix' => 'enrollment', 'middleware' => 'lti'], function () {
     Route::get('/', 'EnrollmentController@index');
     Route::post('/', 'EnrollmentController@store');

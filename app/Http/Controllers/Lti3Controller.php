@@ -13,7 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use IMSGlobal\LTI;
 use App\Http\Responses\SuccessResponse;
-
+use Dompdf\Dompdf;
 /**
  * @lti3 LTI v 1.3 request management
  *
@@ -58,11 +58,14 @@ class Lti3Controller extends Controller
             throw new LtiException("Error at LTIv3 launch :" . $e->getMessage());
         }
 
+        $diplomaMode = config('constants.options.DIPLOMA_MODE');
+        $roleMode = config('constants.options.ROLE_GROUP_MODE');
+        $kpasMode = $request->query("kpasMode", $roleMode);
         if ($launch->is_resource_launch()) {
             logger('Resource Launch!');
         } else if ($launch->is_deep_link_launch()) {
             logger('Deep Linking Launch!');
-            return view('main.deep')->withId($launch->get_launch_id())->withConfigDirectory($config_directory);
+            return view('main.deep')->withId($launch->get_launch_id())->withConfigDirectory($config_directory)->withDiplomaMode($diplomaMode);
         } else {
             logger('Unknown launch type');
         }        
@@ -92,6 +95,25 @@ class Lti3Controller extends Controller
         session(['settings' => $settings_new['settings']]);
 
         logger("Lti3Middleware has settings.");
+
+        if ($kpasMode == $diplomaMode) {
+            logger("diplomaMode");
+    
+            // instantiate and use the dompdf class
+            $dompdf = new Dompdf();
+            $dompdf->getOptions()->setChroot(public_path());
+    
+            $html = file_get_contents(storage_path() . "/app/public/Diploma/Diplom.html"); 
+    
+            $dompdf->loadHtml($html);
+    
+            // Render the HTML as PDF
+            $dompdf->render();
+        
+            //https://github-wiki-see.page/m/dompdf/dompdf/wiki/DOMPDF-and-Composer-Quick-start-guide
+            $dompdf->stream("sample.pdf", array("Attachment"=>0));
+            return;
+        }
 
         if ($kpasUserView == 'user_management') {
             logger("Display user management view.");
