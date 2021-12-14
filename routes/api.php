@@ -7,6 +7,8 @@ Route::post('institution', 'Lti3Controller@institution')->middleware('lti');
 
 Route::get('settings', 'Lti3Controller@kpas_settings')->middleware('lti');
 
+Route::get('/diploma', 'Lti3Controller@diploma')->middleware('lti');;
+
 Route::post('/run_scheduler', 'CommandController@run_scheduler')->middleware('token_auth');
 
 Route::group(['prefix' => 'nsr'], function () {

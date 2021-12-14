@@ -14,6 +14,7 @@ use Illuminate\View\View;
 use IMSGlobal\LTI;
 use App\Http\Responses\SuccessResponse;
 use Dompdf\Dompdf;
+
 /**
  * @lti3 LTI v 1.3 request management
  *
@@ -97,31 +98,10 @@ class Lti3Controller extends Controller
         logger("Lti3Middleware has settings.");
 
         if ($kpasMode == $diplomaMode) {
-            logger("diplomaMode");
-            logger($settings);
-            $diplomaDisplayName = $settings['canvas_user_display_name'];
-            $diplomaCourseName = $settings['canvas_course_name'];
-            $diplomaDate=date("d.m.Y") ;
-        
-            // instantiate and use the dompdf class
-            $dompdf = new Dompdf();
-            $dompdf->getOptions()->setChroot(public_path());
-    
-            $html = file_get_contents(storage_path() . "/app/public/Diploma/Diplom.html"); 
-            $html = str_replace("::Navn::", $diplomaDisplayName, $html);
-            $html = str_replace("::Kursnavn::", $diplomaCourseName, $html);
-            $html = str_replace("::Dato::", $diplomaDate, $html);
-    
-            $dompdf->loadHtml($html);
-
-
-    
-            // Render the HTML as PDF
-            $dompdf->render();
-        
-            //https://github-wiki-see.page/m/dompdf/dompdf/wiki/DOMPDF-and-Composer-Quick-start-guide
-            $dompdf->stream("sample.pdf", array("Attachment"=>0));
-            return;
+            $downloadLink = true;
+            logger("embed diploma");
+            $settings = session()->get('settings');  
+            return $this->getDiplomaHtml($settings, $downloadLink);
         }
 
         if ($kpasUserView == 'user_management') {
@@ -131,6 +111,15 @@ class Lti3Controller extends Controller
         return view('lti.index');
     }
 
+    private function getDiplomaHtml($settings,$downloadLink) {
+        logger("getDiplomaHtml");
+        logger($settings);
+        $diplomaDisplayName = $settings['custom_canvas_user_display_name'];
+        $diplomaCourseName = $settings['custom_canvas_course_name'];
+        $diplomaDate=date("d.m.Y") ;
+    
+        return view('main.diploma')->withDiplomaName($diplomaDisplayName)->withDiplomaCourseName($diplomaCourseName)->withDiplomaDate($diplomaDate)->withDownloadLinkOn($downloadLink);
+    }
     /**
      *  Get categories for a given course from canvas api
      * @param $settings
@@ -209,5 +198,21 @@ class Lti3Controller extends Controller
         $kpasSettings["deep"] = $customDeep ? $customDeep : false;
 
         return new SuccessResponse($kpasSettings);
+    }
+
+    public function diploma(Request $request)
+    {
+        logger("Diploma");
+        $settings = session('settings');
+        logger($settings);
+        $dompdf = new Dompdf();
+        $dompdf->getOptions()->setChroot(public_path());
+        $dompdf->getOptions()->set('isRemoteEnabled', true);
+        $downloadLink = false;
+        $html = $this->getDiplomaHtml($settings, $downloadLink);
+        logger($html);
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+        $dompdf->stream("Diplom.pdf");
     }
 }
