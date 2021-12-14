@@ -36,7 +36,7 @@ export default {
   methods: {
     iframeresize() {
       this.$nextTick(function () {
-        var h = $("body").height();
+        var h = $("body").height() + 120;
         parent.postMessage(
           JSON.stringify({ subject: "lti.frameResize", height: h }),
           "*"
