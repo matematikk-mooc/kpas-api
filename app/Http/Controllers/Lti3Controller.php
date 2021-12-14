@@ -98,14 +98,23 @@ class Lti3Controller extends Controller
 
         if ($kpasMode == $diplomaMode) {
             logger("diplomaMode");
-    
+            logger($settings);
+            $diplomaDisplayName = $settings['canvas_user_display_name'];
+            $diplomaCourseName = $settings['canvas_course_name'];
+            $diplomaDate=date("d.m.Y") ;
+        
             // instantiate and use the dompdf class
             $dompdf = new Dompdf();
             $dompdf->getOptions()->setChroot(public_path());
     
             $html = file_get_contents(storage_path() . "/app/public/Diploma/Diplom.html"); 
+            $html = str_replace("::Navn::", $diplomaDisplayName, $html);
+            $html = str_replace("::Kursnavn::", $diplomaCourseName, $html);
+            $html = str_replace("::Dato::", $diplomaDate, $html);
     
             $dompdf->loadHtml($html);
+
+
     
             // Render the HTML as PDF
             $dompdf->render();
