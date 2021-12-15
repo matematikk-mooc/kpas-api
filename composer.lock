@@ -2330,12 +2330,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matematikk-mooc/lti-1-3-php-library.git",
-                "reference": "a220aceef17de81c1da9c5decb43ddf54146b463"
+                "reference": "a4e98b14d8d435286ad3a211a6ec557de8733f0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matematikk-mooc/lti-1-3-php-library/zipball/a220aceef17de81c1da9c5decb43ddf54146b463",
-                "reference": "a220aceef17de81c1da9c5decb43ddf54146b463",
+                "url": "https://api.github.com/repos/matematikk-mooc/lti-1-3-php-library/zipball/a4e98b14d8d435286ad3a211a6ec557de8733f0a",
+                "reference": "a4e98b14d8d435286ad3a211a6ec557de8733f0a",
                 "shasum": ""
             },
             "require": {
@@ -2358,7 +2358,7 @@
             "support": {
                 "source": "https://github.com/matematikk-mooc/lti-1-3-php-library/tree/master"
             },
-            "time": "2021-12-14T10:18:15+00:00"
+            "time": "2021-12-15T10:12:49+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
