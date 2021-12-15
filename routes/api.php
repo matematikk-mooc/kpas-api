@@ -7,6 +7,8 @@ Route::post('institution', 'Lti3Controller@institution')->middleware('lti');
 
 Route::get('settings', 'Lti3Controller@kpas_settings')->middleware('lti');
 
+Route::get('/diploma', 'Lti3Controller@diploma')->middleware('lti');;
+
 Route::post('/run_scheduler', 'CommandController@run_scheduler')->middleware('token_auth');
 
 Route::group(['prefix' => 'nsr'], function () {
@@ -22,11 +24,9 @@ Route::group(['prefix' => 'nsr'], function () {
 Route::get('kindergartens', 'SkolerController@all_barnehage');
 Route::get('kindergartens/{kommunenr}', 'SkolerController@barnehager');
 
-
 Route::get('user_activity', 'EnrollmentActivityController@index');
 Route::get('user_activity/{course_id}', 'EnrollmentActivityController@show');
 Route::post('user_activity', 'EnrollmentActivityController@store')->middleware('token_auth');
-
 
 Route::group(['prefix' => 'group'], function () {
     Route::get('/user', 'GroupController@index')->middleware('lti');
@@ -48,12 +48,10 @@ Route::group(['prefix' => 'vimeo'], function () {
 
 Route::get('kpasinfo', 'KpasInfoController@index');
 
-
 Route::group(['prefix' => 'enrollment', 'middleware' => 'lti'], function () {
     Route::get('/', 'EnrollmentController@index');
     Route::post('/', 'EnrollmentController@store');
 });
-
 
 Route::group(['prefix' => 'faculties', 'middleware' => 'lti'], function () {
     Route::get('/', 'FacultyController@index');
