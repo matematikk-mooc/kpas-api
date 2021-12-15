@@ -2,8 +2,6 @@
 Route::post('/lti3', 'Lti3Controller@index')->name('Lti3.index');
 Route::post('/launch', 'Lti3Controller@launch')->name('Lti3.launch');
 
-Route::get('/diploma', 'Lti3Controller@diploma');
-
 Route::post('/', 'LtiController@index')->name('lti.index');
 
 Route::group(['prefix' => 'statistics'], function() {
