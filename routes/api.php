@@ -28,7 +28,6 @@ Route::get('user_activity', 'EnrollmentActivityController@index');
 Route::get('user_activity/{course_id}', 'EnrollmentActivityController@show');
 Route::post('user_activity', 'EnrollmentActivityController@store')->middleware('token_auth');
 
-
 Route::group(['prefix' => 'group'], function () {
     Route::get('/user', 'GroupController@index')->middleware('lti');
     Route::post('/user', 'GroupController@store')->middleware('auth.dataporten');
@@ -53,7 +52,6 @@ Route::group(['prefix' => 'enrollment', 'middleware' => 'lti'], function () {
     Route::get('/', 'EnrollmentController@index');
     Route::post('/', 'EnrollmentController@store');
 });
-
 
 Route::group(['prefix' => 'faculties', 'middleware' => 'lti'], function () {
     Route::get('/', 'FacultyController@index');
