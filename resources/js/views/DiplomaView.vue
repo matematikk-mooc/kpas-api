@@ -64,6 +64,11 @@ export default {
   },
   async created() {
     this.iframeresize();
+    const mql = window.matchMedia('(max-width: 400px)');
+    var self = this;
+    mql.onchange = (e) => { 
+      self.iframeresize();
+    }
   },
 };
 </script>

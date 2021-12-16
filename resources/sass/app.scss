@@ -4,68 +4,50 @@
 @import '~bootstrap/scss/bootstrap';
 @import '~select2/dist/css/select2.min.css';
 
+.mainDiplomaPage {
+  height: 250mm;
+  background: white;
+  font-family: "Helvetica";
+  color: #034961;
+  text-decoration: none;
+  vertical-align: baseline;
+  font-style: normal;
+  text-align: center;
+  margin: 0;
+}
+
 .diplomaBorder {
   border: 6pt solid #034961;
 }
 .diplomaTitle {
-  font-family: "Helvetica";
-  color: #034961;
   font-weight: 700;
-  text-decoration: none;
-  vertical-align: baseline;
-  font-size: 96pt;
-  font-style: normal;
-  text-align: center;
-  margin: 0;
-  padding-bottom: 50px;
+  font-size: 7em;
+  padding-bottom: 40px;
 }
 
 .diplomaName {
-  color: #034961;
   font-weight: 400;
-  text-decoration: none;
-  vertical-align: baseline;
-  font-size: 42pt;
-  font-family: "Helvetica";
-  font-style: normal;
-  text-align: center;
-  margin: 0;
+  font-size: 4em;
   padding-bottom: 50px;
 }
 
 .diplomaDod {
-  color: #034961;
   font-weight: 400;
-  text-decoration: none;
-  vertical-align: baseline;
-  font-size: 18pt;
+  font-size: 1em;
   font-family: "Helvetica";
-  font-style: normal;
-  text-align: center;
   padding-bottom: 10px;
 }
 
 .diplomaDescription {
-  color: #034961;
   font-weight: 700;
-  text-decoration: none;
-  vertical-align: baseline;
-  font-size: 32pt;
-  font-family: "Helvetica";
-  font-style: normal;
-  text-align: center;
+  font-size: 3em;
   padding-bottom: 10px;
 }
 .diplomaIssuedBy,
 .diplomaIssuedPlace {
-  color: #034961;
   font-weight: 400;
-  text-decoration: none;
-  vertical-align: baseline;
-  font-size: 18pt;
+  font-size: 1em;
   font-family: "Helvetica";
-  font-style: normal;
-  text-align: center;
   padding-bottom: 50px;
 }
 
@@ -74,15 +56,19 @@
 }
 
 .diplomaIssuedByImage {
-  width: 191.82px; 
-  height: 55.06px; 
+  padding-right: 1em;
+  width: 14em; 
 }
 
-.main-page {
-  height: 250mm;
-  background: white;
+@media only screen and (max-width: 400px) {
+  body { 
+    height: 180mm;
+    font-size: 6px;
+  }
+  .mainDiplomaPage {
+    height: 160mm;
+  }   
 }
-
 @page { margin: 20px 20px 0px 5px; }
 body { margin: 20px 20px 0px 5px; }
 
