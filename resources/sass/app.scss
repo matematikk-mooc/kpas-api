@@ -56,16 +56,21 @@
 }
 
 .diplomaIssuedByImage {
-  padding-right: 1em;
+  padding-right: 2em;
   width: 14em; 
+}
+
+.kpasAlert {
+  font-size:1em;
 }
 
 @media only screen and (max-width: 400px) {
   body { 
     height: 180mm;
-    font-size: 6px;
+    font-size: 12px;
   }
   .mainDiplomaPage {
+    font-size: 6px;
     height: 160mm;
   }   
 }
@@ -199,7 +204,8 @@ body { margin: 20px 20px 0px 5px; }
       border-radius: 5px;
       font-weight: normal;
       line-height: 20px;
-      padding: 20px;
+      font-size: 1em;
+      padding: 10px;
       &:enabled {
         background: linear-gradient(
           -180deg,

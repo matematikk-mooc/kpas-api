@@ -16,8 +16,8 @@
       </button>
     </p>
     <p>
-      <div v-if="isLoadingDiploma" class="alert alert-warning">Laster ned diplomet <div class="spinner-border text-danger"></div></div>
-      <div v-if="diplomaLoaded" class='alert alert-success'>Diplomet er lastet ned til din nedlastingsmappe.</div>
+      <div v-if="isLoadingDiploma" class="alert alert-warning kpasAlert">Laster ned diplomet <div class="spinner-border text-danger"></div></div>
+      <div v-if="diplomaLoaded" class='alert alert-success kpasAlert'>Diplomet er lastet ned til din nedlastingsmappe.</div>
     </p>
   </div>
 </template>
