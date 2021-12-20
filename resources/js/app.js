@@ -25,6 +25,7 @@ try {
 Vue.component('group-enroll-view', require('./views/GroupEnrollView').default);
 Vue.component('merge-user-view', require('./views/MergeUserView').default);
 Vue.component('diploma-view', require('./views/DiplomaView').default);
+Vue.component('kpas-embed-view', require('./views/KpasEmbedView').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

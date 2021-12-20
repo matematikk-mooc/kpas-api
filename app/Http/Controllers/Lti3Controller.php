@@ -66,7 +66,11 @@ class Lti3Controller extends Controller
             logger('Resource Launch!');
         } else if ($launch->is_deep_link_launch()) {
             logger('Deep Linking Launch!');
-            return view('main.deep')->withId($launch->get_launch_id())->withConfigDirectory($config_directory)->withDiplomaMode($diplomaMode);
+            return view('main.deep')
+            ->withId($launch->get_launch_id())
+            ->withConfigDirectory($config_directory)
+            ->withDiplomaMode($diplomaMode)
+            ->withRequest($request);
         } else {
             logger('Unknown launch type');
         }        
@@ -100,8 +104,11 @@ class Lti3Controller extends Controller
         if ($kpasMode == $diplomaMode) {
             $downloadLink = true;
             logger("embed diploma");
+            $noLogoList = [];
+            $logoList = $request->query("logo", $noLogoList);
+
             $settings = session()->get('settings');  
-            return $this->getDiplomaHtml($settings, $downloadLink);
+            return $this->getDiplomaHtml($settings, $logoList, $downloadLink);
         }
 
         if ($kpasUserView == 'user_management') {
@@ -111,14 +118,19 @@ class Lti3Controller extends Controller
         return view('lti.index');
     }
 
-    private function getDiplomaHtml($settings,$downloadLink) {
+    private function getDiplomaHtml($settings, $logoList, $downloadLink) {
         logger("getDiplomaHtml");
         logger($settings);
         $diplomaDisplayName = $settings['custom_canvas_user_display_name'];
         $diplomaCourseName = $settings['custom_canvas_course_name'];
         $diplomaDate=date("d.m.Y") ;
     
-        return view('main.diploma')->withDiplomaName($diplomaDisplayName)->withDiplomaCourseName($diplomaCourseName)->withDiplomaDate($diplomaDate)->withDownloadLinkOn($downloadLink);
+        return view('main.diploma')
+            ->withDiplomaName($diplomaDisplayName)
+            ->withDiplomaCourseName($diplomaCourseName)
+            ->withDiplomaDate($diplomaDate)
+            ->withLogoList($logoList)
+            ->withDownloadLinkOn($downloadLink);
     }
     /**
      *  Get categories for a given course from canvas api
