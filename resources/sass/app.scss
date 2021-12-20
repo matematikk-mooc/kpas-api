@@ -4,13 +4,81 @@
 @import '~bootstrap/scss/bootstrap';
 @import '~select2/dist/css/select2.min.css';
 
-body {
-    background-color: #ffffff;
-    margin-bottom: 5em;
-    font-size: 16px;
+.mainDiplomaPage {
+  height: 250mm;
+  background: white;
+  font-family: "Helvetica";
+  color: #034961;
+  text-decoration: none;
+  vertical-align: baseline;
+  font-style: normal;
+  text-align: center;
+  margin: 0;
 }
 
+.diplomaBorder {
+  border: 6pt solid #034961;
+}
+.diplomaTitle {
+  font-weight: 700;
+  font-size: 7em;
+  padding-bottom: 40px;
+}
+
+.diplomaName {
+  font-weight: 400;
+  font-size: 4em;
+  padding-bottom: 50px;
+}
+
+.diplomaDod {
+  font-weight: 400;
+  font-size: 1em;
+  font-family: "Helvetica";
+  padding-bottom: 10px;
+}
+
+.diplomaDescription {
+  font-weight: 700;
+  font-size: 3em;
+  padding-bottom: 10px;
+}
+.diplomaIssuedBy,
+.diplomaIssuedPlace {
+  font-weight: 400;
+  font-size: 1em;
+  font-family: "Helvetica";
+  padding-bottom: 50px;
+}
+
+.diplomaCenter {
+  text-align: center;
+}
+
+.diplomaIssuedByImage {
+  padding-right: 2em;
+  width: 14em; 
+}
+
+.kpasAlert {
+  font-size:1em;
+}
+
+@media only screen and (max-width: 400px) {
+  body { 
+    height: 180mm;
+    font-size: 12px;
+  }
+  .mainDiplomaPage {
+    font-size: 6px;
+    height: 160mm;
+  }   
+}
+@page { margin: 20px 20px 0px 5px; }
+body { margin: 20px 20px 0px 5px; }
+
 .container {
+  max-width: 100%
 }
 
 .card {
@@ -136,7 +204,8 @@ body {
       border-radius: 5px;
       font-weight: normal;
       line-height: 20px;
-      padding: 20px;
+      font-size: 1em;
+      padding: 10px;
       &:enabled {
         background: linear-gradient(
           -180deg,
