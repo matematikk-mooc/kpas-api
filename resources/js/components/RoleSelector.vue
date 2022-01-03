@@ -28,9 +28,9 @@
     computed: {
       principalWarning() {
         if(this.institutionType == "school") {
-          return "NB! Dersom du er skoleeier må du velge tilhørighet til en gitt skole, selv om du har ansvar for alle skolene.";
+          return "NB! Dersom du er skoleeier kan du velge tilhørighet til Annet/Annen fylke/kommune/skole.";
         } else if(this.institutionType == "kindergarten") {
-          return "NB! Dersom du er barnehageeier må du velge tilhørighet til en gitt barnehage, selv om du har ansvar for alle barnehagene.";
+          return "NB! Dersom du er barnehageeier kan du velge tilhørighet til Annet/Annen fylke/kommune/barnehage.";
         }
         return "";
       }
