@@ -1,15 +1,17 @@
+@extends('layouts.app')
 <template>
   <div>
-    <h1><a :href="urlRoleMode">Sett inn Rolle- og gruppeverktøy</a></h1>
-    <h1><a :href="urlDiplomaMode">Sett inn Diplom</a></h1>
+    <h1>Rolle- og gruppeverktøy</h1>
+    <a :href="urlRoleMode">Sett inn Rolle- og gruppeverktøy</a>
+    
+    <h1>Diplom</h1>
+    Velg hvilke logoer som skal vises nederst på diplomet:
 
     <div v-for="logo in logoList">
-        <label>{{logo}}</label>
+        <label><img class="diplomaIssuedByImage" :src="'images/' + logo"></label>
         <input type="checkbox" v-model="logoSelected" :value="logo"/>
-    </div>        
-
-    <br>
-    <span>Checked names: {{ logoSelected }}</span>
+    </div> 
+    <a :href="urlDiplomaMode">Sett inn Diplom</a>       
   </div>
 </template>
 

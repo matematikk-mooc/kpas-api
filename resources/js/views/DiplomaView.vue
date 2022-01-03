@@ -28,7 +28,7 @@ export default {
   name: "Diploma",
   data() {
     return {
-      tokenData: window.token,
+      everythingIsReady: false,
       isLoadingDiploma: false,
       diplomaLoaded: false,
     };
@@ -46,7 +46,7 @@ export default {
     async fetchDiploma() {
         this.diplomaLoaded = false;
         this.isLoadingDiploma = true;
-        const response = await api.get("/diploma", {
+        const response = await api.get("/diploma/pdf", {
           params: { 
             cookie: window.cookie            
           },
