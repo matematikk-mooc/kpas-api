@@ -157,6 +157,11 @@ class CanvasRepository
         return $this->canvasService->getEnrollmentsByCourse($userId, $courseId);
     }
 
+    public function getModulesForCourse(int $courseId, $studentId)
+    {
+        return $this->canvasService->getModulesForCourse($userId, $courseId);
+    }
+
     public function getTotalStudents(int $courseId): array
     {
         return $this->canvasService->getTotalStudents($courseId);

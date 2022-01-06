@@ -330,6 +330,26 @@ class CanvasService
         }
     }
 
+    public function getModulesForCourse(int $courseId, int $studentId) {
+        try {
+            $modulesHref = "courses/${courseId}/modules";
+            $modules = $this->request($modulesHref, 'GET', [], [], true);
+
+            foreach($modules as $module) {
+                $moduleId = $module->id;
+                $itemsHref = "courses/${courseId}/modules/${moduleId}/items?student_id=${studentId}";
+                logger($itemsHref);
+                $items = $this->request($itemsHref, 'GET', [], [], true);
+                $module->items = $items;
+            }
+
+            return $modules;
+        } catch (ClientException $exception) {
+            logger("CanvasService.getModulesForCourse: ".$exception->getMessage());
+            throw $exception;
+        }
+    }
+
     public function getUsersGroups(int $userId)
     {
         try {
