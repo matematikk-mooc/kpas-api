@@ -25,7 +25,13 @@ function filter_obsolete_counties($data)
 function format_return_data($data)
 {
     return collect($data)
-        ->sortBy('Navn')
+        ->sortBy(function ($enhet, $key) {
+            if($enhet["Navn"] == Fylke::$annetFylkesNavn || $enhet["Navn"] == Kommune::$annetKommuneNavn || $enhet["Navn"] == Skole::$annetSkoleNavn || $enhet["Navn"] == Barnehage::$annetBarnehageNavn ) {
+                return "";
+            }
+
+            return $enhet['Navn'];
+        })
         ->values()
         ->toArray();
 }
@@ -110,7 +116,7 @@ class SkolerController extends Controller
      */
     public function kommuner(string $fylkesnr)
     {
-        $kommuner = Kommune::where('ErNedlagt', false)->where('Fylkesnr', $fylkesnr)->get();
+        $kommuner = Kommune::where('ErNedlagt', false)->where('Fylkesnr', $fylkesnr)->orWhere('Fylkesnr', Fylke::$annetFylkesNr)->get();
         $kommuner = format_return_data($kommuner);
         return new SuccessResponse($kommuner);
     }
@@ -123,7 +129,7 @@ class SkolerController extends Controller
      */
     public function skoler_by_community(string $kommunenr)
     {
-        $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr)->get();
+        $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr)->orWhere('Kommunenr', Kommune::$annetKommuneNr)->get();
         $skoler = format_return_data($skoler);
         return new SuccessResponse($skoler);
     }
@@ -136,12 +142,12 @@ class SkolerController extends Controller
      */
     public function skoler_by_county(string $fylkesNr)
     {
-        $kommuner = Kommune::where('ErNedlagt', false)->where('Fylkesnr', $fylkesNr)->get();
+        $kommuner = Kommune::where('ErNedlagt', false)->where('Fylkesnr', $fylkesNr)->orWhere('Fylkesnr', Fylke::$annetFylkesNr)->get();
         $all_schools_for_county = array();
 
         foreach ($kommuner as $kommune) {
             $kommunenr = $kommune->Kommunenr;
-            $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
+            $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr)->orWhere('Fylkesnr', Fylke::$annetFylkesNr);
             $skoler = $skoler->where(function ($query) {
                 $query->where('ErGrunnskole', true)->orWhere('ErVideregaaendeSkole', true);
             })->get();
@@ -160,7 +166,7 @@ class SkolerController extends Controller
      */
     public function barnehager(string $kommunenr)
     {
-        $skoler = Barnehage::where("KommuneNr", $kommunenr)->where("ErBarnehage", true)->get();
+        $skoler = Barnehage::where("KommuneNr", $kommunenr)->orWhere('Kommunenr', Kommune::$annetKommuneNr)->where("ErBarnehage", true)->get();
         $skoler = format_return_data($skoler);
         return new SuccessResponse($skoler);
     }

@@ -36,7 +36,9 @@ class DataNsrService
 
     public function getCounties(): array
     {
-        return $this->request($this->nsrDomain, 'fylker');
+        $fylker = $this->request($this->nsrDomain, 'fylker');
+        logger(print_r($fylker,true));
+        return $fylker;
     }
 
     public function getCommunities(): array
@@ -116,6 +118,9 @@ class DataNsrService
     {
         logger("store_counties");
         $model = new Fylke();
+
+        $model->CreateAnnetFylke();
+
         $counties = $this->getCounties();
         foreach ($counties as $value) {
             $county = (array)$value;
@@ -132,6 +137,9 @@ class DataNsrService
     {
         logger("store_communities");
         $model = new Kommune();
+
+        $model->CreateAnnenKommune();
+
         $community_keys = $model->getFillable();
         $communities = $this->getCommunities();
         foreach ($communities as $value) {
@@ -149,6 +157,9 @@ class DataNsrService
     public function store_schools()
     {
         $model = new Skole();
+
+        $model->CreateAnnenSkole();
+
         $school_keys = $model->getFillable();
         $org = $this->getSchools();
 
@@ -181,6 +192,9 @@ class DataNsrService
     public function store_kindergartens()
     {
         $model = new Barnehage();
+
+        $model->CreateAnnenBarnehage();
+
         $kindergartens_keys = $model->getFillable();
         $org = $this->getKindergartens();
 

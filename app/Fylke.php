@@ -6,10 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fylke extends Model
 {
+    public static $annetFylkesNavn = "Annet";
+    public static $annetFylkesNr = '99';
     public $incrementing = false;
     protected $primaryKey = 'Fylkesnr';
     protected $fillable = ['Fylkesnr', 'Navn', 'OrgNr', 'OrgNrFylkesmann'];
 
+    public function CreateAnnetFylke() {
+        $annetOrgNr = '99';
+
+        $key[$this->getKeyName()] = Fylke::$annetFylkesNr;
+        Fylke::updateOrCreate($key, ['Fylkesnr' => Fylke::$annetFylkesNr, 'Navn' => Fylke::$annetFylkesNavn, 'OrgNr' => $annetOrgNr, 'OrgNrFylkesmann' => $annetOrgNr]);
+
+    }
     public function UpdateFylke($county) {
         $key[$this->getKeyName()] = $county[$this->getKeyName()];
         Fylke::updateOrCreate($key, $county);

@@ -2,23 +2,33 @@
 
 
 @section('content')
-<div class="mainDiplomaPage diplomaBorder">
-    <p class="diplomaTitle">DIPLOM</p>
-    <p class="diplomaName">{{$diplomaName}}</p>
-    <p class="diplomaDod">    har fullført kompetansepakken</p>
-    <p class="diplomaDescription">{{$diplomaCourseName}}</p>
-    <p class="diplomaIssuedBy">Kompetansepakken er levert av Utdanningsdirektoratet</p>
-    <p class="diplomaIssuedPlace">Tromsø {{$diplomaDate}}</p> 
-    <p class="diplomaCenter">
-        <img class="diplomaIssuedByImage" alt="" src="images/udir.png" title="Utdanningsdirektoratet">
-        <a href="https://www.inn.no/" target="_blank"><img class="diplomaIssuedByImage" alt="" src="images/hinn.png" title="HINN"></a>
-    </p>
-</div>
-<diploma-view>
-</diploma-view>
+@if($hasDeservedDiploma)
+    <div class="mainDiplomaPage diplomaBorder">
+        <p class="diplomaTitle">DIPLOM</p>
+        <p class="diplomaName">{{$diplomaName}}</p>
+        <p class="diplomaDod">    har fullført kompetansepakken</p>
+        <p class="diplomaDescription">{{$diplomaCourseName}}</p>
+        <p class="diplomaIssuedBy">Kompetansepakken er levert av Utdanningsdirektoratet</p>
+        <p class="diplomaIssuedPlace">Tromsø {{$diplomaDate}}</p> 
+        <p class="diplomaCenter">
+            @foreach ($logoList as $logo)
+                <img class="diplomaIssuedByImage" alt="" src="images/{{$logo}}" title="{{$logo}}">
+            @endforeach        
+        </p>
+    </div>
+    <diploma-view>
+    </diploma-view>
+@else
+    <no-diploma-view>
+    </no-diploma-view>
+@endif
 
 @endsection
+
+@section('scripts')
 
 @if($downloadLinkOn)
 <script>window.cookie = '{{ session()->getId() }}';</script>
 @endif
+
+@endsection

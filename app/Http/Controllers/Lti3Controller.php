@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\LtiException;
 use App\Ltiv3\LTI3_Database;
 use App\Services\CanvasService;
+use App\Services\DiplomaService;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -13,6 +14,7 @@ use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use IMSGlobal\LTI;
 use App\Http\Responses\SuccessResponse;
+use App\Http\Responses\ErrorResponse;
 use Dompdf\Dompdf;
 
 /**
@@ -22,8 +24,6 @@ use Dompdf\Dompdf;
  */
 class Lti3Controller extends Controller
 {
-
-
     public function __construct()
     {
         $this->middleware('lti3')->only('index');
@@ -59,6 +59,7 @@ class Lti3Controller extends Controller
             throw new LtiException("Error at LTIv3 launch :" . $e->getMessage());
         }
 
+
         $diplomaMode = config('constants.options.DIPLOMA_MODE');
         $roleMode = config('constants.options.ROLE_GROUP_MODE');
         $kpasMode = $request->query("kpasMode", $roleMode);
@@ -66,12 +67,17 @@ class Lti3Controller extends Controller
             logger('Resource Launch!');
         } else if ($launch->is_deep_link_launch()) {
             logger('Deep Linking Launch!');
-            return view('main.deep')->withId($launch->get_launch_id())->withConfigDirectory($config_directory)->withDiplomaMode($diplomaMode);
+            return view('main.deep')
+            ->withId($launch->get_launch_id())
+            ->withConfigDirectory($config_directory)
+            ->withDiplomaMode($diplomaMode)
+            ->withRequest($request);
         } else {
             logger('Unknown launch type');
         }        
-
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
+        logger("SETTINGS:" . print_r($settings, true));
+
         $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
         
         $kpasUserView = "group_management";
@@ -93,6 +99,12 @@ class Lti3Controller extends Controller
         foreach ($settings as $key => $value) {
             Arr::set($settings_new, 'settings.custom_' . $key, $value);
         }
+
+        if ($kpasMode == $diplomaMode) {
+            $noLogoList = [];
+            $logoList = $request->query("logo", $noLogoList);
+            Arr::set($settings_new, 'settings.custom_diploma_logo_list', $logoList);
+        }
         session(['settings' => $settings_new['settings']]);
 
         logger("Lti3Middleware has settings.");
@@ -100,8 +112,15 @@ class Lti3Controller extends Controller
         if ($kpasMode == $diplomaMode) {
             $downloadLink = true;
             logger("embed diploma");
+
             $settings = session()->get('settings');  
-            return $this->getDiplomaHtml($settings, $downloadLink);
+            $diplomaService = new DiplomaService();
+            $hasDeservedDiploma = $diplomaService->hasDeservedDiploma($settings);
+            if(!$hasDeservedDiploma) {
+                $downloadLink = false;
+            }
+
+            return $diplomaService->getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma);
         }
 
         if ($kpasUserView == 'user_management') {
@@ -111,15 +130,8 @@ class Lti3Controller extends Controller
         return view('lti.index');
     }
 
-    private function getDiplomaHtml($settings,$downloadLink) {
-        logger("getDiplomaHtml");
-        logger($settings);
-        $diplomaDisplayName = $settings['custom_canvas_user_display_name'];
-        $diplomaCourseName = $settings['custom_canvas_course_name'];
-        $diplomaDate=date("d.m.Y") ;
-    
-        return view('main.diploma')->withDiplomaName($diplomaDisplayName)->withDiplomaCourseName($diplomaCourseName)->withDiplomaDate($diplomaDate)->withDownloadLinkOn($downloadLink);
-    }
+   
+
     /**
      *  Get categories for a given course from canvas api
      * @param $settings
@@ -200,19 +212,33 @@ class Lti3Controller extends Controller
         return new SuccessResponse($kpasSettings);
     }
 
-    public function diploma(Request $request)
+    public function diplomaPdf(Request $request)
     {
         logger("Diploma");
-        $settings = session('settings');
+        $settings = session()->get('settings');  
         logger($settings);
-        $dompdf = new Dompdf();
-        $dompdf->getOptions()->setChroot(public_path());
-        $dompdf->getOptions()->set('isRemoteEnabled', true);
-        $downloadLink = false;
-        $html = $this->getDiplomaHtml($settings, $downloadLink);
-        logger($html);
-        $dompdf->loadHtml($html);
-        $dompdf->render();
-        $dompdf->stream("Diplom.pdf");
+
+        $diplomaService = new DiplomaService();
+        $hasDeservedDiploma = $diplomaService->hasDeservedDiploma($settings);
+        if($hasDeservedDiploma) {
+            $dompdf = new Dompdf();
+
+            //To make images/ references work.
+            $dompdf->getOptions()->setChroot(public_path());
+    
+            //To make external references to css etc. work.
+            $dompdf->getOptions()->set('isRemoteEnabled', true);
+            $downloadLink = false;
+            $noLogoList = [];
+            $logoList = $request->query("logo", $noLogoList);
+
+            $html = $diplomaService->getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma);
+            logger($html);
+            $dompdf->loadHtml($html);
+            $dompdf->render();
+            $dompdf->stream("Diplom.pdf");
+        } else {
+            return (new ErrorResponse("Alle krav må fullføres før diplom kan lastes ned.", 403))->toResponse($request);
+        }
     }
 }
