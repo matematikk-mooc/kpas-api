@@ -34,7 +34,7 @@ class Skole extends Model
             'Kommunenr' => Kommune::$annetKommuneNr, 
             'Navn' => Skole::$annetSkoleNavn, 
             'FulltNavn' => Skole::$annetSkoleNavn,
-            'OrgNr' => '99', 
+            'OrgNr' => '999999999', 
             'NSRId' => $annenNsrId,
             'ErSkole' => true,
             'ErSkoleEier' => false,

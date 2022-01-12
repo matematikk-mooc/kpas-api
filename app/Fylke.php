@@ -13,7 +13,7 @@ class Fylke extends Model
     protected $fillable = ['Fylkesnr', 'Navn', 'OrgNr', 'OrgNrFylkesmann'];
 
     public function CreateAnnetFylke() {
-        $annetOrgNr = '99';
+        $annetOrgNr = '999999999';
 
         $key[$this->getKeyName()] = Fylke::$annetFylkesNr;
         Fylke::updateOrCreate($key, ['Fylkesnr' => Fylke::$annetFylkesNr, 'Navn' => Fylke::$annetFylkesNavn, 'OrgNr' => $annetOrgNr, 'OrgNrFylkesmann' => $annetOrgNr]);
