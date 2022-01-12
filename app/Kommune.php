@@ -18,7 +18,7 @@ class Kommune extends Model
         Kommune::updateOrCreate($key, [
             'Fylkesnr' => Fylke::$annetFylkesNr, 
             'Navn' => Kommune::$annetKommuneNavn, 
-            'OrgNr' => '99', 
+            'OrgNr' => '999999999', 
             'Kommunenr' => Kommune::$annetKommuneNr, 
             'ErNedlagt' => false
         ]);
