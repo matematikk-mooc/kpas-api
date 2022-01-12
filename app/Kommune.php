@@ -19,7 +19,7 @@ class Kommune extends Model
             'Fylkesnr' => Fylke::$annetFylkesNr, 
             'Navn' => Kommune::$annetKommuneNavn, 
             'OrgNr' => '99', 
-            'Kommunenr' => Kommune::$annetKommuneNavn, 
+            'Kommunenr' => Kommune::$annetKommuneNr, 
             'ErNedlagt' => false
         ]);
 
