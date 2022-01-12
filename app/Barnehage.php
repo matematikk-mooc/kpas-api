@@ -34,7 +34,7 @@ class Barnehage extends Model
             'Kommunenr' => '99', 
             'Navn' => Barnehage::$annetBarnehageNavn, 
             'FulltNavn' => Barnehage::$annetBarnehageNavn,
-            'OrgNr' => '99', 
+            'OrgNr' => '999999999', 
             'NSRId' => $annenNsrId,
             'FylkeNr' => Fylke::$annetFylkesNr,
             'ErBarnehage' => true,
