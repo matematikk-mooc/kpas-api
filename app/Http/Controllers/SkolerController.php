@@ -147,7 +147,7 @@ class SkolerController extends Controller
 
         foreach ($kommuner as $kommune) {
             $kommunenr = $kommune->Kommunenr;
-            $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr)->orWhere('Fylkesnr', Fylke::$annetFylkesNr);
+            $skoler = Skole::where('ErSkole', true)->where("Kommunenr", $kommunenr);
             $skoler = $skoler->where(function ($query) {
                 $query->where('ErGrunnskole', true)->orWhere('ErVideregaaendeSkole', true);
             })->get();
