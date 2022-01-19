@@ -14,8 +14,10 @@
   font-style: normal;
   text-align: center;
   margin: 0;
-  position: relative;
+  display: flex;
+  flex-direction: column;
 }
+
 .diplomaContent {
   height: 100%;
   display: grid;
@@ -60,8 +62,6 @@
 }
 
 .diplomaLogos {
-  position: absolute;
-  bottom: 20px;
 }
 
 .diplomaIssuedByImage {
