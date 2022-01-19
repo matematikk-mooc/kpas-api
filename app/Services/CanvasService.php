@@ -281,7 +281,7 @@ class CanvasService
     public function getCourse(int $courseId)
     {
         try {
-            $url = "courses/{$courseId}";
+            $url = "courses/{$courseId}?include[]=public_description";
             return $this->request($url);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {

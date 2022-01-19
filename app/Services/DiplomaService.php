@@ -15,10 +15,17 @@ class DiplomaService
         $diplomaCourseName = $settings['custom_canvas_course_name'];
         $logoList = $settings['custom_diploma_logo_list'];
         $diplomaDate=date("d.m.Y") ;
+
+        $courseId = $settings['custom_canvas_course_id'];
+        $client = new \GuzzleHttp\Client();
+        $canvas_service = new CanvasService($client);
+        $course = $canvas_service->getCourse($courseId);
+        $diplomaCourseDescription = $course->public_description;
     
         return view('main.diploma')
             ->withDiplomaName($diplomaDisplayName)
             ->withDiplomaCourseName($diplomaCourseName)
+            ->withDiplomaCourseDescription($diplomaCourseDescription)
             ->withDiplomaDate($diplomaDate)
             ->withLogoList($logoList)
             ->withDownloadLinkOn($downloadLink)
