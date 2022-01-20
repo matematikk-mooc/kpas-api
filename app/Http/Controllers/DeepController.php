@@ -21,10 +21,10 @@ class DeepController extends Controller
             $kpasMode = $_REQUEST["kpasMode"];
         }
 
+        $logoList = [];
         if(isset($_REQUEST["logo"])) {
             $logoList = $_REQUEST["logo"];
         }
-        logger("Logolist" . print_r($logoList, true));
 
         logger("DeepController config directory:". $config_directory);
         $launch = LTI\LTI_Message_launch::from_cache($_REQUEST['launch_id'], new LTI3_Database($config_directory));

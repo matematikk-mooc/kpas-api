@@ -233,7 +233,6 @@ class Lti3Controller extends Controller
             $logoList = $request->query("logo", $noLogoList);
 
             $html = $diplomaService->getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma);
-            logger($html);
             $dompdf->loadHtml($html);
             $dompdf->render();
             $dompdf->stream("Diplom.pdf");

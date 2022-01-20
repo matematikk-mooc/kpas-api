@@ -2,6 +2,7 @@
 use App\Services\CanvasService;
 use GuzzleHttp\Client;
 use App\Exceptions\CanvasException;
+use App\Kompetansepakke;
 
 namespace App\Services;
 
@@ -15,10 +16,18 @@ class DiplomaService
         $diplomaCourseName = $settings['custom_canvas_course_name'];
         $logoList = $settings['custom_diploma_logo_list'];
         $diplomaDate=date("d.m.Y") ;
+
+        $courseId = $settings['custom_canvas_course_id'];
+
+        $kompetansepakke = \App\Kompetansepakke::where('course_id', $courseId)->first();
+        $diplomaCourseDescription = $kompetansepakke ? $kompetansepakke->diplom_beskrivelse : "";
+        $diplomaDeliveredBy = $kompetansepakke ? $kompetansepakke->utviklet_av : "";
     
         return view('main.diploma')
             ->withDiplomaName($diplomaDisplayName)
             ->withDiplomaCourseName($diplomaCourseName)
+            ->withDiplomaCourseDescription($diplomaCourseDescription)
+            ->withDiplomaDeliveredBy($diplomaDeliveredBy)
             ->withDiplomaDate($diplomaDate)
             ->withLogoList($logoList)
             ->withDownloadLinkOn($downloadLink)

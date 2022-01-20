@@ -30,6 +30,7 @@
         "laravel/tinker": "^1.0",
         "league/oauth2-client": "^2.4",
         "mantas-done/subtitles": "^0.3.10",
+        "mpdf/mpdf": "^8.0",
         "nesbot/carbon": "*",
         "vimeo/laravel": "^5.6"
     },
