@@ -5,13 +5,14 @@
 @if($hasDeservedDiploma)
     <div class="mainDiplomaPage diplomaBorder">
         <div>
-            <div class="diplomaName diplomaCenter diplomaMargins">{{$diplomaName}}</div>
-            <div class="diplomaDod diplomaCenter diplomaMargins">har fullført kompetansepakken</div>
-            <div class="diplomaCourseName diplomaCenter diplomaMargins">{{$diplomaCourseName}}</div>
-            <div class="diplomaDescription diplomaCente diplomaMargins">{{$diplomaCourseDescription}}</div>
-            <div class="diplomaIssuedPlace diplomaCenter diplomaMargins">Tromsø {{$diplomaDate}}</div> 
+            <div class="diplomaName diplomaMargins">{{$diplomaName}}</div>
+            <div class="diplomaDod diplomaMargins">har fullført kompetansepakken</div>
+            <div class="diplomaCourseName diplomaMargins">{{$diplomaCourseName}}</div>
+            <div class="diplomaDescription">{!!$diplomaCourseDescription!!}</div>
+            <div class="diplomaIssuedBy diplomaCenter">{!!$diplomaDeliveredBy!!}</div>            
+            <div class="diplomaIssuedPlace diplomaMargins">Tromsø {{$diplomaDate}}</div> 
         </div>
-        <div class="diplomaLogos diplomaCenter">
+        <div class="diplomaLogos">
                 @foreach ($logoList as $logo)
                     <img class="diplomaIssuedByImage" alt="" src="images/{{$logo}}" title="{{$logo}}">
                 @endforeach        
