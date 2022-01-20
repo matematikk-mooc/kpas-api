@@ -14,10 +14,9 @@
   font-style: normal;
   text-align: center;
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  overflow: auto;
 }
-
 .diplomaContent {
   height: 100%;
   display: grid;
@@ -31,6 +30,7 @@
 }
 
 .diplomaName {
+  padding-top:15%;
   font-weight: 400;
   font-size: 4em;
 }
@@ -43,6 +43,8 @@
 
 .diplomaDescription {
   font-size: 1em;
+  padding-left:20px;
+  padding-right:20px;
 }
 .diplomaCourseName {
   font-weight: 700;
@@ -51,17 +53,23 @@
 }
 .diplomaIssuedBy,
 .diplomaIssuedPlace {
+  margin-top: 15%;
   font-weight: 400;
-  font-size: 1em;
+  font-size: 1.5em;
   font-family: "Helvetica";
 }
 
-.diplomaCenter {
-  margin: auto;
-  width: 100%;
+.diplomaMargins {
+  margin-bottom: 5%;
 }
 
+.diplomaCenter {
+  margin-left: auto;
+  width: 100%;
+}
 .diplomaLogos {
+  position: absolute;
+  bottom: 20px;
 }
 
 .diplomaIssuedByImage {
