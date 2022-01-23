@@ -34,6 +34,38 @@ class DiplomaService
             ->withHasDeservedDiploma($hasDeservedDiploma);
     }
 
+    private function hasCompletedModule($module, $isLastModule, $bIncludeIndentedItems) {
+        $items = $module->items;
+        $total = 0;
+        $completed = 0;
+
+        $moduleCompleted = true;
+        $noOfItems = count($items);
+
+        for ($j = 0; $j < $noOfItems; $j++) {
+            $isLastItem = ($j == ($noOfItems-1));
+            $item = $items[$j];
+            logger(print_r($item,true));
+            //It the item is indented and it should not be counted (i.e. normal participant), we should not check completion requirement.
+            if ($item->indent && !$bIncludeIndentedItems) {
+                continue;
+            }
+            //The last item in the last module should be the diploma item, in that case we don't check for completion.
+            if($isLastModule && $isLastItem)
+            {
+                continue;
+            }
+
+            if (property_exists($item, "completion_requirement")) {
+                if (!$item->completion_requirement->completed) {
+                    $moduleCompleted = false;
+                    break;
+                }
+            }
+        }
+        return $moduleCompleted;
+    }
+
     public function hasDeservedDiploma($settings) {
         logger("hasDeservedDiploma BEGIN");
         logger($settings);
@@ -46,34 +78,29 @@ class DiplomaService
 
         $principalRoleName = config('canvas.principal_role');
         $enrollments = $settings['custom_canvas_roles'];
+
+        if(str_contains($enrollments, "TeacherEnrollment")) {
+            return true;
+        }
+        if(str_contains($enrollments, "Account Admin")) {
+            return true;
+        }
+
         $bIncludeIndentedItems = str_contains($enrollments, $principalRoleName);
-
         $modules = $canvas_service->getModulesForCourse($courseId, $userId);
-        $total = 0;
-        $completed = 0;
 
+        $hasCompletedAllModules = true;
         $noOfModules = count($modules);
         for ($i = 0; $i < $noOfModules; $i++) {
             $module = $modules[$i];
-            $isLastModule = ($i == ($noOfModules-1));
-            $items = $module->items;
-
-            $noOfItems = count($items);
-            for ($j = 0; $j < $noOfItems; $j++) {
-                $isLastItem = ($j == ($noOfItems-1));
-                $item = $items[$j];
-                if (!($item->indent && !$bIncludeIndentedItems)) {
-                    logger("IsLastModule:" . ($isLastModule ? "true" : "false") . " IsLastItem:" . ($isLastItem ? "true" : "false"));
-                    if (property_exists($item, "completion_requirement") && !($isLastModule && $isLastItem)) {
-                        $total++;
-                        if ($item->completion_requirement->completed) {
-                            $completed++;
-                        }
-                    }
+            if($module->published) {
+                $isLastModule = ($i == ($noOfModules-1));
+                if(!$this->hasCompletedModule($module, $isLastModule, $bIncludeIndentedItems)) {
+                    $hasCompletedAllModules = false;
+                    break;
                 }
             }
         }
-        logger("Completed:" . $completed . " Total:" . $total);
-        return $completed == $total; 
+        return $hasCompletedAllModules; 
     }
 }
