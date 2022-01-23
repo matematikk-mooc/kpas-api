@@ -36,8 +36,6 @@ class DiplomaService
 
     private function hasCompletedModule($module, $isLastModule, $bIncludeIndentedItems) {
         $items = $module->items;
-        $total = 0;
-        $completed = 0;
 
         $moduleCompleted = true;
         $noOfItems = count($items);
