@@ -64,6 +64,19 @@ class DiplomaService
         return $moduleCompleted;
     }
 
+    private function findLastModuleNo($modules) {
+        $lastModuleNo = 0;
+        $noOfModules = count($modules);
+
+        for ($i = 0; $i < $noOfModules; $i++) {
+            $module = $modules[$i];
+            if($module->published) {
+                $lastModuleNo = $i;
+            }
+        }
+        return $lastModuleNo;
+    }
+
     public function hasDeservedDiploma($settings) {
         logger("hasDeservedDiploma BEGIN");
         logger($settings);
@@ -89,10 +102,13 @@ class DiplomaService
 
         $hasCompletedAllModules = true;
         $noOfModules = count($modules);
+
+        $lastModuleNo = $this->findLastModuleNo($modules);
+
         for ($i = 0; $i < $noOfModules; $i++) {
             $module = $modules[$i];
             if($module->published) {
-                $isLastModule = ($i == ($noOfModules-1));
+                $isLastModule = ($i == $lastModuleNo);
                 if(!$this->hasCompletedModule($module, $isLastModule, $bIncludeIndentedItems)) {
                     $hasCompletedAllModules = false;
                     break;
