@@ -281,7 +281,7 @@ class CanvasService
     public function getCourse(int $courseId)
     {
         try {
-            $url = "courses/{$courseId}";
+            $url = "courses/{$courseId}?include[]=public_description";
             return $this->request($url);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
@@ -336,11 +336,13 @@ class CanvasService
             $modules = $this->request($modulesHref, 'GET', [], [], true);
 
             foreach($modules as $module) {
-                $moduleId = $module->id;
-                $itemsHref = "courses/${courseId}/modules/${moduleId}/items?student_id=${studentId}";
-                logger($itemsHref);
-                $items = $this->request($itemsHref, 'GET', [], [], true);
-                $module->items = $items;
+                if($module->published) {
+                    $moduleId = $module->id;
+                    $itemsHref = "courses/${courseId}/modules/${moduleId}/items?student_id=${studentId}";
+                    logger($itemsHref);
+                    $items = $this->request($itemsHref, 'GET', [], [], true);
+                    $module->items = $items;
+                }
             }
 
             return $modules;

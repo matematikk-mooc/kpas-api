@@ -4,17 +4,19 @@
 @section('content')
 @if($hasDeservedDiploma)
     <div class="mainDiplomaPage diplomaBorder">
-        <p class="diplomaTitle">DIPLOM</p>
-        <p class="diplomaName">{{$diplomaName}}</p>
-        <p class="diplomaDod">    har fullført kompetansepakken</p>
-        <p class="diplomaDescription">{{$diplomaCourseName}}</p>
-        <p class="diplomaIssuedBy">Kompetansepakken er levert av Utdanningsdirektoratet</p>
-        <p class="diplomaIssuedPlace">Tromsø {{$diplomaDate}}</p> 
-        <p class="diplomaCenter">
-            @foreach ($logoList as $logo)
-                <img class="diplomaIssuedByImage" alt="" src="images/{{$logo}}" title="{{$logo}}">
-            @endforeach        
-        </p>
+        <div>
+            <div class="diplomaName diplomaMargins">{{$diplomaName}}</div>
+            <div class="diplomaDod diplomaMargins">har fullført kompetansepakken</div>
+            <div class="diplomaCourseName diplomaMargins">{{$diplomaCourseName}}</div>
+            <div class="diplomaDescription">{!!$diplomaCourseDescription!!}</div>
+            <div class="diplomaIssuedBy diplomaCenter">{!!$diplomaDeliveredBy!!}</div>            
+            <div class="diplomaIssuedPlace diplomaMargins">Tromsø {{$diplomaDate}}</div> 
+        </div>
+        <div class="diplomaLogos">
+                @foreach ($logoList as $logo)
+                    <img class="diplomaIssuedByImage" alt="" src="images/{{$logo}}" title="{{$logo}}">
+                @endforeach        
+        </div>
     </div>
     <diploma-view>
     </diploma-view>
