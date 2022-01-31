@@ -302,6 +302,9 @@
         }
       },
       async enroll() {
+        if(this.isLoading) {
+          return;
+        }
         console.log("WTBP:" + this.wantToBePrincipal);
         if (this.isReady) {
           this.isLoading = true;
