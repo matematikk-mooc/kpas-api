@@ -10,7 +10,7 @@
             <div class="diplomaCourseName diplomaMargins">{{$diplomaCourseName}}</div>
             <div class="diplomaDescription">{!!$diplomaCourseDescription!!}</div>
             <div class="diplomaIssuedBy diplomaCenter">{!!$diplomaDeliveredBy!!}</div>            
-            <div class="diplomaIssuedPlace diplomaMargins">Tromsø {{$diplomaDate}}</div> 
+            <div class="diplomaIssuedPlace">Tromsø {{$diplomaDate}}</div> 
         </div>
         <div class="diplomaLogos">
                 @foreach ($logoList as $logo)

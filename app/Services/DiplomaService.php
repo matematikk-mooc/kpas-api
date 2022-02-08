@@ -3,6 +3,7 @@ use App\Services\CanvasService;
 use GuzzleHttp\Client;
 use App\Exceptions\CanvasException;
 use App\Kompetansepakke;
+use App\Diploma;
 
 namespace App\Services;
 
@@ -77,6 +78,10 @@ class DiplomaService
         return $lastModuleNo;
     }
 
+    private function storeDiplomaCompletionForUser($userId, $courseId) {
+        \App\Diploma::updateOrCreate(['user_id' => $userId],['course_id' => $courseId]);
+    }
+
     public function hasDeservedDiploma($settings) {
         logger("hasDeservedDiploma BEGIN");
         logger($settings);
@@ -115,6 +120,10 @@ class DiplomaService
                 }
             }
         }
+        if($hasCompletedAllModules) {
+            $this->storeDiplomaCompletionForUser($userId, $courseId);
+        }
+
         return $hasCompletedAllModules; 
     }
 }
