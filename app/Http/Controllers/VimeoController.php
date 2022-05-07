@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Responses\ErrorResponse;
+use App\Http\Responses\SuccessResponse;
 use App\Http\Responses\SuccessXmlResponse;
 use App\Http\Responses\ErrorXmlResponse;
 use App\Repositories\SubtitlesRepository;
@@ -37,5 +39,13 @@ class VimeoController extends Controller
         }
         $transcript .= "</transcript>";
         return new SuccessXmlResponse($transcript);
+    }
+    public function reset(int $vimeoId)
+    {
+        $result = SubtitlesRepository::deleteSubtitles($vimeoId);
+        if($result) {
+            return new SuccessResponse('Success');
+        } 
+        return new ErrorResponse("Could not delete subtitles with supplied id. Error:{$result}");
     }
 }
