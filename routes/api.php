@@ -47,6 +47,7 @@ Route::group(['prefix' => 'statistics'], function () {
 
 Route::group(['prefix' => 'vimeo'], function () {
     Route::get('/{vimeoId}', 'VimeoController@index');
+    Route::get('/{vimeoId}/reset', 'VimeoController@reset');
 });
 
 Route::get('kpasinfo', 'KpasInfoController@index');
