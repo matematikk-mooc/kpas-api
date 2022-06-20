@@ -112,6 +112,9 @@ if [ -e "$DEPLOYMENT_TARGET/composer.json" ]; then
   popd
 fi
 
+echo PHP modules installed
+php -m
+
 echo "Laravel deployment"
 
 # shellcheck disable=SC2164
@@ -124,7 +127,7 @@ php artisan route:cache
 php artisan config:clear
 php artisan config:cache
 php artisan migrate:status
-php artisan migrate
+php artisan migrate --force
 exitWithMessageOnError "Laravel deploy failed"
 # shellcheck disable=SC2164
 popd
