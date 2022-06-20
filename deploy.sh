@@ -112,10 +112,17 @@ if [ -e "$DEPLOYMENT_TARGET/composer.json" ]; then
   popd
 fi
 
-echo PHP modules installed
+echo -e "PHP modules installed\n"
+echo -e "=====================\n"
 php -m
 
-echo "Laravel deployment"
+echo -e "PHP information\n"
+echo -e "===============\n"
+php -m
+
+
+echo -e "Laravel deployment\n"
+echo -e "===============\n"
 
 # shellcheck disable=SC2164
 pushd "$DEPLOYMENT_TARGET"
