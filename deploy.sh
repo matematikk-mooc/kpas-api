@@ -120,6 +120,9 @@ echo -e "PHP information\n"
 echo -e "===============\n"
 php -i
 
+echo -e "Extensions information\n"
+echo -e "===============\n"
+ls /opt/php/7.3.27/lib/php/extensions/no-debug-non-zts-20180731/
 
 echo -e "Laravel deployment\n"
 echo -e "===============\n"
