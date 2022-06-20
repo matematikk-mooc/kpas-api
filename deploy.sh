@@ -118,7 +118,7 @@ php -m
 
 echo -e "PHP information\n"
 echo -e "===============\n"
-php -m
+php -i
 
 
 echo -e "Laravel deployment\n"
