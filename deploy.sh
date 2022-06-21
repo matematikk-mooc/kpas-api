@@ -129,7 +129,10 @@ echo -e "===============\n"
 
 # shellcheck disable=SC2164
 pushd "$DEPLOYMENT_TARGET"
-curl https://kpas-lti.azurewebsites.net/api/command/migrate
+echo "Request migration on server:"
+echo $WEBSITE_HOSTNAME
+curl $WEBSITE_HOSTNAME/api/command/migrate
+
 echo -e "\n"
 php artisan cache:clear
 php artisan route:clear
