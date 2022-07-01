@@ -107,7 +107,7 @@ class DataNsrService
             $response = $this->guzzleClient->request("GET", $fullUrl, [
                 'verify' => false,
             ]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             logger($e);
         }
 
@@ -126,7 +126,7 @@ class DataNsrService
             $county = (array)$value;
             try {
                 $model->UpdateFylke($county);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 logger($e);
             }
         }
@@ -147,7 +147,7 @@ class DataNsrService
             try {
                 $filter_fields = filter_institution_fields($community, $community_keys);
                 $model->UpdateKommune($filter_fields);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 logger($e);
             }
         }
@@ -180,7 +180,7 @@ class DataNsrService
                 try {
                     $filter_fields = filter_institution_fields($school, $school_keys);
                     $model->UpdateSkole($filter_fields);
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     logger("Failure when processing school:" . print_r($value, true));
                     logger($e);
                 }
@@ -208,7 +208,7 @@ class DataNsrService
             try {
                 $filter_fields = filter_institution_fields($kindergarten, $kindergartens_keys);
                 $model->UpdateBarnehage($filter_fields);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 logger("Failure when processing kindergarten:" . print_r($value, true));
                 logger($e);
             }

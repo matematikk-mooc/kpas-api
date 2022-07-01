@@ -18,7 +18,7 @@ class LTI3_Database implements LTI\Database
                 logger("Parse config file:".$reg_config); 
                 $_SESSION['iss'] = array_merge($_SESSION['iss'], json_decode(file_get_contents(database_path($config_directory) . "/$reg_config"), true)); 
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new LtiException("LTI v1.3 configuration error  : " . $e->getMessage());
         }
     }
@@ -39,7 +39,7 @@ class LTI3_Database implements LTI\Database
                 ->set_issuer($iss)
                 ->set_tool_private_key($this->private_key($iss));
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new LtiException("The platform is not registered : " . $e->getMessage());
         }
 

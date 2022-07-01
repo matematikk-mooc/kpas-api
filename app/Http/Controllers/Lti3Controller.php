@@ -55,7 +55,7 @@ class Lti3Controller extends Controller
         $launch = LTI\LTI_Message_Launch::new(new LTI3_Database($config_directory));
         try {
             $launch->validate();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new LtiException("Error at LTIv3 launch :" . $e->getMessage());
         }
 
@@ -90,7 +90,7 @@ class Lti3Controller extends Controller
             try {
                 $settings = $this->get_categories($settings);
 
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
             }
         }
@@ -146,7 +146,7 @@ class Lti3Controller extends Controller
         try {
             $categories = collect($canvas_service->getGroupCategories($course));
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
         }
 
