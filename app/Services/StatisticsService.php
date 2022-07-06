@@ -12,6 +12,6 @@ class StatisticsService
         $statistics = []; //Get statistics here.
         /////
 
-        return view('main.statistics')->withStatistics($statistics);
+        return view('main.statistics')->withStatistics($statistics)->withSettings($settings);
     }
 }
