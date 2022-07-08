@@ -3,10 +3,14 @@
 @section('content')
 <h1>Statistikk</h1>
 Fyll inn statistikk her.
-{{$statistics}}
+        @php
+            var_dump($statistics);
+        @endphp
 
 <h1>Tilgjengelige innstillinger</h1>
-{{$settings}}
+        @php
+            var_dump($settings);
+        @endphp
 
 @endsection
 

@@ -27,7 +27,7 @@ class DeepController extends Controller
         }
 
         logger("DeepController config directory:". $config_directory);
-        $launch = LTI\LTI_Message_launch::from_cache($_REQUEST['launch_id'], new LTI3_Database($config_directory));
+        $launch = LTI\LTI_Message_Launch::from_cache($_REQUEST['launch_id'], new LTI3_Database($config_directory));
         $dl = $launch->get_deep_link();
         $baseUrl = config('app.url');
         $url = $baseUrl . "/launch?config_directory=" . $config_directory . "&kpasMode=" . $kpasMode;
