@@ -4,6 +4,9 @@
     <h1>Rolle- og gruppeverktøy</h1>
     <a :href="urlRoleMode">Sett inn Rolle- og gruppeverktøy</a>
     
+    <h1>Statistikk</h1>
+    <a :href="urlStatisticsMode">Sett inn statistikkverktøy</a>
+
     <h1>Diplom</h1>
     Velg hvilke logoer som skal vises nederst på diplomet:
 
@@ -20,7 +23,7 @@ import api from '../api';
 
 export default {
   name: "Diploma",
-  props: ['appurl', 'launchid', 'configdirectory', 'diplomamode'],    
+  props: ['appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode'],    
   data() {
     return {
       logoList: [],
@@ -37,6 +40,9 @@ export default {
         url += "&logo[]=" + logo; 
       });
     return url;
+    },
+    urlStatisticsMode: function () {
+      return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.statisticsmode + "&config_directory=" + this.configdirectory;
     }
   },  
   methods: {
