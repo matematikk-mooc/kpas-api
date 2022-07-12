@@ -32,6 +32,7 @@
         "lodash.tail": "^4.1.1",
         "mixin-object": "^3.0.0",
         "select2": "^4.0.13",
-        "v-tooltip": "^2.1.3"
+        "v-tooltip": "^2.1.3",
+        "vue-d3-charts": "^0.2.8"
     }
 }

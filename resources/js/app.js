@@ -27,7 +27,7 @@ Vue.component('merge-user-view', require('./views/MergeUserView').default);
 Vue.component('diploma-view', require('./views/DiplomaView').default);
 Vue.component('no-diploma-view', require('./views/NoDiplomaView').default);
 Vue.component('kpas-embed-view', require('./views/KpasEmbedView').default);
-
+Vue.component('statistics-view', require('./views/StatisticsView').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

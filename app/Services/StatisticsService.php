@@ -13,8 +13,10 @@ class StatisticsService
 
         $this->guzzleClient = new Client();
         $statistics = $this->request("Mathias");
-        
-        return view('main.statistics')->withStatistics($statistics)->withSettings($settings);
+
+        return view('main.statistics')
+        ->withStatistics($statistics)
+        ->withSettings($settings);
     }
     
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
