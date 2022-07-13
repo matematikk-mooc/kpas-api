@@ -181,9 +181,9 @@ RUN if [ ${INSTALL_WORKSPACE_SSH} = true ]; then \
 ###########################################################################
 
 # Check if NVM needs to be installed
-ARG NODE_VERSION=node
+ARG NODE_VERSION=16
 ENV NODE_VERSION ${NODE_VERSION}
-ARG INSTALL_NODE=false
+ARG INSTALL_NODE=true
 ARG INSTALL_NPM_GULP=false
 ARG INSTALL_NPM_BOWER=false
 ARG INSTALL_NPM_VUE_CLI=false

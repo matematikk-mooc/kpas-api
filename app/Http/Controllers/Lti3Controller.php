@@ -6,6 +6,7 @@ use App\Exceptions\LtiException;
 use App\Ltiv3\LTI3_Database;
 use App\Services\CanvasService;
 use App\Services\DiplomaService;
+use App\Services\StatisticsService;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -62,6 +63,7 @@ class Lti3Controller extends Controller
 
         $diplomaMode = config('constants.options.DIPLOMA_MODE');
         $roleMode = config('constants.options.ROLE_GROUP_MODE');
+        $statisticsMode = config('constants.options.STATISTICS_MODE');
         $kpasMode = $request->query("kpasMode", $roleMode);
         if ($launch->is_resource_launch()) {
             logger('Resource Launch!');
@@ -71,6 +73,7 @@ class Lti3Controller extends Controller
             ->withId($launch->get_launch_id())
             ->withConfigDirectory($config_directory)
             ->withDiplomaMode($diplomaMode)
+            ->withStatisticsMode($statisticsMode)
             ->withRequest($request);
         } else {
             logger('Unknown launch type');
@@ -109,11 +112,11 @@ class Lti3Controller extends Controller
 
         logger("Lti3Middleware has settings.");
 
+        $settings = session()->get('settings');  
         if ($kpasMode == $diplomaMode) {
             $downloadLink = true;
             logger("embed diploma");
 
-            $settings = session()->get('settings');  
             $diplomaService = new DiplomaService();
             $hasDeservedDiploma = $diplomaService->hasDeservedDiploma($settings);
             if(!$hasDeservedDiploma) {
@@ -121,6 +124,9 @@ class Lti3Controller extends Controller
             }
 
             return $diplomaService->getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma);
+        } else if($kpasMode == $statisticsMode) {
+            $statisticsService = new StatisticsService();
+            return $statisticsService->getStatisticsHtml($settings);
         }
 
         if ($kpasUserView == 'user_management') {
