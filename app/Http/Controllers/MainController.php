@@ -73,6 +73,11 @@ class MainController extends Controller
 
         return view('main.mygroups', $this->getCachedDataportenData($request));
     }
+    public function quiz(Request $request)
+    {
+        $quizData="150";
+        return view('main.quiz')->withQuizData($quizData);
+    }
 
     public function logout(Request $request)
     {
