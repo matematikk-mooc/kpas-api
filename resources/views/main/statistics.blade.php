@@ -4,7 +4,7 @@
 <statistics-view>
 </statistics-view>
 
-<h1>Statistikk</h1>
+<h1>Statistikk blade</h1>
 
 Fyll inn statistikk her:
         @php

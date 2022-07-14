@@ -9,6 +9,8 @@
 import api from "../api";
 import { D3BarChart } from 'vue-d3-charts';
 
+//https://saigesp.github.io/vue-d3-charts/#/barchart
+
 export default {
   name: "StatisticsView",
   components: {
@@ -17,16 +19,11 @@ export default {
   data() {
     return {
       chart_data: [
-        //...
-        {hours: 1648, production: 9613, year: '2007'},
-        {hours: 2479, production: 6315, year: '2008'},
-        {hours: 3200, production: 2541, year: '2009'}
       ],
       chart_config: {
         orientation: "horizontal",
-        key: 'year',
-        currentKey: '2004',
-        values: ['hours'],
+        key: 'activity_date',
+        values: ['active_users_count'],
         axis: {
           yTicks: 3
         },
@@ -47,6 +44,30 @@ export default {
         );
       });
     },
+    getTodaysDate() {
+        var local = new Date();
+        local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+        return local.toJSON().slice(0,10);
+    },
+    async getUserActivity() {
+      try {
+        var courseId = 360;
+        var from = "1970-01-01";
+        var to = this.getTodaysDate();
+        var url = "/user_activity/" + courseId + "?from=" + from + "&to=" + to;
+
+        const apiResult = await api.get(url, {
+          params: { cookie: window.cookie }
+        });
+        this.chart_data = apiResult.data;
+        console.log(this.chart_data);
+
+      } catch(e)
+      {
+        console.log("Could not get user activity.");
+      }
+    },
+
   },
   async created() {
     this.iframeresize();
@@ -55,6 +76,7 @@ export default {
     mql.onchange = (e) => { 
       self.iframeresize();
     }
+    this.getUserActivity();
   },
 };
 </script>
