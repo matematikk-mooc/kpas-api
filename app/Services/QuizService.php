@@ -8,13 +8,14 @@ class QuizService
 {
     protected $guzzleClient;
 
-    public function getQuizHtml() {
+    public function getQuizHtml($settings) {
         logger("getQuizData");
 
         $this->guzzleClient = new Client();
         $quizData = $this->request("502", "2720");
         
-        return view('main.quiz')->withQuizData($quizData);
+        //return view('main.quiz')->withQuizData($quizData);
+        return view('main.quiz')->withSettings($settings);
     }
     
     protected function request(string $courseId, string $quizId, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
