@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Responses\SuccessResponse;
 use App\Repositories\CanvasDbRepository;
+use App\Services\StatisticsService;
+use Illuminate\Http\Request;
 
 class StatisticsController extends Controller
 {
@@ -52,6 +54,13 @@ class StatisticsController extends Controller
     {
         logger("StatisticsController.groupCategoryCount");
         $data = $this->canvasDbRepository->getNoOfGroups($categoryId);
+        return new SuccessResponse($data);
+    }
+    public function userActivity(int $courseId, Request $request): SuccessResponse
+    {
+        logger("StatisticsController.userActivity");
+        $statisticsService = new StatisticsService();
+        $data = $statisticsService->getUserActivity($courseId, $request);
         return new SuccessResponse($data);
     }
     public function webindex(int $courseId)

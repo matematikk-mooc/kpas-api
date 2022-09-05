@@ -36,6 +36,11 @@ class SubtitlesRepository
         }
         return self::getSubtitlesFromDatabase($videoId);
     }
+    public static function deleteSubtitles(int $videoId)
+    {
+        logger("Delete videoId {$videoId}");
+        return Subtitles::where('videoId', $videoId)->delete();
+    }
     private static function getSubtitlesFromDatabase(int $videoId)
     {
         return Subtitles::where('videoId', $videoId)->get();

@@ -112,11 +112,27 @@ if [ -e "$DEPLOYMENT_TARGET/composer.json" ]; then
   popd
 fi
 
-echo "Laravel deployment"
+echo -e "PHP modules installed\n"
+echo -e "=====================\n"
+php -m
+
+echo -e "PHP information\n"
+echo -e "===============\n"
+php -i
+
+echo -e "Extensions information\n"
+echo -e "===============\n"
+ls /opt/php/7.3.27/lib/php/extensions/no-debug-non-zts-20180731/
+
+echo -e "Laravel deployment\n"
+echo -e "===============\n"
 
 # shellcheck disable=SC2164
 pushd "$DEPLOYMENT_TARGET"
-curl https://kpas-lti.azurewebsites.net/api/command/migrate
+echo "Request migration on server:"
+echo $WEBSITE_HOSTNAME
+curl $WEBSITE_HOSTNAME/api/command/migrate
+
 echo -e "\n"
 php artisan cache:clear
 php artisan route:clear

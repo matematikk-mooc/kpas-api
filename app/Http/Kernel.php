@@ -7,7 +7,7 @@ use App\Http\Middleware\AuthenticateDataporten;
 use App\Http\Middleware\CheckToken;
 use App\Http\Middleware\Lti3Middleware;
 use App\Http\Middleware\LtiMiddleware;
-use Barryvdh\Cors\HandleCors;
+use Fruitcake\Cors\HandleCors;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

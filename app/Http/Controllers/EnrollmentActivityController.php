@@ -26,7 +26,6 @@ class EnrollmentActivityController extends Controller
         }
 
         return $enrollment->get();
-
     }
 
     public function store(Request $request)

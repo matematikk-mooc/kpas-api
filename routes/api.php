@@ -41,12 +41,14 @@ Route::group(['prefix' => 'group'], function () {
 Route::group(['prefix' => 'statistics'], function () {
     Route::get('/{courseId}', 'StatisticsController@index');
     Route::get('/{courseId}/count', 'StatisticsController@courseCount');
-    Route::get('/groupCategory/{categoryId}', 'StatisticsController@groupCategory');
+    Route::get('/{courseId}/user_activity', 'StatisticsController@userActivity');
+        Route::get('/groupCategory/{categoryId}', 'StatisticsController@groupCategory');
     Route::get('/groupCategory/{categoryId}/count', 'StatisticsController@groupCategoryCount');
 });
 
 Route::group(['prefix' => 'vimeo'], function () {
     Route::get('/{vimeoId}', 'VimeoController@index');
+    Route::get('/{vimeoId}/reset', 'VimeoController@reset');
 });
 
 Route::get('kpasinfo', 'KpasInfoController@index');
