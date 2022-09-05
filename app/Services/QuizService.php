@@ -20,7 +20,7 @@ class QuizService
     
     protected function request(string $courseId, string $quizId, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
-        $fullUrl = "https://172.17.0.1:8080/api/statistics/course/{$courseId}/quizzes";
+        $fullUrl = "https://statistics-api-staging.azurewebsites.net/api/statistics/course/{$courseId}/quizzes";
         logger($fullUrl);
         
         try {
