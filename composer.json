@@ -17,7 +17,7 @@
         "ext-json": "*",
         "bugsnag/bugsnag-laravel": "^2.0",
         "doctrine/dbal": "2.*",
-        "dompdf/dompdf": "^1.1",
+        "dompdf/dompdf": "^2.0",
         "easyrdf/easyrdf": "^1.1",
         "encore/laravel-admin": "^1.7",
         "facade/ignition": "^2.0",
