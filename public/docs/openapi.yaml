@@ -1,0 +1,1956 @@
+openapi: 3.0.3
+info:
+    title: 'KPAS (Kompetanseplattform Administrativt System)'
+    description: ''
+    version: 1.0.0
+servers:
+    -
+        url: 'https://template.test'
+paths:
+    /_debugbar/open:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                404:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: ''
+                                properties:
+                                    message: { type: string, example: '' }
+            tags:
+                - Endpoints
+            security: []
+    '/_debugbar/clockwork/{id}':
+        get:
+            summary: 'Return Clockwork output'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                404:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: ''
+                                properties:
+                                    message: { type: string, example: '' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: id
+                description: ''
+                example: est
+                required: true
+                schema:
+                    type: string
+    /_debugbar/assets/stylesheets:
+        get:
+            summary: 'Return the stylesheets for the Debugbar'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                404:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: ''
+                                properties:
+                                    message: { type: string, example: '' }
+            tags:
+                - Endpoints
+            security: []
+    /_debugbar/assets/javascript:
+        get:
+            summary: 'Return the javascript for the Debugbar'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                404:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: ''
+                                properties:
+                                    message: { type: string, example: '' }
+            tags:
+                - Endpoints
+            security: []
+    '/_debugbar/cache/{key}/{tags}':
+        delete:
+            summary: 'Forget a cache key'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: key
+                description: ''
+                example: omnis
+                required: true
+                schema:
+                    type: string
+            -
+                in: path
+                name: tags
+                description: 'Optional parameter.'
+                required: true
+                schema:
+                    type: string
+                examples:
+                    omitted:
+                        summary: 'When the value is omitted'
+                        value: ''
+                    present:
+                        summary: 'When the value is present'
+                        value: nisi
+    /api/institution:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+    /api/settings:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                403:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <title>Bootstrap Example</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js\"></script>\n</head>\n<body>\n<div class=\"alert alert-danger\">\n<p>\nKunne ikke starte rolle og gruppeverktøyet.</p>\n<p>For at det skal virke må din nettleser tillate \ninformasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net\n</p>\n<p>Kontakt din IT-avdeling eller les om hvordan du\n<a class='alert-link' target='_blank' href='https://nettvett.no/slik-administrer-du-informasjonskapsler/'>\naktiverer informasjonskapsler fra tredjeparter.</a>\n</p>\n<p>\nInvalid or missing lti_message_type parameter.\n</p>\n</div>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+    /api/diploma/pdf:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                403:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <title>Bootstrap Example</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js\"></script>\n</head>\n<body>\n<div class=\"alert alert-danger\">\n<p>\nKunne ikke starte rolle og gruppeverktøyet.</p>\n<p>For at det skal virke må din nettleser tillate \ninformasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net\n</p>\n<p>Kontakt din IT-avdeling eller les om hvordan du\n<a class='alert-link' target='_blank' href='https://nettvett.no/slik-administrer-du-informasjonskapsler/'>\naktiverer informasjonskapsler fra tredjeparter.</a>\n</p>\n<p>\nInvalid or missing lti_message_type parameter.\n</p>\n</div>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+    /api/diploma/logolist:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+    /api/run_scheduler:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+    /api/nsr/counties:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: []
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: array, example: [] }
+            tags:
+                - Endpoints
+            security: []
+    /api/nsr/schools:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: []
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: array, example: [] }
+            tags:
+                - Endpoints
+            security: []
+    '/api/nsr/counties/{fylkesnr}':
+        get:
+            summary: Fylke
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: null
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: string, example: null }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: fylkesnr
+                description: ''
+                example: illo
+                required: true
+                schema:
+                    type: string
+    '/api/nsr/communities/{kommunenr}':
+        get:
+            summary: Kommune
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: null
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: string, example: null }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: kommunenr
+                description: ''
+                example: tempora
+                required: true
+                schema:
+                    type: string
+    '/api/nsr/counties/{fylkesnr}/communities':
+        get:
+            summary: 'Kommuner i Fylke'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: []
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: array, example: [] }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: fylkesnr
+                description: ''
+                example: enim
+                required: true
+                schema:
+                    type: string
+    '/api/nsr/counties/{fylkesnr}/schools':
+        get:
+            summary: 'skoler i fylke'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: []
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: array, example: [] }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: fylkesnr
+                description: ''
+                example: sed
+                required: true
+                schema:
+                    type: string
+    '/api/nsr/communities/{kommunenr}/schools':
+        get:
+            summary: 'skoler i kommune'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: []
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: array, example: [] }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: kommunenr
+                description: ''
+                example: odit
+                required: true
+                schema:
+                    type: string
+    /api/kindergartens:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: []
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: array, example: [] }
+            tags:
+                - Endpoints
+            security: []
+    '/api/kindergartens/{kommunenr}':
+        get:
+            summary: 'Barnehager i kommune'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: []
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: array, example: [] }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: kommunenr
+                description: ''
+                example: tempore
+                required: true
+                schema:
+                    type: string
+    /api/user_activity:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                example: []
+            tags:
+                - Endpoints
+            security: []
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+    '/api/user_activity/{course_id}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: course_id
+                description: ''
+                example: animi
+                required: true
+                schema:
+                    type: string
+    /api/group/user:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                403:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <title>Bootstrap Example</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js\"></script>\n</head>\n<body>\n<div class=\"alert alert-danger\">\n<p>\nKunne ikke starte rolle og gruppeverktøyet.</p>\n<p>For at det skal virke må din nettleser tillate \ninformasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net\n</p>\n<p>Kontakt din IT-avdeling eller les om hvordan du\n<a class='alert-link' target='_blank' href='https://nettvett.no/slik-administrer-du-informasjonskapsler/'>\naktiverer informasjonskapsler fra tredjeparter.</a>\n</p>\n<p>\nInvalid or missing lti_message_type parameter.\n</p>\n</div>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                role:
+                                    type: string
+                                    description: ''
+                                    example: iste
+                                group:
+                                    type: object
+                                    description: ''
+                                    example: []
+                                    properties: { name: { type: string, description: '', example: voluptas }, description: { type: string, description: '', example: reiciendis }, membership: { type: string, description: '', example: officiis }, category_id: { type: number, description: '', example: 0.644358641 }, course_id: { type: number, description: '', example: 727.30834 } }
+                                unenrollFrom:
+                                    type: object
+                                    description: ''
+                                    example: []
+                                    properties: { unenrollmentIds: { type: array, description: '', example: [394309708.51946, 4550699.075], items: { type: number } } }
+                            required:
+                                - role
+            security: []
+    '/api/group/{groupId}/category':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: groupId
+                description: ''
+                example: tenetur
+                required: true
+                schema:
+                    type: string
+    /api/group/user/bulk:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: false
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                county:
+                                    type: object
+                                    description: ''
+                                    example: []
+                                    properties: { name: { type: string, description: '', example: enim }, description: { type: string, description: '', example: quia } }
+                                community:
+                                    type: object
+                                    description: ''
+                                    example: []
+                                    properties: { name: { type: string, description: '', example: eius }, description: { type: string, description: '', example: voluptatibus } }
+                                faculty:
+                                    type: string
+                                    description: ''
+                                    example: dolorem
+            security: []
+    '/api/statistics/{courseId}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: courseId
+                description: ''
+                example: asperiores
+                required: true
+                schema:
+                    type: string
+    '/api/statistics/{courseId}/count':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: courseId
+                description: ''
+                example: id
+                required: true
+                schema:
+                    type: string
+    '/api/statistics/{courseId}/user_activity':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: courseId
+                description: ''
+                example: et
+                required: true
+                schema:
+                    type: string
+    '/api/statistics/groupCategory/{categoryId}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: categoryId
+                description: ''
+                example: eius
+                required: true
+                schema:
+                    type: string
+    '/api/statistics/groupCategory/{categoryId}/count':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: categoryId
+                description: ''
+                example: consequatur
+                required: true
+                schema:
+                    type: string
+    '/api/vimeo/{vimeoId}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: vimeoId
+                description: ''
+                example: aspernatur
+                required: true
+                schema:
+                    type: string
+    '/api/vimeo/{vimeoId}/reset':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: vimeoId
+                description: ''
+                example: magni
+                required: true
+                schema:
+                    type: string
+    /api/kpasinfo:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    status: 200
+                                    status_message: Success
+                                    result: { privacyPolicyVersion: '1.0' }
+                                properties:
+                                    status: { type: integer, example: 200 }
+                                    status_message: { type: string, example: Success }
+                                    result: { type: object, example: { privacyPolicyVersion: '1.0' } }
+            tags:
+                - Endpoints
+            security: []
+    /api/enrollment:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                403:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <title>Bootstrap Example</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js\"></script>\n</head>\n<body>\n<div class=\"alert alert-danger\">\n<p>\nKunne ikke starte rolle og gruppeverktøyet.</p>\n<p>For at det skal virke må din nettleser tillate \ninformasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net\n</p>\n<p>Kontakt din IT-avdeling eller les om hvordan du\n<a class='alert-link' target='_blank' href='https://nettvett.no/slik-administrer-du-informasjonskapsler/'>\naktiverer informasjonskapsler fra tredjeparter.</a>\n</p>\n<p>\nInvalid or missing lti_message_type parameter.\n</p>\n</div>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                role:
+                                    type: string
+                                    description: ''
+                                    example: fugit
+                            required:
+                                - role
+            security: []
+    /api/faculties:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                403:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <title>Bootstrap Example</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js\"></script>\n</head>\n<body>\n<div class=\"alert alert-danger\">\n<p>\nKunne ikke starte rolle og gruppeverktøyet.</p>\n<p>For at det skal virke må din nettleser tillate \ninformasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net\n</p>\n<p>Kontakt din IT-avdeling eller les om hvordan du\n<a class='alert-link' target='_blank' href='https://nettvett.no/slik-administrer-du-informasjonskapsler/'>\naktiverer informasjonskapsler fra tredjeparter.</a>\n</p>\n<p>\nInvalid or missing lti_message_type parameter.\n</p>\n</div>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+    /api/command/migrate:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: 'Migration completed!'
+            tags:
+                - Endpoints
+            security: []
+    /api/user/merge/token:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                403:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <title>Bootstrap Example</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js\"></script>\n</head>\n<body>\n<div class=\"alert alert-danger\">\n<p>\nKunne ikke starte rolle og gruppeverktøyet.</p>\n<p>For at det skal virke må din nettleser tillate \ninformasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net\n</p>\n<p>Kontakt din IT-avdeling eller les om hvordan du\n<a class='alert-link' target='_blank' href='https://nettvett.no/slik-administrer-du-informasjonskapsler/'>\naktiverer informasjonskapsler fra tredjeparter.</a>\n</p>\n<p>\nInvalid or missing lti_message_type parameter.\n</p>\n</div>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+    /api/user/merge/intersection:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                403:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <title>Bootstrap Example</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js\"></script>\n</head>\n<body>\n<div class=\"alert alert-danger\">\n<p>\nKunne ikke starte rolle og gruppeverktøyet.</p>\n<p>For at det skal virke må din nettleser tillate \ninformasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net\n</p>\n<p>Kontakt din IT-avdeling eller les om hvordan du\n<a class='alert-link' target='_blank' href='https://nettvett.no/slik-administrer-du-informasjonskapsler/'>\naktiverer informasjonskapsler fra tredjeparter.</a>\n</p>\n<p>\nInvalid or missing lti_message_type parameter.\n</p>\n</div>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+    /api/user/merge/perform:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                403:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <title>Bootstrap Example</title>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css\">\n  <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>\n  <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js\"></script>\n</head>\n<body>\n<div class=\"alert alert-danger\">\n<p>\nKunne ikke starte rolle og gruppeverktøyet.</p>\n<p>For at det skal virke må din nettleser tillate \ninformasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net\n</p>\n<p>Kontakt din IT-avdeling eller les om hvordan du\n<a class='alert-link' target='_blank' href='https://nettvett.no/slik-administrer-du-informasjonskapsler/'>\naktiverer informasjonskapsler fra tredjeparter.</a>\n</p>\n<p>\nInvalid or missing lti_message_type parameter.\n</p>\n</div>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+    /lti3:
+        post:
+            summary: 'Check if the requesting platform is registered in our DB.'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+    /launch:
+        post:
+            summary: 'Launch requested link'
+            description: '[ Authenticate and Redirect to the requested link ]'
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+    /:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            security: []
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                302:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='http://template.test/page/logout'\" />\n\n        <title>Redirecting to http://template.test/page/logout</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"http://template.test/page/logout\">http://template.test/page/logout</a>.\n    </body>\n</html>"
+            tags:
+                - Endpoints
+            security: []
+    '/statistics/{courseId}':
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+        parameters:
+            -
+                in: path
+                name: courseId
+                description: ''
+                example: qui
+                required: true
+                schema:
+                    type: string
+    /grep/gf5:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+    /deep:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                500:
+                    description: ''
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Server Error'
+                                properties:
+                                    message: { type: string, example: 'Server Error' }
+            tags:
+                - Endpoints
+            security: []
+    /cookiecheck:
+        get:
+            summary: 'Invoke the controller method.'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<html>\n<body>\n<script>\n\tdocument.cookie=\"thirdparty=yes\";\n\tdocument.location=\"cookiecheckcomplete\";\n</script>\n</body>\n</html>"
+            tags:
+                - Endpoints
+            security: []
+    /cookiecheckcomplete:
+        get:
+            summary: 'Invoke the controller method.'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<html>\n<body>\n<script>\n if (window.parent) {\n\tif (/thirdparty=yes/.test(document.cookie)) {\n        const cookiesupportedmsg = {\n            subject: 'kpas-lti.3pcookiesupported'\n        }\n\t\twindow.parent.postMessage(JSON.stringify(cookiesupportedmsg), '*');\n\t} else {\n        const cookienotsupportedmsg = {\n            subject: 'kpas-lti.3pcookienotsupported'\n        }\n\t\twindow.parent.postMessage(JSON.stringify(cookienotsupportedmsg), '*');\n\t}\n }\n</script>\n</body>\n</html>"
+            tags:
+                - Endpoints
+            security: []
+    /logout:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                302:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='https://api.dataporten.no/logout'\" />\n\n        <title>Redirecting to https://api.dataporten.no/logout</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"https://api.dataporten.no/logout\">https://api.dataporten.no/logout</a>.\n    </body>\n</html>"
+            tags:
+                - Endpoints
+            security: []
+    /page/logout:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <title>KPAS (Kompetanseplattform Administrativt System)</title>\n    <!-- Fonts -->\n    <link rel=\"dns-prefetch\" href=\"//fonts.gstatic.com\">\n    <link href=\"https://fonts.googleapis.com/css?family=Nunito\" rel=\"stylesheet\" type=\"text/css\">\n    <!-- Styles -->\n    <link href=\"https://template.test/css/app.css\" rel=\"stylesheet\">\n</head>\n<body>\n    <div class=\"container\" id=\"app\">\n        <div class=\"alert alert-info mb-4\">\n    Mangler course_id parameter.\n</div>\n<a href=\"http://template.test/logout\" class=\"btn btn-primary\">Logout</a>\n    </div>\n        <script src=\"https://template.test/js/app.js\"></script>\n</body>\n</html>\n"
+            tags:
+                - Endpoints
+            security: []
+    /minegrupper:
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                302:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='http://template.test'\" />\n\n        <title>Redirecting to http://template.test</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"http://template.test\">http://template.test</a>.\n    </body>\n</html>"
+            tags:
+                - Endpoints
+            security: []
+    /worker:
+        post:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses: {  }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                role:
+                                    type: string
+                                    description: ''
+                                    example: ut
+                                group:
+                                    type: object
+                                    description: ''
+                                    example: []
+                                    properties: { name: { type: string, description: '', example: id }, description: { type: string, description: '', example: sint }, membership: { type: string, description: '', example: laudantium }, category_id: { type: number, description: '', example: 14.0 }, course_id: { type: number, description: '', example: 8.57814337 } }
+                                unenrollFrom:
+                                    type: object
+                                    description: ''
+                                    example: []
+                                    properties: { unenrollmentIds: { type: array, description: '', example: [45600499.64, 1200797.8594083], items: { type: number } } }
+                            required:
+                                - role
+            security: []
+        get:
+            summary: ''
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                302:
+                    description: ''
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='http://template.test'\" />\n\n        <title>Redirecting to http://template.test</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"http://template.test\">http://template.test</a>.\n    </body>\n</html>"
+            tags:
+                - Endpoints
+            security: []
