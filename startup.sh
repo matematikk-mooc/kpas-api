@@ -25,6 +25,11 @@ echo "==============="
 php artisan migrate --seed --force
 
 echo $0
+echo "Artisan generate docs"
+echo "==============="
+php artisan scribe:generate
+
+echo $0
 echo "npm install"
 echo "==========="
 npm install
