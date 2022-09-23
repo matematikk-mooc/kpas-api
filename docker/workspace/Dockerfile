@@ -13,7 +13,7 @@
 #
 
 ARG LARADOCK_PHP_VERSION
-FROM laradock/workspace:4.0.0-${LARADOCK_PHP_VERSION}
+FROM laradock/workspace:20220917-${LARADOCK_PHP_VERSION}
 
 LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
 
