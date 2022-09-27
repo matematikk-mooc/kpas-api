@@ -46,6 +46,10 @@ Route::group(['prefix' => 'statistics'], function () {
     Route::get('/groupCategory/{categoryId}/count', 'StatisticsController@groupCategoryCount');
 });
 
+
+Route::get('course/{courseId}/quizzes', 'QuizController@quizzesStatistics');
+Route::get('course/{courseId}/quiz/{quizId}', 'QuizController@quizStatistics');
+
 Route::group(['prefix' => 'vimeo'], function () {
     Route::get('/{vimeoId}', 'VimeoController@index');
     Route::get('/{vimeoId}/reset', 'VimeoController@reset');
