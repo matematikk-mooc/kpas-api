@@ -1,5 +1,7 @@
 ### Requirements
 
+
+
 * PHP version >= 7.2
 * 1 MySQL database (version >= 5.7) or MariaDB (version >= 10.0)
 * 1 SMTP e-mail account
