@@ -16,7 +16,7 @@ ARG LARADOCK_PHP_VERSION
 
 # FROM laradock/php-fpm:2.2-${LARADOCK_PHP_VERSION}
 #FROM letsdockerize/laradock-php-fpm:2.4.1-${LARADOCK_PHP_VERSION}
-FROM laradock/php-fpm:20220917-${LARADOCK_PHP_VERSION}
+FROM laradock/php-fpm:2.4.1-${LARADOCK_PHP_VERSION}
 LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
 
 ARG LARADOCK_PHP_VERSION
@@ -42,7 +42,7 @@ RUN set -xe; \
       #
       # next lines are here becase there is no auto build on dockerhub see https://github.com/laradock/laradock/pull/1903#issuecomment-463142846
       libzip-dev zip unzip && \
-      docker-php-ext-configure zip && \
+      docker-php-ext-configure zip --with-libzip && \
       # Install the zip extension
       docker-php-ext-install zip && \
       php -m | grep -q 'zip'
