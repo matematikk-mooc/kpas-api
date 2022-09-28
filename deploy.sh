@@ -90,8 +90,8 @@ if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
 fi
 
 # 2. Verify composer installed
-#hash composer 2>/dev/null
-#exitWithMessageOnError "Missing composer executable"
+hash composer 2>/dev/null
+exitWithMessageOnError "Missing composer executable"
 
 # 3. Initialize Composer Config
 initializeDeploymentConfig

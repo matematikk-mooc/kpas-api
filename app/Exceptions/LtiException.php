@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-class LtiException extends \Throwable
+class LtiException extends \Exception
 {
 
 }
