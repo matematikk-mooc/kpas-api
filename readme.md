@@ -9,13 +9,13 @@
 
 ### Technologies
 
-* PHP 7.2 or newer
+* PHP 7.2 or newer.
 * Laravel 5.8 or newer
 * MySQL 5.7 or newer / MariaDB 10 or newer
 
 ### Installation
 
-To install project on new server, please perform actions in following order:
+To install project on new server , please perform actions in following order:
 
 ```$xslt
 # Generate SSH key
