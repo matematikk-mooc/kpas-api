@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 class QuizService
 {
     protected $guzzleClient;
+    protected $statistics_base_url;
+
+    public function __construct()
+    {
+        $this->statistics_base_url = config('statistics-api.base_url');
+    }
 
     public function getQuizHtml($settings) {
         logger("getQuizData");
@@ -19,8 +25,8 @@ class QuizService
     }
     
     protected function request(string $courseId, string $quizId, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
-    {
-        $fullUrl = "https://statistics-api-staging.azurewebsites.net/api/statistics/course/{$courseId}/quizzes";
+    {   
+        $fullUrl = "{$this->statistics_base_url}/statistics/course/{$courseId}/quizzes";
         logger($fullUrl);
         
         try {
@@ -44,7 +50,7 @@ class QuizService
     }
 
     public function getCourseQuizzesStatistics(int $courseId) {
-        $url = "https://statistics-api-staging.azurewebsites.net/api/statistics/course/{$courseId}/quizzes?format=json";
+        $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/quizzes?format=json";
       
         $this->guzzleClient = new Client();
 
@@ -52,7 +58,7 @@ class QuizService
     }
 
     public function getCourseQuizIdStatistics(int $courseId, int $quizId) {
-        $url = "https://172.17.0.1:8080/api/statistics/course/{$courseId}/quiz/{$quizId}?format=json";
+        $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/quiz/{$quizId}?format=json";
 
         $this->guzzleClient = new Client();
 
