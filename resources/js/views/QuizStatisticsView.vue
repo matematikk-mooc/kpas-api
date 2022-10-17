@@ -2,6 +2,7 @@
 @extends('layouts.app')
 <template>
   <div>
+    <h1>Quiz statistikk</h1>
     <input v-on:keyup.enter="getQuizData" type="number" placeholder="Kompetansepakke id" v-model="course_id"/>
     <button @click="getQuizData">Finn kompetansepakkens quizzer</button>
     <div v-for="(quiz, i) in quiz_data" :key="i">    

@@ -2,9 +2,12 @@
 
 @section('content')
 <quiz-statistics-view></quiz-statistics-view>
+<matomo-view></matomo-view>
 <h1>Tilgjengelige innstillinger</h1>
         @php
-            var_dump($settings);
+            if (isset($settings)){
+                var_dump($settings);
+            }
         @endphp
 @endsection
 

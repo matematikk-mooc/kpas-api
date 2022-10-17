@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Statistikk VUE</h1>
+    <h2> her vises statistikk </h2>
     <D3BarChart :config="chart_config" :datum="chart_data"></D3BarChart>
   </div>
 </template>
