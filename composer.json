@@ -20,17 +20,16 @@
         "dompdf/dompdf": "^1.1",
         "easyrdf/easyrdf": "^1.1",
         "encore/laravel-admin": "^1.7",
-        "spatie/laravel-ignition": "^1.0",
         "fruitcake/laravel-cors": "^2.2",
         "guzzlehttp/guzzle": "~6.0",
         "highsolutions/laravel-environments": "*",
-        "imsglobal/lti": "^3.0",
         "imsglobal/lti-1p3-tool": "dev-master",
         "laravel/framework": "^9.0",
         "laravel/tinker": "^2.0",
         "league/oauth2-client": "^2.4",
         "mantas-done/subtitles": "^0.3.10",
         "nesbot/carbon": "*",
+        "spatie/laravel-ignition": "^1.0",
         "vimeo/laravel": "^5.6"
     },
     "require-dev": {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e5bd5757ad120980b35dd627be76a8f",
+    "content-hash": "353e458af3055e3d1f3ab2da7b6b249e",
     "packages": [
         {
             "name": "ankitpokhrel/tus-php",
@@ -2025,51 +2025,6 @@
                 "source": "https://github.com/highsolutions/laravel-environments/tree/3.3.0"
             },
             "time": "2022-02-22T11:47:59+00:00"
-        },
-        {
-            "name": "imsglobal/lti",
-            "version": "3.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/IMSGlobal/LTI-Tool-Provider-Library-PHP.git",
-                "reference": "06b12f70c2803ee08da116bcda2951eefd411ac9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/IMSGlobal/LTI-Tool-Provider-Library-PHP/zipball/06b12f70c2803ee08da116bcda2951eefd411ac9",
-                "reference": "06b12f70c2803ee08da116bcda2951eefd411ac9",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "IMSGlobal\\LTI\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Stephen Vickers",
-                    "email": "svickers@imsglobal.org"
-                }
-            ],
-            "description": "LTI Tool Provider Library",
-            "homepage": "https://www.imsglobal.org/lti",
-            "keywords": [
-                "LTI"
-            ],
-            "support": {
-                "issues": "https://github.com/IMSGlobal/LTI-Tool-Provider-Library-PHP/issues",
-                "source": "https://github.com/IMSGlobal/LTI-Tool-Provider-Library-PHP/tree/3.0.2"
-            },
-            "abandoned": true,
-            "time": "2016-09-18T04:22:22+00:00"
         },
         {
             "name": "imsglobal/lti-1p3-tool",
