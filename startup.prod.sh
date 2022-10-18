@@ -3,6 +3,7 @@
 echo $0
 echo "Artisan migrate"
 echo "==============="
-php artisan migrate --force
+# TODO: This is a temporary fix
+#php artisan migrate --force
 
 apache2-foreground
