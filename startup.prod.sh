@@ -6,4 +6,5 @@ echo "==============="
 # TODO: This is a temporary fix
 #php artisan migrate --force
 
+
 apache2-foreground
