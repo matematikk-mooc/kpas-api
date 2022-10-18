@@ -70,8 +70,8 @@ RUN php artisan config:cache &&\
 RUN chown www:www startup.prod.sh
 RUN chmod +x startup.prod.sh
 
-
-USER www
 EXPOSE 80
+USER www
+
 
 ENTRYPOINT ["./startup.prod.sh"]
