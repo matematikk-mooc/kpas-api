@@ -62,10 +62,6 @@ WORKDIR /var/www
 
 RUN cp environments/production/.env .env
 
-RUN php artisan config:cache &&\
-    php artisan route:cache &&\
-    php artisan view:cache
-
 RUN chown www:www startup.prod.sh
 RUN chmod +x startup.prod.sh
 
