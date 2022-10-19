@@ -72,4 +72,5 @@ RUN chmod +x startup.prod.sh
 
 EXPOSE 80
 
-USER www
+# TODO: we should‘t run as root
+#USER www
