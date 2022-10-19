@@ -28,7 +28,6 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions mbstring pdo_mysql zip exif pcntl gd memcached
 
-
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
