@@ -1,6 +1,6 @@
 FROM composer:2.4.3 AS composerBuild
-COPY . /var/www
-WORKDIR /var/www
+COPY . /var/www/html
+WORKDIR /var/www/html
 RUN composer install \
                 --no-dev \
                 --prefer-dist \
@@ -8,8 +8,8 @@ RUN composer install \
                 --optimize-autoloader
 
 FROM node:16-alpine3.15 AS nodeBuild
-COPY --from=composerBuild /var/www /var/www
-WORKDIR /var/www
+COPY --from=composerBuild /var/www/html /var/www/html
+WORKDIR /var/www/html
 # TODO: ADD BUILD STEP, NPM
 #RUN npm install
 #RUN npm run build
@@ -17,7 +17,7 @@ WORKDIR /var/www
 FROM php:8.1-apache
 
 # Set document root
-ENV APACHE_DOCUMENT_ROOT=/var/www
+ENV APACHE_DOCUMENT_ROOT=/var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
@@ -43,13 +43,13 @@ RUN apt-get update && apt-get install -y \
     lua-zlib-dev
 
 # Add user for laravel application
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+#RUN groupadd -g 1000 www
+#RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy code to /var/www
-COPY --from=nodeBuild --chown=www:www /var/www /var/www
+COPY --from=nodeBuild --chown=www-data:www-data /var/www/html /var/www/html
 
-RUN chmod -R ug+w /var/www/storage
+RUN chmod -R ug+w /var/www/html/storage
 
 #Disable access logging to STDOUT to make kubectl logs more useful
 RUN sed -ri -e 's!CustomLog.*!#CustomLog!g' /etc/apache2/sites-enabled/*.conf
@@ -58,14 +58,13 @@ RUN sed -ri -e 's!CustomLog.*!#CustomLog!g' /etc/apache2/conf-enabled/*.conf
 # Allow rewrite module
 RUN a2enmod rewrite
 
-WORKDIR /var/www
+WORKDIR /var/www/html
 
-RUN cp environments/production/.env .env
+#RUN cp environments/production/.env .env
 
-RUN chown www:www startup.prod.sh
+RUN chown www-data:www-data startup.prod.sh
 RUN chmod +x startup.prod.sh
 
 EXPOSE 80
 
-# TODO: we should‘t run as root
-#USER www
+USER www-data
