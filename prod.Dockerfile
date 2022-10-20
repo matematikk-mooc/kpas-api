@@ -65,6 +65,6 @@ WORKDIR /var/www/html
 RUN chown www-data:www-data startup.prod.sh
 RUN chmod +x startup.prod.sh
 
-EXPOSE 80
+EXPOSE 8000
 
 USER www-data
