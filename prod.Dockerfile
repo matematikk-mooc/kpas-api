@@ -60,11 +60,10 @@ RUN a2enmod rewrite
 
 WORKDIR /var/www/html
 
-#RUN cp environments/production/.env .env
+RUN cp environments/production/.env .env
 
 RUN chown www-data:www-data startup.prod.sh
 RUN chmod +x startup.prod.sh
 
-EXPOSE 8000
-
 USER www-data
+EXPOSE 80
