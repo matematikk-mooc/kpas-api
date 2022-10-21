@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 class StatisticsService
 {
     protected $guzzleClient;
+    protected $statistics_base_url;
+
+    public function __construct()
+    {
+        $this->statistics_base_url = config('statistics-api.base_url');
+    }
+
 
     public function getStatisticsHtml($settings) {
         logger("getStatisticsHtml");
@@ -23,8 +30,7 @@ class StatisticsService
 
     public function getUserActivity(int $courseId, Request $request) {
         logger("StatisticsService::getUserActivity");
-
-        $url = "https://statistics-api.azurewebsites.net/api/statistics/user_activity/" . $courseId . "?";
+        $url = "{$this->statistics_base_url}/statistics/user_activity/" . $courseId . "?";
 
         if ($request->has('from')) {
             $url .= "from=" . $from . "&";
@@ -41,7 +47,7 @@ class StatisticsService
     
     protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
-        $fullUrl = "https://statistics-api.azurewebsites.net/api/statistics/513/count";
+        $fullUrl = "{$this->statistics_base_url}/statistics/513/count";
         logger($fullUrl);
         
         try {
