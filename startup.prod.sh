@@ -20,3 +20,5 @@ echo $0
 echo "Artisan view cache"
 echo "==============="
 #php artisan view:cache
+
+/usr/sbin/apache2ctl -D FOREGROUND
