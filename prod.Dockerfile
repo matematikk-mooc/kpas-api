@@ -65,5 +65,4 @@ RUN cp environments/production/.env .env
 RUN chown www-data:www-data startup.prod.sh
 RUN chmod +x startup.prod.sh
 
-
-#USER www-data
+ENTRYPOINT ["/var/www/html/startup.prod.sh"]
