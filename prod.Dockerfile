@@ -66,4 +66,4 @@ RUN chown www-data:www-data startup.prod.sh
 RUN chmod +x startup.prod.sh
 
 
-USER www-data
+#USER www-data
