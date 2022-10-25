@@ -9,11 +9,11 @@ class TrustProxies extends Middleware
 {
     /**
      * The trusted proxies for this application.
-     * // TODO: DO WE NEED THIS?
+     * // TODO: DO NOT USE WILDCARD
      *
      * @var array
      */
-    protected $proxies = ["kpas.kompetanse.udir.no", "kpas.staging.kompetanse.udir.no"];
+    protected $proxies = "*";
 
     /**
      * The headers that should be used to detect proxies.
