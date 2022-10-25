@@ -1,10 +1,8 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { resolve } from 'path'
-
+import { createVuePlugin as vue } from "vite-plugin-vue2";
 
 export default defineConfig({
-
     css: {
         loaderOptions: {
           sass: {
@@ -19,26 +17,13 @@ export default defineConfig({
           }
         }
     },
-    build: {
-        lib: {
-          entry: resolve(__dirname, 'resourses'),
-          name: 'Kpas',
-          fileName: 'kpas',
-          formats: ['cjs']
-        },
-        rollupOptions: {
-          output: {
-            inlineDynamicImports: false,
-   
-          }
-        }
-    },
     plugins: [
-        laravel([
+       laravel([
             'resources/sass/app.scss',
             'resources/js/app.js',
         ]),
-    ], 
+        vue([vue()])
+    ],
     resolve: {
         alias: [
             {
@@ -46,6 +31,11 @@ export default defineConfig({
                 find: /^~(.*)$/,
                 replacement: '$1',
             },
+        ],
+        extensions: [
+          ".js",
+          ".vue",
+          ".scss",
         ],
     },
 });

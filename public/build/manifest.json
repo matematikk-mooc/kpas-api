@@ -1,16 +1,12 @@
 {
-  "resources/sass/app.scss": {
-    "file": "kpas.js",
-    "src": "resources/sass/app.scss",
-    "isEntry": true
-  },
   "resources/js/app.js": {
-    "file": "kpas2.js",
+    "file": "assets/app.dff63c9a.js",
     "src": "resources/js/app.js",
     "isEntry": true
   },
-  "style.css": {
-    "file": "style.css",
-    "src": "style.css"
+  "resources/sass/app.scss": {
+    "file": "assets/app.57c48ae5.css",
+    "src": "resources/sass/app.scss",
+    "isEntry": true
   }
 }
