@@ -21,6 +21,9 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# TODO: CONSIDER THE FOLLOWING LINE, IS IT NEEDED FOR LARAVEL TO CREATE CORRECT URLS? IF SO, WE NEED TO MAKE IT DYNAMIC BASED ON PROD/STAGING.
+RUN echo "ServerName kpas.staging.kompetanse.udir.no" >> /etc/apache2/apache2.conf
+
 # Add docker php ext repo
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
