@@ -41,9 +41,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     lua-zlib-dev
 
-# Add user for laravel application
-#RUN groupadd -g 1000 www
-#RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy code to /var/www
 COPY --from=nodeBuild --chown=www-data:www-data /var/www/html /var/www/html
