@@ -60,5 +60,7 @@ RUN cp environments/production/.env .env
 
 RUN chown www-data:www-data startup.prod.sh
 RUN chmod +x startup.prod.sh
+#Todo: is this needed?
+RUN chmod -R 777 /var/www/html/public 
 
 ENTRYPOINT ["/var/www/html/startup.prod.sh"]
