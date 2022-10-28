@@ -10,9 +10,8 @@ RUN composer install \
 FROM node:16-alpine3.15 AS nodeBuild
 COPY --from=composerBuild /var/www/html /var/www/html
 WORKDIR /var/www/html
-# TODO: ADD BUILD STEP, NPM
-#RUN npm install
-#RUN npm run build
+RUN npm install
+RUN npm run build
 
 FROM php:8.1-apache
 

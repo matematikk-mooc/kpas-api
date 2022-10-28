@@ -30,6 +30,6 @@ echo "==========="
 npm install
 
 echo $0
-echo "npm run production"
+echo "npm run build"
 echo "=================="
-npm run production
+npm run build
