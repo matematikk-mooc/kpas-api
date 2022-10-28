@@ -48,8 +48,8 @@ COPY --from=nodeBuild --chown=www-data:www-data /var/www/html /var/www/html
 RUN chmod -R ug+w /var/www/html/storage
 
 #Disable access logging to STDOUT to make kubectl logs more useful
-RUN sed -ri -e 's!CustomLog.*!#CustomLog!g' /etc/apache2/sites-enabled/*.conf
-RUN sed -ri -e 's!CustomLog.*!#CustomLog!g' /etc/apache2/conf-enabled/*.conf
+#RUN sed -ri -e 's!CustomLog.*!#CustomLog!g' /etc/apache2/sites-enabled/*.conf
+#RUN sed -ri -e 's!CustomLog.*!#CustomLog!g' /etc/apache2/conf-enabled/*.conf
 
 # Allow rewrite module
 RUN a2enmod rewrite
@@ -60,7 +60,5 @@ RUN cp environments/production/.env .env
 
 RUN chown www-data:www-data startup.prod.sh
 RUN chmod +x startup.prod.sh
-#Todo: is this needed?
-RUN chmod -R 777 /var/www/html/public 
 
 ENTRYPOINT ["/var/www/html/startup.prod.sh"]
