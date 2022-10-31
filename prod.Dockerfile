@@ -44,14 +44,14 @@ RUN apk add --no-cache \
 RUN ln -s /usr/bin/php81 /usr/bin/php
 
 # Configure nginx
-COPY docker-prod-configs/nginx.conf /etc/nginx/nginx.conf
+COPY docker-prod/nginx.conf /etc/nginx/nginx.conf
 
 # Configure PHP-FPM
-COPY docker-prod-configs/fpm-pool.conf /etc/php81/php-fpm.d/www.conf
-COPY docker-prod-configs/php.ini /etc/php81/conf.d/custom.ini
+COPY docker-prod/fpm-pool.conf /etc/php81/php-fpm.d/www.conf
+COPY docker-prod/php.ini /etc/php81/conf.d/custom.ini
 
 # Configure supervisord
-COPY docker-prod-configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
 RUN chown -R nobody.nobody /var/www/html /run /var/lib/nginx /var/log/nginx
