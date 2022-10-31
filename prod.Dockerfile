@@ -64,7 +64,7 @@ COPY --from=nodeBuild --chown=nobody /var/www/html /var/www/html
 
 
 # Expose the port nginx is reachable on
-EXPOSE 80
+EXPOSE 8080
 
 RUN chmod +x /var/www/html/startup.prod.sh
 
