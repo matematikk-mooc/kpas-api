@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 echo $0
 echo "Artisan migrate"
 echo "==============="
@@ -22,6 +21,6 @@ echo "==============="
 php artisan view:cache
 
 echo $0
-echo "Start Apache Web Server"
+echo "Start Supervisor with Nginx and PHP-FPM"
 echo "==============="
-/usr/sbin/apache2ctl -D FOREGROUND
+/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

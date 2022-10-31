@@ -13,52 +13,61 @@ WORKDIR /var/www/html
 RUN npm install
 RUN npm run build
 
-FROM php:8.1-apache
-
-# Set document root
-ENV APACHE_DOCUMENT_ROOT=/var/www/html
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# Add docker php ext repo
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-
-# Install php extensions
-RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions mbstring pdo_mysql zip exif pcntl gd memcached
-
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    unzip \
-    git \
-    curl \
-    lua-zlib-dev
-
-
-# Copy code to /var/www
-COPY --from=nodeBuild --chown=www-data:www-data /var/www/html /var/www/html
-
-RUN chmod -R ug+w /var/www/html/storage
-
-#Disable access logging to STDOUT to make kubectl logs more useful
-#RUN sed -ri -e 's!CustomLog.*!#CustomLog!g' /etc/apache2/sites-enabled/*.conf
-#RUN sed -ri -e 's!CustomLog.*!#CustomLog!g' /etc/apache2/conf-enabled/*.conf
-
-# Allow rewrite module
-RUN a2enmod rewrite
-
+FROM alpine:3.16.2
+# Setup document root
 WORKDIR /var/www/html
 
-RUN cp environments/production/.env .env
+# Install packages and remove default server definition
+RUN apk add --no-cache \
+  php81-fpm \
+  php81-pdo \
+  php81-tokenizer \
+  php81-mbstring \
+  php81-curl \
+  php81-mysqli \
+  php81-openssl \
+  php81-gd \
+  php81-ctype \
+  php81-intl \
+  php81-xmlreader \
+  php81-xml \
+  php81-session \
+  php81-phar \
+  php81-iconv \
+  php81-pdo_mysql \
+  curl \
+  nginx \
+  supervisor \
+  bash
 
-RUN chown www-data:www-data startup.prod.sh
-RUN chmod +x startup.prod.sh
+# Create symlink so programs depending on `php` still function
+RUN ln -s /usr/bin/php81 /usr/bin/php
 
-ENTRYPOINT ["/var/www/html/startup.prod.sh"]
+# Configure nginx
+COPY docker-prod-configs/nginx.conf /etc/nginx/nginx.conf
+
+# Configure PHP-FPM
+COPY docker-prod-configs/fpm-pool.conf /etc/php81/php-fpm.d/www.conf
+COPY docker-prod-configs/php.ini /etc/php81/conf.d/custom.ini
+
+# Configure supervisord
+COPY docker-prod-configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Make sure files/folders needed by the processes are accessable when they run under the nobody user
+RUN chown -R nobody.nobody /var/www/html /run /var/lib/nginx /var/log/nginx
+
+# Switch to use a non-root user from here on
+USER nobody
+
+# Add application
+COPY --from=nodeBuild --chown=nobody /var/www/html /var/www/html
+
+
+# Expose the port nginx is reachable on
+EXPOSE 80
+
+RUN chmod +x /var/www/html/startup.prod.sh
+
+
+# Let supervisord start nginx & php-fpm
+CMD ["/var/www/html/startup.prod.sh"]
