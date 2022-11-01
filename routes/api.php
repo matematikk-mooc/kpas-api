@@ -54,6 +54,7 @@ Route::get('user/{userId}/history', 'HistoryController@getUserHistoryData');
 Route::get('user/{userId}/context/{contextId}/history', 'HistoryController@getUserContextHistoryData');
 Route::get('context/{contextId}/history', 'HistoryController@getContextHistoryData');
 Route::get('statistics/{courseId}', 'GroupEnrollmentController@getGroupEnrollmentCount');
+Route::get('course/{courseId}/modules', 'ModuleController@moduleStatistics');
 
 Route::group(['prefix' => 'vimeo'], function () {
     Route::get('/{vimeoId}', 'VimeoController@index');
