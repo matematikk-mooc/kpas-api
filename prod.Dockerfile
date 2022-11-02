@@ -54,16 +54,13 @@ COPY docker-prod/php.ini /etc/php81/conf.d/custom.ini
 COPY docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
-# TODO: uncomment
-#RUN chown -R nobody.nobody /var/www/html /run /var/lib/nginx /var/log/nginx
+RUN chown -R nobody.nobody /var/www/html /run /var/lib/nginx /var/log/nginx
 
 # Switch to use a non-root user from here on
-# TODO: We should not run as root
-#USER nobody
+USER nobody
 
 # Add application
-# TODO: add --chowd=nobody
-COPY --from=nodeBuild /var/www/html /var/www/html
+COPY --from=nodeBuild --chown=nobody /var/www/html /var/www/html
 
 
 # Expose the port nginx is reachable on
