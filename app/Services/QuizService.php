@@ -16,11 +16,7 @@ class QuizService
 
     public function getQuizHtml($settings) {
         logger("getQuizData");
-
-        $this->guzzleClient = new Client();
-        $quizData = $this->request("502", "2720");
         
-        //return view('main.quiz')->withQuizData($quizData);
         return view('main.quiz')->withSettings($settings);
     }
     

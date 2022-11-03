@@ -20,11 +20,7 @@ class StatisticsService
         logger("getStatisticsHtml");
         logger($settings);
 
-        $this->guzzleClient = new Client();
-        $statistics = $this->request("502");
-
         return view('main.statistics')
-        ->withStatistics($statistics)
         ->withSettings($settings);
     }
 
