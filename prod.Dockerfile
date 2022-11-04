@@ -39,6 +39,10 @@ RUN apk add --no-cache \
   nginx \
   supervisor \
   bash
+  
+
+# Set iconv path
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 # Create symlink so programs depending on `php` still function
 RUN ln -s /usr/bin/php81 /usr/bin/php
