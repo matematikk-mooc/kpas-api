@@ -33,17 +33,12 @@ RUN apk add --no-cache \
   php81-xml \
   php81-session \
   php81-phar \
-  php81-iconv \
   php81-pdo_mysql \
   curl \
   nginx \
   supervisor \
   bash
   
-
-# Iconv
-RUN apk add gnu-libiconv=1.15-r3 --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ --allow-untrusted
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 # Create symlink so programs depending on `php` still function
 RUN ln -s /usr/bin/php81 /usr/bin/php
