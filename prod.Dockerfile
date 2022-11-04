@@ -41,7 +41,8 @@ RUN apk add --no-cache \
   bash
   
 
-# Set iconv path
+# Iconv
+RUN apk add gnu-libiconv=1.15-r3 --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community/ --allow-untrusted
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 # Create symlink so programs depending on `php` still function
