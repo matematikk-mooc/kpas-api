@@ -77,7 +77,7 @@ class MainController extends Controller
     public function quiz(Request $request)
     {
         $quizService= new QuizService();
-        $quizData= $quizService->getQuizHtml();
+        $quizData= $quizService->getQuizHtml($settings = NULL);
         return view('main.quiz')->withQuizData($quizData);
     }
 

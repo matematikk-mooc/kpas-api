@@ -8,6 +8,11 @@ Route::group(['prefix' => 'statistics'], function() {
     Route::get('/{courseId}', 'StatisticsController@webindex');
 });
 
+
+Route::group(['prefix' => 'matomo'], function() {
+    Route::get('/{courseId}', 'MatomoController@webindex');
+});
+
 Route::group(['prefix' => 'grep'], function() {
     Route::get('/gf5', 'GrepController@gf5');
 });

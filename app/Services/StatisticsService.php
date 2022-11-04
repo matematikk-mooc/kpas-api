@@ -20,11 +20,7 @@ class StatisticsService
         logger("getStatisticsHtml");
         logger($settings);
 
-        $this->guzzleClient = new Client();
-        $statistics = $this->request("Mathias");
-
         return view('main.statistics')
-        ->withStatistics($statistics)
         ->withSettings($settings);
     }
 
@@ -45,9 +41,9 @@ class StatisticsService
         return $this->guzzleClient->request($url);
     }
     
-    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
+    protected function request(string $courseId, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
-        $fullUrl = "{$this->statistics_base_url}/statistics/513/count";
+        $fullUrl = "{$this->statistics_base_url}/statistics/{$courseId}/count";
         logger($fullUrl);
         
         try {
