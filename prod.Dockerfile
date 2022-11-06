@@ -40,8 +40,9 @@ RUN apk add --no-cache \
   bash
   
 # Create custom directory for phpsession
-RUN mkdir /tmp/phpsession
-RUN chown nobody.nobody /tmp/phpsession
+RUN mkdir /tmp/php/session/save_path
+RUN mkdir /tmp/php/session/cookie_path
+RUN chown nobody.nobody /tmp/php/session/save_path /tmp/php/session/cookie_path
 
 # Create symlink so programs depending on `php` still function
 RUN ln -s /usr/bin/php81 /usr/bin/php
