@@ -39,8 +39,9 @@ RUN apk add --no-cache \
   supervisor \
   bash
   
-# Change ownership of php session to nginx
-RUN sudo chown -R nobody.nobody /var/lib/php/session/
+# Create custom directory for phpsession
+RUN mkdir /tmp/phpsession
+RUN chown nobody.nobody /tmp/phpsession
 
 # Create symlink so programs depending on `php` still function
 RUN ln -s /usr/bin/php81 /usr/bin/php
