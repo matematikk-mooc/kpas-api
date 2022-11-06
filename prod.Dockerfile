@@ -47,24 +47,26 @@ RUN chown nobody.nobody /tmp/php/session/save_path /tmp/php/session/cookie_path
 # Create symlink so programs depending on `php` still function
 RUN ln -s /usr/bin/php81 /usr/bin/php
 
-# Configure nginx
-COPY docker-prod/nginx.conf /etc/nginx/nginx.conf
-
-# Configure PHP-FPM
-COPY docker-prod/fpm-pool.conf /etc/php81/php-fpm.d/www.conf
-COPY docker-prod/php.ini /etc/php81/conf.d/custom.ini
-
-# Configure supervisord
-COPY docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
 RUN chown -R nobody.nobody /var/www/html /run /var/lib/nginx /var/log/nginx
+
 
 # Switch to use a non-root user from here on
 USER nobody
 
 # Add application
 COPY --from=nodeBuild --chown=nobody /var/www/html /var/www/html
+
+# Configure nginx
+COPY --chown=nobody docker-prod/nginx.conf /etc/nginx/nginx.conf
+
+# Configure PHP-FPM
+COPY --chown=nobody docker-prod/fpm-pool.conf /etc/php81/php-fpm.d/www.conf
+COPY --chown=nobody docker-prod/php.ini /etc/php81/conf.d/custom.ini
+
+# Configure supervisord
+COPY --chown=nobody docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 
 # Expose the port nginx is reachable on
