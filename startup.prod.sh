@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo $0
-echo "Copy all files in /lticonfigs to correct path"
+echo "Copy all files in /lticonfig to correct path"
 echo "==============="
-cp -a /lticonfigs/. /var/www/html/database/
+cp -a /lticonfig/. /var/www/html/database/
 
 echo $0
 echo "Artisan migrate"
