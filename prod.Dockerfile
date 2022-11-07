@@ -51,6 +51,7 @@ RUN ln -s /usr/bin/php81 /usr/bin/php
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
 RUN chown -R nobody.nobody /var/www/html /run /var/lib/nginx /var/log/nginx
 
+RUN chown -R nobody.nobody /etc/php81
 
 # Switch to use a non-root user from here on
 USER nobody
@@ -67,8 +68,6 @@ COPY --chown=nobody docker-prod/php.ini /etc/php81/conf.d/custom.ini
 
 # Configure supervisord
 COPY --chown=nobody docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN chown -R nobody.nobody /etc/php81
 
 
 # Expose the port nginx is reachable on
