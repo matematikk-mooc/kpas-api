@@ -11,9 +11,19 @@ echo "==============="
 php artisan migrate --force
 
 echo $0
+echo "Artisan cache clear"
+echo "==============="
+php artisan cache clear
+
+echo $0
 echo "Artisan cache config"
 echo "==============="
 php artisan config:cache
+
+echo $0
+echo "Artisan route clear"
+echo "==============="
+php artisan route:clear
 
 echo $0
 echo "Artisan route cache"
