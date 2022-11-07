@@ -19,6 +19,7 @@ WORKDIR /var/www/html
 
 # Install packages and remove default server definition
 RUN apk add --no-cache \
+  php81 \
   php81-fpm \
   php81-pdo \
   php81-tokenizer \
@@ -68,8 +69,6 @@ COPY --chown=nobody docker-prod/php.ini /etc/php81/conf.d/custom.ini
 # Configure supervisord
 COPY --chown=nobody docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Restart php-fpm
-RUN pkill -o -USR2 php-fpm
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
