@@ -13,61 +13,52 @@ WORKDIR /var/www/html
 RUN npm install
 RUN npm run build
 
-FROM alpine:3.16.2
+FROM php:8.1-fpm
+RUN apt-get update && apt-get install -y \
+		libfreetype6-dev \
+		libjpeg62-turbo-dev \
+		libpng-dev \
+    curl \
+    nginx \
+    supervisor
+
+#RUN docker-php-ext-install mbstring curl mysqli openssl ctype intl xmlreader xml session phar curl
+
 # Setup document root
 WORKDIR /var/www/html
 
-# Install packages and remove default server definition
-RUN apk add --no-cache \
-  php81 \
-  php81-fpm \
-  php81-pdo \
-  php81-tokenizer \
-  php81-mbstring \
-  php81-curl \
-  php81-mysqli \
-  php81-openssl \
-  php81-gd \
-  php81-ctype \
-  php81-intl \
-  php81-xmlreader \
-  php81-xml \
-  php81-session \
-  php81-phar \
-  php81-pdo_mysql \
-  curl \
-  nginx \
-  supervisor \
-  bash
-  
+RUN mkdir /run/php
+RUN chown www-data /run/php
+
 # Create custom directory for phpsession
 RUN mkdir -p /tmp/php/session/save_path
 RUN mkdir -p /tmp/php/session/cookie_path
-RUN chown nobody.nobody /tmp/php/session/save_path /tmp/php/session/cookie_path
+RUN chown www-data /tmp/php/session/save_path /tmp/php/session/cookie_path
+
 
 # Create symlink so programs depending on `php` still function
 RUN ln -s /usr/bin/php81 /usr/bin/php
 
 
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R nobody.nobody /var/www/html /run /var/lib/nginx /var/log/nginx
+# Make sure files/folders needed by the processes are accessable when they run under the www-data user
+RUN chown -R www-data /var/www/html /run /var/lib/nginx /var/log/nginx
 
 
 # Switch to use a non-root user from here on
-USER nobody
+USER www-data
 
 # Add application
-COPY --from=nodeBuild --chown=nobody /var/www/html /var/www/html
+COPY --from=nodeBuild --chown=www-data /var/www/html /var/www/html
 
 # Configure nginx
-COPY --chown=nobody docker-prod/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=www-data docker-prod/nginx.conf /etc/nginx/nginx.conf
 
 # Configure PHP-FPM
-COPY --chown=nobody docker-prod/fpm-pool.conf /etc/php81/php-fpm.d/www.conf
-COPY --chown=nobody docker-prod/php.ini /etc/php81/conf.d/custom.ini
+COPY --chown=www-data docker-prod/fpm-pool.conf /usr/local/etc/php/php-fpm.d/www.conf
+COPY --chown=www-data docker-prod/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Configure supervisord
-COPY --chown=nobody docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY --chown=www-data docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 
 # Expose the port nginx is reachable on
@@ -76,5 +67,6 @@ EXPOSE 8080
 RUN chmod +x /var/www/html/startup.prod.sh
 
 
+
 # Let supervisord start nginx & php-fpm
-CMD ["/var/www/html/startup.prod.sh"]
+ENTRYPOINT ["/var/www/html/startup.prod.sh"]
