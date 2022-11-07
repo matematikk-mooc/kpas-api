@@ -13,7 +13,7 @@ php artisan migrate --force
 echo $0
 echo "Artisan cache clear"
 echo "==============="
-php artisan cache clear
+php artisan cache:clear
 
 echo $0
 echo "Artisan cache config"
