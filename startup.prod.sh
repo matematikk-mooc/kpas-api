@@ -1,6 +1,11 @@
 #!/bin/bash
 
 echo $0
+echo "Copy all files in /lticonfigs to correct path"
+echo "==============="
+cp -a /lticonfigs/. /var/www/html/database/
+
+echo $0
 echo "Artisan migrate"
 echo "==============="
 php artisan migrate --force
