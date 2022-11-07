@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     nginx \
     supervisor
-RUN docker-php-ext-install zip gd
+RUN docker-php-ext-install zip gd mysqli pdo pdo_mysql
 
  
 WORKDIR /var/www/html
@@ -45,7 +45,7 @@ COPY --chown=www-data docker-prod/nginx.conf /etc/nginx/nginx.conf
 COPY --chown=www-data docker-prod/fpm-pool.conf /usr/local/etc/php/php-fpm.d/www.conf
 COPY --chown=www-data docker-prod/php.ini /usr/local/etc/php/conf.d/custom.ini
 
-# Configure supervisord, that will make sure both php-fpm and nginx is running
+# Configure supervisord
 COPY --chown=www-data docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Switch to use a non-root user
