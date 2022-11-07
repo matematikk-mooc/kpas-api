@@ -68,6 +68,8 @@ COPY --chown=nobody docker-prod/php.ini /etc/php81/conf.d/custom.ini
 # Configure supervisord
 COPY --chown=nobody docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN chown -R nobody.nobody /etc/php81
+
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
