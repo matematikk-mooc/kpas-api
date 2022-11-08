@@ -10,7 +10,9 @@ try {
     var Vue = require('vue');
     window.Vue = Vue;
     require('select2');
-} catch (e) {}
+} catch (e) {
+    console.error(e, e.stack);
+}
 
 /**
  * The following block of code may be used to automatically register your
