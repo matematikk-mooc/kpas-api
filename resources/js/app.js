@@ -7,7 +7,8 @@
 
 try {
     window.$ = window.jQuery = require('jquery');
-    window.Vue = require('vue');
+    var Vue = require('vue');
+    window.Vue = Vue;
     require('select2');
 } catch (e) {}
 
