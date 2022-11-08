@@ -40,6 +40,10 @@ RUN chown -R www-data /var/www/html /run /var/lib/nginx /var/log/nginx
 
 # Configure nginx
 COPY --chown=www-data docker-prod/nginx.conf /etc/nginx/nginx.conf
+# The www-data user must be able to write to a temporary nginx.conf-file, since it will be using
+# sed -i during startup.prod.
+RUN touch /etc/nginx/nginx.conf.temp
+RUN chown www-data /etc/nginx/nginx.conf.temp
 
 # Configure PHP-FPM
 COPY --chown=www-data docker-prod/fpm-pool.conf /usr/local/etc/php/php-fpm.d/www.conf
