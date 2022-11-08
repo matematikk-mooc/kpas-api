@@ -25,7 +25,7 @@ class CommandController extends Controller
 
     public function run_fetch_nsr()
     {
-        Artisan::call('fetch:from_nsr');
+        Artisan::call('fetch_from:nsr');
         return 'OK';
     }
 }
