@@ -1,6 +1,11 @@
+import popper from "popper.js"
+import jquery from "jquery"
+import lodash from "lodash"
+import Vue from "vue"
 
-window._ = require('lodash');
-window.Vue = require('vue');
+
+window._ = lodash;
+window.Vue = Vue;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -9,10 +14,8 @@ window.Vue = require('vue');
  */
 
 try {
-    window.Popper = require('popper.js').default;
-    window.$ = window.jQuery = require('jquery');
-
-    require('bootstrap');
+    window.Popper = popper;
+    window.$ = window.jQuery = jquery;
 } catch (e) {
     console.error(e, e.stack);
 }

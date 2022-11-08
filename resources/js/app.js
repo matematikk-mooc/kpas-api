@@ -1,3 +1,12 @@
+import Vue from 'vue';
+import GroupEnrollView from "./views/GroupEnrollView";
+import MergeUserView from "./views/MergeUserView";
+import DiplomaView from "./views/DiplomaView";
+import NoDiplomaView from "./views/NoDiplomaView";
+import KpasEmbedView from "./views/KpasEmbedView";
+import StatisticsView from "./views/StatisticsView";
+import jQuery from "jquery";
+
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -6,10 +15,8 @@
  */
 
 try {
-    window.$ = window.jQuery = require('jquery');
-    var Vue = require('vue');
+    window.$ = window.jQuery = jQuery;
     window.Vue = Vue;
-    require('select2');
 } catch (e) {
     console.error(e, e.stack);
 }
@@ -25,12 +32,12 @@ try {
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('group-enroll-view', require('./views/GroupEnrollView').default);
-Vue.component('merge-user-view', require('./views/MergeUserView').default);
-Vue.component('diploma-view', require('./views/DiplomaView').default);
-Vue.component('no-diploma-view', require('./views/NoDiplomaView').default);
-Vue.component('kpas-embed-view', require('./views/KpasEmbedView').default);
-Vue.component('statistics-view', require('./views/StatisticsView').default);
+Vue.component('group-enroll-view', GroupEnrollView);
+Vue.component('merge-user-view', MergeUserView);
+Vue.component('diploma-view', DiplomaView);
+Vue.component('no-diploma-view', NoDiplomaView);
+Vue.component('kpas-embed-view', KpasEmbedView);
+Vue.component('statistics-view', StatisticsView);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
