@@ -15,7 +15,6 @@ import jQuery from "jquery";
 
 try {
     window.$ = window.jQuery = jQuery;
-    window.Vue = vue;
 } catch (e) {
     console.error(e, e.stack);
 }

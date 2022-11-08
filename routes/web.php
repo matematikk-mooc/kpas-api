@@ -24,3 +24,4 @@ Route::get('/minegrupper', 'MainController@myGroups')->name('main.mygroups');
 
 Route::post('/worker', 'WorkerController@store')->name('worker.store');
 Route::get('/worker', 'WorkerController@index')->name('worker.index');
+
