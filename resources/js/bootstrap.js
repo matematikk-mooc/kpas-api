@@ -1,11 +1,8 @@
 import popper from "popper.js"
-import jquery from "jquery"
 import lodash from "lodash"
-import Vue from "vue"
 
 
 window._ = lodash;
-window.Vue = Vue;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -15,7 +12,6 @@ window.Vue = Vue;
 
 try {
     window.Popper = popper;
-    window.$ = window.jQuery = jquery;
 } catch (e) {
     console.error(e, e.stack);
 }

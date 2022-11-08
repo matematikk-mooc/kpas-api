@@ -22,7 +22,7 @@ export default defineConfig({
             'resources/sass/app.scss',
             'resources/js/app.js',
         ]),
-        vue([vue()])
+      vue(),
     ],
     resolve: {
         alias: [
