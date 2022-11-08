@@ -6,6 +6,12 @@ echo "==============="
 cp -a /lticonfig/. /var/www/html/database
 
 echo $0
+echo "Inject canvas url from ENV Variable to nginx-config"
+echo "==============="
+sed "s/startup_prod:INJECT_CANVAS_HOST/$CANVAS_HOST/g" /etc/nginx/nginx.conf
+
+
+echo $0
 echo "Artisan migrate"
 echo "==============="
 php artisan migrate --force
