@@ -36,7 +36,7 @@ WORKDIR /var/www/html
 COPY --from=nodeBuild --chown=www-data /var/www/html /var/www/html
 
 # Make sure files/folders needed by the processes are accessable when they run under the www-data user
-RUN chown -R www-data /var/www/html /run /var/lib/nginx /var/log/nginx
+RUN chown -R www-data /run /var/lib/nginx /var/log/nginx
 
 # Configure nginx
 COPY --chown=www-data docker-prod/nginx.conf /etc/nginx/nginx.conf

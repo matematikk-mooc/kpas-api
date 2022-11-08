@@ -57,14 +57,14 @@
         </button>
       </div>
 
-      <p>
+
       <div v-if="isLoading" class="alert alert-warning kpasAlert">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></div>
       <div v-if="enrollResult == ENROLL_FAILED" class='alert alert-danger kpasAlert'>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
       <div v-if="getRoleResult == ENROLL_GET_FAILED" class='alert alert-danger kpasAlert'>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</div>
       <div v-if="groupResult == ADDTO_GROUPS_FAILED" class='alert alert-danger kpasAlert'>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
       <div v-if="enrollResult == ENROLLED && !settings.deep && groupResult == ADDED_TO_GROUPS" class='alert alert-success kpasAlert'>Oppdateringen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
       <div v-if="enrollResult == ENROLLED && settings.deep && groupResult == ADDED_TO_GROUPS" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</div>
-      </p>
+
   </div>
   <div v-else>
       <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
@@ -133,11 +133,11 @@
         return this.institutionType ?  noOfGroups === 3 : noOfGroups === 2;
       },
       updateIsReady() {
-        this.isReady = !this.isLoading && 
+        this.isReady = !this.isLoading &&
                         this.groupsAreSet() &&
-                        this.roleIsSet && 
+                        this.roleIsSet &&
                         this.getRoleResult != this.ENROLL_GET_FAILED &&
-                        (this.faculties.length === 0 || this.faculty !== null);        
+                        (this.faculties.length === 0 || this.faculty !== null);
       },
       updateFaculty() {
         this.updateIsReady();
@@ -251,7 +251,7 @@
       },
       async addUserGroups() {
         if (this.groupsAreSet()) {
-          const params = Object.assign({}, 
+          const params = Object.assign({},
             this.groups, {
             cookie: window.cookie,
             role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
@@ -263,7 +263,7 @@
             const result = await api.post('/group/user/bulk', params);
             this.clearError("groupError");
             this.iframeresize();
-            this.groupResult = this.ADDED_TO_GROUPS; 
+            this.groupResult = this.ADDED_TO_GROUPS;
           } catch(e) {
             this.groupResult = this.ADDTO_GROUPS_FAILED;
 //            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");

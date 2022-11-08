@@ -1,10 +1,9 @@
-import Vue from 'vue';
+import {createApp} from 'vue';
 import GroupEnrollView from "./views/GroupEnrollView";
 import MergeUserView from "./views/MergeUserView";
 import DiplomaView from "./views/DiplomaView";
 import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
-import StatisticsView from "./views/StatisticsView";
 import jQuery from "jquery";
 
 
@@ -16,7 +15,7 @@ import jQuery from "jquery";
 
 try {
     window.$ = window.jQuery = jQuery;
-    window.Vue = Vue;
+    window.Vue = vue;
 } catch (e) {
     console.error(e, e.stack);
 }
@@ -31,20 +30,13 @@ try {
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('group-enroll-view', GroupEnrollView);
-Vue.component('merge-user-view', MergeUserView);
-Vue.component('diploma-view', DiplomaView);
-Vue.component('no-diploma-view', NoDiplomaView);
-Vue.component('kpas-embed-view', KpasEmbedView);
-Vue.component('statistics-view', StatisticsView);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = new Vue({
+const app = createApp({
     el: '#app',
     computed: {
       window() {
@@ -52,3 +44,10 @@ const app = new Vue({
       }
     }
 });
+
+
+app.component('group-enroll-view', GroupEnrollView);
+app.component('merge-user-view', MergeUserView);
+app.component('diploma-view', DiplomaView);
+app.component('no-diploma-view', NoDiplomaView);
+app.component('kpas-embed-view', KpasEmbedView);
