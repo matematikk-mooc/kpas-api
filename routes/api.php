@@ -14,6 +14,8 @@ Route::group(['prefix' => 'diploma'], function () {
 
 Route::post('/run_scheduler', 'CommandController@run_scheduler')->middleware('token_auth');
 
+Route::post('/run_fetch_nsr', 'CommandController@run_fetch_nsr')->middleware('token_auth');
+
 Route::group(['prefix' => 'nsr'], function () {
     Route::get('/counties', 'SkolerController@all_fylke');
     Route::get('/schools', 'SkolerController@all_skole');
