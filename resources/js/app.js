@@ -1,10 +1,12 @@
-import {createApp} from 'vue';
+
 import GroupEnrollView from "./views/GroupEnrollView";
 import MergeUserView from "./views/MergeUserView";
 import DiplomaView from "./views/DiplomaView";
 import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
-import jQuery from "jquery";
+import {createApp} from "vue/dist/vue.esm-bundler";
+import './bootstrap';
+
 
 
 /**
@@ -12,12 +14,6 @@ import jQuery from "jquery";
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-
-try {
-    window.$ = window.jQuery = jQuery;
-} catch (e) {
-    console.error(e, e.stack);
-}
 
 /**
  * The following block of code may be used to automatically register your
@@ -35,14 +31,7 @@ try {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = createApp({
-    el: '#app',
-    computed: {
-      window() {
-        return window;
-      }
-    }
-});
+const app = createApp({});
 
 
 app.component('group-enroll-view', GroupEnrollView);
@@ -50,3 +39,5 @@ app.component('merge-user-view', MergeUserView);
 app.component('diploma-view', DiplomaView);
 app.component('no-diploma-view', NoDiplomaView);
 app.component('kpas-embed-view', KpasEmbedView);
+
+app.mount("#app")
