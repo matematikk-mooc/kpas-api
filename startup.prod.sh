@@ -38,6 +38,11 @@ echo "==============="
 php artisan route:cache
 
 echo $0
+echo "Artisan view clear"
+echo "==============="
+php artisan view:clear
+
+echo $0
 echo "Artisan view cache"
 echo "==============="
 php artisan view:cache
