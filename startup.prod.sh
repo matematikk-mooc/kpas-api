@@ -3,7 +3,7 @@
 echo $0
 echo "Copy all files in /lticonfig to correct path"
 echo "==============="
-cp -a /lticonfig/. /var/www/html/database/configs
+cp -a /lticonfig/. /var/www/html/database
 
 echo $0
 echo "Artisan migrate"
