@@ -78,6 +78,7 @@
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
+  import $ from 'jquery';
 
   
   export default {
