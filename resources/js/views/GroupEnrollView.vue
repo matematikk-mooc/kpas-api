@@ -407,6 +407,7 @@
       window.addEventListener('message', function(evt) {
         try {
           var msg = JSON.parse(evt.data);
+          console.log(msg);
           if(msg.subject == "kpas-lti.usergroups") {
             console.log("Storing groups.");
             self.usersGroups = msg.groups;
