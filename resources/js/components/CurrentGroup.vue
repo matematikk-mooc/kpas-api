@@ -1,13 +1,14 @@
 <template>
 
     <ul class="b-list-group" v-if="groupsLoaded && Object.keys(groups).length">
+      <p>your groups</p> 
         <li
           class="b-list-group-item"
           v-for="(group, name) in groups"
           v-if="group"
           :key="name"
         >
-            {{ name }} {{ group.name }}
+          {{ group.name }}
         </li>
         <div></div>
     </ul>
