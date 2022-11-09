@@ -240,6 +240,7 @@
           this.iframeresize();
         }
         this.currentGroupsLoaded = true;
+        console.log(this.currentGroups)
       },
       categorizeGroups(groups, categories) {
         var result = {};
