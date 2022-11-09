@@ -6,7 +6,8 @@ import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
 import {createApp} from "vue/dist/vue.esm-bundler";
 import './bootstrap';
-
+import 'select2';
+import jQuery from "jquery";
 
 
 /**
@@ -30,6 +31,12 @@ import './bootstrap';
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+ try {
+    window.$ = window.jQuery = jQuery;
+} catch (e) {
+    console.error(e, e.stack);
+}
 
 const app = createApp({});
 
