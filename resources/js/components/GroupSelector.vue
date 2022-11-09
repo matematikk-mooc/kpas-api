@@ -72,7 +72,7 @@
   </div>
 </template>
 
-<script>
+<script lang="js">
   import api from '../api';
   import { VTooltip} from 'v-tooltip';
 
