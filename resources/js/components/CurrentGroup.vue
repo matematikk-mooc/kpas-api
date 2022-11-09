@@ -1,6 +1,6 @@
 <template>
 
-    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && Object.keys(groups).length">
+    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && Object.keys(groups).length > 0">
       <p>your groups</p> 
         <li
           class="list-group-item"
@@ -12,7 +12,7 @@
         </li>
         <div></div>
     </ul>
-    <div v-else-if="groupsLoaded && !Object.keys(groups).length"
+    <div v-else-if="groupsLoaded && Object.keys(groups).length === 0"
         class="alert alert-warning">Du er ikke med i noen grupper. <p>For å være med i gruppediskusjoner må du velge din tilhørighet lenger ned på denne siden.</p>
     </div>
     <p v-else>
