@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span v-html="information"></span>
+        <span>{{information}}</span>
     </div>
 </template>
 
