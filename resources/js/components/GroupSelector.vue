@@ -2,12 +2,8 @@
   <div>
     <div v-bind:style=" chosenCounty && chosenCommunity && (chosenInstitution || !institutionType)? 'border: none;' : 'padding: 10px; border: 1px solid red;' " >
 
-      <span v-if="institutionType === 'school'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
-      `">&#9432;</span>
-      <span v-else-if="institutionType === 'kindergarten'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
-      `">&#9432;</span>
+      <span v-if="institutionType === 'school'">&#9432;</span>
+      <span v-else-if="institutionType === 'kindergarten'">&#9432;</span>
 
       <label class="select-county col-sm">
         Fylke:<br/>
@@ -74,7 +70,6 @@
 
 <script>
   import api from '../api';
-  import 'v-tooltip';
 
   export default {
     name: "GroupSelector",
