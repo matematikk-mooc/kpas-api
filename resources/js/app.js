@@ -7,7 +7,7 @@ import KpasEmbedView from "./views/KpasEmbedView";
 import {createApp} from "vue/dist/vue.esm-bundler";
 import './bootstrap';
 import 'select2';
-
+import jqueryExports from "jquery";
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -31,6 +31,7 @@ import 'select2';
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+window.$ = jqueryExports.default;
 
 const app = createApp({});
 

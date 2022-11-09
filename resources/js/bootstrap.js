@@ -1,6 +1,5 @@
 import popper from "popper.js"
 import lodash from "lodash"
-import $ from "jquery";
 import "select2";
 
 window._ = lodash;
@@ -13,7 +12,7 @@ window._ = lodash;
 
 try {
     window.Popper = popper;
-    window.$ = $;
+
 } catch (e) {
     console.error(e, e.stack);
 }
