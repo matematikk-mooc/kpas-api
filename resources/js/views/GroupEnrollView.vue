@@ -78,6 +78,9 @@
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
+  import 'select2';
+  import $ from "jquery";
+  
   export default {
     name: "GroupEnrollView",
     components: {
