@@ -1,8 +1,8 @@
 <template>
 
-    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && Object.keys(groups).length">
+    <ul class="b-list-group" v-if="groupsLoaded && Object.keys(groups).length">
         <li
-          class="list-group-item"
+          class="b-list-group-item"
           v-for="(group, name) in groups"
           v-if="group"
           :key="name"
