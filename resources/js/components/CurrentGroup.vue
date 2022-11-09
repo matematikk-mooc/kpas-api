@@ -7,7 +7,7 @@
           v-if="group"
           :key="name"
         >
-            <strong>{{ name }}:</strong> {{ group.name }}
+            {{ name }} {{ group.name }}
         </li>
         <div></div>
     </ul>
