@@ -1,10 +1,10 @@
 <template>
 
-    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && Object.keys(groups).length > 0">
+    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded" >
       <p>your groups</p> 
         <li
           class="list-group-item"
-          v-for="(group, name) in groups"
+          v-for="(group, name) in Object.keys(groups)"
           v-if="group"
           :key="name"
         >
@@ -37,9 +37,9 @@ import { reactive } from 'vue';
       }
     }, 
     setup(props) {
-      //this.data = props.groups;
+      this.data = props.groups;
       console.log("in setup currentgroups "  )
-      console.log(props.groups);
+      console.log(this.data);
     }
   }
 </script>
