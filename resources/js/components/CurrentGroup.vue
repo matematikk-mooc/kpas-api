@@ -1,10 +1,10 @@
 <template>
 
-    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && groups.length > 0">
+    <ul class="list-group mt-3 mb-3" v-if="dataLoaded && data.length > 0">
       <p>your groups</p> 
         <li
           class="list-group-item"
-          v-for="(group, name) in groups"
+          v-for="(group, name) in data"
           v-if="group"
           :key="name"
         >
@@ -12,7 +12,7 @@
         </li>
         <div></div>
     </ul>
-    <div v-else-if="groupsLoaded && groups.length === 0"
+    <div v-else-if="dataLoaded && data.length === 0"
         class="alert alert-warning">Du er ikke med i noen grupper. <p>For å være med i gruppediskusjoner må du velge din tilhørighet lenger ned på denne siden.</p>
     </div>
     <p v-else>
@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+
   export default {
     name: "CurrentGroup",
 
@@ -29,5 +31,11 @@
       groups: Object,
       groupsLoaded: Boolean
     },
+    data() {
+      return {
+        data : reactive(this.groups),
+        dataLoaded : reactive(this.groupsLoaded)
+      }
+    }
   }
 </script>
