@@ -5,6 +5,7 @@ import DiplomaView from "./views/DiplomaView";
 import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
 import {createApp} from "vue/dist/vue.esm-bundler";
+import { defineAsyncComponent } from "vue/dist/vue.esm-bundler";
 import './bootstrap';
 import 'select2';
 import jqueryExports from "jquery";
