@@ -79,7 +79,6 @@
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
   import $ from 'jquery';
-  import { defineAsyncComponent } from 'vue';
 
   
   export default {
@@ -88,7 +87,7 @@
       RoleSelector,
       CurrentRole,
       GroupSelector,
-      CurrentGroup: defineAsyncComponent(() => CurrentGroup),
+      CurrentGroup,
       FacultySelector,
     },
     computed: {

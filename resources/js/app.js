@@ -40,6 +40,6 @@ app.component('group-enroll-view', GroupEnrollView);
 app.component('merge-user-view', MergeUserView);
 app.component('diploma-view', DiplomaView);
 app.component('no-diploma-view', NoDiplomaView);
-app.component('kpas-embed-view', KpasEmbedView);
+app.component('kpas-embed-view', defineAsyncComponent(() => KpasEmbedView));
 
 app.mount("#app")
