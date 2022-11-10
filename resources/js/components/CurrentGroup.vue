@@ -36,12 +36,11 @@ import { reactive } from 'vue';
         data : this.groups,
       }
     }, 
-    mounted(props) {
+    setup(props) {
       const userGroupsList = computed(() => {
         return props.groups
       });
-      console.log("inside mounted");
-      return { userGroupsList };
+      console.log(props.groups);
     }
   }
 </script>
