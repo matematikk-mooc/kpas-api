@@ -12,7 +12,7 @@
       <hr/>
       <h2>Dine grupper</h2>
       <current-group
-        :groups="currentGroups"
+        :groups="userGroups"
         :groupsLoaded="currentGroupsLoaded"
       ></current-group>
       <div v-if="groupError"
@@ -236,7 +236,7 @@
           return;
         }
         if(this.categories && this.usersGroups) {
-          this.currentGroups = this.categorizeGroups(this.usersGroups, this.categories);
+          this.userGroups = this.categorizeGroups(this.usersGroups, this.categories);
           this.iframeresize();
         }
         this.currentGroupsLoaded = true;
@@ -435,5 +435,15 @@
       console.log("KPAS ready to display.");
       self.everythingIsReady = true;
     },
+    computed: {
+      userGroups: {
+        get(){
+          return this.currentGroups;
+        },
+        set(newgroups) {
+          this.currentGroups = newgroups;
+        }
+      }
+    }
   }
 </script>
