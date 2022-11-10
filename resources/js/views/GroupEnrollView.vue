@@ -12,7 +12,7 @@
       <hr/>
       <h2>Dine grupper</h2>
       <current-group
-        :groups="userGroups"
+        :groups="currentGroups"
         :groupsLoaded="currentGroupsLoaded"
       ></current-group>
       <div v-if="groupError"
@@ -79,6 +79,7 @@
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
   import $ from 'jquery';
+  import { computed } from 'vue';
 
   
   export default {
