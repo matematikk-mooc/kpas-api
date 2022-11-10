@@ -4,7 +4,7 @@
       <p>your groups</p> 
         <li
           class="list-group-item"
-          v-for="(group, name) in Object.keys(groups)"
+          v-for="(group, name) in groups"
           v-if="group"
           :key="name"
         >
@@ -37,9 +37,9 @@ import { reactive } from 'vue';
       }
     }, 
     setup(props) {
-      this.data = props.groups;
+      data = props.groups;
       console.log("in setup currentgroups "  )
-      console.log(this.data);
+      console.log(data);
     }
   }
 </script>
