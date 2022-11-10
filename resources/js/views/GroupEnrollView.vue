@@ -88,7 +88,7 @@
       RoleSelector,
       CurrentRole,
       GroupSelector,
-      CurrentGroup: defineAsyncComponent(() => import('./components/CurrentCroup.vue')),
+      CurrentGroup: defineAsyncComponent(() => import('../components/CurrentCroup.vue')),
       FacultySelector,
     },
     computed: {
