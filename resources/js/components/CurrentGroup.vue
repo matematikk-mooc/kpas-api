@@ -33,9 +33,18 @@ import { reactive } from 'vue';
     },
     data() {
       return {
-        data : reactive(this.groups),
-        dataLoaded : reactive(this.groupsLoaded)
+        data : this.groups,
+        dataLoaded : this.groupsLoaded
       }
+    }, 
+    watch: {
+        groups() {
+          this.data = this.groups;
+        }, 
+        groupsLoaded() {
+          this.dataLoaded = this.groupsLoaded;
+        }
+
     }
   }
 </script>
