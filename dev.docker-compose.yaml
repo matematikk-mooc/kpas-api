@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=KpasDEV
+      - MYSQL_ROOT_PASSWORD=KpasDEV
+    ports:
+      - '3310:3310'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  kpas:
+    container_name: kpas
+    build: 
+      context: .
+      dockerfile: dev.Dockerfile
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    environment:
+      APP_DEBUG: "true"
+      APP_ENV: "local"
+      APP_NAME: "KPAS DEV"
+      APP_URL: "http://localhost"
+      LOG_CHANNEL: "stack"
+      DEBUGBAR_ENABLED: "true"
+      CANVAS_HOST: "https://bibsys.test.instructure.com"
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3310
+      DB_USERNAME: root
+      DB_PASSWORD: KpasDEV
+      DB_DATABASE: KpasDEV
+    links:
+      - db
+    volumes:
+      - ./:/src
+volumes:
+  db:
+    driver: local
