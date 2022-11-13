@@ -21,15 +21,17 @@ FROM php:8.1-fpm
 
 #Install packages
 RUN apt-get update && apt-get install -y \
-		libpng-dev \
+    cron \
+    vim \
+	libpng-dev \
     zlib1g-dev \
     libzip-dev \
     curl \
     nginx \
     supervisor
+
 RUN docker-php-ext-install zip gd mysqli pdo pdo_mysql
 
- 
 WORKDIR /var/www/html
 
 # Add application
@@ -51,6 +53,20 @@ COPY --chown=www-data docker-prod/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Configure supervisord
 COPY --chown=www-data docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Configure cron
+COPY --chown=www-data docker-prod/laravel-cron /etc/cron.d/laravel-cron
+# Give execution rights on the cron job
+RUN chmod gu+rw /var/run
+RUN chmod gu+s /usr/sbin/cron
+RUN chown www-data /etc/cron.d/laravel-cron
+RUN chmod 0644 /etc/cron.d/laravel-cron
+# Apply cron job
+RUN crontab -u www-data /etc/cron.d/laravel-cron
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+RUN chown www-data /var/log/cron.log
+
 
 # Switch to use a non-root user
 USER www-data
