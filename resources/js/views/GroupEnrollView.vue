@@ -258,7 +258,7 @@
           const params = Object.assign({},
             this.groups, {
             cookie: window.cookie,
-            role: this.wantToBePrincipal ? import.meta.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
+            role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
             faculty: this.faculty,
             currentGroups: this.currentGroups,
             courseId: this.courseId
@@ -293,7 +293,7 @@
       async enrollUser() {
         try {
           await api.post('/enrollment', {
-            role: this.wantToBePrincipal ? import.meta.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
+            role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
             cookie: window.cookie,
           });
           this.clearError("roleError");
@@ -336,13 +336,11 @@
         }
       },
       async getRole() {
-        console.log("Principal role type " + import.meta.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE);
-        console.log("Student role type " + import.meta.env.MIX_CANVAS_STUDENT_ROLE_TYPE);
         try {
           const result = await api.get('/enrollment/', {
             params: { cookie: window.cookie }
           });
-          this.isPrincipal = result.data.result.find(enrollment => enrollment.role === import.meta.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
+          this.isPrincipal = result.data.result.find(enrollment => enrollment.role === import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
           if(this.isPrincipal) {
             this.information = this.getPrincipalInformation();
           } else {
