@@ -317,7 +317,12 @@
           try {
             await this.enrollUser();
             await this.addUserGroups();
-            this.isPrincipal = this.wantToBePrincipal;
+            if (this.wantToBePrincipal == "on"){
+              this.isPrincipal = true;
+            }
+            else {
+              this.isPrincipal = false;
+            }
             if(this.isPrincipal) {
               this.information = this.getPrincipalInformation();
             } else {
