@@ -1,9 +1,9 @@
 <template>
   <div>
-      <input type="radio" id="radioSkoleleder" name="role" v-bind:value="true" v-model="wantToBePrincipal">
+      <input type="radio" id="radioSkoleleder" name="role" v-bind:modelValue="true" v-model="wantToBePrincipal">
       <label for="radioSkoleleder">{{leaderDescription}}</label>
       <br>
-      <input type="radio" id="deltager" name="role" v-bind:value="false" v-model="wantToBePrincipal">
+      <input type="radio" id="deltager" name="role" v-bind:modelValue="false" v-model="wantToBePrincipal">
       <label for="deltager">{{participantDescription}}</label>
     <div v-if="wantToBePrincipal && institutionType" class="alert alert-info">{{principalWarning}}
     </div>
@@ -18,7 +18,8 @@
         isPrincipal: Boolean,
         institutionType: String,
         leaderDescription: String,
-        participantDescription: String
+        participantDescription: String,
+        modelValue: Boolean
     },
     data() {
       return {
@@ -38,13 +39,14 @@
     created() {
       this.wantToBePrincipal = this.isPrincipal;
     },
+    emits: ['update:modelValue'],
     watch: {
       isPrincipal(value) {
         this.wantToBePrincipal = value;
         this.$parent.iframeresize();
       },
       wantToBePrincipal(value) {
-        this.$emit('input', value);
+        this.$emit('update:modelValue', value);
       },
     },
   }
