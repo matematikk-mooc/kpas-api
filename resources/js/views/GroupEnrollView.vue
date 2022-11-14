@@ -79,7 +79,6 @@
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
   import $ from 'jquery';
-  import { computed } from 'vue';
 
   
   export default {
@@ -237,7 +236,7 @@
           return;
         }
         if(this.categories && this.usersGroups) {
-          this.userGroups = this.categorizeGroups(this.usersGroups, this.categories);
+          this.currentGroups = this.categorizeGroups(this.usersGroups, this.categories);
           this.iframeresize();
         }
         this.currentGroupsLoaded = true;
@@ -259,7 +258,7 @@
           const params = Object.assign({},
             this.groups, {
             cookie: window.cookie,
-            role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
+            role: this.wantToBePrincipal ? import.meta.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
             faculty: this.faculty,
             currentGroups: this.currentGroups,
             courseId: this.courseId
@@ -294,7 +293,7 @@
       async enrollUser() {
         try {
           await api.post('/enrollment', {
-            role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
+            role: this.wantToBePrincipal ? import.meta.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
             cookie: window.cookie,
           });
           this.clearError("roleError");
@@ -337,11 +336,13 @@
         }
       },
       async getRole() {
+        console.log("Principal role type " + import.meta.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE);
+        console.log("Student role type " + import.meta.env.MIX_CANVAS_STUDENT_ROLE_TYPE);
         try {
           const result = await api.get('/enrollment/', {
             params: { cookie: window.cookie }
           });
-          this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
+          this.isPrincipal = result.data.result.find(enrollment => enrollment.role === import.meta.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
           if(this.isPrincipal) {
             this.information = this.getPrincipalInformation();
           } else {
@@ -435,16 +436,6 @@
       this.iframeresize();
       console.log("KPAS ready to display.");
       self.everythingIsReady = true;
-    },
-    computed: {
-      userGroups: {
-        get(){
-          return this.currentGroups;
-        },
-        set(newgroups) {
-          this.currentGroups = newgroups;
-        }
-      }
     }
   }
 </script>

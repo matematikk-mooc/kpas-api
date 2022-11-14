@@ -24,6 +24,7 @@ export default defineConfig({
         ]),
       vue(),
     ],
+    envDir: "./",
     resolve: {
         alias: [
             {
