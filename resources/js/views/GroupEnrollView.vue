@@ -318,9 +318,11 @@
             await this.enrollUser();
             await this.addUserGroups();
             if (this.wantToBePrincipal == "on"){
+              console.log("Inside if this.wantToBePrincipal == on")
               this.isPrincipal = true;
             }
             else {
+              console.log("Did not go into if == on")
               this.isPrincipal = false;
             }
             if(this.isPrincipal) {
