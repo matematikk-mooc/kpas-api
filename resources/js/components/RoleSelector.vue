@@ -15,17 +15,17 @@
   export default {
     name: "RoleSelector",
     props: {
-        isPrincipal: Boolean,
+        //isPrincipal: Boolean,
         institutionType: String,
         leaderDescription: String,
         participantDescription: String,
         modelValue: Boolean
     },
-    data() {
-      return {
-        wantToBePrincipal: false,
-      }
-    },
+    //data() {
+    //  return {
+    //    wantToBePrincipal: false,
+    //  }
+    //},
     computed: {
       principalWarning() {
         if(this.institutionType == "school") {
@@ -41,10 +41,10 @@
     },
     emits: ['update:modelValue'],
     watch: {
-      isPrincipal(value) {
-        this.wantToBePrincipal = value;
-        this.$parent.iframeresize();
-      },
+      //isPrincipal(value) {
+      //  this.wantToBePrincipal = value;
+      //  this.$parent.iframeresize();
+      //},
       wantToBePrincipal(value) {
         this.$emit('update:modelValue', value);
       },
