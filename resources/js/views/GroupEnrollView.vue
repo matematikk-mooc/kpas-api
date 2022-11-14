@@ -292,6 +292,9 @@
       },
       async enrollUser() {
         try {
+          console.log("enrollUser-> wanttobeprincipal " + this.wantToBePrincipal )
+          console.log("principal env : " + import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE )
+          console.log("student role " + import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE)
           await api.post('/enrollment', {
             role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
             cookie: window.cookie,
