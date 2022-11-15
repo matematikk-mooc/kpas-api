@@ -24,7 +24,7 @@ export default defineConfig({
         ]),
       vue(),
     ],
-    envDir: "/vite-config/",
+    envDir: "./vite-config/",
     resolve: {
         alias: [
             {
