@@ -295,6 +295,7 @@
           console.log("enrollUser-> wanttobeprincipal " + this.wantToBePrincipal )
           console.log("principal env : " + import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE )
           console.log("student role " + import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE)
+          
           await api.post('/enrollment', {
             role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
             cookie: window.cookie,
@@ -320,14 +321,7 @@
           try {
             await this.enrollUser();
             await this.addUserGroups();
-            if (this.wantToBePrincipal == "on"){
-              console.log("Inside if this.wantToBePrincipal == on")
-              this.isPrincipal = true;
-            }
-            else {
-              console.log("Did not go into if == on")
-              this.isPrincipal = false;
-            }
+            this.isPrincipal = this.wantToBePrincipal;
             if(this.isPrincipal) {
               this.information = this.getPrincipalInformation();
             } else {
@@ -413,6 +407,8 @@
 
       console.log("LTI listening for messages from parent.");
       var self = this;
+      console.log("principal env : " + import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE )
+      console.log("student role " + import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE)
 
       window.addEventListener('message', function(evt) {
         try {
