@@ -44,8 +44,9 @@
         this.$parent.iframeresize();
       },
       wantToBePrincipal(value) {
-        this.$emit('update:wantToBePrincipal', value);
+        this.$emit('update:isPrincipal', value);
         console.log("value: " + value)
+        console.log("isPrincipal: " + this.isPrincipal)
         console.log("wanttobe: " + this.wantToBePrincipal);
       },
     },
