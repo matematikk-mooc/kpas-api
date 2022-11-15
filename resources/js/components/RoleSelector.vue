@@ -1,9 +1,9 @@
 <template>
   <div>
-      <input type="radio" id="radioSkoleleder" name="role" :value="true" v-model="wantToBePrincipal">
+      <input type="radio" id="radioSkoleleder" name="role" v-bind:value="true" v-model="wantToBePrincipal">
       <label for="radioSkoleleder">{{leaderDescription}}</label>
       <br>
-      <input type="radio" id="deltager" name="role" :value="false" v-model="wantToBePrincipal">
+      <input type="radio" id="deltager" name="role" v-bind:value="false" v-model="wantToBePrincipal">
       <label for="deltager">{{participantDescription}}</label>
     <div v-if="wantToBePrincipal && institutionType" class="alert alert-info">{{principalWarning}}
     </div>
