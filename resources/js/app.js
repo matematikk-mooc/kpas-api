@@ -5,11 +5,11 @@ import DiplomaView from "./views/DiplomaView";
 import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
 import {createApp} from "vue/dist/vue.esm-bundler";
-import { defineAsyncComponent } from "vue/dist/vue.esm-bundler";
 import './bootstrap';
-import 'select2';
-import jqueryExports from "jquery";
+import FloatingVue from 'floating-vue';
 
+//import jqueryExports from "jquery";
+//import 'select2';
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -32,15 +32,15 @@ import jqueryExports from "jquery";
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-window.$ = jqueryExports.default;
+//window.$ = jqueryExports.default;
 
 const app = createApp({});
 
-
+app.use(FloatingVue);
 app.component('group-enroll-view', GroupEnrollView);
 app.component('merge-user-view', MergeUserView);
 app.component('diploma-view', DiplomaView);
 app.component('no-diploma-view', NoDiplomaView);
-app.component('kpas-embed-view', defineAsyncComponent(() => import("./views/KpasEmbedView.vue")));
+app.component('kpas-embed-view', KpasEmbedView);
 
 app.mount("#app")
