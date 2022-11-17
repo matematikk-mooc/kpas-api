@@ -12,28 +12,28 @@
       <label class="select-county col-sm">Fylke:<br/>
         <v-select
           v-model="chosenCounty"
-          :options="counties"  placeholder="--- Fylke ---" >
+          :options="counties" label="Navn" placeholder="--- Fylke ---" >
         </v-select>
       </label>
       <label class="select-community col-sm">
         Kommune:<br/>
         <v-select
           v-model="chosenCommunity"
-          :options="communities"  placeholder="--- Kommune ---" >
+          :options="communities" label="Navn" placeholder="--- Kommune ---" >
         </v-select>
       </label>
       <label class="select-school col-sm" v-if="institutionType === 'school'">
         Skole:<br/>
         <v-select
           v-model="chosenInstitution"
-          :options="schools"  placeholder="--- Skole ---" >
+          :options="schools" label="FulltNavn" placeholder="--- Skole ---" >
         </v-select>
       </label>
       <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
         Barnehage:<br/>
         <v-select
           v-model="chosenInstitution"
-          :options="kindergartens"  placeholder="--- Barnehage ---" >
+          :options="kindergartens" label="FulltNavn" placeholder="--- Barnehage ---" >
         </v-select>
       </label>
     </div>
@@ -59,7 +59,7 @@
       return {
         isLoading: false,
         selectedgroups: {},
-        counties: ['test1', 'test2', 'test3'],
+        counties: [],
         communities: [],
         schools: [],
         kindergartens: [],
