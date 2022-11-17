@@ -19,6 +19,7 @@
         Kommune:<br/>
         <v-select
           v-model="chosenCommunity"
+          :disabled="!communities.length"
           :options="communities" label="Navn" placeholder="--- Kommune ---" >
         </v-select>
       </label>
@@ -26,6 +27,7 @@
         Skole:<br/>
         <v-select
           v-model="chosenInstitution"
+          :disabled="!schools.length"
           :options="schools" label="FulltNavn" placeholder="--- Skole ---" >
         </v-select>
       </label>
@@ -33,6 +35,7 @@
         Barnehage:<br/>
         <v-select
           v-model="chosenInstitution"
+          :disabled="!kindergartens.length"
           :options="kindergartens" label="FulltNavn" placeholder="--- Barnehage ---" >
         </v-select>
       </label>
