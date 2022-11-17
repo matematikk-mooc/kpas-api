@@ -7,6 +7,7 @@ import KpasEmbedView from "./views/KpasEmbedView";
 import {createApp} from "vue/dist/vue.esm-bundler";
 import './bootstrap';
 import FloatingVue from 'floating-vue';
+import vSelect from "vue-select";
 
 //import jqueryExports from "jquery";
 //import 'select2';
@@ -42,5 +43,6 @@ app.component('merge-user-view', MergeUserView);
 app.component('diploma-view', DiplomaView);
 app.component('no-diploma-view', NoDiplomaView);
 app.component('kpas-embed-view', KpasEmbedView);
+app.component("v-select", vSelect);
 
 app.mount("#app")

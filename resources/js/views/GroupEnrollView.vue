@@ -36,7 +36,6 @@
       />
     <hr/>
       <group-selector
-        @update="updateSelectStyles"
         @updateGroups="updateGroups"
         :courseId="courseId"
         :institutionType="institutionType"
@@ -78,10 +77,7 @@
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
-  import jQuery from 'jquery';
-  let $ = jQuery;
-  import 'select2';  
-  
+      
   export default {
     name: "GroupEnrollView",
     components: {
@@ -149,28 +145,6 @@
       updateGroups(selectedGroups) {
         this.groups = selectedGroups;
         this.updateIsReady();
-      },
-      updateSelectStyles(){
-        var self = this;
-        const properties = {
-          width: '100%',
-        };
-        let s1 = $('.select-county select').select2(properties);
-        let s2 = $('.select-community select').select2(properties);
-        let s3 = $('.select-school select').select2(properties);
-        s1.on('select2:select', function (e) {
-          var event = new Event('change');
-          e.target.dispatchEvent(event);
-        });
-        s2.on('select2:select', function (e) {
-          var event = new Event('change');
-          e.target.dispatchEvent(event);
-        });
-        s3.on('select2:select', function (e) {
-          var event = new Event('change');
-          e.target.dispatchEvent(event);
-        });
-        self.iframeresize();
       },
       clearError(errorType) {
           if(errorType == "roleError") {
