@@ -1,9 +1,9 @@
 <template>
   <div>
-      <input type="radio" id="radioSkoleleder" name="role" :value=true v-model="wantToBePrincipal" @input="$emit('update:value', true)">
+      <input type="radio" id="radioSkoleleder" name="role" :value=true v-model="wantToBePrincipal" @input="$emit('update:modelValue', true)">
       <label for="radioSkoleleder">{{leaderDescription}}</label>
       <br>
-      <input type="radio" id="deltager" name="role" :value=false v-model="wantToBePrincipal" @input="$emit('update:value', false)">
+      <input type="radio" id="deltager" name="role" :value=false v-model="wantToBePrincipal" @input="$emit('update:modelValue', false)">
       <label for="deltager">{{participantDescription}}</label>
     <div v-if="wantToBePrincipal && institutionType" class="alert alert-info">{{principalWarning}}
     </div>
@@ -19,7 +19,7 @@
         institutionType: String,
         leaderDescription: String,
         participantDescription: String,
-        value: Boolean
+        modelValue: Boolean
     },
     data() {
       return {
