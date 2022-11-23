@@ -28,7 +28,7 @@ export default defineConfig({
     resolve: {
         alias: [
             {
-                // this is required for the SCSS modules
+                // this is required for the SCSS  modules
                 find: /^~(.*)$/,
                 replacement: '$1',
             },
