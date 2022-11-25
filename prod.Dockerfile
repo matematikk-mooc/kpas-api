@@ -70,14 +70,19 @@ RUN chown www-data /var/log/cron.log
 
 # Configure SSH for Azure App Service
 RUN echo "root:Docker!" | chpasswd
-COPY docker-prod/sshd_config /etc/ssh/
+COPY --chown=www-data docker-prod/sshd_config /etc/ssh/
 RUN mkdir -p /tmp
-COPY docker-prod/ssh_setup.sh /tmp
-RUN chmod +x /tmp/ssh_setup.sh \
-    && (sleep 1;/tmp/ssh_setup.sh 2>&1 > /dev/null)
+COPY --chown=www-data docker-prod/ssh_setup.sh /tmp
+#prepare run dir
+RUN mkdir -p /var/run/sshd
+
 
 # Switch to use a non-root user
 USER www-data
+
+# SSH configuration
+RUN chmod +x /tmp/ssh_setup.sh \
+    && (sleep 1;/tmp/ssh_setup.sh 2>&1 > /dev/null)
 
 # Expose the port nginx is reachable on
 # Also, expose the port for SSH
