@@ -28,7 +28,9 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     curl \
     nginx \
-    supervisor
+    supervisor \
+    openssh
+
 
 RUN docker-php-ext-install zip gd mysqli pdo pdo_mysql
 
@@ -67,12 +69,20 @@ RUN crontab -u www-data /etc/cron.d/laravel-cron
 RUN touch /var/log/cron.log
 RUN chown www-data /var/log/cron.log
 
+# Configure SSH for Azure App Service
+RUN echo "root:Docker!" | chpasswd
+COPY docker-prod/sshd_config /etc/ssh/
+RUN mkdir -p /tmp
+COPY docker-prod/ssh_setup.sh /tmp
+RUN chmod +x /tmp/ssh_setup.sh \
+    && (sleep 1;/tmp/ssh_setup.sh 2>&1 > /dev/null)
 
 # Switch to use a non-root user
 USER www-data
 
 # Expose the port nginx is reachable on
-EXPOSE 8080
+# Also, expose the port for SSH
+EXPOSE 8080 2222
 
 RUN chmod +x /var/www/html/startup.prod.sh
 
