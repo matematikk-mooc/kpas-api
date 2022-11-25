@@ -48,6 +48,11 @@ echo "==============="
 php artisan view:cache
 
 echo $0
+echo "Start sshd"
+echo "==============="
+/usr/sbin/sshd -D
+
+echo $0
 echo "Start Supervisor with Nginx and PHP-FPM"
 echo "==============="
 /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
