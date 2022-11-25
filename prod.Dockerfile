@@ -28,9 +28,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     curl \
     nginx \
-    supervisor \
-    openssh
-
+    supervisor
 
 RUN docker-php-ext-install zip gd mysqli pdo pdo_mysql
 
