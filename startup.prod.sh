@@ -50,7 +50,7 @@ php artisan view:cache
 echo $0
 echo "Start sshd"
 echo "==============="
-/usr/sbin/sshd -D
+/usr/sbin/sshd
 
 echo $0
 echo "Start Supervisor with Nginx and PHP-FPM"
