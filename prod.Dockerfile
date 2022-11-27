@@ -29,7 +29,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     nginx \
     supervisor \
-    openssh-client
+    ssh \
+    openssh-server
 
 RUN docker-php-ext-install zip gd mysqli pdo pdo_mysql
 
@@ -69,6 +70,7 @@ RUN touch /var/log/cron.log
 RUN chown www-data /var/log/cron.log
 
 # Configure SSH for Azure App Service
+RUN chown -R www-data /etc/ssh/
 RUN echo "root:Docker!" | chpasswd
 COPY --chown=www-data docker-prod/sshd_config /etc/ssh/
 RUN mkdir -p /tmp
