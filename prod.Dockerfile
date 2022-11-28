@@ -23,7 +23,7 @@ FROM php:8.1-fpm
 RUN apt-get update && apt-get install -y \
     cron \
     vim \
-	libpng-dev \
+    libpng-dev \
     zlib1g-dev \
     libzip-dev \
     curl \
