@@ -15,10 +15,8 @@
         Last ned diplomet
       </button>
     </p>
-    <p>
-      <div v-if="isLoadingDiploma" class="alert alert-warning kpasAlert">Laster ned diplomet <div class="spinner-border text-danger"></div></div>
-      <div v-if="diplomaLoaded" class='alert alert-success kpasAlert'>Diplomet er lastet ned til din nedlastingsmappe.</div>
-    </p>
+    <div v-if="isLoadingDiploma" class="alert alert-warning kpasAlert">Laster ned diplomet <div class="spinner-border text-danger"></div></div>
+    <div v-if="diplomaLoaded" class="alert alert-success kpasAlert">Diplomet er lastet ned til din nedlastingsmappe.</div>
   </div>
 </template>
 
@@ -47,10 +45,10 @@ export default {
         this.diplomaLoaded = false;
         this.isLoadingDiploma = true;
         const response = await api.get("/diploma/pdf", {
-          params: { 
-            cookie: window.cookie            
+          params: {
+            cookie: window.cookie
           },
-          responseType: 'blob' 
+          responseType: 'blob'
         });
         this.isLoadingDiploma = false;
         this.diplomaLoaded = true;
@@ -66,7 +64,7 @@ export default {
     this.iframeresize();
     const mql = window.matchMedia('(max-width: 400px)');
     var self = this;
-    mql.onchange = (e) => { 
+    mql.onchange = (e) => {
       self.iframeresize();
     }
   },

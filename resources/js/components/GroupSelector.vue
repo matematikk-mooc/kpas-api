@@ -3,67 +3,41 @@
     <div v-bind:style=" chosenCounty && chosenCommunity && (chosenInstitution || !institutionType)? 'border: none;' : 'padding: 10px; border: 1px solid red;' " >
 
       <span v-if="institutionType === 'school'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
-      `">&#9432;</span>
+      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.`">&#9432;</span>
       <span v-else-if="institutionType === 'kindergarten'" v-tooltip.top-center="`
       Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
       `">&#9432;</span>
 
-      <label class="select-county col-sm">
-        Fylke:<br/>
-        <select
+
+      <label class="select-county col-sm">Fylke:<br/>
+        <v-select
           v-model="chosenCounty"
-          :disabled="!counties.length"
-        >
-          <option value="" selected disabled>--- Fylke ---</option>
-          <option
-            v-for="county in counties"
-            :value="county"
-            v-text="county.Navn"
-          ></option>
-        </select>
+          :options="counties" label="Navn" placeholder="--- Fylke ---" >
+        </v-select>
       </label>
       <label class="select-community col-sm">
         Kommune:<br/>
-        <select
+        <v-select
           v-model="chosenCommunity"
           :disabled="!communities.length"
-        >
-          <option value="" selected disabled>--- Kommune ---</option>
-          <option
-            v-for="communities in communities"
-            :value="communities"
-            v-text="communities.Navn"
-          ></option>
-        </select>
+          :options="communities" label="Navn" placeholder="--- Kommune ---" >
+        </v-select>
       </label>
       <label class="select-school col-sm" v-if="institutionType === 'school'">
         Skole:<br/>
-        <select
+        <v-select
           v-model="chosenInstitution"
           :disabled="!schools.length"
-        >
-          <option value="" selected disabled>--- Skole ---</option>
-          <option
-            v-for="school in schools"
-            :value="school"
-            v-text="school.FulltNavn"
-          ></option>
-        </select>
+          :options="schools" label="FulltNavn" placeholder="--- Skole ---" >
+        </v-select>
       </label>
       <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
         Barnehage:<br/>
-        <select
+        <v-select
           v-model="chosenInstitution"
           :disabled="!kindergartens.length"
-        >
-          <option value="" selected disabled>--- Barnehage ---</option>
-          <option
-            v-for="kindergarten in kindergartens"
-            :value="kindergarten"
-            v-text="kindergarten.FulltNavn"
-          ></option>
-        </select>
+          :options="kindergartens" label="FulltNavn" placeholder="--- Barnehage ---" >
+        </v-select>
       </label>
     </div>
     <div v-if="error"
@@ -74,7 +48,8 @@
 
 <script>
   import api from '../api';
-  import { VTooltip} from 'v-tooltip';
+  import 'floating-vue/dist/style.css';
+  import "vue-select/dist/vue-select.css";
 
   export default {
     name: "GroupSelector",
@@ -192,14 +167,14 @@
         delete this.selectedgroups.institution;
         this.selectedgroups.community = this.getCommunityGroup();
         this.assignToGroups();
-        
+
         if (this.institutionType === "school") {
           this.schools = [];
           await this.getSchools(community.Kommunenr);
         } else if (this.institutionType === "kindergarten") {
           this.kindergartens = [];
           await this.getKindergartens(community.Kommunenr);
-        } 
+        }
       },
       async chosenInstitution(institution) {
         this.selectedgroups.institution = this.getInstitutionGroup();

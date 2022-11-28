@@ -1,43 +1,19 @@
-### Requirements
+# KPAS (Kompetanseplattform Administrativt System)
 
-* PHP version >= 7.2
-* 1 MySQL database (version >= 5.7) or MariaDB (version >= 10.0)
-* 1 SMTP e-mail account
-* Disk space at least 1 GB and external disk for users' files
+LTI and REST API for KPAS.
 
-### Technologies
+## Production
+We use [Azure Pipelines](https://dev.azure.com/UdirDIT/KPAS/_release?_a=releases&view=mine&definitionId=1) for CI/CD.
 
-* PHP 7.2 or newer
-* Laravel 5.8 or newer
-* MySQL 5.7 or newer / MariaDB 10 or newer
+| Instance   | Deployment status                                                                                                                                                                                           | URL                                     | Branch |
+|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|--------|
+| Production | [![Build Status](https://vsrm.dev.azure.com/UdirDIT/_apis/public/Release/badge/0316919c-f4b4-4697-a30a-76c68c160969/3/6)](https://dev.azure.com/UdirDIT/KPAS/_release?_a=releases&view=mine&definitionId=3) | https://kpas.kompetanse.udir.no         | master |
+| Staging    | [![Build Status](https://vsrm.dev.azure.com/UdirDIT/_apis/public/Release/badge/0316919c-f4b4-4697-a30a-76c68c160969/1/2)](https://dev.azure.com/UdirDIT/KPAS/_release?_a=releases&view=mine&definitionId=1) | https://kpas.staging.kompetanse.udir.no | stage  |
 
-### Installation
 
-To install project on new server, please perform actions in following order:
-
-```$xslt
-# Generate SSH key
-$ ssh-keygen -t rsa -b 4096 -C "{email}"
-
-# Copy content of file `.ssh/id_ras.pub` and add new deploy key to project's repository on GitHub (`Settings > Deploy keys`).
-
-# Clone repository on server
-$ git init
-$ git remote add origin git@github.com:{user}/{repo}.git
-$ git pull origin {branch}
-
-# Add execute permission for entry file
-$ chmod +x docker.sh
-
-# Run entry file
-$ ./docker.sh
+## Development
+To run the application locally, run the following command:
 ```
-
-### Update
-
-```$xslt
-# Please perform actions in following order
-$ git pull origin {branch} (that same branch that was used during installation)
-$ composer install (when composer.lock has changed)
-# *update `.env` file when necessary*
+docker compose -f dev.docker-compose.yaml up --build 
 ```
+This will start the application on port 8080.
