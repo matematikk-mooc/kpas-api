@@ -22,10 +22,4 @@ class CommandController extends Controller
         Artisan::call('schedule:run');
         return 'OK';
     }
-
-    public function run_fetch_nsr()
-    {
-        Artisan::call('fetch_from:nsr');
-        return 'OK';
-    }
 }
