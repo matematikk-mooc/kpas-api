@@ -266,10 +266,6 @@
       },
       async enrollUser() {
         try {
-          console.log("enrollUser-> wanttobeprincipal " + this.wantToBePrincipal )
-          console.log("principal env : " + import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE )
-          console.log("student role " + import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE)
-
           await api.post('/enrollment', {
             role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
             cookie: window.cookie,
@@ -381,13 +377,10 @@
 
       console.log("LTI listening for messages from parent.");
       var self = this;
-      console.log("principal env : " + import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE )
-      console.log("student role " + import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE)
 
       window.addEventListener('message', function(evt) {
         try {
           var msg = JSON.parse(evt.data);
-          console.log(msg);
           if(msg.subject == "kpas-lti.usergroups") {
             console.log("Storing groups.");
             self.usersGroups = msg.groups;
