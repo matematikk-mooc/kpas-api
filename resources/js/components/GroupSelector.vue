@@ -7,8 +7,8 @@
       <span v-else-if="institutionType === 'kindergarten'" v-tooltip.top-center="`
       Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
       `">&#9432;</span>
-      
-      
+
+
       <label class="select-county col-sm">Fylke:<br/>
         <v-select
           v-model="chosenCounty"
@@ -154,7 +154,6 @@
         delete this.selectedgroups.community;
         delete this.selectedgroups.institution;
         this.selectedgroups.county = this.getCountyGroup();
-        console.log(this.chosenCounty);
 
         this.communities = [];
         this.schools = [];
@@ -168,14 +167,14 @@
         delete this.selectedgroups.institution;
         this.selectedgroups.community = this.getCommunityGroup();
         this.assignToGroups();
-        
+
         if (this.institutionType === "school") {
           this.schools = [];
           await this.getSchools(community.Kommunenr);
         } else if (this.institutionType === "kindergarten") {
           this.kindergartens = [];
           await this.getKindergartens(community.Kommunenr);
-        } 
+        }
       },
       async chosenInstitution(institution) {
         this.selectedgroups.institution = this.getInstitutionGroup();

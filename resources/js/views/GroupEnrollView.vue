@@ -77,7 +77,7 @@
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
-      
+
   export default {
     name: "GroupEnrollView",
     components: {
@@ -215,7 +215,6 @@
           this.iframeresize();
         }
         this.currentGroupsLoaded = true;
-        console.log(this.currentGroups)
       },
       categorizeGroups(groups, categories) {
         var result = {};
@@ -270,7 +269,7 @@
           console.log("enrollUser-> wanttobeprincipal " + this.wantToBePrincipal )
           console.log("principal env : " + import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE )
           console.log("student role " + import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE)
-          
+
           await api.post('/enrollment', {
             role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
             cookie: window.cookie,

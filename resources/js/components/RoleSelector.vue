@@ -43,9 +43,8 @@
     watch: {
       isPrincipal(value) {
         this.wantToBePrincipal = value;
-        console.log(this.isPrincipal)
         this.$parent.iframeresize();
       },
-    } 
+    }
   }
 </script>
