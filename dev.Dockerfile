@@ -21,7 +21,7 @@ FROM php:8.1-fpm
 
 #Install packages
 RUN apt-get update && apt-get install -y \
-		libpng-dev \
+	libpng-dev \
     zlib1g-dev \
     libzip-dev \
     curl \
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
     supervisor
 RUN docker-php-ext-install zip gd mysqli pdo pdo_mysql
 
- 
+
 WORKDIR /var/www/html
 
 # Set dev env variables
