@@ -38,6 +38,7 @@
     },
     created() {
       this.wantToBePrincipal = this.isPrincipal;
+      this.$parent.iframeresize();
     },
     emits: ['update:value'],
     watch: {
