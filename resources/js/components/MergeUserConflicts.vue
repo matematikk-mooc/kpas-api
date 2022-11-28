@@ -5,12 +5,12 @@
           class="list-group-item"
           v-for="conflict in conflicts"
         >
-            <strong>{{ conflict.courseName }}</strong> 
+            <strong>{{ conflict.courseName }}</strong>
         </li>
-        <div 
+      <div></div>
     </ul>
     <div v-else-if="conflictsLoaded && !Object.keys(conflicts).length"
-        class="alert alert-info">Ingen konflikter funnet.</p>
+        class="alert alert-info">Ingen konflikter funnet.
     </div>
 </template>
 

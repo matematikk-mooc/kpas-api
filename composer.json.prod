@@ -13,21 +13,20 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^8.0",
         "ext-json": "*",
         "bugsnag/bugsnag-laravel": "^2.0",
         "doctrine/dbal": "2.*",
         "dompdf/dompdf": "^1.1",
         "easyrdf/easyrdf": "^1.1",
         "encore/laravel-admin": "^1.7",
-        "facade/ignition": "^2.0",
+        "spatie/laravel-ignition": "^1.0",
         "fideloper/proxy": "^4.0",
         "fruitcake/laravel-cors": "^2.2",
-        "guzzlehttp/guzzle": "~6.0",
+        "guzzlehttp/guzzle": "^7.0.1",
         "highsolutions/laravel-environments": "*",
-        "imsglobal/lti": "^3.0",
         "imsglobal/lti-1p3-tool": "dev-master",
-        "laravel/framework": "^7.0",
+        "laravel/framework": "^9.0",
         "laravel/tinker": "^2.0",
         "league/oauth2-client": "^2.4",
         "mantas-done/subtitles": "^0.3.10",
@@ -39,11 +38,10 @@
         "barryvdh/laravel-ide-helper": "^2.4",
         "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "^2.0",
-        "fzaninotto/faker": "^1.4",
+        "knuckleswtf/scribe": "^4.0",
         "mockery/mockery": "^1.0",
-        "mpociot/laravel-apidoc-generator": "^4.0",
-        "nunomaduro/collision": "^4.1",
-        "phpunit/phpunit": "^8.5"
+        "nunomaduro/collision": "^6.1",
+        "phpunit/phpunit": "^9.0"
     },
     "config": {
         "optimize-autoloader": true,
@@ -57,12 +55,10 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         },
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
         "files": [
             "app/helpers.php"
         ]

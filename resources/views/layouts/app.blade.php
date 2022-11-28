@@ -7,14 +7,14 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css', config('app.enabled_ssl')) }}" rel="stylesheet">
+    @vite('resources/sass/app.scss')
+
 </head>
 <body>
     <div class="container" id="app">
         @yield('content')
     </div>
     @yield('scripts')
-    <script src="{{ asset('js/app.js', config('app.enabled_ssl')) }}"></script>
+    @vite('resources/js/app.js')
 </body>
 </html>

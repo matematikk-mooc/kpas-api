@@ -36,7 +36,6 @@
       />
     <hr/>
       <group-selector
-        @update="updateSelectStyles"
         @updateGroups="updateGroups"
         :courseId="courseId"
         :institutionType="institutionType"
@@ -57,14 +56,14 @@
         </button>
       </div>
 
-      <p>
+
       <div v-if="isLoading" class="alert alert-warning kpasAlert">Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></div>
       <div v-if="enrollResult == ENROLL_FAILED" class='alert alert-danger kpasAlert'>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
       <div v-if="getRoleResult == ENROLL_GET_FAILED" class='alert alert-danger kpasAlert'>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</div>
       <div v-if="groupResult == ADDTO_GROUPS_FAILED" class='alert alert-danger kpasAlert'>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</div>
       <div v-if="enrollResult == ENROLLED && !settings.deep && groupResult == ADDED_TO_GROUPS" class='alert alert-success kpasAlert'>Oppdateringen var vellykket! Klikk på fanen <i>Forside</i> for å fortsette å jobbe med kompetansepakken.</div>
       <div v-if="enrollResult == ENROLLED && settings.deep && groupResult == ADDED_TO_GROUPS" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</div>
-      </p>
+
   </div>
   <div v-else>
       <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
@@ -78,6 +77,7 @@
   import GroupSelector from "../components/GroupSelector";
   import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
+
   export default {
     name: "GroupEnrollView",
     components: {
@@ -133,11 +133,11 @@
         return this.institutionType ?  noOfGroups === 3 : noOfGroups === 2;
       },
       updateIsReady() {
-        this.isReady = !this.isLoading && 
+        this.isReady = !this.isLoading &&
                         this.groupsAreSet() &&
-                        this.roleIsSet && 
+                        this.roleIsSet &&
                         this.getRoleResult != this.ENROLL_GET_FAILED &&
-                        (this.faculties.length === 0 || this.faculty !== null);        
+                        (this.faculties.length === 0 || this.faculty !== null);
       },
       updateFaculty() {
         this.updateIsReady();
@@ -145,28 +145,6 @@
       updateGroups(selectedGroups) {
         this.groups = selectedGroups;
         this.updateIsReady();
-      },
-      updateSelectStyles(){
-        var self = this;
-        const properties = {
-          width: '100%',
-        };
-        let s1 = $('.select-county select').select2(properties);
-        let s2 = $('.select-community select').select2(properties);
-        let s3 = $('.select-school select').select2(properties);
-        s1.on('select2:select', function (e) {
-          var event = new Event('change');
-          e.target.dispatchEvent(event);
-        });
-        s2.on('select2:select', function (e) {
-          var event = new Event('change');
-          e.target.dispatchEvent(event);
-        });
-        s3.on('select2:select', function (e) {
-          var event = new Event('change');
-          e.target.dispatchEvent(event);
-        });
-        self.iframeresize();
       },
       clearError(errorType) {
           if(errorType == "roleError") {
@@ -251,10 +229,10 @@
       },
       async addUserGroups() {
         if (this.groupsAreSet()) {
-          const params = Object.assign({}, 
+          const params = Object.assign({},
             this.groups, {
             cookie: window.cookie,
-            role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
+            role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
             faculty: this.faculty,
             currentGroups: this.currentGroups,
             courseId: this.courseId
@@ -263,7 +241,7 @@
             const result = await api.post('/group/user/bulk', params);
             this.clearError("groupError");
             this.iframeresize();
-            this.groupResult = this.ADDED_TO_GROUPS; 
+            this.groupResult = this.ADDED_TO_GROUPS;
           } catch(e) {
             this.groupResult = this.ADDTO_GROUPS_FAILED;
 //            this.reportError("groupError", "Kunne ikke melde deg inn i gruppen(e).");
@@ -289,7 +267,7 @@
       async enrollUser() {
         try {
           await api.post('/enrollment', {
-            role: this.wantToBePrincipal ? process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE : process.env.MIX_CANVAS_STUDENT_ROLE_TYPE,
+            role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
             cookie: window.cookie,
           });
           this.clearError("roleError");
@@ -336,7 +314,7 @@
           const result = await api.get('/enrollment/', {
             params: { cookie: window.cookie }
           });
-          this.isPrincipal = result.data.result.find(enrollment => enrollment.role === process.env.MIX_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
+          this.isPrincipal = result.data.result.find(enrollment => enrollment.role === import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
           if(this.isPrincipal) {
             this.information = this.getPrincipalInformation();
           } else {
@@ -429,6 +407,6 @@
       this.iframeresize();
       console.log("KPAS ready to display.");
       self.everythingIsReady = true;
-    },
+    }
   }
 </script>

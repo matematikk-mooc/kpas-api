@@ -1,11 +1,11 @@
 <?php
+namespace App\Services;
+
 use App\Services\CanvasService;
 use GuzzleHttp\Client;
 use App\Exceptions\CanvasException;
 use App\Kompetansepakke;
 use App\Diploma;
-
-namespace App\Services;
 
 class DiplomaService
 {
@@ -23,7 +23,7 @@ class DiplomaService
         $kompetansepakke = \App\Kompetansepakke::where('course_id', $courseId)->first();
         $diplomaCourseDescription = $kompetansepakke ? $kompetansepakke->diplom_beskrivelse : "";
         $diplomaDeliveredBy = $kompetansepakke ? $kompetansepakke->utviklet_av : "";
-    
+
         return view('main.diploma')
             ->withDiplomaName($diplomaDisplayName)
             ->withDiplomaCourseName($diplomaCourseName)
@@ -124,6 +124,6 @@ class DiplomaService
             $this->storeDiplomaCompletionForUser($userId, $courseId);
         }
 
-        return $hasCompletedAllModules; 
+        return $hasCompletedAllModules;
     }
 }
