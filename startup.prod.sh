@@ -6,11 +6,15 @@ echo "==============="
 cp -a /lticonfig/. /var/www/html/database
 
 echo $0
+echo "Copy all files in /ltijwt to correct path"
+echo "==============="
+cp -a /ltijwt/. /var/www/html/app/Ltiv3/jwt_key_kpas
+
+echo $0
 echo "Inject canvas url from ENV Variable to nginx-config"
 echo "==============="
 sed 's@startup_prod:INJECT_CANVAS_HOST@'"$CANVAS_HOST"'@' /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.temp
 cp /etc/nginx/nginx.conf.temp /etc/nginx/nginx.conf
-
 
 echo $0
 echo "Artisan migrate"
