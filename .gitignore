@@ -12,7 +12,6 @@
 /database/configs/config_platform.json
 /database/configs_user_management/*
 /database/configs_laerefag/*
-/app/Ltiv3/jwt_key_kpas/*
 /vendor-repo/lti-1-3-php-library/*
 
 .phpunit.result.cache
@@ -39,7 +38,6 @@ docker/mysql/ib_logfile0
 docker/mysql/ib_logfile1
 docker/mysql/ibdata1
 
-app/Ltiv3/jwt_key_kpas/*
 database/configs/config_platform.json
 
 composer-setup.php
