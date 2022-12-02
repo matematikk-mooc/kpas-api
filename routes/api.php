@@ -42,7 +42,7 @@ Route::group(['prefix' => 'statistics'], function () {
     Route::get('/{courseId}', 'StatisticsController@index');
     Route::get('/{courseId}/count', 'StatisticsController@courseCount');
     Route::get('/{courseId}/user_activity', 'StatisticsController@userActivity');
-        Route::get('/groupCategory/{categoryId}', 'StatisticsController@groupCategory');
+    Route::get('/groupCategory/{categoryId}', 'StatisticsController@groupCategory');
     Route::get('/groupCategory/{categoryId}/count', 'StatisticsController@groupCategoryCount');
 });
 
@@ -73,3 +73,12 @@ Route::prefix('user')->group(function () {
         Route::get('/perform', [MergeUserController::class, 'mergeUser'])->middleware('lti');
     });
 });
+
+Route::get('course/{courseId}/quizzes', 'QuizController@quizzesStatistics');
+Route::get('course/{courseId}/quiz/{quizId}', 'QuizController@quizStatistics');
+Route::get('course/{courseId}/pages', 'MatomoController@getMatomoData');
+Route::get('user/{userId}/history', 'HistoryController@getUserHistoryData');
+Route::get('user/{userId}/context/{contextId}/history', 'HistoryController@getUserContextHistoryData');
+Route::get('context/{contextId}/history', 'HistoryController@getContextHistoryData');
+Route::get('statistics/{courseId}', 'GroupEnrollmentController@getGroupEnrollmentCount');
+Route::get('course/{courseId}/modules', 'ModuleController@moduleStatistics');
