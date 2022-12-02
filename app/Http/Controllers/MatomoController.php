@@ -29,7 +29,6 @@ class MatomoController extends Controller
         return new SuccessResponse($res);
     }
 
-
     public function webindex(int $courseId)
     {
         $matomoService = new MatomoService();

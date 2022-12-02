@@ -14,7 +14,6 @@ class HistoryService
         $this->statistics_base_url = config('statistics-api.base_url');
     }
 
-
     public function getUserHistory(int $userId, string $from, string $to) {
         logger("HistoryService::getUserHistory");
         $url = "{$this->statistics_base_url}/statistics/user/{$userId}/history/?from={$from}&to={$to}&format=json";
@@ -45,9 +44,6 @@ class HistoryService
         return $res;
     }
 
-
-
-
     protected function request(string $userId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {   
         $fullUrl = "{$this->statistics_base_url}/statistics/user/{$userId}/history/?from={$fromDate}&to={$toDate}";
@@ -72,7 +68,4 @@ class HistoryService
             throw $exception;
         }
     }
-
-
-
 }
