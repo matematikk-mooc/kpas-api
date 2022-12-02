@@ -17,5 +17,4 @@ class GroupEnrollmentController extends Controller
         $res = $data->getBody()->getContents();
         return new SuccessResponse($res);
     }
-
 }

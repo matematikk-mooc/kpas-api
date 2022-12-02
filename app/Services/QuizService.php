@@ -60,5 +60,4 @@ class QuizService
 
         return $this->guzzleClient->request($url);
     }
-
 }
