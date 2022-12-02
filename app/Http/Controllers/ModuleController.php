@@ -15,7 +15,5 @@ class ModuleController extends Controller
         $data = $moduleService->getModuleStatistics($courseId);
         $res = $data->getBody()->getContents();
         return new SuccessResponse($data);
-
     }
-
 }
