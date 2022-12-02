@@ -7,6 +7,7 @@ use App\Ltiv3\LTI3_Database;
 use App\Services\CanvasService;
 use App\Services\DiplomaService;
 use App\Services\StatisticsService;
+use App\Services\QuizService;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -64,6 +65,7 @@ class Lti3Controller extends Controller
         $diplomaMode = config('constants.options.DIPLOMA_MODE');
         $roleMode = config('constants.options.ROLE_GROUP_MODE');
         $statisticsMode = config('constants.options.STATISTICS_MODE');
+        $quizMode = config('constants.options.QUIZ_MODE');
         $kpasMode = $request->query("kpasMode", $roleMode);
         if ($launch->is_resource_launch()) {
             logger('Resource Launch!');
@@ -74,6 +76,7 @@ class Lti3Controller extends Controller
             ->withConfigDirectory($config_directory)
             ->withDiplomaMode($diplomaMode)
             ->withStatisticsMode($statisticsMode)
+            ->withQuizMode($quizMode)
             ->withRequest($request);
         } else {
             logger('Unknown launch type');
@@ -124,9 +127,14 @@ class Lti3Controller extends Controller
             }
 
             return $diplomaService->getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma);
-        } else if($kpasMode == $statisticsMode) {
+        } 
+        else if($kpasMode == $statisticsMode) {
             $statisticsService = new StatisticsService();
             return $statisticsService->getStatisticsHtml($settings);
+        }
+        else if($kpasMode == $quizMode) {
+            $quizService = new QuizService();
+            return $quizService->getQuizHtml($settings);
         }
 
         if ($kpasUserView == 'user_management') {
