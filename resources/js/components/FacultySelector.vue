@@ -11,6 +11,7 @@
           :value="faculty"
 
           v-model="chosenFaculty"
+          @input="this.$emit('update:modelValue', faculty)" 
         />
         {{ faculty }}
       </label>
@@ -24,6 +25,7 @@
 
     props: {
       faculties: { type: Array, default: () => [] },
+      modelValue: String
     },
 
     data() {
@@ -35,7 +37,6 @@
     watch: {
       chosenFaculty(value) {
         this.$emit('input', value);
-        this.$emit('updateFaculty');
       }
     }
   }
