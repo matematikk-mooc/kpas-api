@@ -69,6 +69,10 @@ RUN crontab -u www-data /etc/cron.d/laravel-cron
 RUN touch /var/log/cron.log
 RUN chown www-data /var/log/cron.log
 
+# -- CONFIGURE SSH --
+# Todo: If we want to change to www-data as user, we need to place the bash_profile in the home directory of www-data
+COPY docker-prod/ssh_bash_profile /root/.bash_profile
+
 # -- CONFIGURE SSH FOR AZURE APP SERVICE --
 RUN chown -R www-data /etc/ssh/
 RUN echo "root:Docker!" | chpasswd
