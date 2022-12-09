@@ -7,6 +7,9 @@
     <h1>Statistikk</h1>
     <a :href="urlStatisticsMode">Sett inn statistikkverktøy</a>
 
+    <h1>Quiz</h1>
+    <a :href="urlQuizMode">Sett inn quizverktøy</a>
+
     <h1>Diplom</h1>
     Velg hvilke logoer som skal vises nederst på diplomet:
 
@@ -23,7 +26,7 @@ import api from '../api';
 
 export default {
   name: "Diploma",
-  props: ['appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode'],    
+  props: ['appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'quizmode'],    
   data() {
     return {
       logoList: [],
@@ -43,6 +46,9 @@ export default {
     },
     urlStatisticsMode: function () {
       return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.statisticsmode + "&config_directory=" + this.configdirectory;
+    },
+    urlQuizMode: function () {
+      return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.quizmode + "&config_directory=" + this.configdirectory;
     }
   },  
   methods: {
