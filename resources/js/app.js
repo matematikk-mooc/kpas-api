@@ -4,6 +4,8 @@ import MergeUserView from "./views/MergeUserView";
 import DiplomaView from "./views/DiplomaView";
 import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
+import QuizStatisticsView from "./views/QuizStatisticsView";
+import BarChart from "./components/charts/BarChart";
 import {createApp} from "vue/dist/vue.esm-bundler";
 import './bootstrap';
 import FloatingVue from 'floating-vue';
@@ -43,6 +45,7 @@ app.component('merge-user-view', MergeUserView);
 app.component('diploma-view', DiplomaView);
 app.component('no-diploma-view', NoDiplomaView);
 app.component('kpas-embed-view', KpasEmbedView);
+app.component('quiz-statistics-view', QuizStatisticsView);
 app.component("v-select", vSelect);
-
+app.component("bar-chart", BarChart);
 app.mount("#app")

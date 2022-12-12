@@ -2,7 +2,13 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Quiz blade</h1>
+@if(isset($settings))
+    <quiz-statistics-view :settings="{{ json_encode($settings) }}"></quiz-statistics-view>
+@else
+    <quiz-statistics-view></quiz-statistics-view>
+@endif
+
+
 <h1>Tilgjengelige innstillinger</h1>
 
 @endsection
