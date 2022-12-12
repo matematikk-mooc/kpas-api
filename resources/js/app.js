@@ -48,5 +48,4 @@ app.component('kpas-embed-view', KpasEmbedView);
 app.component('quiz-statistics-view', QuizStatisticsView);
 app.component("v-select", vSelect);
 app.component("bar-chart", BarChart);
-
 app.mount("#app")
