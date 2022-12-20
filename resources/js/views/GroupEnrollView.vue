@@ -391,6 +391,7 @@
             console.log("Received background color.");
             document.body.style.backgroundColor = msg.bgColor;
           } else if(msg.subject == "kpas-lti.ltiparentready") {
+            console.log("parent ready")
             self.connectedToParent = true;
             self.getBgColor();
             self.getUsersGroups();

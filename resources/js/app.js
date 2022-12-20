@@ -6,6 +6,7 @@ import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
 import QuizStatisticsView from "./views/QuizStatisticsView";
 import BarChart from "./components/charts/BarChart";
+import OpenAnswer from "./components/OpenAnswer"
 import {createApp} from "vue/dist/vue.esm-bundler";
 import './bootstrap';
 import FloatingVue from 'floating-vue';
@@ -48,5 +49,6 @@ app.component('kpas-embed-view', KpasEmbedView);
 app.component('quiz-statistics-view', QuizStatisticsView);
 app.component("v-select", vSelect);
 app.component("bar-chart", BarChart);
+app.component("open-answer", OpenAnswer)
 
 app.mount("#app")

@@ -7,7 +7,6 @@
         >
           {{ name }} : {{group.name}}
         </li>
-        <div></div>
     </ul>
     <div v-else-if="groupsLoaded && !Object.keys(groups).length"
         class="alert alert-warning">Du er ikke med i noen grupper. <p>For å være med i gruppediskusjoner må du velge din tilhørighet lenger ned på denne siden.</p>

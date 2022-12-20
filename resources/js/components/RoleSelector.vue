@@ -28,9 +28,9 @@
     },
     computed: {
       principalWarning() {
-        if(this.institutionType == "school") {
+        if(this.institutionType === "school") {
           return "NB! Dersom du er skoleeier kan du velge tilhørighet til Annet/Annen fylke/kommune/skole.";
-        } else if(this.institutionType == "kindergarten") {
+        } else if(this.institutionType === "kindergarten") {
           return "NB! Dersom du er barnehageeier kan du velge tilhørighet til Annet/Annen fylke/kommune/barnehage.";
         }
         return "";

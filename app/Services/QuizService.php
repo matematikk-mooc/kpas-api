@@ -45,9 +45,14 @@ class QuizService
         }
     }
 
-    public function getCourseQuizzesStatistics(int $courseId) {
-        $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/quizzes?format=json";
-
+    public function getCourseQuizzesStatistics(int $courseId, string $groups) {
+        if ($groups != null){
+            $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/quizzes?groups={$groups}&format=json";
+        }
+        else {
+            $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/quizzes?format=json";
+        }
+  
         $this->guzzleClient = new Client();
 
         return $this->guzzleClient->request('GET', $url, [], [], false);

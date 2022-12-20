@@ -9,12 +9,16 @@ use Illuminate\Http\Request;
 class QuizController extends Controller
 {
 
-    public function quizzesStatistics(int $courseId): SuccessResponse
+    public function quizzesStatistics(int $courseId, Request $request): SuccessResponse
     {   
         logger("QuizController.quizzesStatistics");
         logger($courseId);
         $quizService = new QuizService();
-        $data = $quizService->getCourseQuizzesStatistics($courseId);
+        $groups = null;
+        if ($request->has('groups')) {
+            $groups = $request->groups;
+        }
+        $data = $quizService->getCourseQuizzesStatistics($courseId, $groups);
         $res = $data->getBody()->getContents();        
         logger("Returning quizzes data");
         logger($res);

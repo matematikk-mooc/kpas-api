@@ -8,7 +8,12 @@
     <quiz-statistics-view></quiz-statistics-view>
 @endif
 
-<h1>Tilgjengelige innstillinger</h1>
+<!-- <h1>Tilgjengelige innstillinger</h1>
+@if(isset($settings))
+@php
+var_dump($settings);
+@endphp
+@endif -->
 
 @endsection
 
