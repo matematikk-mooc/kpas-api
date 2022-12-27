@@ -3,12 +3,15 @@
   <div>
     <h1>Rolle- og gruppeverktøy</h1>
     <a :href="urlRoleMode">Sett inn Rolle- og gruppeverktøy</a>
-    
+
     <h1>Statistikk</h1>
     <a :href="urlStatisticsMode">Sett inn statistikkverktøy</a>
 
     <h1>Quiz</h1>
     <a :href="urlQuizMode">Sett inn quizverktøy</a>
+
+    <h1>(MIDLERTIDIG) Ny survey LTI</h1>
+    <a :href="urlSurveyWithID1Mode">Sett inn surveyverktøy for survey med id 1</a>
 
     <h1>Diplom</h1>
     Velg hvilke logoer som skal vises nederst på diplomet:
@@ -16,8 +19,8 @@
     <div v-for="logo in logoList">
         <label><img class="diplomaIssuedByImage" :src="'images/' + logo"></label>
         <input type="checkbox" v-model="logoSelected" :value="logo"/>
-    </div> 
-    <a :href="urlDiplomaMode">Sett inn Diplom</a>       
+    </div>
+    <a :href="urlDiplomaMode">Sett inn Diplom</a>
   </div>
 </template>
 
@@ -26,7 +29,7 @@ import api from '../api';
 
 export default {
   name: "Diploma",
-  props: ['appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'quizmode'],    
+  props: ['appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'quizmode', 'surveymode'],
   data() {
     return {
       logoList: [],
@@ -40,7 +43,7 @@ export default {
     urlDiplomaMode: function () {
       var url = this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.diplomamode + "&config_directory=" + this.configdirectory;
       this.logoSelected.forEach(function addLogo(logo) {
-        url += "&logo[]=" + logo; 
+        url += "&logo[]=" + logo;
       });
     return url;
     },
@@ -49,8 +52,11 @@ export default {
     },
     urlQuizMode: function () {
       return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.quizmode + "&config_directory=" + this.configdirectory;
+    },
+    urlSurveyWithID1Mode: function () {
+      return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.surveymode + "&survey_id=1&config_directory=" + this.configdirectory;
     }
-  },  
+  },
   methods: {
     async getLogoList() {
         const response = await api.get('/diploma/logolist');
