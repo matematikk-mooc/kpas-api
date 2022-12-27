@@ -374,6 +374,19 @@ class CanvasService
         }
     }
 
+    public function getUsersInGroup(int $groupId)
+    {
+        try {
+            $url = "groups/{$groupId}/users";
+            return $this->request($url, 'GET', [], [], true);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 401 || $exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
+            }
+            throw $exception;
+        }
+    }
+
     public function mergeUsers(int $fromUserId, int $toUserId) {
         $url = "users/$fromUserId/merge_into/$toUserId";
         return $this->request($url, 'PUT');
