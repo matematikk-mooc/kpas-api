@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
         // you'll need to update the file /docker-prod/laravel-cron
         $schedule->command('fetch_from:nsr')
             ->dailyAt('01:00')->runInBackground();
+        $schedule->command('fetch_from:canvas')
+            ->dailyAt('02:00')->runInBackground();
     }
 
     /**
