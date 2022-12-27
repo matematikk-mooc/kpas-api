@@ -7,14 +7,20 @@ use Illuminate\Database\Eloquent\Builder;
 
 class JoinCanvasGroupUser extends Model
 {
-    
-    
+
+
     protected $primaryKey = [
         'canvas_user_id',
         'canvas_group_id',
     ];
+    protected $fillable = [
+        'canvas_user_id',
+        'canvas_group_id',
+    ];
+
     public $incrementing = false;
-    
+    public $timestamps = false;
+
     /**
     * Override methods for composite primary keys
     *
@@ -23,20 +29,20 @@ class JoinCanvasGroupUser extends Model
     * @param  \Illuminate\Database\Eloquent\Builder  $query
     * @return \Illuminate\Database\Eloquent\Builder
     */
-    protected function setKeysForSaveQuery(Builder $query)
+    protected function setKeysForSaveQuery($query)
     {
         $keys = $this->getKeyName();
         if(!is_array($keys)){
             return parent::setKeysForSaveQuery($query);
         }
-        
+
         foreach($keys as $keyName){
             $query->where($keyName, '=', $this->getKeyForSaveQuery($keyName));
         }
-        
+
         return $query;
     }
-    
+
     /**
     * Get the primary key value for a save query.
     *
@@ -48,11 +54,11 @@ class JoinCanvasGroupUser extends Model
         if(is_null($keyName)){
             $keyName = $this->getKeyName();
         }
-        
+
         if (isset($this->original[$keyName])) {
             return $this->original[$keyName];
         }
-        
+
         return $this->getAttribute($keyName);
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CanvasCourse extends Model
 {
+    public $timestamps = false;
     protected $fillable = [
         'canvas_id',
         'name',
