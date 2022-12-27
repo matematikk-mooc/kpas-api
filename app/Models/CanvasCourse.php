@@ -8,6 +8,6 @@ class CanvasCourse extends Model
 {
     protected $fillable = [
         'canvas_id',
-        'name'
+        'name',
     ];
 }
