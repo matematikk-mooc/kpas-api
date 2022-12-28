@@ -38,6 +38,10 @@ Route::group(['prefix' => 'group'], function () {
     Route::post('/user/bulk', 'GroupController@bulkStore')->middleware('lti');
 });
 
+Route::group(['prefix' => 'survey'], function() {
+    Route::post('/create', 'SurveyController@create');
+});
+
 Route::group(['prefix' => 'statistics'], function () {
     Route::get('/{courseId}', 'StatisticsController@index');
     Route::get('/{courseId}/count', 'StatisticsController@courseCount');

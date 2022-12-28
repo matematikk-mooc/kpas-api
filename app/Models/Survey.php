@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Survey extends Model
 {
+    public $timestamps = false;
+    
     protected $fillable = [
         'course_id',
         'title_form',

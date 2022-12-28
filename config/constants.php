@@ -5,5 +5,6 @@ return [
         'DIPLOMA_MODE' => 1,
         'STATISTICS_MODE' => 2,
         'QUIZ_MODE' => 3,
+        'SURVEY_MODE' => 4, 
     ]
 ];
