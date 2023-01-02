@@ -28,19 +28,25 @@
       <subsection>
         <label for="question1">
           Spørsmål 1:
-          <input class="surveyForm" type="text" name="question1" v-model="question1"/>
+          <input class="surveyForm" type="text" name="question1text" v-model="question1.text" placeholder="Spørsmålstekst"/>
+          <input class="surveyForm" type="text" name="question1name" v-model="question1.machine_name" placeholder="machine_name"/>
+          <input class="surveyForm" type="checkbox" name="question1req" v-model="question1.required"/>
         </label>
         </subsection>
       <subsection>
         <label for="question2">
           Spørsmål 2:
-          <input class="surveyForm" type="text" name="question2" v-model="question2"/>
+          <input class="surveyForm" type="text" name="question2text" v-model="question2.text" placeholder="Spørsmålstekst"/>
+          <input class="surveyForm" type="text" name="question2name" v-model="question2.machine_name" placeholder="machine_name"/>
+          <input class="surveyForm" type="checkbox" name="question2req" v-model="question2.required"/>
         </label>
       </subsection>
       <subsection>
         <label for="question3">
           Spørsmål 3:
-          <input class="surveyForm" type="text" name="question3" v-model="question3"/>
+          <input class="surveyForm" type="text" name="question3" v-model="question3.text" placeholder="Spørsmålstekst"/>
+          <input class="surveyForm" type="text" name="question3name" v-model="question3.machine_name" placeholder="machine_name"/>
+          <input class="surveyForm" type="checkbox" name="question3req" v-model="question3.required"/>
         </label>
         </subsection>
         <button @click="setTitle">Opprett survey</button>
@@ -70,9 +76,9 @@ export default {
       logoSelected: [],
       title: '', 
       title_internal: '',
-      question1: '', 
-      question2: '', 
-      question3: ''  
+      question1: {'text' : '', 'machine_name' : '', 'required' : false}, 
+      question2: {'text' : '', 'machine_name' : '',  'required' : false}, 
+      question3: {'text' : '', 'machine_name' : '',  'required' : false}  
     };
   },
   computed: {
@@ -109,18 +115,22 @@ export default {
       console.log("Q2: " + this.question2);
       console.log("Q3: " + this.question3);
       console.log(this.courseid)
-      
+
       //do input validation here
+
+      var questions = [];
+      questions.push(this.question1);
+      questions.push(this.question2); 
+      questions.push(this.question3);
 
       const response = await api.post('survey/create', {
         cookie: window.cookie, 
         courseid: this.courseid,
         title: this.title, 
-        title_internal: this.title,
-        question1: this.question1, 
-        question2: this.question2, 
-        question3: this.question3
+        title_internal: this.title_internal,
+        questions: questions
       })
+      console.log(response);
 
       var surveyElements = document.getElementsByClassName("surveyForm");
       Array.from(surveyElements).forEach(function(elem) {

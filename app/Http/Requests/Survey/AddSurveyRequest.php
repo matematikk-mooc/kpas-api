@@ -9,11 +9,10 @@ class AddSurveyRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'course_id' => 'required|int',
             'title' => 'required|string',
             'title_internal' => 'required|string',
-            'question1' => 'string|nullable',
-            'question2' => 'string|nullable',
-            'question3' => 'string|nullable',
+            'questions' => 'array|nullable',
         ];
     }
 }
