@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('survey_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->timestamp('submitted');
-            $table->boolean('deleted');
+            $table->boolean('deleted')->default(false);
 
             $table->foreign('survey_id')->references('id')->on('surveys');
             $table->foreign('user_id')->references('canvas_user_id')->on('join_canvas_group_users');
