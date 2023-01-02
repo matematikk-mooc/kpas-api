@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SurveyQuestion extends Model
 {
+    public $timestamps = false;
     protected $fillable = [
         'survey_id',
         'machine_name',
