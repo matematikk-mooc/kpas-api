@@ -15,41 +15,57 @@
       <subsection>
         <label for="title">
           Tittel:
-          <input class="surveyForm" type="text" name="title" v-model="title"/>
+          <input class="surveyForm" type="text" maxlength="255" name="title" v-model="title"/>
         </label>
       </subsection>
       <subsection>
         <label for="title_internal">
           Intern tittel:
-          <input class="surveyForm" type="text" name="title_internal" v-model="title_internal"/>
+          <input class="surveyForm" type="text" maxlength="255" name="title_internal" v-model="title_internal"/>
         </label>
       </subsection>
-      <p>Valgfrie spørsmål</p>
+      <subsection>
+        Standardspørsmål obligatoriske: 
+        <input type="checkbox" name="required_default" v-model="required_default"/>
+      </subsection>
+      <br/>
+      Valgfrie spørsmål (disse har spørsmålstypen: 5-punkt skala):
       <subsection>
         <label for="question1">
           Spørsmål 1:
-          <input class="surveyForm" type="text" name="question1text" v-model="question1.text" placeholder="Spørsmålstekst"/>
-          <input class="surveyForm" type="text" name="question1name" v-model="question1.machine_name" placeholder="machine_name"/>
-          <input class="surveyForm" type="checkbox" name="question1req" v-model="question1.required"/>
+          <input class="surveyForm" type="text" maxlength="255" name="question1text" v-model="question1.text" placeholder="Spørsmålstekst"/>
+          <input class="surveyForm" type="text" maxlength="255" name="question1name" v-model="question1.machine_name" placeholder="machine_name"/>
+          Obligatorisk:
+          <input type="checkbox" name="question1req" v-model="question1.required"/>
         </label>
         </subsection>
       <subsection>
         <label for="question2">
           Spørsmål 2:
-          <input class="surveyForm" type="text" name="question2text" v-model="question2.text" placeholder="Spørsmålstekst"/>
-          <input class="surveyForm" type="text" name="question2name" v-model="question2.machine_name" placeholder="machine_name"/>
-          <input class="surveyForm" type="checkbox" name="question2req" v-model="question2.required"/>
+          <input class="surveyForm" type="text" maxlength="255" name="question2text" v-model="question2.text" placeholder="Spørsmålstekst"/>
+          <input class="surveyForm" type="text" maxlength="255" name="question2name" v-model="question2.machine_name" placeholder="machine_name"/>
+          Obligatorisk: 
+          <input type="checkbox" name="question2req" v-model="question2.required"/>
         </label>
       </subsection>
       <subsection>
         <label for="question3">
           Spørsmål 3:
-          <input class="surveyForm" type="text" name="question3" v-model="question3.text" placeholder="Spørsmålstekst"/>
-          <input class="surveyForm" type="text" name="question3name" v-model="question3.machine_name" placeholder="machine_name"/>
-          <input class="surveyForm" type="checkbox" name="question3req" v-model="question3.required"/>
+          <input class="surveyForm" type="text" maxlength="255" name="question3" v-model="question3.text" placeholder="Spørsmålstekst"/>
+          <input class="surveyForm" type="text" maxlength="255" name="question3name" v-model="question3.machine_name" placeholder="machine_name"/>
+          Obligatorisk:
+          <input type="checkbox" name="question3req" v-model="question3.required"/>
         </label>
         </subsection>
-        <button @click="setTitle">Opprett survey</button>
+
+      <div v-if="emptyTitle" class='alert alert-danger kpasAlert'>Tittel og intern tittel kan ikke være tomme.</div>
+      <div v-if="emptyQuestionText" class='alert alert-danger kpasAlert'>Spørsmål kan ikke kun ha machine_name, det må også ha en spørsmålstekst.</div>
+      <div v-if="surveyCreated" class='alert alert-success kpasAlert'>Survey opprettet! Den kan nå settes inn i LTI.</div>
+      <div v-if="couldNotCreateSurvey" class='alert alert-danger kpasAlert'>Kunne ikke opprette survey. Prøv igjen.</div>
+
+
+      <br/>
+      <button id="createButton" @click="createSurvey">Opprett survey</button>
     </section>
     <a :href="urlSurveyMode">Sett inn survey</a>
 
@@ -76,9 +92,15 @@ export default {
       logoSelected: [],
       title: '', 
       title_internal: '',
+      required_default: false,
       question1: {'text' : '', 'machine_name' : '', 'required' : false}, 
       question2: {'text' : '', 'machine_name' : '',  'required' : false}, 
-      question3: {'text' : '', 'machine_name' : '',  'required' : false}  
+      question3: {'text' : '', 'machine_name' : '',  'required' : false},
+      survey_id: -1,
+      emptyTitle: false,
+      emptyQuestionText: false,
+      surveyCreated: false,
+      couldNotCreateSurvey: false  
     };
   },
   computed: {
@@ -99,7 +121,9 @@ export default {
       return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.quizmode + "&config_directory=" + this.configdirectory;
     },
     urlSurveyMode: function () {
-      return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.surveymode + "&config_directory=" + this.configdirectory;
+      if (this.survey_id != -1){
+        return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.surveymode + "&config_directory=" + this.configdirectory + "&survey_id=" + this.survey_id;
+      }
     }
   },  
   methods: {
@@ -109,28 +133,46 @@ export default {
     },
     async fetchLogoList() {
     },
-    async setTitle(){
+    async createSurvey(){
       console.log("Title: " + this.title);
-      console.log("Q1: " + this.question1);
-      console.log("Q2: " + this.question2);
-      console.log("Q3: " + this.question3);
       console.log(this.courseid)
 
-      //do input validation here
-
+      if(this.title == "" || this.title_internal == ""){
+        this.emptyTitle = true;
+        return;
+      }
+      this.emptyTitle = false;
       var questions = [];
       questions.push(this.question1);
       questions.push(this.question2); 
       questions.push(this.question3);
 
+      for(var i = 0; i < questions.length; i++){
+        if(questions[i].machine_name != "" && questions[i].text == ""){
+          this.emptyQuestionText = true;
+          return;
+        }
+      }
+      this.emptyQuestionText = false;
+
       const response = await api.post('survey/create', {
         cookie: window.cookie, 
-        courseid: this.courseid,
+        course_id: this.courseid,
         title: this.title, 
         title_internal: this.title_internal,
+        required_default: this.required_default,
         questions: questions
       })
-      console.log(response);
+      console.log("surveyid " + response.data.result)
+
+      if(response.data.status == 200) { 
+        this.survey_id = response.data.result;
+        this.surveyCreated = true;
+      }
+      else{
+        this.couldNotCreateSurvey = true; 
+        return;
+      }
 
       var surveyElements = document.getElementsByClassName("surveyForm");
       Array.from(surveyElements).forEach(function(elem) {
@@ -148,5 +190,22 @@ export default {
 </script>
 
 <style>
-
+  subsection {
+    width: fit-content;
+  }
+  section {
+    width: 80%;
+    align-content: flex-start;
+  }
+  #surveyForm {
+    padding: 0.5em;
+    margin: 0.5em;
+  }
+  #createButton {
+    padding: 0.5em;
+    margin: 0.2em;
+  }
+  a {
+    font-size: large;
+  }
 </style> 
