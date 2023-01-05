@@ -26,7 +26,6 @@ class SurveyRepository
 
         $customQuestions = $surveyContent->questions;
         for ($i = 0; $i < count($customQuestions); $i++){
-            logger($customQuestions[$i]['text']);
             if($customQuestions[$i]['text'] != ''){
                 $this->createCustomSurveyQuestion($surveyId, $customQuestions[$i]);
             }

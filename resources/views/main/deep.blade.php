@@ -6,3 +6,6 @@
 
 
 @endsection
+@section('scripts')
+    <script>window.cookie = '{{ session()->getId() }}';</script>
+@endsection

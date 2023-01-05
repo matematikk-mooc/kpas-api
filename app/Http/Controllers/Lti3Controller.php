@@ -74,7 +74,6 @@ class Lti3Controller extends Controller
         } else if ($launch->is_deep_link_launch()) {
             logger('Deep Linking Launch!');
             $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
-            logger($settings);
             return view('main.deep')
             ->withCourseId($settings["canvas_course_id"])
             ->withId($launch->get_launch_id())
