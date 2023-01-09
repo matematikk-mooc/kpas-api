@@ -20,7 +20,7 @@
       </subsection>
       <subsection>
         <label for="title_internal">
-          Intern tittel:
+          Tittel i dashboard:
           <input class="surveyForm" type="text" maxlength="255" name="title_internal" v-model="title_internal"/>
         </label>
       </subsection>
@@ -58,7 +58,7 @@
         </label>
         </subsection>
 
-      <div v-if="emptyTitle" class='alert alert-danger kpasAlert'>Tittel og intern tittel kan ikke være tomme.</div>
+      <div v-if="emptyTitle" class='alert alert-danger kpasAlert'>Tittel og tittel i dashboard kan ikke være tomme.</div>
       <div v-if="emptyQuestionText" class='alert alert-danger kpasAlert'>Spørsmål kan ikke kun ha machine_name, det må også ha en spørsmålstekst.</div>
       <div v-if="surveyCreated" class='alert alert-success kpasAlert'>Survey opprettet! Den kan nå settes inn i LTI.</div>
       <div v-if="couldNotCreateSurvey" class='alert alert-danger kpasAlert'>Kunne ikke opprette survey. Prøv igjen.</div>
