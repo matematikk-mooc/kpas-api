@@ -4,6 +4,9 @@ namespace App\Repositories;
 use App\Http\Requests\Survey\AddSurveyRequest;
 use App\Models\Survey;
 use App\Models\SurveyQuestion;
+use App\Models\SurveySubmission;
+use App\Models\SurveySubmissionData;
+use App\Models\JoinCanvasGroupUser;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -30,7 +33,6 @@ class SurveyRepository
                 $this->createCustomSurveyQuestion($surveyId, $customQuestions[$i]);
             }
         }
-
         return $surveyId;
     }
 
@@ -75,5 +77,61 @@ class SurveyRepository
             'required' => $required, 
             'deleted' => false
         ]);
+    }
+
+
+    public function getSurveys(int $courseId)
+    {
+        $surveys = Survey::with('questions.submissionData')->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
+
+        $surveys = $this->countScalaQuestionResponseValues($surveys);
+        
+        return $surveys; 
+    }
+
+    public function getSurveysFilteredOnGroup(int $courseId, int $groupId)
+    {
+        
+        $surveys = Survey::with([
+            'questions',
+            'questions.submissionData' => function ($query) use ($groupId) {
+                $query->whereHas('submission.usergroups.group', function ($query) use ($groupId) {
+                    $query->where('canvas_id', '=', $groupId);
+                });
+            }   
+        ])->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
+
+        $surveys = $this->countScalaQuestionResponseValues($surveys);
+
+        return $surveys;
+    }
+
+    public function getStudentSubmission(int $surveyId, int $userId)
+    {
+        $surveySubmission = Survey::with([
+            'questions',
+            'questions.submissionData' => function ($query) use ($userId) {
+                $query->whereHas('submission.usergroups', function ($query) use ($userId) {
+                    $query->where('canvas_user_id', '=', $userId);
+                });
+            }   
+        ])->where('id', '=', $surveyId)->get();
+
+        return $surveySubmission;
+    }
+
+    public function countScalaQuestionResponseValues($surveys) {
+        $surveys = json_decode($surveys);
+        foreach($surveys as $survey){
+            foreach($survey->questions as $question){
+                if ($question->question_type == "likert_scale_5pt"){
+                    if(count($question->submission_data) > 0){
+                        $value_counts = array_count_values(array_column($question->submission_data, "value"));
+                        $question->submission_data = $value_counts;
+                    }
+                }
+            }
+        }
+        return $surveys; 
     }
 }

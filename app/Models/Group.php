@@ -12,4 +12,8 @@ class Group extends Model
         'description',
         'category_id',
     ];
+
+    public function users(){
+        return $this->hasMany(JoinCanvasGroupUser::class, 'canvas_user_id', 'user_id');
+    }
 }
