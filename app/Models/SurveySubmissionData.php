@@ -13,7 +13,7 @@ class SurveySubmissionData extends Model
     ];
     public $incrementing = false;
     public $timestamps = false;
-    
+
     protected $fillable = ['question_id', 'submission_id', 'value'];
     
     /**
