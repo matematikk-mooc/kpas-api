@@ -82,7 +82,10 @@ class SurveyRepository
 
     public function getSurveys(int $courseId)
     {
-        $surveys = Survey::with('questions.submissionData')->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
+        $surveys = Survey::with([
+            'questions.submissionData',
+            'questions.submissionData.submission:id,submitted'
+            ])->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
 
         $surveys = $this->countScalaQuestionResponseValues($surveys);
         
@@ -98,7 +101,8 @@ class SurveyRepository
                 $query->whereHas('submission.usergroups.group', function ($query) use ($groupId) {
                     $query->where('canvas_id', '=', $groupId);
                 });
-            }   
+            },
+            'questions.submissionData.submission:id,submitted' 
         ])->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
 
         $surveys = $this->countScalaQuestionResponseValues($surveys);
