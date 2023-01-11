@@ -25,7 +25,7 @@ class SurveyRepository
 
         $surveyId = $survey->id;
 
-        $this->createDefaultQuestions($surveyId, $surveyContent->required_default);
+        $this->createDefaultScalaQuestions($surveyId, $surveyContent->required_default);
 
         $customQuestions = $surveyContent->questions;
         for ($i = 0; $i < count($customQuestions); $i++){
@@ -33,9 +33,11 @@ class SurveyRepository
                 $this->createCustomSurveyQuestion($surveyId, $customQuestions[$i]);
             }
         }
+
+        $this->createDefaultEssayQuestion($surveyId, $surveyContent->required_default);
+
         return $surveyId;
     }
-
 
     public function createCustomSurveyQuestion (int $surveyId, array $questionContent)
     {
@@ -49,7 +51,7 @@ class SurveyRepository
         ]);
     }
 
-    public function createDefaultQuestions (int $surveyId, bool $required)
+    public function createDefaultScalaQuestions (int $surveyId, bool $required)
     {
         $questionTexts = array(
             "I hvilken grad har du lært noe gjennom å ha arbeidet med innholdet i denne modulen?", 
@@ -68,7 +70,10 @@ class SurveyRepository
                 'deleted' => false
             ]);
         }
+    }
 
+    public function createDefaultEssayQuestion (int $surveyId, bool $required)
+    {
         SurveyQuestion::create([
             'survey_id' => $surveyId,
             'machine_name' => "standard_question_essay",
