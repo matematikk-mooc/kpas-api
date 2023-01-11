@@ -68,8 +68,6 @@ class FetchCanvasData extends Command
         }
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
-
         logger('Fetching data from Canvas: end');
 
         return Command::SUCCESS;
