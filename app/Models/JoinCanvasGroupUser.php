@@ -20,7 +20,6 @@ class JoinCanvasGroupUser extends Model
 
     public $incrementing = false;
     public $timestamps = false;
-
     public function group()
     {
         return $this->belongsTo(Group::class, 'canvas_group_id', 'canvas_id');

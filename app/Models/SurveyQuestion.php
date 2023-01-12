@@ -16,7 +16,6 @@ class SurveyQuestion extends Model
         'required',
         'deleted'
     ];
-
     public function survey()
     {
         return $this->belongsTo(Survey::class);
@@ -26,5 +25,6 @@ class SurveyQuestion extends Model
     {
         return $this->hasMany(SurveySubmissionData::class, 'question_id', 'id');
     }
+
 }
 

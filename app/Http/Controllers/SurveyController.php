@@ -14,6 +14,7 @@ class SurveyController extends Controller
 
     public function create(AddSurveyRequest $request): SuccessResponse 
     {
+
         logger("SurveyController@create");
         logger($request);
         $surveyRepository = new SurveyRepository();
@@ -41,5 +42,6 @@ class SurveyController extends Controller
         $result = $surveyRepository->getStudentSubmission($surveyId, $userId);
         return new SuccessResponse($result);
     }
+
 
 }

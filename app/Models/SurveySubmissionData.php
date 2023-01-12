@@ -13,7 +13,6 @@ class SurveySubmissionData extends Model
     ];
     public $incrementing = false;
     public $timestamps = false;
-
     public function submission()
     {
         return $this->belongsTo(SurveySubmission::class);

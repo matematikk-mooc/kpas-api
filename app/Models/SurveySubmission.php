@@ -14,7 +14,6 @@ class SurveySubmission extends Model
         'submitted',
         'deleted'
     ];
-
     public function survey(){
         return $this->belongsTo(Survey::class);
     }
@@ -22,4 +21,5 @@ class SurveySubmission extends Model
     public function usergroups(){
         return $this->hasMany(JoinCanvasGroupUser::class, 'canvas_user_id', 'user_id');
     }
+
 }

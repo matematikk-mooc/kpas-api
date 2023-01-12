@@ -16,4 +16,5 @@ class CanvasCourse extends Model
     {
         return $this->hasMany(Survey::class, 'course_id', 'canvas_id');
     }
+
 }

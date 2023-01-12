@@ -24,9 +24,7 @@ class SurveyRepository
         $survey = $survey->refresh(); 
 
         $surveyId = $survey->id;
-
         $this->createDefaultScalaQuestions($surveyId, $surveyContent->required_default);
-
         $customQuestions = $surveyContent->questions;
         for ($i = 0; $i < count($customQuestions); $i++){
             if($customQuestions[$i]['text'] != ''){
@@ -52,6 +50,7 @@ class SurveyRepository
     }
 
     public function createDefaultScalaQuestions (int $surveyId, bool $required)
+
     {
         $questionTexts = array(
             "I hvilken grad har du lært noe gjennom å ha arbeidet med innholdet i denne modulen?", 
@@ -74,6 +73,7 @@ class SurveyRepository
 
     public function createDefaultEssayQuestion (int $surveyId, bool $required)
     {
+
         SurveyQuestion::create([
             'survey_id' => $surveyId,
             'machine_name' => "standard_question_essay",
@@ -83,7 +83,6 @@ class SurveyRepository
             'deleted' => false
         ]);
     }
-
 
     public function getSurveys(int $courseId)
     {

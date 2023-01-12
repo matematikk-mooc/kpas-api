@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
             ->dailyAt('02:00')->runInBackground();
         $schedule->command('fetch_from:canvas')
             ->dailyAt('03:00')->runInBackground();
+
     }
 
     /**

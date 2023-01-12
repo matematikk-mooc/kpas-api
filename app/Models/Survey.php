@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Survey extends Model
 {
     public $timestamps = false;
-    
     protected $fillable = [
         'course_id',
         'title_form',
@@ -16,7 +15,6 @@ class Survey extends Model
         'created',
         'deleted'
     ];
-
     public function course()
     {
         return $this->belongsTo(CanvasCourse::class, 'course_id', 'canvas_id');
