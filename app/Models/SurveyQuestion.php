@@ -16,5 +16,15 @@ class SurveyQuestion extends Model
         'required',
         'deleted'
     ];
+    public function survey()
+    {
+        return $this->belongsTo(Survey::class);
+    }
+
+    public function submissionData()
+    {
+        return $this->hasMany(SurveySubmissionData::class, 'question_id', 'id');
+    }
+
 }
 

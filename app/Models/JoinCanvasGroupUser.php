@@ -20,6 +20,15 @@ class JoinCanvasGroupUser extends Model
 
     public $incrementing = false;
     public $timestamps = false;
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'canvas_group_id', 'canvas_id');
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(SurveySubmission::class, 'user_id', 'canvas_user_id');
+    }
 
     /**
     * Override methods for composite primary keys

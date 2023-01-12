@@ -4,6 +4,9 @@ namespace App\Repositories;
 use App\Http\Requests\Survey\AddSurveyRequest;
 use App\Models\Survey;
 use App\Models\SurveyQuestion;
+use App\Models\SurveySubmission;
+use App\Models\SurveySubmissionData;
+use App\Models\JoinCanvasGroupUser;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -21,9 +24,7 @@ class SurveyRepository
         $survey = $survey->refresh(); 
 
         $surveyId = $survey->id;
-
-        $this->createDefaultQuestions($surveyId, $surveyContent->required_default);
-
+        $this->createDefaultScalaQuestions($surveyId, $surveyContent->required_default);
         $customQuestions = $surveyContent->questions;
         for ($i = 0; $i < count($customQuestions); $i++){
             if($customQuestions[$i]['text'] != ''){
@@ -31,9 +32,10 @@ class SurveyRepository
             }
         }
 
+        $this->createDefaultEssayQuestion($surveyId, $surveyContent->required_default);
+
         return $surveyId;
     }
-
 
     public function createCustomSurveyQuestion (int $surveyId, array $questionContent)
     {
@@ -47,7 +49,8 @@ class SurveyRepository
         ]);
     }
 
-    public function createDefaultQuestions (int $surveyId, bool $required)
+    public function createDefaultScalaQuestions (int $surveyId, bool $required)
+
     {
         $questionTexts = array(
             "I hvilken grad har du lært noe gjennom å ha arbeidet med innholdet i denne modulen?", 
@@ -66,6 +69,10 @@ class SurveyRepository
                 'deleted' => false
             ]);
         }
+    }
+
+    public function createDefaultEssayQuestion (int $surveyId, bool $required)
+    {
 
         SurveyQuestion::create([
             'survey_id' => $surveyId,
@@ -75,5 +82,64 @@ class SurveyRepository
             'required' => $required, 
             'deleted' => false
         ]);
+    }
+
+    public function getSurveys(int $courseId)
+    {
+        $surveys = Survey::with([
+            'questions.submissionData',
+            'questions.submissionData.submission:id,submitted'
+            ])->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
+
+        $surveys = $this->countScalaQuestionResponseValues($surveys);
+        
+        return $surveys; 
+    }
+
+    public function getSurveysFilteredOnGroup(int $courseId, int $groupId)
+    {
+        
+        $surveys = Survey::with([
+            'questions',
+            'questions.submissionData' => function ($query) use ($groupId) {
+                $query->whereHas('submission.usergroups.group', function ($query) use ($groupId) {
+                    $query->where('canvas_id', '=', $groupId);
+                });
+            },
+            'questions.submissionData.submission:id,submitted' 
+        ])->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
+
+        $surveys = $this->countScalaQuestionResponseValues($surveys);
+
+        return $surveys;
+    }
+
+    public function getStudentSubmission(int $surveyId, int $userId)
+    {
+        $surveySubmission = Survey::with([
+            'questions',
+            'questions.submissionData' => function ($query) use ($userId) {
+                $query->whereHas('submission.usergroups', function ($query) use ($userId) {
+                    $query->where('canvas_user_id', '=', $userId);
+                });
+            }   
+        ])->where('id', '=', $surveyId)->get();
+
+        return $surveySubmission;
+    }
+
+    public function countScalaQuestionResponseValues($surveys) {
+        $surveys = json_decode($surveys);
+        foreach($surveys as $survey){
+            foreach($survey->questions as $question){
+                if ($question->question_type == "likert_scale_5pt"){
+                    if(count($question->submission_data) > 0){
+                        $value_counts = array_count_values(array_column($question->submission_data, "value"));
+                        $question->submission_data = $value_counts;
+                    }
+                }
+            }
+        }
+        return $surveys; 
     }
 }

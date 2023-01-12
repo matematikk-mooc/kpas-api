@@ -13,6 +13,15 @@ class SurveySubmissionData extends Model
     ];
     public $incrementing = false;
     public $timestamps = false;
+    public function submission()
+    {
+        return $this->belongsTo(SurveySubmission::class);
+    }
+    
+    public function question()
+    {
+        return $this->belongsTo(SurveyQuestion::class);
+    }
 
     protected $fillable = ['question_id', 'submission_id', 'value'];
     
@@ -24,7 +33,7 @@ class SurveySubmissionData extends Model
     * @param  \Illuminate\Database\Eloquent\Builder  $query
     * @return \Illuminate\Database\Eloquent\Builder
     */
-    protected function setKeysForSaveQuery(Builder $query)
+    protected function setKeysForSaveQuery($query)
     {
         $keys = $this->getKeyName();
         if(!is_array($keys)){
