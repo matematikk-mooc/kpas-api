@@ -3,7 +3,7 @@
   <div>
     <h1>Rolle- og gruppeverktøy</h1>
     <a :href="urlRoleMode">Sett inn Rolle- og gruppeverktøy</a>
-    
+
     <h1>Statistikk</h1>
     <a :href="urlStatisticsMode">Sett inn statistikkverktøy</a>
 
@@ -25,7 +25,7 @@
         </label>
       </subsection>
       <subsection>
-        Standardspørsmål obligatoriske: 
+        Standardspørsmål obligatoriske:
         <input type="checkbox" name="required_default" v-model="required_default"/>
       </subsection>
       <br/>
@@ -44,7 +44,7 @@
           Spørsmål 2:
           <input class="surveyForm" type="text" maxlength="255" name="question2text" v-model="question2.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question2name" v-model="question2.machine_name" placeholder="machine_name"/>
-          Obligatorisk: 
+          Obligatorisk:
           <input type="checkbox" name="question2req" v-model="question2.required"/>
         </label>
       </subsection>
@@ -75,8 +75,8 @@
     <div v-for="logo in logoList">
         <label><img class="diplomaIssuedByImage" :src="'images/' + logo"></label>
         <input type="checkbox" v-model="logoSelected" :value="logo"/>
-    </div> 
-    <a :href="urlDiplomaMode">Sett inn Diplom</a>       
+    </div>
+    <a :href="urlDiplomaMode">Sett inn Diplom</a>
   </div>
 </template>
 
@@ -85,22 +85,22 @@ import api from '../api';
 
 export default {
   name: "Diploma",
-  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'quizmode', 'surveymode'],    
+  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'quizmode', 'surveymode'],
   data() {
     return {
       logoList: [],
       logoSelected: [],
-      title: '', 
+      title: '',
       title_internal: '',
       required_default: false,
-      question1: {'text' : '', 'machine_name' : '', 'required' : false}, 
-      question2: {'text' : '', 'machine_name' : '',  'required' : false}, 
+      question1: {'text' : '', 'machine_name' : '', 'required' : false},
+      question2: {'text' : '', 'machine_name' : '',  'required' : false},
       question3: {'text' : '', 'machine_name' : '',  'required' : false},
       survey_id: -1,
       emptyTitle: false,
       emptyQuestionText: false,
       surveyCreated: false,
-      couldNotCreateSurvey: false  
+      couldNotCreateSurvey: false
     };
   },
   computed: {
@@ -110,7 +110,7 @@ export default {
     urlDiplomaMode: function () {
       var url = this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.diplomamode + "&config_directory=" + this.configdirectory;
       this.logoSelected.forEach(function addLogo(logo) {
-        url += "&logo[]=" + logo; 
+        url += "&logo[]=" + logo;
       });
     return url;
     },
@@ -125,7 +125,7 @@ export default {
         return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.surveymode + "&config_directory=" + this.configdirectory + "&survey_id=" + this.survey_id;
       }
     }
-  },  
+  },
   methods: {
     async getLogoList() {
         const response = await api.get('/diploma/logolist');
@@ -144,7 +144,7 @@ export default {
       this.emptyTitle = false;
       var questions = [];
       questions.push(this.question1);
-      questions.push(this.question2); 
+      questions.push(this.question2);
       questions.push(this.question3);
 
       for(var i = 0; i < questions.length; i++){
@@ -156,21 +156,21 @@ export default {
       this.emptyQuestionText = false;
 
       const response = await api.post('survey/create', {
-        cookie: window.cookie, 
+        cookie: window.cookie,
         course_id: this.courseid,
-        title: this.title, 
+        title: this.title,
         title_internal: this.title_internal,
         required_default: this.required_default,
         questions: questions
       })
       console.log("surveyid " + response.data.result)
 
-      if(response.data.status == 200) { 
+      if(response.data.status == 200) {
         this.survey_id = response.data.result;
         this.surveyCreated = true;
       }
       else{
-        this.couldNotCreateSurvey = true; 
+        this.couldNotCreateSurvey = true;
         return;
       }
 
@@ -208,4 +208,4 @@ export default {
   a {
     font-size: large;
   }
-</style> 
+</style>

@@ -13,7 +13,7 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
   kpas:
     container_name: kpas
-    build: 
+    build:
       context: .
       dockerfile: dev.Dockerfile
     depends_on:
@@ -24,16 +24,17 @@ services:
       APP_DEBUG: "true"
       APP_ENV: "local"
       APP_NAME: "KPAS DEV"
-      APP_URL: "http://localhost"
+      APP_URL: "https://audun-kpas.eu.ngrok.io"
       LOG_CHANNEL: "stack"
       DEBUGBAR_ENABLED: "true"
       CANVAS_HOST: "https://bibsys.test.instructure.com"
       DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3310
-      DB_USERNAME: root
-      DB_PASSWORD: KpasDEV
-      DB_DATABASE: KpasDEV
+      DB_HOST: docker.for.mac.localhost
+      DB_PORT: 3306
+      DB_USERNAME: kpas2
+      DB_PASSWORD: kpas2
+      DB_DATABASE: kpas2
+      KPAS_API_ACCESS_TOKEN: "1234567890abcdefghkwej0128"
     links:
       - db
     volumes:
@@ -41,4 +42,4 @@ services:
 volumes:
   db:
     driver: local
-    
+

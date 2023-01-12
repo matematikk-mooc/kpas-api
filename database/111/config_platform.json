@@ -1,0 +1,13 @@
+{
+  "https://canvas.test.instructure.com": {
+    "client_id": "37270000000000153",
+    "auth_login_url": "https://bibsys.test.instructure.com/api/lti/authorize_redirect",
+    "auth_token_url": "https://bibsys.test.instructure.com/login/oauth2/token",
+    "key_set_url": "https://bibsys.test.instructure.com/api/lti/security/jwks",
+    "private_key_file": "/jwt_key_kpas/jwtRS256.key",
+    "kid": "4",
+    "deployment": [
+        "959:e697d653990a5cab4f35b819b608ce4a49f1c67f"
+    ]
+  }
+}

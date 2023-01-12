@@ -11,7 +11,8 @@ use App\Repositories\SurveyRepository;
 class SurveyController extends Controller
 {
 
-    public function create(AddSurveyRequest $request): SuccessResponse {
+    public function create(AddSurveyRequest $request): SuccessResponse
+    {
         logger("SurveyController@create");
         logger($request);
         $surveyRepository = new SurveyRepository();
@@ -19,5 +20,6 @@ class SurveyController extends Controller
 
         return new SuccessResponse($id);
     }
+
 
 }

@@ -33,7 +33,7 @@ RUN docker-php-ext-install zip gd mysqli pdo pdo_mysql
 WORKDIR /var/www/html
 
 # Set dev env variables
-ENV CANVAS_HOST=http://localhost
+ENV CANVAS_HOST=https://e23690c34dc8.eu.ngrok.io
 
 # Add application
 COPY --from=nodeBuild --chown=www-data /var/www/html /var/www/html
