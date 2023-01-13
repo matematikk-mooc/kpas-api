@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $canvas_id
+ * @property string $name
+ */
 class CanvasCourse extends Model
 {
     public $timestamps = false;
@@ -11,10 +15,5 @@ class CanvasCourse extends Model
         'canvas_id',
         'name',
     ];
-
-    public function surveys()
-    {
-        return $this->hasMany(Survey::class, 'course_id', 'canvas_id');
-    }
 
 }

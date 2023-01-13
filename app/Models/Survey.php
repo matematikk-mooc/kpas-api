@@ -5,6 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int $course_id
+ * @property string $title_form
+ * @property string $title_internal
+ */
 class Survey extends Model
 {
     public $timestamps = false;
@@ -15,10 +21,6 @@ class Survey extends Model
         'created',
         'deleted'
     ];
-    public function course()
-    {
-        return $this->belongsTo(CanvasCourse::class, 'course_id', 'canvas_id');
-    }
 
     public function submissions()
     {

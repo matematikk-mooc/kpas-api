@@ -5,6 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int $survey_id
+ * @property string $machine_name
+ * @property string $text
+ * @property string $question_type
+ * @property bool $required
+ */
 class SurveyQuestion extends Model
 {
     public $timestamps = false;

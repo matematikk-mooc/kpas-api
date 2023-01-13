@@ -39,10 +39,10 @@ Route::group(['prefix' => 'group'], function () {
 });
 
 Route::group(['prefix' => 'survey'], function() {
-    Route::post('/create', 'SurveyController@create')->middleware('lti');
-    Route::get('/{surveyId}/user/{userId}', 'SurveyController@getUserSubmission')->middleware('lti');
-    Route::get('/course/{courseId}', 'SurveyController@getCourseSurveys')->middleware('lti');
-
+    Route::post('/create', 'SurveyController@create');
+    Route::get('/{surveyId}/user/{userId}', 'SurveyController@getUserSubmission');
+    Route::get('/course/{courseId}', 'SurveyController@getCourseSurveys');
+});
 
 Route::group(['prefix' => 'statistics'], function () {
     Route::get('/{courseId}', 'StatisticsController@index');

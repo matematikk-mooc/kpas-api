@@ -5,6 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $question_id
+ * @property int $submission_id
+ * @property string $value
+ */
 class SurveySubmissionData extends Model
 {
     protected $primaryKey = [
@@ -17,14 +22,14 @@ class SurveySubmissionData extends Model
     {
         return $this->belongsTo(SurveySubmission::class);
     }
-    
+
     public function question()
     {
         return $this->belongsTo(SurveyQuestion::class);
     }
 
     protected $fillable = ['question_id', 'submission_id', 'value'];
-    
+
     /**
     * Override methods for composite primary keys
     *
@@ -39,14 +44,14 @@ class SurveySubmissionData extends Model
         if(!is_array($keys)){
             return parent::setKeysForSaveQuery($query);
         }
-        
+
         foreach($keys as $keyName){
             $query->where($keyName, '=', $this->getKeyForSaveQuery($keyName));
         }
-        
+
         return $query;
     }
-    
+
     /**
     * Get the primary key value for a save query.
     *
@@ -58,11 +63,11 @@ class SurveySubmissionData extends Model
         if(is_null($keyName)){
             $keyName = $this->getKeyName();
         }
-        
+
         if (isset($this->original[$keyName])) {
             return $this->original[$keyName];
         }
-        
+
         return $this->getAttribute($keyName);
     }
 }
