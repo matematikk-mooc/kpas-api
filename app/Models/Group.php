@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int $canvas_id
+ * @property string $name
+ * @property string $description
+ * @property int $category_id
+ */
 class Group extends Model
 {
     protected $fillable = [

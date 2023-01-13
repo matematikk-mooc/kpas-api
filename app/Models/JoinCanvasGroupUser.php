@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @property int $canvas_user_id
+ * @property int $canvas_group_id
+ */
 class JoinCanvasGroupUser extends Model
 {
 
@@ -23,11 +27,6 @@ class JoinCanvasGroupUser extends Model
     public function group()
     {
         return $this->belongsTo(Group::class, 'canvas_group_id', 'canvas_id');
-    }
-
-    public function submissions()
-    {
-        return $this->hasMany(SurveySubmission::class, 'user_id', 'canvas_user_id');
     }
 
     /**

@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int canvas_user_id
+ * @property string $token
+ */
 class CanvasUserMergeToken extends Model
 {
     /**
