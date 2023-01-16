@@ -26,6 +26,11 @@ class DeepController extends Controller
             $logoList = $_REQUEST["logo"];
         }
 
+        $surveyID = null;
+        if (isset($_REQUEST["survey_id"])) {
+            $surveyID = intval($_REQUEST["survey_id"]);
+        }
+
         logger("DeepController config directory:". $config_directory);
         $launch = LTI\LTI_Message_Launch::from_cache($_REQUEST['launch_id'], new LTI3_Database($config_directory));
         $dl = $launch->get_deep_link();
@@ -34,12 +39,15 @@ class DeepController extends Controller
         foreach($logoList as $logo) {
             $url .= "&logo[]=" . $logo;
         }
+        if (isset($surveyID)) {
+            $url .= "&survey_id=" . $surveyID;
+        }
         $resource = LTI\LTI_Deep_Link_Resource::new()
         ->set_url($url)
         ->set_custom_params(['deep' => true])
         ->set_title('KPAS')
-        ->set_target('iframe'); 
-        $dl->output_response_form([$resource]);    
-    }    
+        ->set_target('iframe');
+        $dl->output_response_form([$resource]);
+    }
 }
 

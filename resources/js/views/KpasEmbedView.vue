@@ -30,10 +30,6 @@
           <input class="surveyForm" type="text" maxlength="255" name="title_internal" v-model="title_internal"/>
         </label>
       </div>
-      <div class="subsection">
-        Standardspørsmål obligatoriske:
-        <input type="checkbox" name="required_default" v-model="required_default"/>
-      </div>
       <br/>
       Valgfrie spørsmål (disse har spørsmålstypen: 5-punkt skala):
       <div class="subsection">
@@ -41,8 +37,6 @@
           Spørsmål 1:
           <input class="surveyForm" type="text" maxlength="255" name="question1text" v-model="question1.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question1name" v-model="question1.machine_name" placeholder="machine_name"/>
-          Obligatorisk:
-          <input type="checkbox" name="question1req" v-model="question1.required"/>
         </label>
         </div>
       <div class="subsection">
@@ -50,8 +44,6 @@
           Spørsmål 2:
           <input class="surveyForm" type="text" maxlength="255" name="question2text" v-model="question2.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question2name" v-model="question2.machine_name" placeholder="machine_name"/>
-          Obligatorisk:
-          <input type="checkbox" name="question2req" v-model="question2.required"/>
         </label>
       </div>
       <div class="subsection">
@@ -59,8 +51,6 @@
           Spørsmål 3:
           <input class="surveyForm" type="text" maxlength="255" name="question3" v-model="question3.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question3name" v-model="question3.machine_name" placeholder="machine_name"/>
-          Obligatorisk:
-          <input type="checkbox" name="question3req" v-model="question3.required"/>
         </label>
       </div>
 
@@ -100,10 +90,9 @@ export default {
       add_form_title: false,
       title: '',
       title_internal: '',
-      required_default: false,
-      question1: {'text' : '', 'machine_name' : '', 'required' : false},
-      question2: {'text' : '', 'machine_name' : '',  'required' : false},
-      question3: {'text' : '', 'machine_name' : '',  'required' : false},
+      question1: {'text' : '', 'machine_name' : ''},
+      question2: {'text' : '', 'machine_name' : ''},
+      question3: {'text' : '', 'machine_name' : ''},
       survey_id: -1,
       emptyTitleForm: false,
       emptyTitleInternal: false,
@@ -173,7 +162,6 @@ export default {
         course_id: this.courseid,
         title: this.add_form_title ? this.title : null,
         title_internal: this.title_internal,
-        required_default: this.required_default,
         questions: questions
       })
       console.log("surveyid " + response.data.result)
