@@ -7,7 +7,6 @@ use App\Models\Survey;
 use App\Models\SurveyQuestion;
 use App\Models\SurveySubmission;
 use App\Models\SurveySubmissionData;
-use App\Models\JoinCanvasGroupUser;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -15,13 +14,20 @@ use Illuminate\Http\Request;
 
 class SurveyRepository
 {
-    public function createSurvey(AddSurveyRequest $surveyContent)
+
+    /**
+     * Create a new survey and return the id
+     *
+     * @param AddSurveyRequest $surveyContent
+     * @return int ID of the created survey
+     */
+    public function createSurvey(AddSurveyRequest $surveyContent): int
     {
         $survey = Survey::create([
             'course_id' => $surveyContent->course_id,
             'title_form' => $surveyContent->title,
             'title_internal' => $surveyContent->title_internal,
-            'created' => date_create('now')->format('Y-m-d H:i:s'),
+            'created' => date_create()->format('Y-m-d H:i:s'),
             'deleted' => false
         ]);
         $survey = $survey->refresh();
@@ -40,9 +46,17 @@ class SurveyRepository
         return $surveyId;
     }
 
-    public function createCustomSurveyQuestion(int $surveyId, array $questionContent)
+    /**
+     * Create a custom survey question with type 'likert_scale_5pt'.
+     *
+     * @param int $surveyId
+     * @param array $questionContent Array containing associative arrays with the keys 'text' (required, string)
+     * and 'machine_name' (optional, string)
+     * @return void
+     */
+    public function createCustomSurveyQuestion(int $surveyId, array $questionContent): void
     {
-        $surveyQuestion = SurveyQuestion::create([
+        SurveyQuestion::create([
             'survey_id' => $surveyId,
             'machine_name' => $questionContent['machine_name'],
             'text' => $questionContent['text'],
@@ -52,7 +66,13 @@ class SurveyRepository
         ]);
     }
 
-    public function createDefaultScalaQuestions(int $surveyId)
+    /**
+     * Inserts the default likert scale questions into the database for survey
+     *
+     * @param int $surveyId
+     * @return void
+     */
+    public function createDefaultScalaQuestions(int $surveyId): void
 
     {
         $questionTexts = array(
@@ -65,7 +85,7 @@ class SurveyRepository
             $questionNr = $i + 1;
             SurveyQuestion::create([
                 'survey_id' => $surveyId,
-                'machine_name' => "standard_question_{$questionNr}",
+                'machine_name' => "standard_question_$questionNr",
                 'text' => $questionTexts[$i],
                 'question_type' => "likert_scale_5pt",
                 'required' => true,
@@ -74,7 +94,13 @@ class SurveyRepository
         }
     }
 
-    public function createDefaultEssayQuestion(int $surveyId)
+    /**
+     * Inserts the default essay question into the database for survey.
+     *
+     * @param int $surveyId
+     * @return void
+     */
+    public function createDefaultEssayQuestion(int $surveyId): void
     {
 
         SurveyQuestion::create([
@@ -88,9 +114,15 @@ class SurveyRepository
     }
 
     /**
-     * @throws Exception
+     * Creates a submission for a given survey for a given user.
+     *
+     *
+     * @param int $surveyId
+     * @param int $userID
+     * @param array $answers Array of associative arrays with keys 'question_id' (int) and 'value' (string)
+     * @throws SurveyAlreadySubmittedException
      */
-    public function createUserSubmission(int $surveyId, int $userID, $answers): void {
+    public function createUserSubmission(int $surveyId, int $userID, array $answers): void {
         // Prevent duplicate submissions
         $existingSubmission = SurveySubmission::where([
             ['survey_id', '=', $surveyId],
@@ -98,14 +130,14 @@ class SurveyRepository
             ['deleted', '=', false]
         ])->first();
         if ($existingSubmission) {
-            logger("User {$userID} tried to submit survey {$surveyId} twice");
+            logger("User $userID tried to submit survey $surveyId twice");
             throw new SurveyAlreadySubmittedException();
         }
 
         $surveySubmission = SurveySubmission::create([
             'survey_id' => $surveyId,
             'user_id' => $userID,
-            'submitted' => date_create('now')->format('Y-m-d H:i:s'),
+            'submitted' => date_create()->format('Y-m-d H:i:s'),
             'deleted' => false
         ]);
 
@@ -118,9 +150,16 @@ class SurveyRepository
         }
     }
 
-    public function deleteUserSubmission(int $surveyId, int $userID): void {
+    /**
+     * Delete a submission for a user for a given survey.
+     *
+     * @param int $surveyID
+     * @param int $userID
+     * @return void
+     */
+    public function deleteUserSubmission(int $surveyID, int $userID): void {
         $surveySubmission = SurveySubmission::where([
-            ['survey_id', '=', $surveyId],
+            ['survey_id', '=', $surveyID],
             ['user_id', '=', $userID],
             ['deleted', '=', false]
         ])->first();
@@ -130,7 +169,15 @@ class SurveyRepository
         }
     }
 
-    public function getSurvey(int $surveyId)
+    /**
+     * Returns a survey with all it's questions.
+     *
+     * Does not include submissions.
+     *
+     * @param int $surveyId
+     * @return mixed
+     */
+    public function getSurvey(int $surveyId): mixed
     {
         return Survey::with(['questions' => function ($query) {
             $query->where('deleted', false);
@@ -138,9 +185,12 @@ class SurveyRepository
     }
 
     /**
+     * @param int $courseId
+     * @param int|null $groupId
+     * @return mixed
      * @throws Exception
      */
-    private function getSurveysWithOptionalFiltering(int $courseId, ?int $groupId)
+    private function getSurveysWithOptionalFiltering(int $courseId, ?int $groupId): mixed
     {
         $surveys = Survey::with([
             'questions' => function ($query) {
@@ -159,28 +209,42 @@ class SurveyRepository
         ])->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
 
 
-        $surveys = self::countScalaQuestionResponseValues($surveys);
-
-        return $surveys;
+        return self::countScalaQuestionResponseValues($surveys);
     }
 
     /**
+     * Returns all surveys, with submissions, for a given course.
+     *
+     * @param int $courseId
+     * @return mixed
      * @throws Exception
      */
-    public function getSurveys(int $courseId)
+    public function getSurveys(int $courseId): mixed
     {
         return $this->getSurveysWithOptionalFiltering($courseId, null);
     }
 
     /**
+     * Returns all surveys, with submissions, for a given course and group.
+     *
+     * @param int $courseId
+     * @param int $groupId
+     * @return mixed
      * @throws Exception
      */
-    public function getSurveysFilteredOnGroup(int $courseId, int $groupId)
+    public function getSurveysFilteredOnGroup(int $courseId, int $groupId): mixed
     {
         return $this->getSurveysWithOptionalFiltering($courseId, $groupId);
     }
 
-    public function getStudentSubmission(int $surveyId, int $userId)
+    /**
+     * Returns a given survey with a given user's submission.
+     *
+     * @param int $surveyId
+     * @param int $userId
+     * @return mixed
+     */
+    public function getStudentSubmission(int $surveyId, int $userId): mixed
     {
         return SurveySubmission::with([
             'survey',
