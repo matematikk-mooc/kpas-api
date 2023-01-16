@@ -41,8 +41,6 @@
           Spørsmål 1:
           <input class="surveyForm" type="text" maxlength="255" name="question1text" v-model="question1.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question1name" v-model="question1.machine_name" placeholder="machine_name"/>
-          Obligatorisk:
-          <input type="checkbox" name="question1req" v-model="question1.required"/>
         </label>
         </div>
       <div class="subsection">
@@ -59,8 +57,6 @@
           Spørsmål 3:
           <input class="surveyForm" type="text" maxlength="255" name="question3" v-model="question3.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question3name" v-model="question3.machine_name" placeholder="machine_name"/>
-          Obligatorisk:
-          <input type="checkbox" name="question3req" v-model="question3.required"/>
         </label>
       </div>
 
@@ -173,7 +169,6 @@ export default {
         course_id: this.courseid,
         title: this.add_form_title ? this.title : null,
         title_internal: this.title_internal,
-        required_default: this.required_default,
         questions: questions
       })
       console.log("surveyid " + response.data.result)
