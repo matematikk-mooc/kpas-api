@@ -40,6 +40,8 @@ Route::group(['prefix' => 'group'], function () {
 
 Route::group(['prefix' => 'survey'], function() {
     Route::post('/create', 'SurveyController@create')->middleware('lti');
+    Route::post('/{surveyId}/submission/create', 'SurveyController@createUserSubmission')->middleware('lti');
+    Route::delete('/{surveyId}/submission/delete', 'SurveyController@deleteUserSubmission')->middleware('lti');
     Route::get('/{surveyId}/user/{userId}', 'SurveyController@getUserSubmission')->middleware('lti');
     Route::get('/course/{courseId}', 'SurveyController@getCourseSurveys')->middleware('lti');
 });

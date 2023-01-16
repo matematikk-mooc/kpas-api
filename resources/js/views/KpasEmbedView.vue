@@ -3,7 +3,7 @@
   <div>
     <h1>Rolle- og gruppeverktøy</h1>
     <a :href="urlRoleMode">Sett inn Rolle- og gruppeverktøy</a>
-    
+
     <h1>Statistikk</h1>
     <a :href="urlStatisticsMode">Sett inn statistikkverktøy</a>
 
@@ -11,54 +11,51 @@
     <a :href="urlQuizMode">Sett inn quizverktøy</a>
 
     <h1>Survey</h1>
-    <section>
-      <subsection>
-        <label for="title">
-          Tittel:
-          <input class="surveyForm" type="text" maxlength="255" name="title" v-model="title"/>
+    <section role="form" class="embed-survey-form">
+      <div class="subsection">
+        <label>
+          <input type="checkbox" class="surveyForm" v-model="add_form_title"/>
+          Tittel i skjema
         </label>
-      </subsection>
-      <subsection>
+        <div v-if="add_form_title">
+          <label for="title">
+            Tittel, skjema
+            <input class="surveyForm" type="text" maxlength="255" name="title" v-model="title"/>
+          </label>
+        </div>
+      </div>
+      <div class="subsection">
         <label for="title_internal">
           Tittel i dashboard:
           <input class="surveyForm" type="text" maxlength="255" name="title_internal" v-model="title_internal"/>
         </label>
-      </subsection>
-      <subsection>
-        Standardspørsmål obligatoriske: 
-        <input type="checkbox" name="required_default" v-model="required_default"/>
-      </subsection>
+      </div>
       <br/>
       Valgfrie spørsmål (disse har spørsmålstypen: 5-punkt skala):
-      <subsection>
+      <div class="subsection">
         <label for="question1">
           Spørsmål 1:
           <input class="surveyForm" type="text" maxlength="255" name="question1text" v-model="question1.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question1name" v-model="question1.machine_name" placeholder="machine_name"/>
-          Obligatorisk:
-          <input type="checkbox" name="question1req" v-model="question1.required"/>
         </label>
-        </subsection>
-      <subsection>
+        </div>
+      <div class="subsection">
         <label for="question2">
           Spørsmål 2:
           <input class="surveyForm" type="text" maxlength="255" name="question2text" v-model="question2.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question2name" v-model="question2.machine_name" placeholder="machine_name"/>
-          Obligatorisk: 
-          <input type="checkbox" name="question2req" v-model="question2.required"/>
         </label>
-      </subsection>
-      <subsection>
+      </div>
+      <div class="subsection">
         <label for="question3">
           Spørsmål 3:
           <input class="surveyForm" type="text" maxlength="255" name="question3" v-model="question3.text" placeholder="Spørsmålstekst"/>
           <input class="surveyForm" type="text" maxlength="255" name="question3name" v-model="question3.machine_name" placeholder="machine_name"/>
-          Obligatorisk:
-          <input type="checkbox" name="question3req" v-model="question3.required"/>
         </label>
-        </subsection>
+      </div>
 
-      <div v-if="emptyTitle" class='alert alert-danger kpasAlert'>Tittel og tittel i dashboard kan ikke være tomme.</div>
+      <div v-if="emptyTitleForm" class='alert alert-danger kpasAlert'>Hvis du ikke ønsker tittel i skjema, fjern avkrysningen i checkbox.</div>
+      <div v-if="emptyTitleInternal" class='alert alert-danger kpasAlert'>Tittel i dashboard kan ikke være tom.</div>
       <div v-if="emptyQuestionText" class='alert alert-danger kpasAlert'>Spørsmål kan ikke kun ha machine_name, det må også ha en spørsmålstekst.</div>
       <div v-if="surveyCreated" class='alert alert-success kpasAlert'>Survey opprettet! Den kan nå settes inn i LTI.</div>
       <div v-if="couldNotCreateSurvey" class='alert alert-danger kpasAlert'>Kunne ikke opprette survey. Prøv igjen.</div>
@@ -75,8 +72,8 @@
     <div v-for="logo in logoList">
         <label><img class="diplomaIssuedByImage" :src="'images/' + logo"></label>
         <input type="checkbox" v-model="logoSelected" :value="logo"/>
-    </div> 
-    <a :href="urlDiplomaMode">Sett inn Diplom</a>       
+    </div>
+    <a :href="urlDiplomaMode">Sett inn Diplom</a>
   </div>
 </template>
 
@@ -85,22 +82,23 @@ import api from '../api';
 
 export default {
   name: "Diploma",
-  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'quizmode', 'surveymode'],    
+  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'quizmode', 'surveymode'],
   data() {
     return {
       logoList: [],
       logoSelected: [],
-      title: '', 
+      add_form_title: false,
+      title: '',
       title_internal: '',
-      required_default: false,
-      question1: {'text' : '', 'machine_name' : '', 'required' : false}, 
-      question2: {'text' : '', 'machine_name' : '',  'required' : false}, 
-      question3: {'text' : '', 'machine_name' : '',  'required' : false},
+      question1: {'text' : '', 'machine_name' : ''},
+      question2: {'text' : '', 'machine_name' : ''},
+      question3: {'text' : '', 'machine_name' : ''},
       survey_id: -1,
-      emptyTitle: false,
+      emptyTitleForm: false,
+      emptyTitleInternal: false,
       emptyQuestionText: false,
       surveyCreated: false,
-      couldNotCreateSurvey: false  
+      couldNotCreateSurvey: false
     };
   },
   computed: {
@@ -110,7 +108,7 @@ export default {
     urlDiplomaMode: function () {
       var url = this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.diplomamode + "&config_directory=" + this.configdirectory;
       this.logoSelected.forEach(function addLogo(logo) {
-        url += "&logo[]=" + logo; 
+        url += "&logo[]=" + logo;
       });
     return url;
     },
@@ -125,7 +123,7 @@ export default {
         return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.surveymode + "&config_directory=" + this.configdirectory + "&survey_id=" + this.survey_id;
       }
     }
-  },  
+  },
   methods: {
     async getLogoList() {
         const response = await api.get('/diploma/logolist');
@@ -134,17 +132,21 @@ export default {
     async fetchLogoList() {
     },
     async createSurvey(){
-      console.log("Title: " + this.title);
-      console.log(this.courseid)
 
-      if(this.title == "" || this.title_internal == ""){
-        this.emptyTitle = true;
+      if(this.title_internal == ""){
+        this.emptyTitleInternal = true;
         return;
       }
-      this.emptyTitle = false;
+      if (this.title == "" && this.add_form_title){
+        this.emptyTitleForm = true;
+        return;
+      }
+      this.emptyTitleInternal = false;
+      this.emptyTitleForm = false;
+
       var questions = [];
       questions.push(this.question1);
-      questions.push(this.question2); 
+      questions.push(this.question2);
       questions.push(this.question3);
 
       for(var i = 0; i < questions.length; i++){
@@ -156,21 +158,20 @@ export default {
       this.emptyQuestionText = false;
 
       const response = await api.post('survey/create', {
-        cookie: window.cookie, 
+        cookie: window.cookie,
         course_id: this.courseid,
-        title: this.title, 
+        title: this.add_form_title ? this.title : null,
         title_internal: this.title_internal,
-        required_default: this.required_default,
         questions: questions
       })
       console.log("surveyid " + response.data.result)
 
-      if(response.data.status == 200) { 
+      if(response.data.status == 200) {
         this.survey_id = response.data.result;
         this.surveyCreated = true;
       }
       else{
-        this.couldNotCreateSurvey = true; 
+        this.couldNotCreateSurvey = true;
         return;
       }
 
@@ -208,4 +209,4 @@ export default {
   a {
     font-size: large;
   }
-</style> 
+</style>

@@ -10,6 +10,7 @@ import {createApp} from "vue/dist/vue.esm-bundler";
 import './bootstrap';
 import FloatingVue from 'floating-vue';
 import vSelect from "vue-select";
+import SurveyView from "./views/SurveyView.vue";
 
 //import jqueryExports from "jquery";
 //import 'select2';
@@ -46,6 +47,7 @@ app.component('diploma-view', DiplomaView);
 app.component('no-diploma-view', NoDiplomaView);
 app.component('kpas-embed-view', KpasEmbedView);
 app.component('quiz-statistics-view', QuizStatisticsView);
+app.component('survey-view', SurveyView);
 app.component("v-select", vSelect);
 app.component("bar-chart", BarChart);
 app.mount("#app")
