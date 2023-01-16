@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 use App\Exceptions\Survey\SurveyAlreadySubmittedException;
 use App\Http\Requests\Survey\AddSurveyRequest;
 use App\Http\Requests\Survey\AddUserSubmissionRequest;
-use App\Http\Responses\ErrorResponse;
 use App\Repositories\SurveyRepository;
 use App\Http\Responses\SuccessResponse;
 use Illuminate\Http\Request;
