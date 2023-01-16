@@ -53,7 +53,7 @@ class SurveyController extends Controller
 
         $surveyRepository = new SurveyRepository();
         try {
-            $surveyRepository->createUserSubmission($request->answers, $surveyId, $userId);
+            $surveyRepository->createUserSubmission($surveyId, $userId, $request->answers);
         } catch (SurveyAlreadySubmittedException $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         } catch (\Exception $e) {

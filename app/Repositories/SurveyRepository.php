@@ -90,7 +90,7 @@ class SurveyRepository
     /**
      * @throws Exception
      */
-    public function createUserSubmission($answers, int $surveyId, int $userID): void {
+    public function createUserSubmission(int $surveyId, int $userID, $answers): void {
         // Prevent duplicate submissions
         $existingSubmission = SurveySubmission::where([
             ['survey_id', '=', $surveyId],
