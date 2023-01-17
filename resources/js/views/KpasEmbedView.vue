@@ -9,7 +9,6 @@
 
     <h1>Quiz</h1>
     <a :href="urlQuizMode">Sett inn quizverktøy</a>
-
     <h1>Survey</h1>
     <section role="form" class="embed-survey-form">
       <div class="subsection">
@@ -65,7 +64,6 @@
       <button id="createButton" @click="createSurvey">Opprett survey</button>
     </section>
     <a :href="urlSurveyMode">Sett inn survey</a>
-
     <h1>Diplom</h1>
     Velg hvilke logoer som skal vises nederst på diplomet:
 
