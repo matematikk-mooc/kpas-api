@@ -33,8 +33,8 @@
       <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
   </div>
   <section class="grouped">
-      <grouped-bar-chart :id="q45"></grouped-bar-chart>
-    </section>
+    <grouped-bar-chart :id="q45"></grouped-bar-chart>
+  </section>
 </template>
 
 <script>
@@ -217,7 +217,7 @@ export default {
   background-color: white;
   padding: 5%;
   margin: 5%;
-  width: 80%;
+  width: auto ;
 }
 .dashboard {
   background-color: #eaeaea;
@@ -225,13 +225,13 @@ export default {
 }
 .grouped {
   background-color: white;
-  width: 80%;
+  width: auto;
   margin: 5%;
   padding: 5%;
 }
 .barview {
   background-color: white;
-  width: 80%;
+  width: auto;
   margin: 5%;
   padding: 5%;
 }
