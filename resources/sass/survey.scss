@@ -1,0 +1,66 @@
+@import "variables";
+
+.survey-form {
+    font-family: $font-family-sans-serif;
+}
+
+.survey-question {
+    border-top: #9BA2AB solid 1px;
+    padding: 1rem 0;
+    margin: 1rem 0;
+}
+
+.survey-likert-scale-option {
+    margin-right: 25px;
+}
+
+.survey-likert-scale-option > input {
+    margin-right: 5px;
+}
+
+.survey-likert-scale-option > span {
+    font-family: $font-family-sans-serif;
+    font-weight: 300;
+    font-size: 1rem;
+}
+
+
+.survey-question-title {
+    font-family: $font-family-sans-serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    margin: .8rem 0;
+}
+
+
+.survey-existing-response h3 {
+    font-family: $font-family-sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: .8rem 0;
+}
+
+.survey-existing-response .question {
+    margin: 1.5rem 0;
+}
+
+.survey-existing-response .question h4 {
+    font-family: $font-family-sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: .8rem 0;
+}
+
+.survey-existing-response .question div {
+    margin: 0.5rem 0;
+}
+
+.survey-existing-response .question p {
+    white-space: pre;
+    font-size: 1rem;
+    margin: 0.5rem 0;
+}
+
+.survey-existing-response button {
+    margin: 1.5rem 0;
+}

@@ -32,7 +32,10 @@ class Kernel extends ConsoleKernel
         // want it to be triggered at another minute than :00,
         // you'll need to update the file /docker-prod/laravel-cron
         $schedule->command('fetch_from:nsr')
-            ->dailyAt('01:00')->runInBackground();
+            ->dailyAt('02:00')->runInBackground();
+        $schedule->command('fetch_from:canvas')
+            ->dailyAt('03:00')->runInBackground();
+
     }
 
     /**

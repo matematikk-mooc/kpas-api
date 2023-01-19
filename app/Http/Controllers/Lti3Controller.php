@@ -8,6 +8,7 @@ use App\Services\CanvasService;
 use App\Services\DiplomaService;
 use App\Services\StatisticsService;
 use App\Services\QuizService;
+use App\Services\SurveyService;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -66,21 +67,34 @@ class Lti3Controller extends Controller
         $roleMode = config('constants.options.ROLE_GROUP_MODE');
         $statisticsMode = config('constants.options.STATISTICS_MODE');
         $quizMode = config('constants.options.QUIZ_MODE');
+        $surveyMode = config('constants.options.SURVEY_MODE');
         $kpasMode = $request->query("kpasMode", $roleMode);
         if ($launch->is_resource_launch()) {
             logger('Resource Launch!');
         } else if ($launch->is_deep_link_launch()) {
             logger('Deep Linking Launch!');
+            $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
+
+            $settings_new = [];
+            foreach ($settings as $key => $value) {
+                Arr::set($settings_new, 'settings.custom_' . $key, $value);
+            }
+            session(['settings' => $settings_new['settings']]);
+
             return view('main.deep')
+            ->withCourseId($settings["canvas_course_id"])
+            ->withSettings($settings_new)
             ->withId($launch->get_launch_id())
             ->withConfigDirectory($config_directory)
             ->withDiplomaMode($diplomaMode)
             ->withStatisticsMode($statisticsMode)
             ->withQuizMode($quizMode)
+            ->withSurveyMode($surveyMode)
             ->withRequest($request);
         } else {
             logger('Unknown launch type');
         }        
+
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
         logger("SETTINGS:" . print_r($settings, true));
 
@@ -135,6 +149,10 @@ class Lti3Controller extends Controller
         else if($kpasMode == $quizMode) {
             $quizService = new QuizService();
             return $quizService->getQuizHtml($settings);
+        }
+        else if($kpasMode == $surveyMode){
+            $surveyService = new SurveyService();
+            return $surveyService->getSurveyBlade($settings);
         }
 
         if ($kpasUserView == 'user_management') {
