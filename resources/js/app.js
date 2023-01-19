@@ -6,6 +6,7 @@ import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
 import QuizStatisticsView from "./views/QuizStatisticsView";
 import BarChart from "./components/charts/BarChart";
+import GroupedBarChart from "./components/charts/GroupedBarChart"
 import OpenAnswer from "./components/OpenAnswer";
 import {createApp} from "vue/dist/vue.esm-bundler";
 import './bootstrap';
@@ -52,5 +53,6 @@ app.component('survey-view', SurveyView);
 app.component("v-select", vSelect);
 app.component("bar-chart", BarChart);
 app.component("open-answer", OpenAnswer);
+app.component("grouped-bar-chart", GroupedBarChart)
 
 app.mount("#app")

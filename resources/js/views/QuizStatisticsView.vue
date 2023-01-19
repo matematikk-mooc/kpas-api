@@ -27,11 +27,14 @@
     </section>
   </div>
   <div v-else-if="!groupMember && ready"> 
-    <h2>Du må være medlem av grupper for å få tilgang til Dashboard</h2>
+    <h2>Du må være medlem av en gruppe for å få tilgang til Dashboard</h2>
   </div>
   <div v-else>
       <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
   </div>
+  <section class="grouped">
+      <grouped-bar-chart :id="q45"></grouped-bar-chart>
+    </section>
 </template>
 
 <script>
@@ -149,7 +152,7 @@ export default {
           groupId = this.userGroups.Skole.id
           this.current_group_name = this.userGroups.Barnehage.name
           this.groupMember = true
-          
+
         }else {
           this.groupMember = false; 
           return;          
@@ -219,6 +222,12 @@ export default {
 .dashboard {
   background-color: #eaeaea;
   align-content: center;
+}
+.grouped {
+  background-color: white;
+  width: 80%;
+  margin: 5%;
+  padding: 5%;
 }
 .barview {
   background-color: white;
