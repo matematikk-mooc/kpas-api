@@ -41,7 +41,6 @@ class FetchCanvasData extends Command
         logger('Fetching data from Canvas: fetch courses');
         $coursesFromCanvas = $canvasService->getAllCourses();
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         CanvasCourse::truncate();
         foreach ($coursesFromCanvas as $courseRaw) {
             CanvasCourse::create(['canvas_id' => $courseRaw->id, 'name' => $courseRaw->name]);
@@ -66,7 +65,6 @@ class FetchCanvasData extends Command
                 }
             }
         }
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
         logger('Fetching data from Canvas: end');
 
         return Command::SUCCESS;
