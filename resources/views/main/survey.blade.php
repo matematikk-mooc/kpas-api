@@ -4,9 +4,9 @@
 @section('content')
     @php
 
-        function displayError($error) {
+        function surveyConfigurationError() {
             echo '<div style="font-size: 20px; font-weight: bold; color: red;" role="alert">';
-            echo $error;
+            echo "Spørreundersøkelsen er satt opp feil. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.";
             echo '</div>';
         }
         $survey_id = intval($_REQUEST["survey_id"]);
@@ -19,18 +19,18 @@
 
         if ($survey == null) {
             Bugsnag::notifyError('Survey', 'Survey with ID ' . $survey_id . ', loaded from course with ID ' . $course_id . ' is not found in database.');
-           displayError("Spørreundersøkelsen er satt opp feil. Ta kontakt med administrator.");
+           surveyConfigurationError();
             return;
         }
         if (intval($survey->course_id) !== $course_id) {
             Bugsnag::notifyError('Survey', 'Survey with ID ' . $survey_id . ' is loaded from course with ID ' .
                                     $course_id . ', but belongs to course with ID ' . $survey->course_id);
-           displayError("Spørreundersøkelsen er satt opp feil. Ta kontakt med administrator.");
+           surveyConfigurationError();
             return;
         }
         if (count($survey->questions) == 0) {
             Bugsnag::notifyError('Survey', 'Survey with ID ' . $survey_id . ' has no questions.');
-            displayError("Spørreundersøkelsen er satt opp feil. Ta kontakt med administrator.");
+            surveyConfigurationError();
             return;
         }
 
