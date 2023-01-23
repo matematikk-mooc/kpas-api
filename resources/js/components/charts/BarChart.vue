@@ -30,7 +30,7 @@ export default {
 
   methods: {
     mapData(){
-      this.dataArray = Object.keys(this.data.submission_data).map((key) => Object({"option": key.split("_").pop() == 'none'? "Ikke relevant" : key.split("_").pop(), "count":  parseInt(this.data.submission_data[key])}));
+      this.dataArray = Object.keys(this.data.submission_data).map((key) => Object({"option": key.split("_").pop() == 'none'? "Vet ikke" : key.split("_").pop(), "count":  parseInt(this.data.submission_data[key])}));
 
     },
     createChart() {

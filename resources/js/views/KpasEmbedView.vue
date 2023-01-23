@@ -7,8 +7,8 @@
     <h1>Statistikk</h1>
     <a :href="urlStatisticsMode">Sett inn statistikkverktøy</a>
 
-    <h1>Quiz</h1>
-    <a :href="urlQuizMode">Sett inn quizverktøy</a>
+    <h1>Dashboard</h1>
+    <a :href="urlDashboardMode">Sett inn dashboard</a>
 
     <h1>Survey</h1>
     <section role="form" class="embed-survey-form">
@@ -82,7 +82,7 @@ import api from '../api';
 
 export default {
   name: "Diploma",
-  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'quizmode', 'surveymode'],
+  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'dashboardmode', 'surveymode'],
   data() {
     return {
       logoList: [],
@@ -115,8 +115,8 @@ export default {
     urlStatisticsMode: function () {
       return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.statisticsmode + "&config_directory=" + this.configdirectory;
     },
-    urlQuizMode: function () {
-      return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.quizmode + "&config_directory=" + this.configdirectory;
+    urlDashboardMode: function () {
+      return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.dashboardmode + "&config_directory=" + this.configdirectory;
     },
     urlSurveyMode: function () {
       if (this.survey_id != -1){

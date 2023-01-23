@@ -25,4 +25,4 @@ Route::get('/minegrupper', 'MainController@myGroups')->name('main.mygroups');
 Route::post('/worker', 'WorkerController@store')->name('worker.store');
 Route::get('/worker', 'WorkerController@index')->name('worker.index');
 
-Route::get('/quiz', 'MainController@quiz')->name('main.quiz');
+Route::get('/dashboard', 'MainController@dashboard')->name('main.dashboard');

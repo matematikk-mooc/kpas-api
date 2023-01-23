@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\DataportenService;
 use App\Services\OAuth2Service;
-use App\Services\QuizService;
+use App\Services\DashboardService;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Illuminate\Http\Request;
 
@@ -143,10 +143,10 @@ class MainController extends Controller
         ];
     }
 
-    public function quiz(Request $request)
+    public function dashboard(Request $request)
     {
-        $quizService= new QuizService();
-        $quizData= $quizService->getQuizHtml($settings = NULL);
-        return view('main.quiz')->withQuizData($quizData);
+        $dashboardService= new DashboardService();
+        $dashboardData= $dashboardService->getDashboardHtml($settings = NULL);
+        return view('main.dashboard')->withDashboardData($dashboardData);
     }
 }

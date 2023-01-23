@@ -11,61 +11,38 @@
 <script>
 import { scaleLinear, scaleBand } from "d3-scale";
 import { max } from "d3-array";
-import { select } from "d3-selection";
+import { select, selectAll } from "d3-selection";
 import {axisBottom, axisLeft, tickSizeOuter} from "d3-axis";
-import * as d3 from "d3";
 
 export default {
 	name: 'BarChart',
 	props: {
 		id: "",
+		data: [],
+		likert5ops: {}
 	},
 	data(){
 		return {
-			colors: {"læring" : "#6d889d", "relevans" : "#7dbf9d", "praksisendring" : "#eed0c3"}
+			colors: {
+				"læring" : "#6d889d",
+				"relevans" : "#7dbf9d",
+				"praksisendring" : "#eed0c3"
+			},
+			chartData: [],
+			likert5ops: this.likert5ops,
+			maxValue: 0
 		}
 	},
 	mounted() {
 		this.createChart();
+		
 	},
 	
 	methods: {
-		
 		createChart() {
-
-			let submission_data = [
-				{
-					"question":"læring",
-					"Value1":19,
-					"Value2":7,
-					"Value3":4, 
-					"Value4":3, 
-					"Value5":9,
-					"Ikke relevant":2
-				},
-				{
-					"question":"relevans",
-					"Value1":1,
-					"Value2":3,
-					"Value3":4, 
-					"Value4":3, 
-					"Value5":19,
-					"Ikke relevant":2
-
-				},
-				{
-					"question":"praksisendring", 
-					"Value1":5,
-					"Value2":0,
-					"Value3":4, 
-					"Value4":3, 
-					"Value5":20,
-					"Ikke relevant":2
-
-				}
-			];
+			this.mapData(); 
 			
-    	let margin = {top: 20, right: 25, bottom: 80, left: 25},
+    	let margin = {top: 20, right: 25, bottom: 160, left: 25},
     	width = 800 - margin.left - margin.right,
   		height = 600 - margin.top - margin.bottom
 
@@ -77,14 +54,11 @@ export default {
       let g = svg.append("g")
      	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			let subCategories = Object.keys(submission_data[0]).slice(1);
+			let questions = Object.keys(this.chartData[0]).slice(1);
 
-			let maxValue= max(submission_data, function(d){
-    			return (Math.max(d.Value1, d.Value2, d.Value3, d.Value4, d.Value5, d["Ikke relevant"]))});
-				
 			//range and domain
     	let y = scaleLinear()
-			.domain([0, maxValue+5])
+			.domain([0, this.maxValue+1])
 			.range([height, 0]);
 			
 			let x0 = scaleBand()
@@ -96,21 +70,19 @@ export default {
 			.paddingOuter(0.30)
 			.paddingInner(0.15); 
 
-			
-			//bar colors
-			let z = ["#6d889d", "#7dbf9d", "#eed0c3"];
-			
-			x0.domain(submission_data.map( d =>  d.question ));
-			x1.domain(subCategories).rangeRound([0, x0.bandwidth()])
+			const yAxis = axisLeft(y).ticks(7);
+
+			x0.domain(this.chartData.map( d =>  d.question ));
+			x1.domain(questions).rangeRound([0, x0.bandwidth()])
 			let self = this;
 			// Add bar chart
 			var selection = g.selectAll("g")
-			.data(submission_data)
+			.data(this.chartData)
 			.enter().append("g")
 			.attr("transform", d => "translate(" + x0(d.question) + ",0)" )
 
 			selection.selectAll("rect")
-			.data(function(d) { return subCategories.map(function(key) { return {key: key, value: d[key], color: self.colors[d.question]}; }); })
+			.data(function(d) { return questions.map(function(key) { return {key: key, value: d[key], color: self.colors[d.question]}; }); })
 			.enter().append("rect")
 			.attr("x", d => x1(d.key) )
 			.attr("width", x1.bandwidth())
@@ -120,7 +92,7 @@ export default {
 
 			//Value on top of bars
 			selection.selectAll("text")
-			.data(function(d) { return subCategories.map(function(key) { return {key: key, value: d[key]}; }); })
+			.data(function(d) { return questions.map(function(key) { return {key: key, value: d[key]}; }); })
 			.enter().append("text")
 			.attr("x", d => x1(d.key) + x1.bandwidth()/2 )
 			.attr("y", d => y(d.value) - 10)
@@ -140,10 +112,9 @@ export default {
       .style("text-anchor", "start");
 			
 
-		
 			//y-axis
 			g.append('g')
-			.call(axisLeft(y))
+			.call(yAxis);
 
 			//x-axis continious line
 			g.append("line")
@@ -153,8 +124,36 @@ export default {
   		.attr("x2", width)
 			.attr("stroke", "black");
 			
+		},
+		mapData(){
+			let cdata = [];
+			let keys = Object.keys(this.colors)
+			for(let i = 0; i < this.data.length; i++){
+				let object = Object.assign({}, {"question" : keys[i]}, this.data[i].submission_data);
+				cdata.push(object)
+			}
+			this.maxValue= max(cdata, function(d){
+    		return (Math.max(
+					d.likert_scale_5pt_1,
+					d.likert_scale_5pt_2,
+					d.likert_scale_5pt_3,
+					d.likert_scale_5pt_4,
+					d.likert_scale_5pt_5,
+					d.likert_scale_5pt_none)
+				)
+			});
+
+			const renameKeys = o => Object.assign(...Object.keys(o).map(k => ({ [this.likert5ops[k] || k]: o[k] })));
+			this.chartData = cdata.map(renameKeys);
 		}
-	}
+
+	},
+	watch: {
+      data(){
+		selectAll("svg").remove()
+        this.createChart()
+      }
+	}	
 }
 </script>
 
@@ -170,7 +169,7 @@ section {
 	text-align: center;
 }
 b {
-	font-size: 10px;
+	font-size: 14px;
 	vertical-align: middle;
 	margin: auto;
 }

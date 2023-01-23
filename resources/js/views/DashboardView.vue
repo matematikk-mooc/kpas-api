@@ -14,8 +14,12 @@
     <h1 class="title">{{view_module.title_internal}}</h1>
     <h3>Resultater fra gruppe: {{ current_group_name }}</h3> 
 
-    <section class="barview">
-      <div v-for="(question, i) in view_module.questions" :key="i">
+    <section class="grouped" >
+      <grouped-bar-chart id="view_module.course_id" :data="view_module.questions.slice(0,3)" :likert5ops="this.likert5ops"></grouped-bar-chart>
+    </section>
+
+    <section class="barview" v-if="view_module.questions.length > 4">
+      <div v-for="(question, i) in view_module.questions.slice(3)" :key="i">
         <bar-chart v-if="question.question_type == 'likert_scale_5pt'" :id="'q' + i" :data="question" :svgWidth=600 :svgHeight=400></bar-chart>
       </div>
     </section>
@@ -32,24 +36,22 @@
   <div v-else>
       <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
   </div>
-  <section class="grouped">
-    <grouped-bar-chart :id="q45"></grouped-bar-chart>
-  </section>
+
 </template>
 
 <script>
 import api from "../api";
 export default {
-  name: "QuizStatisticsView",
+  name: "DashboardView",
   data() {
     return {
+      likert5ops: this.likert5ops, 
       connectedToParent: false,
       selectedGroup: null,
       ready: false,
       view_module: null,
       survey_data : null,
       modules: [],
-      groups: ["gruppe 1", "gruppe 2", "gruppe 3"],
       userGroups: [],
       usersGroups: [], 
       categories: null, 
@@ -61,7 +63,8 @@ export default {
     };
   },
   props: {
-    settings: {}
+    settings: {},
+    likert5ops: {}
   },
   methods: {
     iframeresize() {
@@ -109,7 +112,7 @@ export default {
         if(this.categories && this.usersGroups) {
           console.log("got categories and usergroups")
           await Promise.all([this.userGroups = this.categorizeGroups(this.usersGroups, this.categories)]);
-          this.iframeresize();
+          //this.iframeresize();
         }
       },
       categorizeGroups(groups, categories) {
@@ -167,7 +170,7 @@ export default {
         this.updateModule(this.modules[0]);
       } catch(e)
       {
-        console.log("Could not get quiz data.", e);
+        console.log("Could not get survey data.", e);
       }
     },
   },
@@ -175,10 +178,11 @@ export default {
     let self = this;
     self.course_id = self.settings.custom_canvas_course_id
     console.log(self.settings)
+    console.log(self.likert5ops)
     const mql = window.matchMedia('(max-width: 500px)');
-    // mql.onchange = (e) => { 
-    //   self.iframeresize();
-    // }
+    mql.onchange = (e) => { 
+      self.iframeresize();
+    }
     window.addEventListener('message', function(evt) {
       try {
         let msg = JSON.parse(evt.data);
@@ -202,12 +206,12 @@ export default {
     }, false);
     self.connectToParent();
     await Promise.all([self.getGroupCategories()]);
-    this.iframeresize();
+    //this.iframeresize();
     self.getSurveyData()
     this.ready = true
   },
   mounted() {
-    this.iframeresize();
+    //this.iframeresize();
   }
 };
 </script> 

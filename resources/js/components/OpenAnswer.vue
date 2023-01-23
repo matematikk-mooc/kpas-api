@@ -1,6 +1,6 @@
 
 <template>
-    <h1 v-html="this.questionText"></h1>
+    <h2 v-html="this.questionText"></h2>
    <div v-for="(openAnswer, i) in openAnswers">
       <div class="note">
         <p class="date"> {{formatdate(openAnswer.submission.submitted)}} 
