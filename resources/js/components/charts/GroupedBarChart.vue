@@ -42,7 +42,7 @@ export default {
 		createChart() {
 			this.mapData(); 
 			
-    	let margin = {top: 20, right: 25, bottom: 160, left: 25},
+    	let margin = {top: 20, right: 25, bottom: 125, left: 25},
     	width = 800 - margin.left - margin.right,
   		height = 600 - margin.top - margin.bottom
 
@@ -96,7 +96,7 @@ export default {
 			.enter().append("text")
 			.attr("x", d => x1(d.key) + x1.bandwidth()/2 )
 			.attr("y", d => y(d.value) - 10)
-			.text(d => d.value)
+			.text(d => {if (d.value != 0) { return d.value } else { return d.value}})
 			
 			//add the x-axis
 			selection.append("g")
