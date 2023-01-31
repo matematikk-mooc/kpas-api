@@ -34,6 +34,7 @@ Route::post('user_activity', 'EnrollmentActivityController@store')->middleware('
 Route::group(['prefix' => 'group'], function () {
     Route::get('/user', 'GroupController@index')->middleware('lti');
     Route::post('/user', 'GroupController@store')->middleware('auth.dataporten');
+    Route::get('/all', 'GroupController@getStoredGroups');
     Route::get('/{groupId}/category', 'GroupCategoryController@index');
     Route::post('/user/bulk', 'GroupController@bulkStore')->middleware('lti');
 });
