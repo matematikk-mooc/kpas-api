@@ -6,10 +6,8 @@
 
     <h1>Statistikk</h1>
     <a :href="urlStatisticsMode">Sett inn statistikkverktøy</a>
-
     <h1>Dashboard</h1>
     <a :href="urlDashboardMode">Sett inn dashboard</a>
-
     <h1>Survey</h1>
     <section role="form" class="embed-survey-form">
       <div class="subsection">
@@ -65,7 +63,6 @@
       <button id="createButton" @click="createSurvey">Opprett survey</button>
     </section>
     <a :href="urlSurveyMode">Sett inn survey</a>
-
     <h1>Diplom</h1>
     Velg hvilke logoer som skal vises nederst på diplomet:
 
