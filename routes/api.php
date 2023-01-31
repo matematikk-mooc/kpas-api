@@ -82,8 +82,7 @@ Route::prefix('user')->group(function () {
     });
 });
 
-Route::get('course/{courseId}/quizzes', 'QuizController@quizzesStatistics');
-Route::get('course/{courseId}/quiz/{quizId}', 'QuizController@quizStatistics');
+
 Route::get('course/{courseId}/pages', 'MatomoController@getMatomoData');
 Route::get('user/{userId}/history', 'HistoryController@getUserHistoryData');
 Route::get('user/{userId}/context/{contextId}/history', 'HistoryController@getUserContextHistoryData');

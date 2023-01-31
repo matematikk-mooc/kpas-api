@@ -4,7 +4,7 @@ return [
         'ROLE_GROUP_MODE' => 0,
         'DIPLOMA_MODE' => 1,
         'STATISTICS_MODE' => 2,
-        'QUIZ_MODE' => 3,
+        'DASHBOARD_MODE' => 3,
         'SURVEY_MODE' => 4, 
     ]
 ];
