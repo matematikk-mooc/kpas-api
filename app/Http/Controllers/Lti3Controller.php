@@ -7,6 +7,7 @@ use App\Ltiv3\LTI3_Database;
 use App\Services\CanvasService;
 use App\Services\DiplomaService;
 use App\Services\StatisticsService;
+
 use App\Services\DashboardService;
 use App\Services\SurveyService;
 use GuzzleHttp\Client;
@@ -149,6 +150,10 @@ class Lti3Controller extends Controller
         else if($kpasMode == $dashboardMode) {
             $dashboardService = new DashboardService();
             return $dashboardService->getDashboardHtml($settings);
+        }
+        else if($kpasMode == $surveyMode){
+            $surveyService = new SurveyService();
+            return $surveyService->getSurveyBlade($settings);
         }
         else if($kpasMode == $surveyMode){
             $surveyService = new SurveyService();

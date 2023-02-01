@@ -3,7 +3,6 @@
 
 @section('content')
     @php
-
         function surveyConfigurationError() {
             echo '<div style="font-size: 20px; font-weight: bold; color: red;" role="alert">';
             echo "Spørreundersøkelsen er satt opp feil. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.";
