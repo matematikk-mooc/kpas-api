@@ -232,6 +232,7 @@ export default {
 }
 .selector {
   width: 40%;
+  background-color: white;
 }
 .title {
   padding-top: .5em;
