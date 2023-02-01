@@ -7,7 +7,8 @@ use App\Ltiv3\LTI3_Database;
 use App\Services\CanvasService;
 use App\Services\DiplomaService;
 use App\Services\StatisticsService;
-use App\Services\QuizService;
+
+use App\Services\DashboardService;
 use App\Services\SurveyService;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
@@ -66,7 +67,7 @@ class Lti3Controller extends Controller
         $diplomaMode = config('constants.options.DIPLOMA_MODE');
         $roleMode = config('constants.options.ROLE_GROUP_MODE');
         $statisticsMode = config('constants.options.STATISTICS_MODE');
-        $quizMode = config('constants.options.QUIZ_MODE');
+        $dashboardMode = config('constants.options.DASHBOARD_MODE');
         $surveyMode = config('constants.options.SURVEY_MODE');
         $kpasMode = $request->query("kpasMode", $roleMode);
         if ($launch->is_resource_launch()) {
@@ -88,7 +89,7 @@ class Lti3Controller extends Controller
             ->withConfigDirectory($config_directory)
             ->withDiplomaMode($diplomaMode)
             ->withStatisticsMode($statisticsMode)
-            ->withQuizMode($quizMode)
+            ->withDashboardMode($dashboardMode)
             ->withSurveyMode($surveyMode)
             ->withRequest($request);
         } else {
@@ -146,9 +147,13 @@ class Lti3Controller extends Controller
             $statisticsService = new StatisticsService();
             return $statisticsService->getStatisticsHtml($settings);
         }
-        else if($kpasMode == $quizMode) {
-            $quizService = new QuizService();
-            return $quizService->getQuizHtml($settings);
+        else if($kpasMode == $dashboardMode) {
+            $dashboardService = new DashboardService();
+            return $dashboardService->getDashboardHtml($settings);
+        }
+        else if($kpasMode == $surveyMode){
+            $surveyService = new SurveyService();
+            return $surveyService->getSurveyBlade($settings);
         }
         else if($kpasMode == $surveyMode){
             $surveyService = new SurveyService();

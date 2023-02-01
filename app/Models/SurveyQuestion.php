@@ -35,10 +35,10 @@ class SurveyQuestion extends Model
         return [
             "likert_scale_5pt_1" => "I svært liten grad",
             "likert_scale_5pt_2" => "I liten grad",
-            "likert_scale_5pt_3" => "I hverken stor eller liten grad",
+            "likert_scale_5pt_3" => "I verken stor eller liten grad",
             "likert_scale_5pt_4" => "I stor grad",
             "likert_scale_5pt_5" => "I svært stor grad",
-            "likert_scale_5pt_none" => "Vet ikke / Ønsker ikke svare"
+            "likert_scale_5pt_none" => "Ønsker ikke svare"
         ];
     }
 

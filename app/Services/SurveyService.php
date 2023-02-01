@@ -6,7 +6,7 @@ class SurveyService
 {
 
     public function getSurveyBlade($settings) {
-        logger("getQuizData");
+        logger("getSurveyData");
 
         return view('main.survey')->withSettings($settings);
     }
