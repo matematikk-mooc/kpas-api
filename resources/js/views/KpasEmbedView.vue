@@ -8,6 +8,8 @@
     <a :href="urlStatisticsMode">Sett inn statistikkverktøy</a>
     <h1>Dashboard</h1>
     <a :href="urlDashboardMode">Sett inn dashboard</a>
+    <h1>Admin/Udir dashboard</h1>
+    <a :href="urlAdminDashboardMode">Sett inn admin/Udir dashboard</a>
     <h1>Survey</h1>
     <section role="form" class="embed-survey-form">
       <div class="subsection">
@@ -79,7 +81,7 @@ import api from '../api';
 
 export default {
   name: "Diploma",
-  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'dashboardmode', 'surveymode'],
+  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'dashboardmode', 'surveymode', 'admindashboardmode'],
   data() {
     return {
       logoList: [],
@@ -119,7 +121,11 @@ export default {
       if (this.survey_id != -1){
         return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.surveymode + "&config_directory=" + this.configdirectory + "&survey_id=" + this.survey_id;
       }
+    },
+    urlAdminDashboardMode: function () {
+      return this.appurl + "/deep?launch_id=" + this.launchid + "&kpasMode=" + this.admindashboardmode + "&config_directory=" + this.configdirectory;
     }
+
   },
   methods: {
     async getLogoList() {

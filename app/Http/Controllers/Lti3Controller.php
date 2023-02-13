@@ -7,7 +7,7 @@ use App\Ltiv3\LTI3_Database;
 use App\Services\CanvasService;
 use App\Services\DiplomaService;
 use App\Services\StatisticsService;
-
+use App\Services\AdminDashboardService;
 use App\Services\DashboardService;
 use App\Services\SurveyService;
 use GuzzleHttp\Client;
@@ -69,6 +69,7 @@ class Lti3Controller extends Controller
         $statisticsMode = config('constants.options.STATISTICS_MODE');
         $dashboardMode = config('constants.options.DASHBOARD_MODE');
         $surveyMode = config('constants.options.SURVEY_MODE');
+        $adminDashboardMode = config('constants.options.ADMIN_DASHBOARD_MODE');
         $kpasMode = $request->query("kpasMode", $roleMode);
         if ($launch->is_resource_launch()) {
             logger('Resource Launch!');
@@ -90,6 +91,7 @@ class Lti3Controller extends Controller
             ->withDiplomaMode($diplomaMode)
             ->withStatisticsMode($statisticsMode)
             ->withDashboardMode($dashboardMode)
+            ->withAdminDashboardMode($adminDashboardMode)
             ->withSurveyMode($surveyMode)
             ->withRequest($request);
         } else {
@@ -155,9 +157,9 @@ class Lti3Controller extends Controller
             $surveyService = new SurveyService();
             return $surveyService->getSurveyBlade($settings);
         }
-        else if($kpasMode == $surveyMode){
-            $surveyService = new SurveyService();
-            return $surveyService->getSurveyBlade($settings);
+        else if($kpasMode == $adminDashboardMode){
+            $adminDashboardService = new AdminDashboardService();
+            return $adminDashboardService->getAdminDashboardBlade($settings);
         }
 
         if ($kpasUserView == 'user_management') {

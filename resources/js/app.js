@@ -5,6 +5,7 @@ import DiplomaView from "./views/DiplomaView";
 import NoDiplomaView from "./views/NoDiplomaView";
 import KpasEmbedView from "./views/KpasEmbedView";
 import DashboardView from "./views/DashboardView";
+import AdminDashboardView from "./views/AdminDashboardView";
 import BarChart from "./components/charts/BarChart";
 import GroupedBarChart from "./components/charts/GroupedBarChart"
 import OpenAnswer from "./components/OpenAnswer";
@@ -49,10 +50,11 @@ app.component('diploma-view', DiplomaView);
 app.component('no-diploma-view', NoDiplomaView);
 app.component('kpas-embed-view', KpasEmbedView);
 app.component('dashboard-view', DashboardView);
+app.component('admin-dashboard-view', AdminDashboardView);
 app.component('survey-view', SurveyView);
 app.component("v-select", vSelect);
 app.component("bar-chart", BarChart);
 app.component("open-answer", OpenAnswer);
-app.component("grouped-bar-chart", GroupedBarChart)
+app.component("grouped-bar-chart", GroupedBarChart);
 
 app.mount("#app")
