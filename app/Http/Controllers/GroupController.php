@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dto\GroupDto;
+use App\Models\Group;
 use App\Http\Requests\Group\AddUserRequest;
 use App\Http\Requests\Group\AddUserToGroupsRequest;
 use App\Http\Responses\SuccessResponse;
@@ -207,5 +208,9 @@ class GroupController extends Controller
     protected function getFromSession(string $key)
     {
         return Arr::get(session('settings'), $key);
+    }
+
+    public function getStoredGroups(){
+        return Group::all(); 
     }
 }
