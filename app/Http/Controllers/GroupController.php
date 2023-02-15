@@ -60,7 +60,6 @@ class GroupController extends Controller
     public function bulkStore(AddUserToGroupsRequest $request): SuccessResponse
     {
         logger("bulkStore: " . print_r(session('settings'),true));
-
         $groups = new Collection();
 
         $county = new GroupDto($request->input('county'));
@@ -179,6 +178,7 @@ class GroupController extends Controller
             $nationalFacultyArray = array("Name"=>$faculty, "Description"=>$nationalFacultyDescription);
             $nationalFaculty = new GroupDto($nationalFacultyArray);
             $nationalFaculty->setCategoryId($nationalCategoryId);
+            $nationalFaculty->setCourseId($courseId);
             return [$nationalFaculty, $countyFaculty, $communityFaculty];
         }
 

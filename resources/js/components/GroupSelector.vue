@@ -122,19 +122,27 @@
       getCountyGroup() {
         return {
           name: this.chosenCounty.Navn,
-          description: `courseId:${this.courseId}:county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`
+          description: `courseId:${this.courseId}:county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`,
+          courseId: `${this.courseId}`,
+          countyId: `${this.chosenCounty.Fylkesnr}`,
         };
       },
       getCommunityGroup() {
         return {
           name: `${this.chosenCommunity.Navn}`,
           description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
+          courseId: `${this.courseId}`,
+          countyId: `${this.chosenCounty.Fylkesnr}`,
+          communityId: `${this.chosenCommunity.Kommunenr}`,
         };
       },
       getInstitutionGroup() {
         return {
           name: `${this.chosenInstitution.FulltNavn}`,
           description: `courseId:${this.courseId}:${this.institutionType}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
+          courseId: `${this.courseId}`,
+          countyId: `${this.chosenCounty.Fylkesnr}`,
+          communityId: `${this.chosenCommunity.Kommunenr}`,
         };
       },
       async assignToGroups() {
