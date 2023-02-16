@@ -208,4 +208,12 @@ class GroupController extends Controller
     {
         return Arr::get(session('settings'), $key);
     }
+
+    public function getStudentCount(string $groupId) {
+        try {
+            return new SuccessResponse($this->canvasRepository->getTotalStudentsInGroup($groupId)['antallBrukere']);
+        } catch (Exeption $e) {
+            return new ErrorResponse($e->getMessage());
+        }
+    }
 }

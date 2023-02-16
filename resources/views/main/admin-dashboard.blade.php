@@ -7,7 +7,7 @@
     @endphp
 
     <admin-dashboard-view :settings="{{ json_encode($settings) }}"
-                 :likert5ops="{{ json_encode($likertScale5ptOptions) }}">
+                          :likert5ops="{{ json_encode($likertScale5ptOptions) }}">
     </admin-dashboard-view>
 
 @endsection

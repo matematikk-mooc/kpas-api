@@ -36,6 +36,7 @@ Route::group(['prefix' => 'group'], function () {
     Route::post('/user', 'GroupController@store')->middleware('auth.dataporten');
     Route::get('/{groupId}/category', 'GroupCategoryController@index');
     Route::post('/user/bulk', 'GroupController@bulkStore')->middleware('lti');
+    Route::get('/{groupId}/count', 'GroupController@getStudentCount');
 });
 
 Route::group(['prefix' => 'survey'], function() {
@@ -89,3 +90,4 @@ Route::get('user/{userId}/context/{contextId}/history', 'HistoryController@getUs
 Route::get('context/{contextId}/history', 'HistoryController@getContextHistoryData');
 Route::get('statistics/{courseId}', 'GroupEnrollmentController@getGroupEnrollmentCount');
 Route::get('course/{courseId}/modules', 'ModuleController@moduleStatistics');
+Route::get('course/{courseId}/count', 'CourseController@getStudentCount');
