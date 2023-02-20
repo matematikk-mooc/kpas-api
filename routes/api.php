@@ -39,6 +39,11 @@ Route::group(['prefix' => 'group'], function () {
     Route::post('/user/bulk', 'GroupController@bulkStore')->middleware('lti');
 });
 
+Route::group(['prefix' => 'course'], function () {
+    Route::get('/{courseId}/groups', 'GroupController@getCourseGroups')->middleware('lti');
+    Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@geCourseGroupsByCategory')->middleware('lti');
+});
+
 Route::group(['prefix' => 'survey'], function() {
     Route::post('/create', 'SurveyController@create')->middleware('lti');
     Route::post('/{surveyId}/submission/create', 'SurveyController@createUserSubmission')->middleware('lti');
