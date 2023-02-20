@@ -12,6 +12,8 @@ use App\Repositories\CanvasDbRepository;
 use App\Services\DataportenService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
+
 
 class GroupController extends Controller
 {
@@ -210,7 +212,35 @@ class GroupController extends Controller
         return Arr::get(session('settings'), $key);
     }
 
-    public function getStoredGroups(){
+    public function getStoredGroups()
+    {
         return Group::all(); 
+    }
+
+    public function getCourseGroups($courseId)
+    {
+        return Group::where('course_id', $courseId)->get();
+    }
+
+    public function geCourseGroupsByCategory(Request $request, $courseId, $categoryId)
+    {
+        if($request->get('county_id')){
+            return Group::where([
+                ['course_id', $courseId],
+                ['category_id', $categoryId],
+                ['county_id', $request->get('county_id')]
+            ])->get();
+        }
+        elseif($request->get('community_id')) {
+            return Group::where([
+                ['course_id', $courseId],
+                ['category_id', $categoryId],
+                ['community_id', $request->get('community_id')]
+            ])->get();
+        }
+        return Group::where([
+            ['course_id', $courseId],
+            ['category_id', $categoryId]
+        ])->get();
     }
 }

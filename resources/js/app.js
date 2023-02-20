@@ -8,6 +8,7 @@ import DashboardView from "./views/DashboardView";
 import BarChart from "./components/charts/BarChart";
 import GroupedBarChart from "./components/charts/GroupedBarChart"
 import OpenAnswer from "./components/OpenAnswer";
+import DashboardGroupSelect from "./components/DashboardGroupSelect";
 import {createApp} from "vue/dist/vue.esm-bundler";
 import './bootstrap';
 import FloatingVue from 'floating-vue';
@@ -53,6 +54,7 @@ app.component('survey-view', SurveyView);
 app.component("v-select", vSelect);
 app.component("bar-chart", BarChart);
 app.component("open-answer", OpenAnswer);
-app.component("grouped-bar-chart", GroupedBarChart)
+app.component("grouped-bar-chart", GroupedBarChart);
+app.component("dashboard-select", DashboardGroupSelect);
 
 app.mount("#app")
