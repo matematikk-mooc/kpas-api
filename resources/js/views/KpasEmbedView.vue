@@ -90,6 +90,7 @@ import api from '../api';
 export default {
   name: "Diploma",
   props: ['courseid', 'coursemodules', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'dashboardmode', 'surveymode'],
+
   data() {
     return {
       logoList: [],

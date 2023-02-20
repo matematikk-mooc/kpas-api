@@ -97,6 +97,7 @@ export default {
     },
   
     updateModule(value){
+
       if(value == null){
         this.view_module = this.survey_data[0];
         return;
