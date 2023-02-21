@@ -1,7 +1,26 @@
+@php use App\Services\CanvasService; use App\Repositories\CanvasRepository; use GuzzleHttp\Client; @endphp
 @extends('layouts.app')
 
 @section('content')
-<kpas-embed-view courseid="{{$courseId}}" appurl="{{ config('app.url') }}" diplomamode="{{$diplomaMode}}" statisticsmode="{{$statisticsMode}}" dashboardmode="{{$dashboardMode}}" surveyMode="{{$surveyMode}}" admindashboardmode="{{$adminDashboardMode}}" launchid="{{$id}}" configdirectory="{{$configDirectory}}">
+
+    @php
+        $canvasService = new CanvasService(new Client());
+        $canvasRepository = new CanvasRepository($canvasService);
+        $courseModules = $canvasRepository->getCourseModules($courseId);
+    @endphp
+
+<kpas-embed-view    
+    courseid="{{$courseId}}" 
+    :coursemodules="{{ json_encode($courseModules) }}" 
+    appurl="{{ config('app.url') }}" 
+    diplomamode="{{$diplomaMode}}" 
+    statisticsmode="{{$statisticsMode}}" 
+    dashboardmode="{{$dashboardMode}}" 
+    surveyMode="{{$surveyMode}}"
+    admindashboardmode="{{$adminDashboardMode}}" 
+    launchid="{{$id}}" 
+    configdirectory="{{$configDirectory}}">
+
 </kpas-embed-view>
 
 

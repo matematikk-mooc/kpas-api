@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dto\GroupDto;
+use App\Models\Group;
 use App\Http\Requests\Group\AddUserRequest;
 use App\Http\Requests\Group\AddUserToGroupsRequest;
 use App\Http\Responses\SuccessResponse;
@@ -11,8 +12,6 @@ use App\Repositories\CanvasDbRepository;
 use App\Services\DataportenService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Contracts\Support\Responsable;
-
 
 class GroupController extends Controller
 {
@@ -61,7 +60,6 @@ class GroupController extends Controller
     public function bulkStore(AddUserToGroupsRequest $request): SuccessResponse
     {
         logger("bulkStore: " . print_r(session('settings'),true));
-
         $groups = new Collection();
 
         $county = new GroupDto($request->input('county'));
@@ -180,6 +178,7 @@ class GroupController extends Controller
             $nationalFacultyArray = array("Name"=>$faculty, "Description"=>$nationalFacultyDescription);
             $nationalFaculty = new GroupDto($nationalFacultyArray);
             $nationalFaculty->setCategoryId($nationalCategoryId);
+            $nationalFaculty->setCourseId($courseId);
             return [$nationalFaculty, $countyFaculty, $communityFaculty];
         }
 
@@ -209,13 +208,5 @@ class GroupController extends Controller
     protected function getFromSession(string $key)
     {
         return Arr::get(session('settings'), $key);
-    }
-
-    public function getStudentCount(string $groupId): Responsable {
-        try {
-            return new SuccessResponse($this->canvasRepository->getTotalStudentsInGroup($groupId)['antallBrukere']);
-        } catch (Exeption $e) {
-            return new ErrorResponse($e->getMessage());
-        }
     }
 }

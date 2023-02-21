@@ -27,6 +27,12 @@ class GroupDto extends AbstractDto
     /** @var int|null */
     protected $canvasId;
 
+    /** @var int|null */
+    protected $countyId;
+
+    /** @var int|null */
+    protected $communityId;
+
     public function getCategoryId(): ?int
     {
         return $this->categoryId;
@@ -86,6 +92,27 @@ class GroupDto extends AbstractDto
     {
         $this->courseId = $courseId;
     }
+
+    public function getCountyId(): ?int
+    {
+        return $this->countyId;
+    }
+
+    public function setCountyId(?int $countyId): void
+    {
+        $this->countyId = $countyId;
+    }
+
+    public function getCommunityId(): ?int
+    {
+        return $this->communityId;
+    }
+
+    public function setCommunityId(?int $communityId): void
+    {
+        $this->communityId = $communityId;
+    }
+
 
     public function getCanvasId(): ?int
     {
