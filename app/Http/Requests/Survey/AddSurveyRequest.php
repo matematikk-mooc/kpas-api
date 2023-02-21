@@ -10,6 +10,7 @@ class AddSurveyRequest extends FormRequest
     {
         return [
             'course_id' => 'required|int',
+            'module_id' => 'required|int',
             'title' => 'string|nullable',
             'title_internal' => 'required|string',
             'questions' => 'array|nullable',

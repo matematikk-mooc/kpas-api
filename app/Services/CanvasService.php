@@ -298,6 +298,13 @@ class CanvasService
         return $this->request($url, 'GET', [], [], true);
     }
 
+    public function getCourseModules($courseId)
+    {
+        $accountId = config('canvas.account_id');
+        $url = "courses/{$courseId}/modules";
+        return $this->request($url, 'GET', [], [], true);
+    }
+
     public function getEnrollments(int $userId)
     {
         try {

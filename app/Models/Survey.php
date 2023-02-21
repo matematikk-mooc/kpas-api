@@ -15,9 +15,10 @@ class Survey extends Model
 {
     public $timestamps = false;
 
-    protected $nullable = ['title_form'];
+    protected $nullable = ['title_form', 'module_id'];
     protected $fillable = [
         'course_id',
+        'module_id',
         'title_form',
         'title_internal',
         'created',
