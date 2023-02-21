@@ -100,7 +100,10 @@ export default {
 	methods: {
 		async getCounties() {
 			try {
-				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_county_category_id}/groups`);
+				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_county_category_id}/groups`,
+				{
+          params: { cookie: window.cookie }
+        });
 				this.counties = result.data;
 				this.isError = false;
 			} catch (e) {
@@ -110,7 +113,10 @@ export default {
 		},
 		async getCommunities(countyId) {
 			try {
-				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_community_category_id}/groups?county_id=${countyId}`);
+				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_community_category_id}/groups?county_id=${countyId}`,
+				{
+          params: { cookie: window.cookie }
+        });
 				this.communities = result.data;
 				this.isError = false;
 			} catch (e) {
@@ -120,7 +126,10 @@ export default {
 		},
 		async getInstitutions(communityId) {
 			try {
-				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_institution_category_id}/groups?community_id=${communityId}`);
+				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_institution_category_id}/groups?community_id=${communityId}`,
+				{
+          params: { cookie: window.cookie }
+        });
 				this.institutions = result.data;
 				this.isError = false;
 			} catch (e) {
@@ -131,7 +140,10 @@ export default {
 
 		async getCountyLeaderGroups(){
 			try {
-				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_county_principals_category_id}/groups`)
+				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_county_principals_category_id}/groups`,
+				{
+          params: { cookie: window.cookie }
+        });
 				this.leaderCountyGroups = result.data;
 				console.log(result.data)
 				this.isError = false;
@@ -145,7 +157,10 @@ export default {
 		async getCommunityLeaderGroups(countyId){
 			try {
 				console.log("inside get leader community")
-				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_community_principals_category_id}/groups?county_id=${countyId}`)
+				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_community_principals_category_id}/groups?county_id=${countyId}`,
+				{
+          params: { cookie: window.cookie }
+        });
 				console.log(result.data)
 				this.leaderCommunityGroups = result.data;
 				this.isError = false;
@@ -158,7 +173,10 @@ export default {
 
 		async getFacultiesNational(){
 			try {
-				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_national_faculty_category_id}/groups`)
+				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_national_faculty_category_id}/groups`,
+				{
+          params: { cookie: window.cookie }
+        });
 				this.facultiesNational = result.data;
 				this.isError = false;
 			}
@@ -169,7 +187,10 @@ export default {
 		},
 		async getFacultiesCounty(){
 			try {
-				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_county_faculty_category_id}/groups`)
+				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_county_faculty_category_id}/groups`,
+				{
+          params: { cookie: window.cookie }
+        });
 				this.facultiesCounty = result.data;
 				this.isError = false;
 			}
@@ -180,7 +201,10 @@ export default {
 		},
 		async getFacultiesCommunity(countyId){
 			try {
-				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_community_faculty_category_id}/groups?county_id=${countyId}`)
+				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_community_faculty_category_id}/groups?county_id=${countyId}`,
+				{
+          params: { cookie: window.cookie }
+        });
 				this.facultiesCommunity = result.data;
 				this.isError = false;
 			}
