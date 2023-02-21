@@ -25,6 +25,7 @@ class SurveyRepository
     {
         $survey = Survey::create([
             'course_id' => $surveyContent->course_id,
+            'module_id' => $surveyContent->module_id,
             'title_form' => $surveyContent->title,
             'title_internal' => $surveyContent->title_internal,
             'created' => date_create()->format('Y-m-d H:i:s'),

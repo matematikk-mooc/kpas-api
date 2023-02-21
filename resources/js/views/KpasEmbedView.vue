@@ -11,6 +11,15 @@
     <h1>Survey</h1>
     <section role="form" class="embed-survey-form">
       <div class="subsection">
+        <v-select
+          class="selector"
+          :disabled="!coursemodules.length"
+          :options="coursemodules"
+          label="name"
+          placeholder="Velg modul"
+          @update:modelValue="updateModule"
+        >
+        </v-select>
         <label>
           <input type="checkbox" class="surveyForm" v-model="add_form_title"/>
           Tittel i skjema
@@ -54,6 +63,7 @@
 
       <div v-if="emptyTitleForm" class='alert alert-danger kpasAlert'>Hvis du ikke ønsker tittel i skjema, fjern avkrysningen i checkbox.</div>
       <div v-if="emptyTitleInternal" class='alert alert-danger kpasAlert'>Tittel i dashboard kan ikke være tom.</div>
+      <div v-if="emptyModuleSelected" class='alert alert-danger kpasAlert'>Modul kan ikke være tom.</div>
       <div v-if="emptyQuestionText" class='alert alert-danger kpasAlert'>Spørsmål kan ikke kun ha machine_name, det må også ha en spørsmålstekst.</div>
       <div v-if="surveyCreated" class='alert alert-success kpasAlert'>Survey opprettet! Den kan nå settes inn i LTI.</div>
       <div v-if="couldNotCreateSurvey" class='alert alert-danger kpasAlert'>Kunne ikke opprette survey. Prøv igjen.</div>
@@ -79,7 +89,8 @@ import api from '../api';
 
 export default {
   name: "Diploma",
-  props: ['courseid', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'dashboardmode', 'surveymode'],
+  props: ['courseid', 'coursemodules', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'dashboardmode', 'surveymode'],
+
   data() {
     return {
       logoList: [],
@@ -87,6 +98,7 @@ export default {
       add_form_title: false,
       title: '',
       title_internal: '',
+      selectedModule: 0,
       question1: {'text' : '', 'machine_name' : ''},
       question2: {'text' : '', 'machine_name' : ''},
       question3: {'text' : '', 'machine_name' : ''},
@@ -95,7 +107,8 @@ export default {
       emptyTitleInternal: false,
       emptyQuestionText: false,
       surveyCreated: false,
-      couldNotCreateSurvey: false
+      couldNotCreateSurvey: false,
+      emptyModuleSelected: false
     };
   },
   computed: {
@@ -128,6 +141,17 @@ export default {
     },
     async fetchLogoList() {
     },
+    updateModule(module){
+      if(module == null){
+        this.selectedModule = 0; 
+        this.emptyModuleSelected = true
+        return;
+      }
+      this.selectedModule = module.id;
+      console.log(this.selectedModule);
+      this.emptyModuleSelected = false;
+    },
+
     async createSurvey(){
 
       if(this.title_internal == ""){
@@ -138,8 +162,13 @@ export default {
         this.emptyTitleForm = true;
         return;
       }
+      if (this.selectedModule == 0){
+        this.emptyModuleSelected = true;
+        return;
+      }
       this.emptyTitleInternal = false;
       this.emptyTitleForm = false;
+      this.emptyModuleSelected = false;
 
       var questions = [];
       questions.push(this.question1);
@@ -157,6 +186,7 @@ export default {
       const response = await api.post('survey/create', {
         cookie: window.cookie,
         course_id: this.courseid,
+        module_id: this.selectedModule,
         title: this.add_form_title ? this.title : null,
         title_internal: this.title_internal,
         questions: questions
