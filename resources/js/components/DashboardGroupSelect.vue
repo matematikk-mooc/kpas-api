@@ -1,5 +1,5 @@
 <template>
-	<section class="dropdowns">
+	<section class="dropdown-section">
 		<label v-if="settings.custom_county_category_id" id="select-county">
 			{{ settings.custom_county_category_name }}:<br />
 			<v-select v-model="chosenCounty" :disabled="!counties.length" :options="counties" label="name"
@@ -298,7 +298,7 @@ export default {
 </script>
 
 <style>
-.dropdowns{
+.dropdown-section{
 	display: inline-flex;
 	align-content: center;
 	width:100%;
