@@ -11,6 +11,8 @@ use App\Repositories\CanvasDbRepository;
 use App\Services\DataportenService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Support\Responsable;
+
 
 class GroupController extends Controller
 {
@@ -209,7 +211,7 @@ class GroupController extends Controller
         return Arr::get(session('settings'), $key);
     }
 
-    public function getStudentCount(string $groupId) {
+    public function getStudentCount(string $groupId): Responsable {
         try {
             return new SuccessResponse($this->canvasRepository->getTotalStudentsInGroup($groupId)['antallBrukere']);
         } catch (Exeption $e) {

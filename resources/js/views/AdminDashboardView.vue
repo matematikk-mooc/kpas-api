@@ -19,7 +19,7 @@ export default {
     likert5ops: {},
   },
   methods: {
-    async getStudentCount() {
+    async updateStudentCount() {
       try {
         let url;
         if (this.groupId) { 
@@ -32,14 +32,14 @@ export default {
           params: { cookie: window.cookie }
         });
 
-        this.studentCount = apiResult.data.result;
+        this.studentCount = await apiResult.data.result;
       } catch(e) {
-        console.log("Could not get enrollment data.", e);
+        console.error("Could not get student count.", e);
       }
     },
   },
   async created() {
-    await this.getStudentCount();
+    await this.updateStudentCount();
   },
 };
 </script> 
