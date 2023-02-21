@@ -230,7 +230,7 @@ export default {
 	},
 
 	updated() {
-		this.$emit('update');
+		this.$emit('update', this.selectedgroups);
 	},
 	
 	watch: {
