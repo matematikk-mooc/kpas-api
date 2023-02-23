@@ -68,7 +68,6 @@ export default {
 	props: {
 		settings: Object, 
 		categories: Array,
-		courseId: Number
 	},
 	
 	data() {
@@ -94,6 +93,8 @@ export default {
 			chosenCountyLeader: null,
 			chosenCommunityLeader: null,
 			error: '',
+			courseId: null,
+			groupId: null,
 		}
 	},
 	
@@ -191,6 +192,8 @@ export default {
 		},
 	},
 	async created() {
+		this.courseId = this.settings.custom_canvas_course_id;
+
 		if(this.settings.custom_county_category_id) {
 			await this.getCounties();
 		}
@@ -206,7 +209,7 @@ export default {
 	},
 
 	updated() {
-		this.$emit('update');
+		this.$emit('update', this.selectedgroups);
 	},
 	
 	watch: {
