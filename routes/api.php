@@ -42,7 +42,7 @@ Route::group(['prefix' => 'group'], function () {
 
 Route::group(['prefix' => 'course'], function () {
     Route::get('/{courseId}/groups', 'GroupController@getCourseGroups');
-    Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@geCourseGroupsByCategory');
+    Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@getCourseGroupsByCategory');
 });
 
 Route::group(['prefix' => 'survey'], function() {

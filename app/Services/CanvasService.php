@@ -82,7 +82,7 @@ class CanvasService
         }
     }
 
-    public function getTotalStudentsInGroup(string $groupId): array
+    public function getTotalStudentsByGroup(string $groupId): array
     {
         try {
             $url = "groups/{$groupId}";

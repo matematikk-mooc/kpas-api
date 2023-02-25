@@ -94,7 +94,6 @@ export default {
 			chosenCommunityLeader: null,
 			error: '',
 			courseId: null,
-			groupId: null,
 		}
 	},
 	
@@ -233,7 +232,16 @@ export default {
 	},
 
 	updated() {
-		this.$emit('update', this.selectedgroups);
+		let groupId = null;
+		if (this.selectedgroups.institution) { groupId = this.selectedgroups.institution.canvas_id }
+		else if (this.selectedgroups.communityLeader) { groupId = this.selectedgroups.communityLeader.canvas_id }
+		else if (this.selectedgroups.community) { groupId = this.selectedgroups.community.canvas_id }
+		else if (this.selectedgroups.countyLeader) { groupId = this.selectedgroups.countyLeader.canvas_id }
+		else if (this.selectedgroups.county) { groupId = this.selectedgroups.county.canvas_id }
+		else if (this.selectedgroups.facultiesCommunity) { groupId = this.selectedgroups.facultiesCommunity.canvas_id }
+		else if (this.selectedgroups.facultyCounty) { groupId = this.selectedgroups.facultyCounty.canvas_id }
+		else if (this.selectedgroups.facultiesNational) { groupId = this.selectedgroups.facultiesNational.canvas_id }
+		this.$emit('update', groupId);
 	},
 	
 	watch: {
