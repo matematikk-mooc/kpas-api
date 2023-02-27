@@ -238,9 +238,9 @@ export default {
 		else if (this.selectedgroups.community) { groupId = this.selectedgroups.community.canvas_id }
 		else if (this.selectedgroups.countyLeader) { groupId = this.selectedgroups.countyLeader.canvas_id }
 		else if (this.selectedgroups.county) { groupId = this.selectedgroups.county.canvas_id }
-		else if (this.selectedgroups.facultiesCommunity) { groupId = this.selectedgroups.facultiesCommunity.canvas_id }
+		else if (this.selectedgroups.facultyCommunity) { groupId = this.selectedgroups.facultyCommunity.canvas_id }
 		else if (this.selectedgroups.facultyCounty) { groupId = this.selectedgroups.facultyCounty.canvas_id }
-		else if (this.selectedgroups.facultiesNational) { groupId = this.selectedgroups.facultiesNational.canvas_id }
+		else if (this.selectedgroups.facultyNational) { groupId = this.selectedgroups.facultyNational.canvas_id }
 		this.$emit('update', groupId);
 	},
 	
