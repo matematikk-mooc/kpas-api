@@ -9,11 +9,17 @@ use Illuminate\Http\Request;
 class ModuleController extends Controller
 {
 
-    public function moduleStatistics(int $courseId): SuccessResponse
+    public function moduleStatistics(Request $request, int $courseId): SuccessResponse
     {
         $moduleService = new ModuleService();
-        $data = $moduleService->getModuleStatistics($courseId);
+        if($request->has('group')){
+            $data = $moduleService->getModuleStatisticsByGroup($courseId, $request->group);
+        }
+        else{
+            $data = $moduleService->getModuleStatistics($courseId);
+        }
         $res = $data->getBody()->getContents();
-        return new SuccessResponse($data);
+        logger(print_r($res, true));
+        return new SuccessResponse($res);
     }
 }

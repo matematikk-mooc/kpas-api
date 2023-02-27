@@ -9,6 +9,20 @@
       placeholder="Velg modul"
       @update:modelValue="updateModule"
     ></v-select>
+    <div v-if="currentGroupId && completed_count_item.length" >
+      <section class="completed">
+        <table>
+          <tr>
+            <th><b>Side</b></th>
+            <th><b>Antall fullført</b></th>
+          </tr>
+          <tr v-for="item in completed_count_item">
+            <td>{{ item.title }}</td>
+            <td>{{ item.count }}</td>
+          </tr> 
+        </table>
+      </section>
+    </div>
 
     <div class = "survey-data" v-if="module_surveys.length">
       <v-select v-if="module_surveys.length > 1"
@@ -59,7 +73,11 @@ export default {
       module_surveys: [], 
       view_survey: null,
       currentGroupId: 0,
-      ready: false
+      ready: false,
+      modules_statistics: null,
+      completed_count_item: [], 
+      current_module: 0,
+      
     }
   },
   methods: {
@@ -68,6 +86,8 @@ export default {
       if(this.module_surveys.length > 0){
         this.view_survey = this.module_surveys[0];
       }
+      this.current_module = value.id;
+      this.updateFinnishCount()
     },
     updateSurvey(value){
       this.view_survey = value;
@@ -76,23 +96,62 @@ export default {
       try {
         let url;
         if(this.currentGroupId == null  || this.currentGroupId == 0){
-          url = "/survey/course/" + this.settings.custom_canvas_course_id + "&format=json";
+          url = "/survey/course/" + this.settings.custom_canvas_course_id;
         }
         else {
-          url = "/survey/course/" + this.settings.custom_canvas_course_id + "?group=" + this.currentGroupId + "&format=json";
+          url = "/survey/course/" + this.settings.custom_canvas_course_id + "?group=" + this.currentGroupId;
         }
         const apiResult = await api.get(url, {
           params: { cookie: window.cookie }
         });
         this.survey_data = apiResult.data.result;
         this.updateModule(this.coursemodules[0]);
+
       } catch(e)
       {
         console.log("Could not get survey data.", e);
       }
     },
+    async getModulesStatistics(){
+      try{
+        if(this.currentGroupId != null || this.currentGroupId != 0){
+          let url = "/course/" + this.settings.custom_canvas_course_id + "/modules?group=" + this.currentGroupId;
+          
+          const apiResult = await api.get(url, {
+            params: { cookie: window.cookie }
+          });
+          this.modules_statistics = JSON.parse(apiResult.data.result);
+          console.log(this.modules_statistics)
+
+        }
+      }catch(e)
+      {
+        console.log("Could not get module data.", e);
+      }
+    },
+    updateFinnishCount(){
+      this.completed_count_item = []
+      let module = this.modules_statistics.find(e => e.canvas_id == this.current_module);
+      let moduleitems = module.module_items.sort((a, b) => a.position - b.position)
+      for(const item of moduleitems){
+        if(this.currentGroupId !=  0 || this.currentGroupId != null) {
+          if(item.user_groups.length == 1){
+            let obj = {"title" : item.title, "count" : item.user_groups[0].count}
+            this.completed_count_item.push(obj)
+            console.log(obj)
+          }
+          else{
+            let obj = {"title" : item.title, "count" : 0}
+            this.completed_count_item.push(obj)
+            console.log(obj)
+          }
+        }
+      }
+      
+    }
   },
   async created(){
+    await this.getModulesStatistics();
     await this.getSurveyData();
     this.ready = true;
   }
@@ -101,5 +160,12 @@ export default {
 </script> 
 
 <style>
+ td{
+  padding: .5em;
+ }
 
+ .completed{
+  overflow-y: scroll;
+  height: 18em;
+ }
 </style>
