@@ -37,11 +37,12 @@ Route::group(['prefix' => 'group'], function () {
     Route::get('/all', 'GroupController@getStoredGroups');
     Route::get('/{groupId}/category', 'GroupCategoryController@index');
     Route::post('/user/bulk', 'GroupController@bulkStore')->middleware('lti');
+    Route::get('/{groupId}/count', 'GroupController@getStudentCount');
 });
 
 Route::group(['prefix' => 'course'], function () {
-    Route::get('/{courseId}/groups', 'GroupController@getCourseGroups')->middleware('lti');
-    Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@geCourseGroupsByCategory')->middleware('lti');
+    Route::get('/{courseId}/groups', 'GroupController@getCourseGroups');
+    Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@getCourseGroupsByCategory');
 });
 
 Route::group(['prefix' => 'survey'], function() {
@@ -95,3 +96,4 @@ Route::get('user/{userId}/context/{contextId}/history', 'HistoryController@getUs
 Route::get('context/{contextId}/history', 'HistoryController@getContextHistoryData');
 Route::get('statistics/{courseId}', 'GroupEnrollmentController@getGroupEnrollmentCount');
 Route::get('course/{courseId}/modules', 'ModuleController@moduleStatistics');
+Route::get('course/{courseId}/count', 'CourseController@getStudentCount');

@@ -222,7 +222,7 @@ class GroupController extends Controller
         return Group::where('course_id', $courseId)->get();
     }
 
-    public function geCourseGroupsByCategory(Request $request, $courseId, $categoryId)
+    public function getCourseGroupsByCategory(Request $request, $courseId, $categoryId)
     {
         if($request->get('county_id')){
             return Group::where([
@@ -242,5 +242,13 @@ class GroupController extends Controller
             ['course_id', $courseId],
             ['category_id', $categoryId]
         ])->get();
+    }
+
+    public function getStudentCount(string $groupId) {
+        try {
+            return new SuccessResponse($this->canvasRepository->getTotalStudentsByGroup($groupId)['antallBrukere']);
+        } catch (Exeption $e) {
+            return new ErrorResponse($e->getMessage());
+        }
     }
 }

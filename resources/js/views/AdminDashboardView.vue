@@ -1,6 +1,15 @@
 @extends('layouts.app')
 <template>
   <div v-if="ready" >
+  <DashboardGroupSelect 
+    :settings=this.settings
+		:categories=this.categories
+    @update="updateGroupId"
+  />
+  <section id="student-count">
+    <h3>Antall brukere: {{ studentCount }}</h3>
+  </section>
+  
     <v-select
       class="selector"
       :disabled="!coursemodules.length"
@@ -60,15 +69,18 @@
 
 <script>
 import api from "../api";
+import DashboardGroupSelect from "../components/DashboardGroupSelect";
+
 export default {
   name: "AdminDashboardView",
-  props: {
-    settings: {},
-    likert5ops: {},
-    coursemodules: []
+  components: {
+    DashboardGroupSelect,
   },
-  data(){
+  data() {
     return {
+      studentCount: null,
+      groupId: null,
+      categories: null,
       survey_data: null,
       module_surveys: [], 
       view_survey: null,
@@ -77,10 +89,48 @@ export default {
       modules_statistics: null,
       completed_count_item: [], 
       current_module: 0,
-      
     }
   },
-  methods: {
+  props: {
+    settings: {},
+    likert5ops: {},
+    coursemodules: [],
+  },
+  methods: { 
+     async getStudentCount() {
+      try {
+        let url;
+        if (this.groupId) { 
+          url = "/group/" + this.groupId + '/count';
+        } else { 
+          url = "/course/" + this.settings.custom_canvas_course_id + '/count';
+        };
+
+        const response = await api.get(url, {
+          params: { cookie: window.cookie }
+        });
+
+        this.studentCount = await response.data.result;
+      } catch(e) {
+        console.error("Could not get student count.", e);
+      }
+    },
+    async getGroupCategories() { // TODO: refactor this method to GroupSelector
+      try {
+        const response = await api.get('/group/user', {
+          params: {
+            cookie: window.cookie,
+          }
+        });
+        this.categories = response.data.result;
+      } catch(e){
+        console.error("Could not get group categories.", e)
+      }
+    },
+    async updateGroupId(value) {
+      this.groupId = value;
+      await this.getStudentCount();
+    },
     updateModule(value){
       this.module_surveys = this.survey_data.filter(e => e.module_id == value.id)
       if(this.module_surveys.length > 0){
@@ -146,16 +196,17 @@ export default {
             console.log(obj)
           }
         }
-      }
-      
+      }      
     }
   },
-  async created(){
+ 
+  async created() {
+    await this.getGroupCategories();
+    await this.getStudentCount();
     await this.getModulesStatistics();
     await this.getSurveyData();
     this.ready = true;
-  }
-  
+  },
 };
 </script> 
 

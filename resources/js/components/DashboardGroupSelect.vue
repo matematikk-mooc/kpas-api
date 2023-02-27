@@ -68,7 +68,6 @@ export default {
 	props: {
 		settings: Object, 
 		categories: Array,
-		courseId: Number
 	},
 	
 	data() {
@@ -94,6 +93,7 @@ export default {
 			chosenCountyLeader: null,
 			chosenCommunityLeader: null,
 			error: '',
+			courseId: null,
 		}
 	},
 	
@@ -215,6 +215,8 @@ export default {
 		},
 	},
 	async created() {
+		this.courseId = this.settings.custom_canvas_course_id;
+
 		if(this.settings.custom_county_category_id) {
 			await this.getCounties();
 		}
@@ -230,7 +232,16 @@ export default {
 	},
 
 	updated() {
-		this.$emit('update', this.selectedgroups);
+		let groupId = null;
+		if (this.selectedgroups.institution) { groupId = this.selectedgroups.institution.canvas_id }
+		else if (this.selectedgroups.communityLeader) { groupId = this.selectedgroups.communityLeader.canvas_id }
+		else if (this.selectedgroups.community) { groupId = this.selectedgroups.community.canvas_id }
+		else if (this.selectedgroups.countyLeader) { groupId = this.selectedgroups.countyLeader.canvas_id }
+		else if (this.selectedgroups.county) { groupId = this.selectedgroups.county.canvas_id }
+		else if (this.selectedgroups.facultiesCommunity) { groupId = this.selectedgroups.facultiesCommunity.canvas_id }
+		else if (this.selectedgroups.facultyCounty) { groupId = this.selectedgroups.facultyCounty.canvas_id }
+		else if (this.selectedgroups.facultiesNational) { groupId = this.selectedgroups.facultiesNational.canvas_id }
+		this.$emit('update', groupId);
 	},
 	
 	watch: {
