@@ -41,8 +41,8 @@ Route::group(['prefix' => 'group'], function () {
 });
 
 Route::group(['prefix' => 'course'], function () {
-    Route::get('/{courseId}/groups', 'GroupController@getCourseGroups');
-    Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@getCourseGroupsByCategory');
+    Route::get('/{courseId}/groups', 'GroupController@getCourseGroups')->middleware('lti');
+    Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@getCourseGroupsByCategory')->middleware('lti');
 });
 
 Route::group(['prefix' => 'survey'], function() {
