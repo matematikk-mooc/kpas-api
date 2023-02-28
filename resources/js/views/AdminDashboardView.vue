@@ -171,6 +171,9 @@ export default {
           params: { cookie: window.cookie }
         });
         this.survey_data = apiResult.data.result;
+        if(this.current_module) {
+          this.view_survey = this.survey_data.filter(e => e.module_id == this.current_module)[0]
+        }
       } catch(e)
       {
         console.log("Could not get survey data.", e);
