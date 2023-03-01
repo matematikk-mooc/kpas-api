@@ -20,7 +20,7 @@
       @update:modelValue="updateModule"
     ></v-select>
 
-    <div v-if="groupId && completed_count_item.length && current_module" >
+    <div v-if="completed_count_item.length && current_module" >
       <h3>Markert som ferdig: </h3>
       <section class="completed">
         <table>
@@ -183,12 +183,21 @@ export default {
       try{
         if(this.groupId){
           let url = "/course/" + this.settings.custom_canvas_course_id + "/modules?group=" + this.groupId;
+          console.log(url)
           const apiResult = await api.get(url, {
             params: { cookie: window.cookie }
           });
           this.modules_statistics = JSON.parse(apiResult.data.result);
           this.updateFinnishCount()
 
+        }
+        else{
+          let url = "/course/" + this.settings.custom_canvas_course_id + "/modules/count";
+          const apiResult = await api.get(url, {
+            params: { cookie: window.cookie }
+          });
+          this.modules_statistics = JSON.parse(apiResult.data.result);
+          this.updateFinnishCount()
         }
       }catch(e)
       {
@@ -213,6 +222,10 @@ export default {
             this.completed_count_item.push(obj)
           }
         }
+        else {
+            let obj = {"title" : item.title, "count" : item.total_completed}
+            this.completed_count_item.push(obj)
+        }
       }      
     }
   },
@@ -220,6 +233,7 @@ export default {
   async created() {
     await this.getGroupCategories();
     await this.getStudentCount();
+    await this.getModulesStatistics();
     await this.getSurveyData();
     this.ready = true;
   },

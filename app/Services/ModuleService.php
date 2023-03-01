@@ -19,16 +19,22 @@ class ModuleService
     public function getModuleStatistics(int $courseId)
     {
         $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/modules?format=json";
-        logger($url);
         $result =  $this->guzzleClient->request('GET', $url);
-        logger(print_r($result, true));
         return $result;
 
     }
 
-    public function getModuleStatisticsByGroup(int $courseId, int $groupId)
+    public function getModuleStatisticsByGroup(int $courseId, $groupId)
     {
         $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/modules?group={$groupId}&format=json";
         return $this->guzzleClient->request('GET', $url);
+    }
+
+    public function getModuleStatisticsCount(int $courseId)
+    {
+        $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/modules/count?format=json";
+        $result =  $this->guzzleClient->request('GET', $url);
+        return $result;
+
     }
 }

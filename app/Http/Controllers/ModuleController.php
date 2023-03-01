@@ -19,7 +19,14 @@ class ModuleController extends Controller
             $data = $moduleService->getModuleStatistics($courseId);
         }
         $res = $data->getBody()->getContents();
-        logger(print_r($res, true));
+        return new SuccessResponse($res);
+    }
+
+    public function moduleStatisticsCount(Request $request, int $courseId): SuccessResponse
+    {
+        $moduleService = new ModuleService();
+        $data = $moduleService->getModuleStatisticsCount($courseId);
+        $res = $data->getBody()->getContents();
         return new SuccessResponse($res);
     }
 }
