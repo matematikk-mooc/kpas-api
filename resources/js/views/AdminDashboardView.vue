@@ -203,16 +203,16 @@ export default {
       for(const item of moduleitems){
         if(this.groupId) {
           if(item.user_groups.length == 1){
-            let obj = {"title" : item.title, "count" : item.user_groups[0].count}
+            let obj = {"title" : item.title, "count" : item.user_groups[0].count, "position" : item.position}
             this.completed_count_item.push(obj)
           }
           else{
-            let obj = {"title" : item.title, "count" : 0}
+            let obj = {"title" : item.title, "count" : 0, "position" : item.position}
             this.completed_count_item.push(obj)
           }
         }
         else {
-            let obj = {"title" : item.title, "count" : item.total_completed}
+            let obj = {"title" : item.title, "count" : item.total_completed, "position" : item.position}
             this.completed_count_item.push(obj)
         }
       }      

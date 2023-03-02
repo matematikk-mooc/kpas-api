@@ -53,8 +53,7 @@ export default{
 			{
 				name: "Tittel",
 				sortDirection: "none",
-				sortField: "title",
-				innerSort: "count",
+				sortField: "position",
 				id: "byKey",
 				colspan: 1
 			},
@@ -62,7 +61,6 @@ export default{
 				name: "Antall fullført",
 				sortDirection: "none",
 				sortField: "count",
-				innerSort: "title",
 				id: "byValue",
 				colspan: MAX_X
 			}
