@@ -21,20 +21,9 @@
     ></v-select>
 
     <div v-if="completed_count_item.length && current_module" >
-      <h3>Markert som ferdig: </h3>
-      <section class="completed">
-        <table>
-          <tr>
-            <th><b>Side</b></th>
-            <th><b>Antall fullført</b></th>
-          </tr>
-          <tr v-for="item in completed_count_item">
-            <td>{{ item.title }}</td>
-            <td>{{ item.count }}</td>
-          </tr> 
-        </table>
-      </section>
-    </div>
+      <h3>Markert som fullført: </h3>
+      <horizontal-bar-chart class="completed" :data="completed_count_item"> </horizontal-bar-chart>
+    </div> 
 
     <div class = "survey-data" v-if="module_surveys.length && current_module">
 
@@ -259,7 +248,7 @@ export default {
 
  .completed{
   overflow-y: scroll;
-  height: 18em;
+  height: 36em;
   margin: 1em;
   padding: 1em;
  }
