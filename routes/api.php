@@ -97,3 +97,4 @@ Route::get('context/{contextId}/history', 'HistoryController@getContextHistoryDa
 Route::get('statistics/{courseId}', 'GroupEnrollmentController@getGroupEnrollmentCount');
 Route::get('course/{courseId}/modules', 'ModuleController@moduleStatistics');
 Route::get('course/{courseId}/count', 'CourseController@getStudentCount');
+Route::get('account/{accountId}/permissions', 'AccountController@getPermissions');

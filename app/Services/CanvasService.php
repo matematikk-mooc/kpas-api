@@ -493,4 +493,16 @@ class CanvasService
             return $this->accountIsChildOf($udirCanvasParentAccountId, $parentAccountId);
         }
     }
+
+    public function getAccountPermissions(string $accountId) {
+        try {
+            $url = "accounts/{$accountId}/permissions";
+            return $this->request($url, 'GET', [], [], false);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 401 || $exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Permissions for account with ID %s not found', $accountId));
+            }
+            throw $exception;
+        }
+    }
 }

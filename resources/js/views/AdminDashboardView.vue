@@ -10,7 +10,6 @@
       <h3>Antall brukere: {{ studentCount }}</h3>
     </section>
     
-  
     <v-select
       class="selector"
       :disabled="!coursemodules.length"
@@ -107,7 +106,19 @@ export default {
     coursemodules: [],
   },
   methods: { 
-     async getStudentCount() {
+    async hasPermissions() {
+      try {
+        const url = '/account/' + this.settings.custom_canvas_account_id + '/permissions';
+        const response = await api.get(url, {
+          params: { cookie: window.cookie }
+        });
+        return response.data.result.manage_courses_admin;
+      } catch(e) {
+        console.error("Could not get permission data.", e);
+        return false;
+      }
+    },
+    async getStudentCount() {
       try {
         let url;
         if (this.groupId) { 
@@ -120,7 +131,7 @@ export default {
           params: { cookie: window.cookie }
         });
 
-        this.studentCount = await response.data.result;
+        this.studentCount = response.data.result;
       } catch(e) {
         console.error("Could not get student count.", e);
       }
@@ -218,6 +229,9 @@ export default {
   },
  
   async created() {
+    if (! await this.hasPermissions() ) {
+      throw new Error("Permission denied.");
+    }
     await this.getGroupCategories();
     await this.getStudentCount();
     await this.getSurveyData();
