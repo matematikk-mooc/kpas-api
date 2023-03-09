@@ -155,7 +155,6 @@ export default {
 		},
 		async getCommunityLeaderGroups(countyId){
 			try {
-				console.log("inside get leader community")
 				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_community_principals_category_id}/groups?county_id=${countyId}`,
 				{
           params: { cookie: window.cookie }
