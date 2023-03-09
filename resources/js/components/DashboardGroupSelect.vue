@@ -145,7 +145,6 @@ export default {
           params: { cookie: window.cookie }
         });
 				this.leaderCountyGroups = result.data;
-				console.log(result.data)
 				this.isError = false;
 			}
 			catch {
@@ -161,7 +160,6 @@ export default {
 				{
           params: { cookie: window.cookie }
         });
-				console.log(result.data)
 				this.leaderCommunityGroups = result.data;
 				this.isError = false;
 			}
