@@ -1,5 +1,5 @@
 <template>
-	<div id="diagramContainer"></div>
+	<span id="diagramContainer"></span>
 </template>
 
 <script>
@@ -23,16 +23,14 @@ export default{
 	methods: {
 		drawDiagram() {
 			let diagramData = this.data;
-			console.log(diagramData)
-			
-			const MAX_WIDTH = 960;
+
 			const MAX_X = 1;
 			
 			// These should match CSS
 			const SMALL_BREAKPOINT = 768;
 			const PREFFERED_COLUMN_WIDTH = {
-				LARGE: 250,
-				SMALL: 125
+				LARGE: 300,
+				SMALL: 300
 			};
 			
 			const container = d3.select("#diagramContainer");
@@ -66,7 +64,6 @@ export default{
 			}
 			];
 			
-			
 			if (currentSort.sortDirection && currentSort.sortField) {
 				const previouslySorted = headers[1].currentSort.sortField;
 				if (previouslySorted) {
@@ -80,7 +77,7 @@ export default{
 			.attr("role", "row")
 			.attr("class", "table-header");
 			// To use aria-sort we need to add role and scope for html validation
-			const th = tableHeader.selectAll("th")
+			const th = tableHeader.selectAll("tr")
 			.data(headers)
 			.enter()
 			.append("th")
@@ -89,6 +86,10 @@ export default{
 			.attr("role", "columnheader")
 			.attr("scope", "col")
 			.attr("aria-sort", d => d.sortDirection);
+			
+			window.requestAnimationFrame(() => {
+        		table.style('--table-header-height', tableHeader.offsetHeight);
+    		});
 			
 			// When sorting, get the needed translate amount to get from old position to new
 			const getTranslatePosition = (d, el) => {
@@ -176,44 +177,27 @@ export default{
 				return d.count;
 			})
 			.attr("style", function(d) {
-				var barWidth = d.count / Math.max(...diagramData.map(o => o.count)) * 100;
+				var max_value = Math.max(...diagramData.map(o => o.count))
+				if (max_value < 5){
+					max_value = 10
+				}
+				var barWidth = d.count / max_value * 100;
 				return "width:" + barWidth + "%";
 			})
 			
 			// Add row height to each row object 
 			diagramData = diagramData.map((d) => {
-				d.rowHeight = 15;
+				d.rowHeight = 34;
 				return d;
 			});
 			
-			// Redraw table with correct sizes on resize
-			const handleResize = () => {
-				window.removeEventListener("resize", resizeDebouneFn, true);
-				table.remove();
-				tooltip.remove();
-				const newOptions = [...options];
-				newOptions[1] = diagramData;
-				
-				if (previousSort) {
-					newOptions.pop();
-				}
-				newOptions.push(currentSort);
-				createDiagram(...newOptions);
-			};
-			
-			// Debounce resize so we don't redraw on each event, but when finished resizing
-			const resizeDebouneFn = function () {
-				clearTimeout(resizeDebounce);
-				resizeDebounce = setTimeout(handleResize, 100);
-			};
-			window.addEventListener("resize", resizeDebouneFn, true);
 		}
 	}
-	
 }
 </script>
 
 <style>
+
 .table-completed *, .table-completed ::after, .table-completed ::before {
 	box-sizing: border-box;
 }
@@ -221,18 +205,16 @@ export default{
 .table-completed {
 	box-sizing: border-box;
 	font-family: "Roboto", sans-serif;
-	font-size: 16px;
-	border-spacing: 0px;
+	font-size: 14px;
+	border-spacing: 2px;
 	border-collapse: collapse;
 }
+
 @media (max-width: 767px) {
 	.table-completed {
 		font-size: 12px;
 	}
-	.form-inline input {
-		margin: 10px 0;
-	}
-	
+
 	.form-inline {
 		flex-direction: column;
 		align-items: stretch;
@@ -250,12 +232,13 @@ export default{
 	background: #BAC6D8;
 	-webkit-print-color-adjust: exact !important; 
 	color-adjust: exact !important;                 
-	print-color-adjust: exact !important;      
-}
+	print-color-adjust: exact !important;   
+	position: -webkit-sticky;
+} 
+
 .table-header th:first-child {
 	text-align: left;
 }
-
 
 .table-ticks th {
 	text-align: center;
@@ -263,22 +246,29 @@ export default{
 	top: var(--table-header-height);
 }
 
-.table-completed td.name, .table-ticks th, .column-sorter {
-	padding: 10px;
+.table-completed td.name, .column-sorter {
+	padding: 2px
 }
+
 .table-completed td.value {
 	background-image: linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px);
 	background-size: 142px 100%;
+	padding: 6px 0 6px 0;
+	margin: 4px 0 4px 0;
 }
+
 .table-completed .bar {
 	background: #7DBF9D;
-	height: 20px;
+	text-indent: 4px;
+	text-align: left center;
+	height: 36px;
 	transition: 0.2s ease-out background;
 	min-width: 3px;
 	-webkit-print-color-adjust: exact !important;   /* Chrome, Safari 6 – 15.3, Edge */
 	color-adjust: exact !important;                 /* Firefox 48 – 96 */
 	print-color-adjust: exact !important;      
 }
+
 .table-completed .bar:hover{
 	background: #9DBF9D;
 }
@@ -294,6 +284,7 @@ export default{
 	font-weight: bold;
 	position: relative;
 }
+
 .column-sorter:before, .column-sorter:after {
 	border: 4px solid transparent;
 	content: "";
@@ -304,10 +295,12 @@ export default{
 	position: absolute;
 	width: 0;
 }
+
 .column-sorter:before {
 	border-top-color: currentColor;
 	margin-top: 1px;
 }
+
 .column-sorter:after {
 	border-bottom-color: currentColor;
 	margin-top: -9px;
@@ -316,6 +309,7 @@ export default{
 .table-sort[aria-sort="descending"] .column-sorter:after {
 	border-bottom-color: transparent;
 }
+
 .table-sort[aria-sort="ascending"] .column-sorter:before {
 	border-top-color: transparent;
 }
@@ -349,6 +343,5 @@ export default{
 .form-inline button:hover {
 	background-color: #7DBF9D;
 }
-
 
 </style>

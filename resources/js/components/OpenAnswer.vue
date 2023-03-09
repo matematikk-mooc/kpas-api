@@ -1,13 +1,13 @@
 
 <template>
-    <h2 v-html="this.questionText"></h2>
-   <div v-for="(openAnswer, i) in openAnswers">
-      <div class="note">
-        <p class="date"> {{formatdate(openAnswer.submission.submitted)}} 
-        <p class="responseText" v-html="openAnswer.value "></p> </p>
-      </div>
+  <h3 v-html="this.questionText"></h3>
+  <div v-for="(openAnswer, i) in openAnswers">
+    <div class="note">
+      <p class="date"> {{formatdate(openAnswer.submission.submitted)}} 
+      <p class="responseText" v-html="openAnswer.value "></p> </p>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   export default {
@@ -20,11 +20,9 @@
     },
     methods: {
       formatdate(date) {
-        console.log(date)
         let months = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
         let newDate = new Date(date)
         let dateFormated = newDate.getDate() + ' ' + months[newDate.getMonth()] + ' ' + newDate.getFullYear();
-        console.log(dateFormated)
         return dateFormated
       }
     } 
@@ -34,12 +32,13 @@
   <style>
     .date {
       font-size: 1em;
+      padding: .5em 0 .5em 2em;
     }
     .responseText {
-      font-size: 1.5rem;
+      font-size: 1.5em;
+      padding: .5em 0 .5em 0;
     }
     .note {
-      padding-bottom: .5em;
-      padding-top: .5em;
+      padding: .5em 0 .5em 0;
     }
   </style>

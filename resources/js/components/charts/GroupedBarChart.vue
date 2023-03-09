@@ -1,5 +1,5 @@
 <template>
-	<h2>Vurderingen av modulen med tanke på: </h2>
+	<h3>Vurderingen av modulen med tanke på: </h3>
 	<div id="gbc"></div>
 	<section>
 		<subsection class="category"><b>Læring</b></subsection>
