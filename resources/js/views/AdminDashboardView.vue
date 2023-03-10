@@ -1,6 +1,6 @@
 @extends('layouts.app')
 <template>
-  <div class="dashboard" v-if="ready && connectedToParent" >
+  <div ref="ltiView" class="dashboard" v-if="ready && connectedToParent" >
     <h1>Oversikt over kompetansepakken</h1>
     
     <section class="filtering-section">
@@ -103,7 +103,9 @@
 
       iframeresize() {
         this.$nextTick(function () {
-          var h = this.$el.clientHeight 
+          var h = this.$refs.ltiView.clientHeight + 50
+          console.log("view height")
+          console.log(h)
           parent.postMessage(
           JSON.stringify({ subject: "lti.frameResize", height: h }),
           "*"
@@ -174,9 +176,11 @@
         }
         this.current_module = value.id;
         this.updateFinnishCount()
+        this.iframeresize()
       },
       updateSurvey(value){
         this.view_survey = value;
+        this.iframeresize()
       },
       async getSurveyData() {
         try {
