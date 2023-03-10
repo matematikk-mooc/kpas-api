@@ -98,3 +98,6 @@ Route::get('user/{userId}/context/{contextId}/history', 'HistoryController@getUs
 Route::get('context/{contextId}/history', 'HistoryController@getContextHistoryData');
 Route::get('statistics/{courseId}', 'GroupEnrollmentController@getGroupEnrollmentCount');
 Route::get('course/{courseId}/count', 'CourseController@getStudentCount');
+
+Route::get('school/orgnr/{orgNr}', 'NxrController@getSchool');
+Route::get('kindergarten/orgnr/{orgNr}', 'NxrController@getKindergarten');
