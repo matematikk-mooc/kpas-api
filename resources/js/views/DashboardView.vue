@@ -31,10 +31,10 @@
     </section>
   </div>
   <div v-else-if="!groupMember && ready"> 
-    <h2>Du må være medlem av en gruppe for å få tilgang til Dashboard</h2>
+    <h2>Du må være medlem av en gruppe for å få tilgang til Dashboard.</h2>
   </div>
   <div v-else-if="groupTooSmall"> 
-    <h2>Gruppen du er medlem av er for liten til at man kan se data.</h2>
+    <h2>Du er medlem av en gruppe vi ikke kan vise frem data til, dette er på bakgrunn av å holde besvarelser anonyme.</h2>
   </div>
   <div v-else>
       <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
