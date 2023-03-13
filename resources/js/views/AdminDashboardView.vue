@@ -18,9 +18,19 @@
       :disabled="!coursemodules.length"
       label="name"
       :options="coursemodules"
+      :clearable="true"
       placeholder="Velg modul"
       @update:modelValue="updateModule"
       ></v-select>
+
+      <v-select v-if="module_surveys.length > 1"
+        class="selector"
+        label="title_internal"
+        :clearable="true"
+        :options="module_surveys"
+        placeholder="Velg survey"
+        @update:modelValue="updateSurvey"
+        ></v-select>
       
     </section>
     <h2 v-if="completed_count_item.length && current_module" class="title">Markert som fullført </h2>
@@ -28,18 +38,8 @@
       <horizontal-bar-chart class="completed" :data="completed_count_item"> </horizontal-bar-chart>
     </section> 
     
-    <section class="select-survey" v-if="module_surveys.length && current_module">
-      <v-select v-if="module_surveys.length > 1"
-        class="selector"
-        label="title_internal"
-        :options="module_surveys"
-        placeholder="Velg survey"
-        @update:modelValue="updateSurvey"
-        ></v-select>
-        
-        <h2 v-if="view_survey" class="title">{{view_survey.title_internal}}</h2>
-    </section>
-      
+    <h2 v-if="view_survey" class="title">{{view_survey.title_internal}}</h2>
+    
     <section class="grouped" v-if="module_surveys.length && current_module && view_survey">
       <grouped-bar-chart :id="view_survey.id" :data="view_survey.questions.slice(0,3)" :likert5ops="this.likert5ops"></grouped-bar-chart>
     </section>
@@ -61,7 +61,7 @@
     </section>
 
     <section class="no-module" v-else>
-      <h3> Velg modul for å se resultater fra brukerundersøkelse. </h3>
+      <h3> Velg modul for å se statistikk og resultater. </h3>
     </section>
   </div>
   <div v-else>
@@ -73,6 +73,7 @@
 <script>
   import api from "../api";
   import DashboardGroupSelect from "../components/DashboardGroupSelect";
+  import "vue-select/dist/vue-select.css";
   
   export default {
     name: "AdminDashboardView",
@@ -297,15 +298,11 @@ h3 {
 }
 
 .selector{
-  width: 40%;
-}
-
-/* .completed{
-  overflow-y: scroll;
-  height: 42em;
+  width: fit-content;
+  min-width: 50%;
   margin: 1em;
-  padding: 1em;
-} */
+  padding: 0.5;
+}
 
 .completed-section,.grouped, .barview, .feedback, .filtering-section, .no-survey, .no-module {
   background-color: white;
