@@ -40,6 +40,7 @@ export default {
 	
 	methods: {
 		createChart() {
+			this.chartData = []
 			this.mapData(); 
 			
     	let margin = {top: 20, right: 25, bottom: 125, left: 25},
@@ -47,6 +48,7 @@ export default {
   		height = 600 - margin.top - margin.bottom
 
 			let svg = select("#gbc").append("svg")
+			.attr("id", "gbchart")
       .attr("preserveAspectRatio", "xMinYMin meet")
       .attr("viewBox", "0 0 800 600")
       .classed("svg-content-responsive", true)
@@ -149,9 +151,9 @@ export default {
 
 	},
 	watch: {
-      data(){
-		selectAll("svg").remove()
-        this.createChart()
+    data(){
+			selectAll("#gbchart").remove();
+      this.createChart()
       }
 	}	
 }

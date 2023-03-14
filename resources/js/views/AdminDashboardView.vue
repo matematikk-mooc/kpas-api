@@ -175,6 +175,9 @@
         if(this.module_surveys.length > 0){
           this.view_survey = this.module_surveys[0];
         }
+        else {
+          this.view_survey = null
+        }
         this.current_module = value.id;
         this.updateFinnishCount()
         this.iframeresize()
