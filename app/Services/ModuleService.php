@@ -19,9 +19,7 @@ class ModuleService
     public function getModuleStatistics(int $courseId)
     {
         $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/modules?format=json";
-        $result =  $this->guzzleClient->request('GET', $url);
-        return $result;
-
+        return $this->guzzleClient->request('GET', $url);
     }
 
     public function getModuleStatisticsByGroup(int $courseId, $groupId)
@@ -33,8 +31,7 @@ class ModuleService
     public function getModuleStatisticsCount(int $courseId)
     {
         $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/modules/count?format=json";
-        $result =  $this->guzzleClient->request('GET', $url);
-        return $result;
+        return $this->guzzleClient->request('GET', $url);
 
     }
 }

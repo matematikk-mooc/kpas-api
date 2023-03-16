@@ -80,6 +80,11 @@
     components: {
       DashboardGroupSelect,
     },
+    props: {
+      settings: {},
+      likert5ops: {},
+      coursemodules: [],
+    },
     data() {
       return {
         studentCount: null,
@@ -94,11 +99,6 @@
         current_module: null,
         connectedToParent: false,
       }
-    },
-    props: {
-      settings: {},
-      likert5ops: {},
-      coursemodules: [],
     },
     methods: { 
 

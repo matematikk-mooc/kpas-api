@@ -173,29 +173,27 @@ export default {
       try {
         console.log(this.userGroups)
         let groupId = "";
+        let groupTooSmall = false; 
         if(Object.hasOwn(this.userGroups, 'Skole')){
           groupId = this.userGroups.Skole.id
           this.current_group_name = this.userGroups.Skole.name
           this.groupMember = true
-          let tooSmall = await this.isGroupTooSmall(this.userGroups.Skole, "school")
-          if(tooSmall){
-            this.groupTooSmall = true;
-            return
-          }
-
+          groupTooSmall = await this.isGroupTooSmall(this.userGroups.Skole, "school")
+          
         } else if(Object.hasOwn(this.userGroups, 'Barnehage')){
           groupId = this.userGroups.Barnehage.id
           this.current_group_name = this.userGroups.Barnehage.name
           this.groupMember = true
-          let tooSmall = await this.isGroupTooSmall(this.userGroups.Barnehage, "kindergarten")           
-          if(tooSmall){
-            this.groupTooSmall = true;
-            return
-          }
-
+          groupTooSmall = await this.isGroupTooSmall(this.userGroups.Barnehage, "kindergarten")           
+  
         }else {
           this.groupMember = false; 
           return;          
+        }
+
+        if(groupTooSmall){
+          this.groupTooSmall = true;
+          return
         }
 
         let url = "/survey/course/" + this.course_id + "?group=" + groupId + "&format=json";

@@ -2,9 +2,9 @@
 	<h3>Vurderingen av modulen med tanke på: </h3>
 	<div id="gbc"></div>
 	<section>
-		<subsection class="category"><b>Læring</b></subsection>
-		<subsection class="category"><b>Relevans</b></subsection>
-		<subsection class="category"><b>Praksisendring</b></subsection>
+		<section class="category"><b>Læring</b></section>
+		<section class="category"><b>Relevans</b></section>
+		<section class="category"><b>Praksisendring</b></section>
 	</section>
 </template>
 
