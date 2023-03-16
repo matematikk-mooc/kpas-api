@@ -45,6 +45,7 @@ Route::group(['prefix' => 'course'], function () {
     Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@getCourseGroupsByCategory')->middleware('lti');
     Route::get('/{courseId}/modules', 'ModuleController@moduleStatistics');
     Route::get('/{courseId}/modules/count', 'ModuleController@moduleStatisticsCount');
+
 });
 
 Route::group(['prefix' => 'survey'], function() {

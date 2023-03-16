@@ -14,7 +14,7 @@ class CourseController extends Controller
     /**
      * @var CanvasService
      */
-    private $canvasService;
+    protected $canvasService;
 
     public function __construct(CanvasService $canvasService)
     {
