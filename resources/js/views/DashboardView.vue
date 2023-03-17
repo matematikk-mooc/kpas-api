@@ -31,7 +31,10 @@
     </section>
   </div>
   <div v-else-if="!groupMember && ready"> 
-    <h2>Du må være medlem av en gruppe for å få tilgang til Dashboard</h2>
+    <h2>Du må være medlem av en gruppe for å få tilgang til Dashboard.</h2>
+  </div>
+  <div v-else-if="groupTooSmall"> 
+    <h2>Du er medlem av en gruppe vi ikke kan vise frem data til, dette er på bakgrunn av å holde besvarelser anonyme.</h2>
   </div>
   <div v-else>
       <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
@@ -59,7 +62,8 @@ export default {
       groupsLoaded: false,
       course_id: null, 
       current_group_name: null,
-      groupMember: false
+      groupMember: false,
+      groupTooSmall: false,
     };
   },
   props: {
@@ -145,22 +149,51 @@ export default {
         console.log("error ", e)
       }
     },
+    async isGroupTooSmall(group, type){
+      let orgNr = group.description.split(":").at(-1)
+      let apiResult;
+      if(type == "school"){
+        let url = "/school/orgnr/" + orgNr;
+        apiResult = await api.get(url, {
+          params: { cookie: window.cookie }
+        });
+      }
+      else if(type == "kindergarten"){
+        let url = "/kindergarten/orgnr/" + orgNr;
+        apiResult = await api.get(url, {
+          params: { cookie: window.cookie }
+        });
+      }
+      if(apiResult.data.result.AnsatteTil <= 5){
+        return true;
+      }
+      return false;
+    },
     async getSurveyData() {
       try {
+        console.log(this.userGroups)
         let groupId = "";
-        if(this.userGroups.Skole){
+        let groupTooSmall = false; 
+        if(Object.hasOwn(this.userGroups, 'Skole')){
           groupId = this.userGroups.Skole.id
           this.current_group_name = this.userGroups.Skole.name
           this.groupMember = true
-
-        } else if(this.userGroups.Barnehage){
-          groupId = this.userGroups.Skole.id
+          groupTooSmall = await this.isGroupTooSmall(this.userGroups.Skole, "school")
+          
+        } else if(Object.hasOwn(this.userGroups, 'Barnehage')){
+          groupId = this.userGroups.Barnehage.id
           this.current_group_name = this.userGroups.Barnehage.name
           this.groupMember = true
-
+          groupTooSmall = await this.isGroupTooSmall(this.userGroups.Barnehage, "kindergarten")           
+  
         }else {
           this.groupMember = false; 
           return;          
+        }
+
+        if(groupTooSmall){
+          this.groupTooSmall = true;
+          return
         }
 
         let url = "/survey/course/" + this.course_id + "?group=" + groupId + "&format=json";
@@ -197,18 +230,27 @@ export default {
           self.getBgColor();
           self.getUsersGroups()
         }else if(msg.subject == "kpas-lti.usergroups") {
-          self.groupsLoaded = true;
           self.usersGroups = msg.groups;
-          await self.updateCurrentGroups()
-          await self.getSurveyData()
-          self.ready = true;
+          self.groupsLoaded = true;
         }
       } catch(e) {
         //This message is not for us.
       }
     }, false);
-    self.connectToParent();  
+    self.connectToParent();
+  }, 
+  watch: {
+    async groupsLoaded() {
+      if(this.groupsLoaded){
+        await this.updateCurrentGroups()
+        await this.getSurveyData()
+        this.ready = true;
+      }
+      
+    }
+    
   }
+
 };
 </script> 
 

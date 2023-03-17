@@ -43,6 +43,9 @@ Route::group(['prefix' => 'group'], function () {
 Route::group(['prefix' => 'course'], function () {
     Route::get('/{courseId}/groups', 'GroupController@getCourseGroups')->middleware('lti');
     Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@getCourseGroupsByCategory')->middleware('lti');
+    Route::get('/{courseId}/modules', 'ModuleController@moduleStatistics');
+    Route::get('/{courseId}/modules/count', 'ModuleController@moduleStatisticsCount');
+
 });
 
 Route::group(['prefix' => 'survey'], function() {
@@ -95,5 +98,7 @@ Route::get('user/{userId}/history', 'HistoryController@getUserHistoryData');
 Route::get('user/{userId}/context/{contextId}/history', 'HistoryController@getUserContextHistoryData');
 Route::get('context/{contextId}/history', 'HistoryController@getContextHistoryData');
 Route::get('statistics/{courseId}', 'GroupEnrollmentController@getGroupEnrollmentCount');
-Route::get('course/{courseId}/modules', 'ModuleController@moduleStatistics');
 Route::get('course/{courseId}/count', 'CourseController@getStudentCount');
+
+Route::get('school/orgnr/{orgNr}', 'NxrController@getSchool');
+Route::get('kindergarten/orgnr/{orgNr}', 'NxrController@getKindergarten');

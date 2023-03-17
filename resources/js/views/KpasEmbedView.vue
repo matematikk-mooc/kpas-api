@@ -154,7 +154,6 @@ export default {
         return;
       }
       this.selectedModule = module.id;
-      console.log(this.selectedModule);
       this.emptyModuleSelected = false;
     },
 
@@ -197,8 +196,6 @@ export default {
         title_internal: this.title_internal,
         questions: questions
       })
-      console.log("surveyid " + response.data.result)
-
       if(response.data.status == 200) {
         this.survey_id = response.data.result;
         this.surveyCreated = true;

@@ -34,6 +34,27 @@ class DataNsrService
         $this->guzzleClient = $guzzleClient;
     }
 
+    public function getSchoolByOrgNr($orgnr)
+    {
+        try{
+            return $this->request($this->nsrDomain, "v3/enhet/$orgnr");
+        } 
+        catch (\Exception $e){
+            throw new Exception("Could not find school with orgnr $orgnr");
+        }
+    }
+
+    public function getKindergartenByOrgNr($orgnr)
+    {
+        try{
+            return $this->request($this->nbrDomain, "v3/enhet/$orgnr");
+        } 
+        catch (\Exception $e) {
+            throw new Exception("Could not find kindergarten with orgnr $orgnr");
+        }
+    }
+
+
     public function getCounties(): array
     {
         $fylker = $this->request($this->nsrDomain, 'fylker');

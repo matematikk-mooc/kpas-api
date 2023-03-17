@@ -2,19 +2,19 @@
 	<section class="dropdown-section">
 		<label v-if="settings.custom_county_category_id" id="select-county">
 			{{ settings.custom_county_category_name }}:<br />
-			<v-select v-model="chosenCounty" :disabled="!counties.length" :options="counties" label="name"
+			<v-select class="gselect" v-model="chosenCounty" :clearable="true" :disabled="!counties.length" :options="counties" label="name"
 				placeholder="--- Fylke ---">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_community_category_id" id="select-community">
 			{{ settings.custom_community_category_name }}:<br />
-			<v-select v-model="chosenCommunity" :disabled="!communities.length" :options="communities" label="name"
+			<v-select class="gselect" v-model="chosenCommunity" :clearable="true" :disabled="!communities.length" :options="communities" label="name"
 			placeholder="--- Kommune ---">
 		</v-select>
 		</label>
 		<label v-if="settings.custom_institution_category_id" id="select-institution">
 			{{ categories.find(e=> e.id == settings.custom_institution_category_id).name }}:<br />
-			<v-select v-model="chosenInstitution" :disabled="!institutions.length" :options="institutions" label="name"
+			<v-select class="gselect" v-model="chosenInstitution" :clearable="true" :disabled="!institutions.length" :options="institutions" label="name"
 				placeholder="--- Institusjon ---">
 			</v-select>
 		</label>
@@ -22,19 +22,19 @@
 	<section class="dropdown-section">	
 		<label v-if="settings.custom_national_faculty_category_id" id="select-facultynational">
 			Faggruppe nasjonal:<br />
-			<v-select v-model="chosenFacultyNational" :disabled="!facultiesNational.length" :options="facultiesNational" label="name"
+			<v-select class="gselect" v-model="chosenFacultyNational" :clearable="true" :disabled="!facultiesNational.length" :options="facultiesNational" label="name"
 				placeholder="--- Faggruppe (nasjonalt) ---">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_county_faculty_category_id" id="select-facultycounty">
 			{{ settings.custom_county_faculty_category_name }}<br />
-			<v-select v-model="chosenFacultyCounty" :disabled="!facultiesCounty.length" :options="facultiesCounty" label="name"
+			<v-select class="gselect" v-model="chosenFacultyCounty" :clearable="true" :disabled="!facultiesCounty.length" :options="facultiesCounty" label="name"
 			placeholder="--- Faggruppe (fylke) ---">
 		</v-select>
 		</label>
 		<label v-if="settings.custom_community_faculty_category_id" id="select-facultycommunity">
 			{{ settings.custom_community_faculty_category_name }}:<br />
-			<v-select v-model="chosenFacultyCommunity" :disabled="!facultiesCommunity.length" :options="facultiesCommunity" label="name"
+			<v-select class="gselect" v-model="chosenFacultyCommunity" :clearable="true" :disabled="!facultiesCommunity.length" :options="facultiesCommunity" label="name"
 				placeholder="--- Faggruppe (kommune) ---">
 			</v-select>
 		</label>
@@ -42,13 +42,13 @@
 	<section class="dropdown-section">
 		<label v-if="settings.custom_county_principals_category_id" id="select-countyleader">
 			{{ settings.custom_county_principals_category_name }}:<br />
-			<v-select v-model="chosenCountyLeader" :disabled="!leaderCountyGroups.length" :options="leaderCountyGroups" label="name"
+			<v-select class="gselect" v-model="chosenCountyLeader" :clearable="true" :disabled="!leaderCountyGroups.length" :options="leaderCountyGroups" label="name"
 				placeholder="--- Leder/Eier (fylke) ---">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_community_principals_category_id" id="select-leadercommunity">
 			{{ settings.custom_community_principals_category_name }}:<br />
-			<v-select v-model="chosenCommunityLeader" :disabled="!leaderCommunityGroups.length" :options="leaderCommunityGroups" label="name"
+			<v-select class="gselect" v-model="chosenCommunityLeader" :clearable="true" :disabled="!leaderCommunityGroups.length" :options="leaderCommunityGroups" label="name"
 				placeholder="--- Leder/Eier (kommune) ---">
 			</v-select>
 		</label>
@@ -145,7 +145,6 @@ export default {
           params: { cookie: window.cookie }
         });
 				this.leaderCountyGroups = result.data;
-				console.log(result.data)
 				this.isError = false;
 			}
 			catch {
@@ -156,12 +155,10 @@ export default {
 		},
 		async getCommunityLeaderGroups(countyId){
 			try {
-				console.log("inside get leader community")
 				const result = await api.get(`/course/${this.courseId}/category/${this.settings.custom_community_principals_category_id}/groups?county_id=${countyId}`,
 				{
           params: { cookie: window.cookie }
         });
-				console.log(result.data)
 				this.leaderCommunityGroups = result.data;
 				this.isError = false;
 			}
@@ -342,7 +339,7 @@ label {
 	display: inline-block;
 	align-content: center;
 	padding: .5em;
-	width: 30%;
+	width: 34%;
 }
 
 </style>
