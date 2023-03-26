@@ -259,6 +259,15 @@
     },
     
     async created() {
+      const allowedRoles = ['Admin', 'Udirforvalter']
+      
+      let allowed = allowedRoles.some(
+        (element) => this.settings.custom_canvas_roles.includes(element)
+      )
+      if (!allowed) {
+        throw new Error("Permission denied.");
+      }
+
       let self = this;
       const mql = window.matchMedia('(max-width: 500px)');
       mql.onchange = (e) => { 
