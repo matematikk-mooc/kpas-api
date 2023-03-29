@@ -66,12 +66,7 @@ export default {
 			svg.append("g")
 			.attr("class", "axis")
 			.call(yaxis)
-			// .append("text")
-			// .attr("transform", "rotate(-90)")
-			// .attr("dy", ".75em")
-			// .attr("y", 6)
-			// .style("text-anchor", "end")
-			// .text("Frequency");
+
 			
 			const line = d3.line()
 			.x(function(d) { return xScale(dateParser(d.date)); })
@@ -135,19 +130,6 @@ export default {
 </script>
 
 <style>
-/* .lines{
-	stroke: #706f6f;
-	stroke-width: 0.5;
-	shape-rendering: crispEdges;
-} */
-
-/* axis contour */
-/* .axis path {
-	stroke: #706f6f;
-	fill: none !important;
-	stroke-width: 0.7;
-	shape-rendering: crispEdges;
-} */
 
 .pathline {
 	fill: none;
@@ -156,7 +138,6 @@ export default {
 
 
 
-/* axis text */
 .axis text {
 	fill: #2b2929;
 	font-size: 120%;
