@@ -9,6 +9,7 @@ import AdminDashboardView from "./views/AdminDashboardView";
 import BarChart from "./components/charts/BarChart";
 import GroupedBarChart from "./components/charts/GroupedBarChart";
 import HorizontalBarChart from "./components/charts/HorizontalBarChart";
+import LineChart from "./components/charts/LineChart";
 import OpenAnswer from "./components/OpenAnswer";
 import DashboardGroupSelect from "./components/DashboardGroupSelect";
 import {createApp} from "vue/dist/vue.esm-bundler";
@@ -60,6 +61,7 @@ app.component("open-answer", OpenAnswer);
 app.component("grouped-bar-chart", GroupedBarChart);
 app.component("horizontal-bar-chart", HorizontalBarChart);
 app.component("dashboard-select", DashboardGroupSelect);
+app.component("line-chart", LineChart);
 
 
 app.mount("#app")
