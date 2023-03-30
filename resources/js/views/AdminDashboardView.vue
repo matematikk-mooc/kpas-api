@@ -1,6 +1,6 @@
 @extends('layouts.app')
 <template>
-  <div ref="ltiView" class="dashboard" v-if="ready && connectedToParent" >
+  <div ref="ltiView" class="dashboard" v-if="allowed && ready && connectedToParent" >
     <h1>Oversikt over kompetansepakken</h1>
     
     <section class="filtering-section">
@@ -64,6 +64,9 @@
       <h3> Velg modul for å se statistikk og resultater. </h3>
     </section>
   </div>
+  <div v-else-if="!allowed">
+    <h3>Du har ikke rettigheter til å se denne siden, dersom du er ansatt i Udir kan du ta kontakt ved kompetansesupport@udir.no</h3>
+  </div>
   <div v-else>
     <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
   </div>
@@ -98,6 +101,7 @@
         completed_count_item: [], 
         current_module: null,
         connectedToParent: false,
+        allowed: false,
       }
     },
     methods: { 
@@ -259,14 +263,10 @@
     },
     
     async created() {
-      const allowedRoles = ['Admin', 'Udirforvalter']
-      
-      let allowed = allowedRoles.some(
+      const allowedRoles = ['Admin', 'Udirforvalter', 'Udir-forvalter']
+      this.allowed = allowedRoles.some(
         (element) => this.settings.custom_canvas_roles.includes(element)
       )
-      if (!allowed) {
-        throw new Error("Permission denied.");
-      }
 
       let self = this;
       const mql = window.matchMedia('(max-width: 500px)');
