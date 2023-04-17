@@ -16,6 +16,7 @@ import './bootstrap';
 import FloatingVue from 'floating-vue';
 import vSelect from "vue-select";
 import SurveyView from "./views/SurveyView.vue";
+import NoCookies from "./views/NoCookies.vue"
 
 //import jqueryExports from "jquery";
 //import 'select2';
@@ -60,6 +61,7 @@ app.component("open-answer", OpenAnswer);
 app.component("grouped-bar-chart", GroupedBarChart);
 app.component("horizontal-bar-chart", HorizontalBarChart);
 app.component("dashboard-select", DashboardGroupSelect);
+app.component("no-cookies-view", NoCookies);
 
 
 app.mount("#app")
