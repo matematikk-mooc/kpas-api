@@ -251,4 +251,5 @@ class GroupController extends Controller
             return new ErrorResponse($e->getMessage());
         }
     }
+
 }

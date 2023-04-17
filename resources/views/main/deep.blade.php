@@ -20,7 +20,6 @@
     admindashboardmode="{{$adminDashboardMode}}" 
     launchid="{{$id}}" 
     configdirectory="{{$configDirectory}}">
-
 </kpas-embed-view>
 
 

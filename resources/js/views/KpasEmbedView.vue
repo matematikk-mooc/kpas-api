@@ -93,6 +93,7 @@ export default {
   name: "Diploma",
 
   props: ['courseid', 'coursemodules', 'appurl', 'launchid', 'configdirectory', 'diplomamode', 'statisticsmode', 'dashboardmode', 'surveymode', 'admindashboardmode'],
+
   data() {
     return {
       logoList: [],
