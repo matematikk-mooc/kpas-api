@@ -1,6 +1,7 @@
 <template>
   <div v-if="stateNotFound">
     <p>Kunne ikke autentisere. Vennligst prøv igjen.</p>
+    <p> {{ errorMessage }} </p>
   </div>
 </template>
 
@@ -16,7 +17,8 @@ export default {
   },
   data() {
     return {
-      stateNotFound : false
+      stateNotFound : false,
+      errorMessage : ""
     }
   },
   created() {
@@ -36,22 +38,21 @@ export default {
       // This isn't a message we're expecting
       
       if (typeof event.data !== "object"){
-        console.log("Invalid datatype")
+        this.errorMessage = "Ugyldig datatype";
         this.stateNotFound = true;
         return;
       }
       
       // Validate it's the response type you expect
       if (event.data.subject !== "lti.put_data.response" && event.data.subject !== "lti.get_data.response") {
-        console.log("Invalid subject")
+        this.errorMessage = "Ugyldig emnefelt: " + event.data.subject;
         return;
       }
       
       // Validate the message id matches the id you sent
       let wantedState = "kpas_state_"+ self.state
       if (event.data.message_id !== wantedState) {
-        console.log("Invalid message_id")
-        console.log(event.data.message_id)
+        this.errorMessage = "Ugyldig message_id: " + event.data.message_id;
         this.stateNotFound = true;
         // this is not the response you're looking for
         return;
@@ -59,8 +60,7 @@ export default {
       
       // Validate that the event's origin is the same as the derived platform origin
       if (event.origin !== platformOrigin) {
-        console.log("Invalid origin")
-        console.log(event.origin)
+        this.errorMessage = "Ugyldig avsender: " + event.origin;
         this.stateNotFound = true;
         return;
       }
@@ -68,9 +68,7 @@ export default {
       // handle errors
       if (event.data.error){
         // handle errors
-        console.log("Other error")
-        console.log(event.data.error.code)
-        console.log(event.data.error.message)
+        this.errorMessage = "Feilmelding: " + event.data.error.code + " " + event.data.error.message;
         this.stateNotFound = true;
         return;
       }
