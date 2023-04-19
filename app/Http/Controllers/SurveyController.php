@@ -25,15 +25,15 @@ class SurveyController extends Controller
         return new SuccessResponse($id);
     }
 
-    public function getCourseSurveys(Request $request, int $courseId): SuccessResponse
+    public function getCourseSurveys(Request $request, $courseId): SuccessResponse
     {
         logger("SurveyController@getCourseSurveys");
         $surveyRepository = new SurveyRepository();
         if ($request->has('group')) {
-            $result = $surveyRepository->getSurveysFilteredOnGroup($courseId, $request->group);
+            $result = $surveyRepository->getSurveysFilteredOnGroup(intval($courseId), $request->group);
             return new SuccessResponse($result);
         }
-        $result = $surveyRepository->getSurveys($courseId);
+        $result = $surveyRepository->getSurveys(intval($courseId));
         return new SuccessResponse($result);
     }
 

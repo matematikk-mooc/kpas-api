@@ -16,7 +16,8 @@
     diplomamode="{{$diplomaMode}}" 
     statisticsmode="{{$statisticsMode}}" 
     dashboardmode="{{$dashboardMode}}" 
-    surveyMode="{{$surveyMode}}" 
+    surveyMode="{{$surveyMode}}"
+    admindashboardmode="{{$adminDashboardMode}}" 
     launchid="{{$id}}" 
     configdirectory="{{$configDirectory}}">
 </kpas-embed-view>

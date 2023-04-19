@@ -14,7 +14,7 @@ class CourseController extends Controller
     /**
      * @var CanvasService
      */
-    private $canvasService;
+    protected $canvasService;
 
     public function __construct(CanvasService $canvasService)
     {
@@ -39,5 +39,13 @@ class CourseController extends Controller
         }
 
         return new SuccessResponse($courseOwnerIsChildAccountOfUdir);
+    }
+
+    public function getStudentCount(string $courseId) {
+        try {
+            return new SuccessResponse($this->canvasService->getTotalStudents($courseId)['antallBrukere']);
+        } catch (Exeption $e) {
+            return new ErrorResponse($e->getMessage());
+        }
     }
 }

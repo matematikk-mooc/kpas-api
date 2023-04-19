@@ -1,10 +1,10 @@
 <template>
-	<h2>Vurderingen av modulen med tanke på: </h2>
+	<h3>Vurderingen av modulen med tanke på: </h3>
 	<div id="gbc"></div>
 	<section>
-		<subsection class="category"><b>Læring</b></subsection>
-		<subsection class="category"><b>Relevans</b></subsection>
-		<subsection class="category"><b>Praksisendring</b></subsection>
+		<section class="category"><b>Læring</b></section>
+		<section class="category"><b>Relevans</b></section>
+		<section class="category"><b>Praksisendring</b></section>
 	</section>
 </template>
 
@@ -40,6 +40,7 @@ export default {
 	
 	methods: {
 		createChart() {
+			this.chartData = []
 			this.mapData(); 
 			
     	let margin = {top: 20, right: 25, bottom: 125, left: 25},
@@ -47,6 +48,7 @@ export default {
   		height = 600 - margin.top - margin.bottom
 
 			let svg = select("#gbc").append("svg")
+			.attr("id", "gbchart")
       .attr("preserveAspectRatio", "xMinYMin meet")
       .attr("viewBox", "0 0 800 600")
       .classed("svg-content-responsive", true)
@@ -149,9 +151,9 @@ export default {
 
 	},
 	watch: {
-      data(){
-		selectAll("svg").remove()
-        this.createChart()
+    data(){
+			selectAll("#gbchart").remove();
+      this.createChart()
       }
 	}	
 }
