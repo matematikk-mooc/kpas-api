@@ -1,6 +1,6 @@
 @extends('layouts.app')
 <template>
-  <div class="dashboard" v-if="ready && view_module != null && groupMember" >
+  <div ref="ltiView" class="dashboard" v-if="ready && view_module != null && groupMember" >
     <v-select
       class="selector"
       :disabled="!modules.length"
@@ -20,7 +20,7 @@
 
     <section class="barview" v-if="view_module.questions.length > 4">
       <div v-for="(question, i) in view_module.questions.slice(3)" :key="i">
-        <bar-chart v-if="question.question_type == 'likert_scale_5pt'" :id="'q' + i" :data="question" :svgWidth=600 :svgHeight=400></bar-chart>
+        <bar-chart v-if="question.question_type == 'likert_scale_5pt'" :id="'q' + i" :data="question" :likert5ops="this.likert5ops" :svgWidth=600 :svgHeight=400></bar-chart>
       </div>
     </section>
 
@@ -73,8 +73,9 @@ export default {
   methods: {
     iframeresize() {
       this.$nextTick(function () {
+        var h = this.$refs.ltiView.clientHeight + 50
         parent.postMessage(
-        JSON.stringify({ subject: "lti.frameResize", height: 500 }),
+        JSON.stringify({ subject: "lti.frameResize", height: h }),
         "*"
         );
       });
@@ -108,6 +109,7 @@ export default {
       }
       let index = this.modules.indexOf(value)
       this.view_module =  this.survey_data[index]
+      this.iframeresize()
     },
     async updateCurrentGroups() {
       console.log("updateCurrentGroups");
@@ -245,6 +247,7 @@ export default {
         await this.updateCurrentGroups()
         await this.getSurveyData()
         this.ready = true;
+        this.iframeresize();
       }
       
     }

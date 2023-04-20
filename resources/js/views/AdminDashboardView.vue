@@ -46,7 +46,7 @@
       
     <section class="barview" v-if="view_survey && view_survey.questions.length > 4 && module_surveys.length && current_module">
       <div v-for="(question, i) in view_survey.questions.slice(3)" :key="i">
-        <bar-chart v-if="question.question_type == 'likert_scale_5pt'" :id="'q' + i" :data="question" :svgWidth=600 :svgHeight=400></bar-chart>
+        <bar-chart v-if="question.question_type == 'likert_scale_5pt'" :id="'q' + i" :data="question" :likert5ops="this.likert5ops" :svgWidth=600 :svgHeight=400></bar-chart>
       </div>
     </section>
       
@@ -109,8 +109,6 @@
       iframeresize() {
         this.$nextTick(function () {
           var h = this.$refs.ltiView.clientHeight + 50
-          console.log("view height")
-          console.log(h)
           parent.postMessage(
           JSON.stringify({ subject: "lti.frameResize", height: h }),
           "*"
