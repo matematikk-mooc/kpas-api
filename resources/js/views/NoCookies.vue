@@ -12,7 +12,8 @@ export default {
     state: "",
     nonce: "",
     targeturl: "",
-    storagetarget: ""
+    storagetarget: "",
+    platformhost: ""
     
   },
   data() {
@@ -23,7 +24,7 @@ export default {
   },
   created() {
     document.body.style.backgroundColor = "#eaeaea"
-    let platformOIDCLoginURL = "https://bibsys.test.instructure.com/api/lti/authorize_redirect?"
+    let platformOIDCLoginURL = "https://" + this.platformhost + "/api/lti/authorize_redirect?"
     let platformOrigin = new URL(platformOIDCLoginURL).origin;
     let frameName = this.storagetarget;
     let parent = window.parent || window.opener;
