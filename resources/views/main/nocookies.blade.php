@@ -4,7 +4,7 @@
 @section('content')
 
 <no-cookies-view    
-    state="{{$state}}" nonce="{{$nonce}}" targeturl="{{$targetUrl}}" storagetarget="{{$storageTarget}}" ></no-cookies-view>
+    state="{{$state}}" nonce="{{$nonce}}" targeturl="{{$targetUrl}}" storagetarget="{{$storageTarget}}" platformhost="{{$platformHost}}" ></no-cookies-view>
 
 
 @endsection
