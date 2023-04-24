@@ -53,16 +53,15 @@ class Lti3Controller extends Controller
      * @throws LtiException
      */
     public function launch(Request $request)
-    {
+    {   
         $config_directory = $request->query("config_directory", "configs");
         logger("LTI3Controller config directory:". $config_directory);
         $launch = LTI\LTI_Message_Launch::new(new LTI3_Database($config_directory));
         try {
-            $launch->validate();
+            $launch->validate(true);
         } catch (\Throwable $e) {
             throw new LtiException("Error at LTIv3 launch :" . $e->getMessage());
         }
-
 
         $diplomaMode = config('constants.options.DIPLOMA_MODE');
         $roleMode = config('constants.options.ROLE_GROUP_MODE');
