@@ -16,10 +16,10 @@ class Kommune extends Model
     public function CreateAnnenKommune() {
         $key[$this->getKeyName()] = Kommune::$annetKommuneNr;
         Kommune::updateOrCreate($key, [
-            'Fylkesnr' => Fylke::$annetFylkesNr, 
-            'Navn' => Kommune::$annetKommuneNavn, 
-            'OrgNr' => '999999999', 
-            'Kommunenr' => Kommune::$annetKommuneNr, 
+            'Fylkesnr' => Fylke::$annetFylkesNr,
+            'Navn' => Kommune::$annetKommuneNavn,
+            'OrgNr' => '999999999',
+            'Kommunenr' => Kommune::$annetKommuneNr,
             'ErNedlagt' => false
         ]);
 

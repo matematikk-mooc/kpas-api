@@ -27,4 +27,3 @@ class ApiToken
         return $next($request);
     }
 }
-

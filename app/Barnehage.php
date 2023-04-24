@@ -30,12 +30,12 @@ class Barnehage extends Model
         $annenNsrId = '99';
         $annenOrgNr = '999999999';
         $key[$this->getKeyName()] = $annenOrgNr;
-        Barnehage::updateOrCreate($key, 
+        Barnehage::updateOrCreate($key,
         [
-            'KommuneNr' => Kommune::$annetKommuneNr, 
-            'Navn' => Barnehage::$annetBarnehageNavn, 
+            'KommuneNr' => Kommune::$annetKommuneNr,
+            'Navn' => Barnehage::$annetBarnehageNavn,
             'FulltNavn' => Barnehage::$annetBarnehageNavn,
-            'OrgNr' => $annenOrgNr, 
+            'OrgNr' => $annenOrgNr,
             'NSRId' => $annenNsrId,
             'FylkeNr' => Fylke::$annetFylkesNr,
             'ErBarnehage' => true,

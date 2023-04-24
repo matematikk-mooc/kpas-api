@@ -11,10 +11,10 @@ class SubtitlesRepository
     public static function getOrCreateSubtitles(int $videoId)
     {
         $subtitles = self::getSubtitlesFromDatabase($videoId);
-        if ($subtitles->isNotEmpty()) 
+        if ($subtitles->isNotEmpty())
         {
             return $subtitles;
-        } 
+        }
 
         $href = "/videos/" . $videoId . "/texttracks";
         //logger("getOrCreateSubtitles:" . $href);
@@ -25,7 +25,7 @@ class SubtitlesRepository
         } else {
             $languagesAvailable = $result["body"]["data"];
             //logger($languagesAvailable);
-            foreach($languagesAvailable as $languageAvailable) {         
+            foreach($languagesAvailable as $languageAvailable) {
                 $vttHref = $languageAvailable["link"];
                 //logger($vttHref);
                 $client = new Client();
@@ -45,7 +45,7 @@ class SubtitlesRepository
     {
         return Subtitles::where('videoId', $videoId)->get();
     }
-    private static function createSubtitles($videoId, $vtt, $language): Subtitles 
+    private static function createSubtitles($videoId, $vtt, $language): Subtitles
     {
         $subtitles = new Subtitles;
 
@@ -55,7 +55,7 @@ class SubtitlesRepository
         $subtitles->save();
         return $subtitles;
     }
-    private static function createNoSubtitles($videoId): Subtitles 
+    private static function createNoSubtitles($videoId): Subtitles
     {
         $subtitles = new Subtitles;
 

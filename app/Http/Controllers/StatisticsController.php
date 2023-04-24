@@ -24,7 +24,7 @@ class StatisticsController extends Controller
         }
         return $groupStatistics;
     }
-    public function getStatistics($courseId) 
+    public function getStatistics($courseId)
     {
         $data = $this->canvasDbRepository->getTotalStudents($courseId);
         $groupStatistics = $this->getGroupStatistics($courseId);
@@ -37,7 +37,7 @@ class StatisticsController extends Controller
         $data = $this->getStatistics($courseId);
         return new SuccessResponse($data);
     }
-    public function courseCount(int $courseId) : SuccessResponse 
+    public function courseCount(int $courseId) : SuccessResponse
     {
         $data = $this->canvasDbRepository->getTotalStudents($courseId);
         return new SuccessResponse($data);

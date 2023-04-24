@@ -16,10 +16,10 @@ class VimeoController extends Controller
         $subtitles = SubtitlesRepository::getOrCreateSubtitles($vimeoId);
 
         if(!$subtitles->first()["language"]) {
-            return new ErrorXmlResponse("Videotranskript er dessverre ikke tilgjengelig for denne videoen.");            
+            return new ErrorXmlResponse("Videotranskript er dessverre ikke tilgjengelig for denne videoen.");
         }
         $transcript = '<?xml version="1.0" encoding="utf-8" ?><transcript>';
-        foreach($subtitles as $subtitle) {         
+        foreach($subtitles as $subtitle) {
             $vtt_subtitles = Subtitles::load($subtitle["raw_subtitles"], 'vtt');
             $vtt_subtitlesArray = $vtt_subtitles->getInternalFormat();
             $transcript .= '<language lang="' . $subtitle["language"] . '">';
@@ -45,7 +45,7 @@ class VimeoController extends Controller
         $result = SubtitlesRepository::deleteSubtitles($vimeoId);
         if($result) {
             return new SuccessResponse('Success');
-        } 
+        }
         return new ErrorResponse("Could not delete subtitles with supplied id. Error:{$result}");
     }
 }

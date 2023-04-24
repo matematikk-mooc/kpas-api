@@ -12,7 +12,7 @@
 <div class="alert alert-danger">
 <p>
 Kunne ikke starte rolle og gruppeverktøyet.</p>
-<p>For at det skal virke må din nettleser tillate 
+<p>For at det skal virke må din nettleser tillate
 informasjonskapsler fra tredjeparter fordi verktøyet vårt ligger på en egen server: https://kpas-lti.azurewebsites.net
 </p>
 <p>Kontakt din IT-avdeling eller les om hvordan du

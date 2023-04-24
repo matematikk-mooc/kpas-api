@@ -5,7 +5,7 @@
     <div v-if="usersMerged" class='alert alert-success'>Sammenslåingen av brukerne var vellykket.</div>
     <div v-if="codeCopied"
     class="alert alert-info alert-dismissible">
-  <a 
+  <a
     @click="copyCodeAlertDismissed"
     href="#" class="close" data-dismiss="alert" aria-label="close">&times;
   </a>
@@ -35,7 +35,7 @@ Koden ble kopiert til utklippstavlen.
     <div v-if="moveContentState">
       <h3>
       <a href="#"
-      @click="startOver">Slå sammen brukere 
+      @click="startOver">Slå sammen brukere
       </a>
 > Flytt innhold til en annen bruker
 </h3>
@@ -52,9 +52,9 @@ sammenslåingkode ved å trykke på knappen nedenfor.
         </button>
       <span v-if="isGeneratingToken" class="ml-3">Genererer kode <div class="spinner-border text-danger"></div></span>
       &nbsp;&nbsp;&nbsp;
-      <span 
+      <span
         id="generated-token"
-        v-show="tokenGenerated" 
+        v-show="tokenGenerated"
         class="show-token alert alert-success">{{ tokenData }}
       </span>&nbsp;&nbsp;
         <button
@@ -74,23 +74,23 @@ sammenslåingkode ved å trykke på knappen nedenfor.
     <div v-if="fetchContentState">
       <h3>
       <a href="#"
-      @click="startOver">Slå sammen brukere 
+      @click="startOver">Slå sammen brukere
       </a>
 > Hent innhold fra en annen bruker over til denne
 </h3>
 Skriv inn koden du har laget for brukeren du ønsker å hente innhold fra. Dersom du ikke har en slik kode
 må du først logge inn som brukeren du vil hente innhold fra og velge "Flytt innhold fra denne brukeren over til en annen"      <div>
 <br>
-        Kode: <input 
-        :disabled="canMergeUsers" 
-        type="text" 
-        size="30" 
-        id="merge-user-token" 
+        Kode: <input
+        :disabled="canMergeUsers"
+        type="text"
+        size="30"
+        id="merge-user-token"
         name="token" />
-<br><br>        
+<br><br>
       </div>
 Når du har skrevet inn koden trykker du på "Finn innmeldingskonflikter" for å undersøke om
-de to brukerne er medlem av en eller flere like kompetansepakker. I så fall må konfliktene løses.      
+de to brukerne er medlem av en eller flere like kompetansepakker. I så fall må konfliktene løses.
         <br><br>
         <button
           class="kpas-button"
@@ -107,7 +107,7 @@ Følgende innmeldingskonflikter ble funnet. Du må melde deg av kompetansepakken
         <merge-user-conflicts
           :conflicts="conflicts"
           :conflictsLoaded="conflictsLoaded"
-        ></merge-user-conflicts>    
+        ></merge-user-conflicts>
       </div>
       <div v-if="canMergeUsers">
       Ingen innmeldingskonflikter ble funnet. Trykk på "Slå sammen" for å flytte innholdet til denne brukeren.
@@ -162,7 +162,7 @@ export default {
       this.mergeError = "";
       this.iframeresize();
     },
-    reportError(errorType, e) {     
+    reportError(errorType, e) {
       this.mergeError = e;
       this.iframeresize();
     },
@@ -195,7 +195,7 @@ export default {
         window.getSelection().removeAllRanges(); // clear current selection
         window.getSelection().addRange(range); // to select text
         document.execCommand("copy");
-        window.getSelection().removeAllRanges();// to deselect    
+        window.getSelection().removeAllRanges();// to deselect
         this.codeCopied = true;
     },
     async fetchToken() {
@@ -211,7 +211,7 @@ export default {
         });
         this.isGeneratingToken = false;
         this.tokenGenerated = true;
-        
+
         this.tokenData = token.data;
         this.clearError("mergeError");
       } catch (e) {

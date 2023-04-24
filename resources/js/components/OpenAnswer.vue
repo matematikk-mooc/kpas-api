@@ -3,16 +3,16 @@
   <h3 v-html="this.questionText"></h3>
   <div v-for="(openAnswer, i) in openAnswers">
     <div class="note">
-      <p class="date"> {{formatdate(openAnswer.submission.submitted)}} 
+      <p class="date"> {{formatdate(openAnswer.submission.submitted)}}
       <p class="responseText" v-html="openAnswer.value "></p> </p>
     </div>
   </div>
 </template>
-  
+
   <script>
   export default {
     name: "OpenAnswer",
-    
+
     props: {
       openAnswers: null,
       questionText: null,
@@ -25,10 +25,10 @@
         let dateFormated = newDate.getDate() + ' ' + months[newDate.getMonth()] + ' ' + newDate.getFullYear();
         return dateFormated
       }
-    } 
+    }
   }
   </script>
-  
+
   <style>
     .date {
       font-size: 1em;
@@ -42,4 +42,3 @@
       padding: .5em 0 .5em 0;
     }
   </style>
-  

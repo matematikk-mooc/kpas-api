@@ -11,7 +11,7 @@ return [
 
     'url' => env('GITHUB_HOOK_URL', '/github/hook/'),
     'branch' => env('GITHUB_HOOK_BRANCH', 'master'),
-    
+
     'secret' => env('GITHUB_HOOK_SECRET', null),
 
     'hooks' => [

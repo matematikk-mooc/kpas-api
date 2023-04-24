@@ -1,9 +1,9 @@
 <template>
 
-    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && Object.keys(groups).length"> 
+    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && Object.keys(groups).length">
         <li
           class="list-group-item"
-          v-for="(group, name) in groups" 
+          v-for="(group, name) in groups"
         >
           {{ name }} : {{group.name}}
         </li>
@@ -26,6 +26,6 @@
     props: {
       groups: Object,
       groupsLoaded: Boolean
-    }, 
+    },
   }
 </script>

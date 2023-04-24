@@ -53,7 +53,7 @@ class Lti3Controller extends Controller
      * @throws LtiException
      */
     public function launch(Request $request)
-    {   
+    {
         $config_directory = $request->query("config_directory", "configs");
         logger("LTI3Controller config directory:". $config_directory);
         $launch = LTI\LTI_Message_Launch::new(new LTI3_Database($config_directory));
@@ -95,13 +95,13 @@ class Lti3Controller extends Controller
             ->withRequest($request);
         } else {
             logger('Unknown launch type');
-        }        
+        }
 
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
         logger("SETTINGS:" . print_r($settings, true));
 
         $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
-        
+
         $kpasUserView = "group_management";
         if(isset($settings['kpas_user_view'])) {
             $kpasUserView = (string)$settings['kpas_user_view'];
@@ -131,7 +131,7 @@ class Lti3Controller extends Controller
 
         logger("Lti3Middleware has settings.");
 
-        $settings = session()->get('settings');  
+        $settings = session()->get('settings');
         if ($kpasMode == $diplomaMode) {
             $downloadLink = true;
             logger("embed diploma");
@@ -143,7 +143,7 @@ class Lti3Controller extends Controller
             }
 
             return $diplomaService->getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma);
-        } 
+        }
         else if($kpasMode == $statisticsMode) {
             $statisticsService = new StatisticsService();
             return $statisticsService->getStatisticsHtml($settings);
@@ -168,7 +168,7 @@ class Lti3Controller extends Controller
         return view('lti.index');
     }
 
-   
+
 
     /**
      *  Get categories for a given course from canvas api
@@ -253,7 +253,7 @@ class Lti3Controller extends Controller
     public function diplomaPdf(Request $request)
     {
         logger("Diploma");
-        $settings = session()->get('settings');  
+        $settings = session()->get('settings');
         logger($settings);
 
         $diplomaService = new DiplomaService();
@@ -263,7 +263,7 @@ class Lti3Controller extends Controller
 
             //To make images/ references work.
             $dompdf->getOptions()->setChroot(public_path());
-    
+
             //To make external references to css etc. work.
             $dompdf->getOptions()->set('isRemoteEnabled', true);
             $downloadLink = false;

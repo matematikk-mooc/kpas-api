@@ -72,7 +72,7 @@ class Handler extends ExceptionHandler
             logger("Canvas exception: ". $exception->getMessage());
             return (new ErrorResponse($exception->getMessage(), 403))->toResponse($request);
         }
-        
+
         //Display custom error page when LTI fails. Probably because 3d party cookies are disabled on client side.
         if ($exception instanceof LtiException) {
             return response()->view('errors.ltierror', ["message"=>$exception->getMessage()], 403);

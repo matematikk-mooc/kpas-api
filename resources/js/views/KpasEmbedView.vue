@@ -150,7 +150,7 @@ export default {
     },
     updateModule(module){
       if(module == null){
-        this.selectedModule = 0; 
+        this.selectedModule = 0;
         this.emptyModuleSelected = true
         return;
       }

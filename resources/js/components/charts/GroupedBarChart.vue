@@ -35,14 +35,14 @@ export default {
 	},
 	mounted() {
 		this.createChart();
-		
+
 	},
-	
+
 	methods: {
 		createChart() {
 			this.chartData = []
-			this.mapData(); 
-			
+			this.mapData();
+
     	let margin = {top: 20, right: 25, bottom: 125, left: 25},
     	width = 800 - margin.left - margin.right,
   		height = 600 - margin.top - margin.bottom
@@ -62,15 +62,15 @@ export default {
     	let y = scaleLinear()
 			.domain([0, this.maxValue+1])
 			.range([height, 0]);
-			
+
 			let x0 = scaleBand()
 			.rangeRound([0, width])
 			.paddingInner(0.1)
 			.paddingOuter(0.1);
-			
-			let x1 = scaleBand() 
+
+			let x1 = scaleBand()
 			.paddingOuter(0.30)
-			.paddingInner(0.15); 
+			.paddingInner(0.15);
 
 			const yAxis = axisLeft(y).ticks(7);
 
@@ -112,7 +112,6 @@ export default {
       .attr("dy", ".35em")
       .attr("transform", "rotate(50)")
       .style("text-anchor", "start");
-			
 
 			//y-axis
 			g.append('g')
@@ -125,7 +124,7 @@ export default {
   		.attr("x1", 0)
   		.attr("x2", width)
 			.attr("stroke", "black");
-			
+
 		},
 		mapData(){
 			let cdata = [];
@@ -155,7 +154,7 @@ export default {
 			selectAll("#gbchart").remove();
       this.createChart()
       }
-	}	
+	}
 }
 </script>
 

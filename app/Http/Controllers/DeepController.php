@@ -50,4 +50,3 @@ class DeepController extends Controller
         $dl->output_response_form([$resource]);
     }
 }
-

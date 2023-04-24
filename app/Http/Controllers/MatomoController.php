@@ -11,12 +11,12 @@ class MatomoController extends Controller
 
 
     public function matomoStatistics(int $courseId): SuccessResponse
-    {   
+    {
         logger("MatomoController.matomoStatistics");
         logger($courseId);
         $matomoService = new MatomoService();
         $data = $matomoService->getMatomoStatistics($courseId);
-        $res = $data->getBody()->getContents();        
+        $res = $data->getBody()->getContents();
         return new SuccessResponse($res);
     }
 

@@ -6,6 +6,6 @@ return [
         'STATISTICS_MODE' => 2,
         'DASHBOARD_MODE' => 3,
         'SURVEY_MODE' => 4,
-        'ADMIN_DASHBOARD_MODE' => 5 
+        'ADMIN_DASHBOARD_MODE' => 5
     ]
 ];

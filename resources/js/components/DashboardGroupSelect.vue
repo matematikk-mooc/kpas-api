@@ -19,7 +19,7 @@
 			</v-select>
 		</label>
 	</section>
-	<section class="dropdown-section">	
+	<section class="dropdown-section">
 		<label v-if="settings.custom_national_faculty_category_id" id="select-facultynational">
 			Faggruppe nasjonal:<br />
 			<v-select class="gselect" v-model="chosenFacultyNational" :clearable="true" :disabled="!facultiesNational.length" :options="facultiesNational" label="name"
@@ -66,10 +66,10 @@ import "vue-select/dist/vue-select.css";
 export default {
 	name: "DashboardGroupSelect",
 	props: {
-		settings: Object, 
+		settings: Object,
 		categories: Array,
 	},
-	
+
 	data() {
 		return {
 			isError: false,
@@ -82,7 +82,7 @@ export default {
 			leaderCountyGroups: [],
 			leaderCommunityGroups: [],
 			facultiesNational: [],
-			facultiesCounty: [], 
+			facultiesCounty: [],
 			facultiesCommunity: [],
 			chosenCounty: null,
 			chosenCommunity: null,
@@ -96,7 +96,7 @@ export default {
 			courseId: null,
 		}
 	},
-	
+
 	methods: {
 		async getCounties() {
 			try {
@@ -108,7 +108,7 @@ export default {
 				this.isError = false;
 			} catch (e) {
 				this.error = "Kunne ikke hente fylkesgrupper fra kpas.";
-				this.isError = true; 
+				this.isError = true;
 			}
 		},
 		async getCommunities(countyId) {
@@ -240,7 +240,7 @@ export default {
 		else if (this.selectedgroups.facultyNational) { groupId = this.selectedgroups.facultyNational.canvas_id }
 		this.$emit('update', groupId);
 	},
-	
+
 	watch: {
 		async chosenCounty(county) {
 			if(county == null){
@@ -252,10 +252,10 @@ export default {
 			delete this.selectedgroups.community;
 			delete this.selectedgroups.institution;
 			this.selectedgroups.county = county;
-			
+
 			this.communities = [];
 			this.institutions = [];
-			
+
 			await this.getCommunities(county.county_id);
 		},
 		async chosenCommunity(community) {
@@ -268,7 +268,7 @@ export default {
 			this.selectedgroups.community = community;
 
 			this.institutions = [];
-			
+
 			await this.getInstitutions(community.community_id)
 		},
 		async chosenInstitution(institution) {

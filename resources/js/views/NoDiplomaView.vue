@@ -24,7 +24,7 @@ export default {
     this.iframeresize();
     const mql = window.matchMedia('(max-width: 400px)');
     var self = this;
-    mql.onchange = (e) => { 
+    mql.onchange = (e) => {
       self.iframeresize();
     }
   },

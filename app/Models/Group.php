@@ -17,12 +17,12 @@ use Illuminate\Database\Eloquent\Model;
 class Group extends Model
 {
 
-    protected $nullable = ['course_id', 'county_id', 'community_id']; 
+    protected $nullable = ['course_id', 'county_id', 'community_id'];
     protected $fillable = [
         'canvas_id',
         'name',
         'course_id',
-        'county_id', 
+        'county_id',
         'community_id',
         'description',
         'category_id',

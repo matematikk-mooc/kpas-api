@@ -171,7 +171,6 @@ class CanvasRepository
     {
         return $this->canvasService->getTotalStudentsByGroup($groupId);
     }
-    
 
     public function getCourseModules(int $courseId)
     {

@@ -25,7 +25,7 @@ class GroupEnrollmentService
     }
 
     protected function request(string $courseId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
-    {   
+    {
         $fullUrl = "{$this->statistics_base_url}/statistics/course/{$courseId}?from={$fromDate}&to={$toDate}";
         logger($fullUrl);
 

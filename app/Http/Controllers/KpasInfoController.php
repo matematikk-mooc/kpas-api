@@ -10,6 +10,5 @@ class KpasInfoController extends Controller
     {
         $kpasinfo["privacyPolicyVersion"] = "1.0";
         return new SuccessResponse($kpasinfo);
-    }    
+    }
 }
-

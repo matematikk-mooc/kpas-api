@@ -15,8 +15,8 @@ export default {
   props: {
     data: {},
     id: "",
-    svgHeight: 0, 
-    svgWidth: 0, 
+    svgHeight: 0,
+    svgWidth: 0,
     svg: null
   },
   data() {
@@ -39,7 +39,7 @@ export default {
       let margin = {top: 20, right: 20, bottom: 30, left: 40},
       width = this.svgWidth - margin.left - margin.right,
       height = this.svgHeight - margin.top - margin.bottom;
-      
+
       // Set range based on margins and dimensions
       let xAxis = scaleBand()
       .range([0, width])
@@ -51,11 +51,11 @@ export default {
       .attr("viewBox", "0 0 600 400")
       .classed("svg-content-responsive", true)
       .append("g")
-      .attr("transform", 
+      .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
-    
-      let chartData = this.dataArray; 
-      
+
+      let chartData = this.dataArray;
+
       // Scale the range of the data in the domains
       xAxis.domain(chartData.map(function(d) { return d.option; }));
       yAxis.domain([0, max(chartData, function(d) { return d.count; })]);
@@ -64,7 +64,7 @@ export default {
 
       // Append the bars
       svg.selectAll(".barwrapper")
-      .data(chartData) 
+      .data(chartData)
       .enter().append("g")
       .attr("class", "barwrapper")
       .append("rect")
@@ -80,12 +80,12 @@ export default {
       .attr("x", function(d) { return xAxis(d.option) + xAxis.bandwidth()/2; })
       .attr("y", function(d) { return yAxis(d.count) -  10; })
       .text(function(d) { return d.count; });
-    
+
       // X-axis
       svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(axisBottom(xAxis));
-      
+
       // Y-axis
       svg.append("g")
       .call(axisLeft(yAxis));

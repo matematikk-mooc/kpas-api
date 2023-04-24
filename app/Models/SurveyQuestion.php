@@ -63,4 +63,3 @@ class SurveyQuestion extends Model
     }
 
 }
-

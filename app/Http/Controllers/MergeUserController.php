@@ -18,7 +18,7 @@ class KpasCanvasCourse
     public function __construct($courseId, $courseName)
     {
         $this->courseId = $courseId;
-        $this->courseName = $courseName;        
+        $this->courseName = $courseName;
     }
 }
 
@@ -36,7 +36,7 @@ class MergeUserController extends Controller {
     public function createToken(Request $request) {
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("Creating token for user $userId");
-        
+
         $codeEntry = CanvasUserMergeToken::firstOrNew([
             'canvas_user_id' => $userId,
         ]);
@@ -52,7 +52,7 @@ class MergeUserController extends Controller {
     public function mergeUser(Request $request) {
         $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("User $toUserId sent request to merge user");
-        
+
         $parsedToken = $this->parseToken($request);
         if (is_null($parsedToken)) {
             return response('Ugyldig kode.', 403);
@@ -143,7 +143,7 @@ class MergeUserController extends Controller {
      */
     private function validateToken(int $userId, string $token): bool {
         $codeEntry = CanvasUserMergeToken::where('canvas_user_id', $userId)->first();
-        
+
         if (is_null($codeEntry)) {
             logger("No token in DB for $userId");
             return false;

@@ -14,9 +14,9 @@ class LTI3_Database implements LTI\Database
         try {
             $reg_configs = array_diff(scandir(database_path($config_directory)), array('..', '.', '.DS_Store'));
             foreach ($reg_configs as $key => $reg_config)
-            { 
-                logger("Parse config file:".$reg_config); 
-                $_SESSION['iss'] = array_merge($_SESSION['iss'], json_decode(file_get_contents(database_path($config_directory) . "/$reg_config"), true)); 
+            {
+                logger("Parse config file:".$reg_config);
+                $_SESSION['iss'] = array_merge($_SESSION['iss'], json_decode(file_get_contents(database_path($config_directory) . "/$reg_config"), true));
             }
         } catch (\Throwable $e) {
             throw new LtiException("LTI v1.3 configuration error  : " . $e->getMessage());

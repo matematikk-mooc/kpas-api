@@ -62,7 +62,7 @@ class CanvasService
             throw $exception;
         }
     }
-    
+
     public function getTotalStudents(string $courseId): array
     {
         try {

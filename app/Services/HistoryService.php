@@ -45,7 +45,7 @@ class HistoryService
     }
 
     protected function request(string $userId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
-    {   
+    {
         $fullUrl = "{$this->statistics_base_url}/statistics/user/{$userId}/history/?from={$fromDate}&to={$toDate}";
         logger($fullUrl);
 

@@ -18,7 +18,6 @@
         {{$g->kmTittel}}
         </li>
     @endforeach
-    </ul>    
+    </ul>
     </body>
 </html>
-

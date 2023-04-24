@@ -7,7 +7,7 @@ class DiplomaController extends Controller
 {
     public function logolist()
     {
-        $images = array_diff(scandir("images"), array('.', '..', '.DS_Store'));        
+        $images = array_diff(scandir("images"), array('.', '..', '.DS_Store'));
         logger("Images:" . print_r($images, true));
         foreach ($images as &$image) {
             logger("Image:" . $image);
