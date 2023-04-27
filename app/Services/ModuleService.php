@@ -34,4 +34,10 @@ class ModuleService
         return $this->guzzleClient->request('GET', $url);
 
     }
+
+    public function getModuleStatisticsPerDate(int $moduleId)
+    {
+        $url = "{$this->statistics_base_url}/statistics/modules/{$moduleId}/per_date";
+        return $this->guzzleClient->request('GET', $url);
+    }
 }

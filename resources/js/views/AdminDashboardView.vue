@@ -2,9 +2,9 @@
 <template>
   <div ref="ltiView" class="dashboard" v-if="allowed && ready && connectedToParent" >
     <h1>Oversikt over kompetansepakken</h1>
-    
+
     <section class="filtering-section">
-      <DashboardGroupSelect 
+      <DashboardGroupSelect
       :settings=this.settings
       :categories=this.categories
       @update="updateGroupId"
@@ -12,7 +12,7 @@
       <section id="student-count">
         <h3>Antall brukere: {{ studentCount }}</h3>
       </section>
-      
+
       <v-select
       class="selector"
       :disabled="!coursemodules.length"
@@ -31,25 +31,28 @@
         placeholder="Velg survey"
         @update:modelValue="updateSurvey"
         ></v-select>
-      
+
     </section>
     <h2 v-if="completed_count_item.length && current_module" class="title">Markert som fullført </h2>
+    <section class="completed-section" v-if="modules_statistics_per_date">
+      <line-chart :data="modules_statistics_per_date"></line-chart>
+    </section>
     <section class="completed-section" v-if="completed_count_item.length && current_module" >
       <horizontal-bar-chart class="completed" :data="completed_count_item"> </horizontal-bar-chart>
-    </section> 
-    
+    </section>
+
     <h2 v-if="view_survey" class="title">{{view_survey.title_internal}}</h2>
-    
+
     <section class="grouped" v-if="module_surveys.length && current_module && view_survey">
       <grouped-bar-chart :id="view_survey.id" :data="view_survey.questions.slice(0,3)" :likert5ops="this.likert5ops"></grouped-bar-chart>
     </section>
-      
+
     <section class="barview" v-if="view_survey && view_survey.questions.length > 4 && module_surveys.length && current_module">
       <div v-for="(question, i) in view_survey.questions.slice(3)" :key="i">
         <bar-chart v-if="question.question_type == 'likert_scale_5pt'" :id="'q' + i" :data="question" :svgWidth=600 :svgHeight=400></bar-chart>
       </div>
     </section>
-      
+
     <section class="feedback" v-if="module_surveys.length && current_module && view_survey">
       <div v-for="(question, i) in view_survey.questions" :key="i">
         <open-answer v-if="question.question_type === 'essay'" :openAnswers="question.submission_data" :questionText="question.text"></open-answer>
@@ -70,14 +73,14 @@
   <div v-else>
     <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
   </div>
-    
+
 </template>
-  
+
 <script>
   import api from "../api";
   import DashboardGroupSelect from "../components/DashboardGroupSelect";
   import "vue-select/dist/vue-select.css";
-  
+
   export default {
     name: "AdminDashboardView",
     components: {
@@ -94,17 +97,18 @@
         groupId: null,
         categories: null,
         survey_data: null,
-        module_surveys: [], 
+        module_surveys: [],
         view_survey: null,
         ready: false,
         modules_statistics: null,
-        completed_count_item: [], 
+        modules_statistics_per_date: null,
+        completed_count_item: [],
         current_module: null,
         connectedToParent: false,
         allowed: false,
       }
     },
-    methods: { 
+    methods: {
 
       iframeresize() {
         this.$nextTick(function () {
@@ -133,20 +137,20 @@
         this.postMessageToParent('kpas-lti.connect');
         window.setTimeout(this.connectToParent, 500);
       },
-      
+
       async getStudentCount() {
         try {
           let url;
-          if (this.groupId) { 
+          if (this.groupId) {
             url = "/group/" + this.groupId + '/count';
-          } else { 
+          } else {
             url = "/course/" + this.settings.custom_canvas_course_id + '/count';
           };
-          
+
           const response = await api.get(url, {
             params: { cookie: window.cookie }
           });
-          
+
           this.studentCount = await response.data.result;
         } catch(e) {
           console.error("Could not get student count.", e);
@@ -170,7 +174,7 @@
         await this.getModulesStatistics();
         await this.getSurveyData();
       },
-      updateModule(value){
+      async updateModule(value){
         if(value == null){
           this.current_module = null
           return;
@@ -184,7 +188,9 @@
         }
         this.current_module = value.id;
         this.updateFinnishCount()
+        await this.getModulesStatisticsPerDate();
         this.iframeresize()
+
       },
       updateSurvey(value){
         this.view_survey = value;
@@ -221,7 +227,7 @@
             });
             this.modules_statistics = JSON.parse(apiResult.data.result);
             this.updateFinnishCount()
-            
+
           }
           else{
             let url = "/course/" + this.settings.custom_canvas_course_id + "/modules/count";
@@ -236,6 +242,18 @@
           console.log("Could not get module data.", e);
         }
       },
+      async getModulesStatisticsPerDate(){
+        if(!this.current_module){
+          return
+        }
+        let url = "/modules/" + this.current_module + "/per_date";
+        const apiResult = await api.get(url, {
+          params: { cookie: window.cookie }
+        });
+        this.modules_statistics_per_date = JSON.parse(apiResult.data.result)
+        console.log(this.modules_statistics_per_date)
+      },
+
       updateFinnishCount(){
         this.completed_count_item = []
         if (!this.current_module){
@@ -258,10 +276,10 @@
             let obj = {"title" : item.title, "count" : item.total_completed, "position" : item.position}
             this.completed_count_item.push(obj)
           }
-        }      
+        }
       }
     },
-    
+
     async created() {
       const allowedRoles = ['Admin', 'Udirforvalter', 'Udir-forvalter']
       this.allowed = allowedRoles.some(
@@ -270,7 +288,7 @@
 
       let self = this;
       const mql = window.matchMedia('(max-width: 500px)');
-      mql.onchange = (e) => { 
+      mql.onchange = (e) => {
         self.iframeresize();
       }
       window.addEventListener('message', async function(evt) {
@@ -289,7 +307,7 @@
           //This message is not for us.
         }
       }, false);
-      self.connectToParent();  
+      self.connectToParent();
       await this.getGroupCategories();
       await this.getStudentCount();
       await this.getModulesStatistics();
@@ -298,7 +316,7 @@
     },
   };
 
-</script> 
+</script>
 
 <style>
 
