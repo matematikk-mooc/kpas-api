@@ -106,18 +106,21 @@ export default {
 			.on("mouseover", () => tooltip.style("display", null))
 			.on("mouseout", () => tooltip.style("display", "none"))
 			.on("mousemove", mousemove);
+
 			function mousemove(event) {
 				const x = xScale.invert(d3.pointer(event)[0]);
 				const unixTimestamps = data.map(d => new Date(d.date).getTime());
 				const i = d3.bisect(unixTimestamps, x.getTime() );
 				const d = data[i-1];
-				tooltip.attr("transform", `translate(${xScale(d.date)},${yScale(d.value)})`);
-				tooltip.attr("x", xScale(d.date))
-				tooltip.attr("y", yScale(d.value))
+				tooltip.attr("transform", `translate(${xScale(d.date)},${yScale(d.value)})`)
+				.attr("x", xScale(d.date))
+				.attr("y", yScale(d.value));
 				const partial = data.slice(0, i+1)
 				const sum = d3.sum(partial, function(d) { return +d.value; })
-				tooltip.text(() => {
-					return "Dato: " + d.date + "\n Antall i dag: " + d.value + "\n Antall til nå: " + sum;
+    		tooltip.html(() => {
+  				return `<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Dato:</tspan> ${d.date}</tspan>` +
+         		`<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Antall i dag:</tspan> ${d.value}</tspan>` +
+         		`<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Antall til nå:</tspan> ${sum}</tspan>`;
 				});
 				tooltip.attr("text-anchor", "start");
 			}
