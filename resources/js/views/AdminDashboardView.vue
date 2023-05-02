@@ -112,9 +112,7 @@
 
       iframeresize() {
         this.$nextTick(function () {
-          var h = this.$refs.ltiView.clientHeight + 50
-          console.log("view height")
-          console.log(h)
+          var h = this.$refs.ltiView.clientHeight + 50;
           parent.postMessage(
           JSON.stringify({ subject: "lti.frameResize", height: h }),
           "*"
@@ -221,7 +219,6 @@
         try{
           if(this.groupId){
             let url = "/course/" + this.settings.custom_canvas_course_id + "/modules?group=" + this.groupId;
-            console.log(url)
             const apiResult = await api.get(url, {
               params: { cookie: window.cookie }
             });
@@ -251,7 +248,6 @@
           params: { cookie: window.cookie }
         });
         this.modules_statistics_per_date = JSON.parse(apiResult.data.result)
-        console.log(this.modules_statistics_per_date)
       },
 
       updateFinnishCount(){

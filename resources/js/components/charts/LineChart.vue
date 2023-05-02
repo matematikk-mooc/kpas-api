@@ -1,6 +1,5 @@
 <template>
 	<div id="linechart"></div>
-	<p v-if="noDateCompleted != 0">Antall fullført uten tilgjengelig dato: {{ noDateCompleted }}</p>
 </template>
 
 <script>
@@ -18,6 +17,9 @@ export default {
 			noDateCompleted: 0
 		}
 	},
+	mounted() {
+    this.drawChart();
+  },
 	methods: {
 		drawChart() {
 			this.mapData()
@@ -65,6 +67,7 @@ export default {
 			.attr("class", "axis")
 			.call(yaxis)
 
+			//Set values for lines per date and total
 			const line = d3.line()
 			.x(function(d) { return xScale(dateParser(d.date)); })
 			.y(function(d) { return yScale(d.value); });
@@ -80,29 +83,51 @@ export default {
 			.enter()
 			.append("g");
 
+			//Draw paths for per date and total
 			lines.append("path")
 			.attr("d", function(d) { return line(data); })
-			.attr("class", "pathline")
+			.attr("class", "pathline1")
 
 			lines.append("path")
 			.attr("d", function(d) { return line2(data); })
 			.attr("class", "pathline2")
 
 
+			//Adding legend
+			const legend1 = svg.append("g")
+			.attr("class", "legend");
+			legend1.append("rect")
+			.attr("class", "legend-line pathline1")
+			.attr("width", 30)
+			.attr("height", 2)
+			.attr("y", 600 - 75);
+			legend1.append("text")
+			.text("Fullført per dag")
+			.attr("y", 600 - 70)
+			.attr("x", 35);
+
+			const legend2 = svg.append("g")
+			.attr("class", "legend");
+			legend2.append("rect")
+			.attr("class", "legend-line pathline2")
+			.attr("width", 30)
+			.attr("height", 2)
+			.attr("y", 600 - 55);
+			legend2.append("text")
+			.text("Fullført (akkumulert)")
+			.attr("y", 600 - 50)
+			.attr("x", 35);
+
+			//Adding tooltip
 			const tooltip = svg.append("g")
 			.append("text")
-			.attr("x", 9)
-			.attr("dy", ".35em")
 			.style("font-size", "12px")
-			.style("background-color", "white");
 
 			svg
 			.append("rect")
 			.attr("class", "overlay")
-			.attr("x", margin.left)
-			.attr("y", margin.top)
-			.attr("width", width)
-			.attr("height", height)
+			.attr("width", width + 60)
+			.attr("height", height + 60)
 			.on("mouseover", () => tooltip.style("display", null))
 			.on("mouseout", () => tooltip.style("display", "none"))
 			.on("mousemove", mousemove);
@@ -112,17 +137,19 @@ export default {
 				const unixTimestamps = data.map(d => new Date(d.date).getTime());
 				const i = d3.bisect(unixTimestamps, x.getTime() );
 				const d = data[i-1];
-				tooltip.attr("transform", `translate(${xScale(d.date)},${yScale(d.value)})`)
-				.attr("x", xScale(d.date))
-				.attr("y", yScale(d.value));
+				const [x1, y] = d3.pointer(event);
+        tooltip
+        .attr('transform', `translate(${x1-100}, ${y-50})`);
 				const partial = data.slice(0, i+1)
 				const sum = d3.sum(partial, function(d) { return +d.value; })
-    		tooltip.html(() => {
-  				return `<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Dato:</tspan> ${d.date}</tspan>` +
-         		`<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Antall i dag:</tspan> ${d.value}</tspan>` +
-         		`<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Antall til nå:</tspan> ${sum}</tspan>`;
+				tooltip.html(() => {
+					return `<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Dato:</tspan> ${d.date}</tspan>` +
+					`<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Antall i dag:</tspan> ${d.value}</tspan>` +
+					`<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Antall til nå:</tspan> ${sum}</tspan>`;
 				});
-				tooltip.attr("text-anchor", "start");
+				tooltip.style("outline", "thin solid black")
+				.style("fill", "black")
+				.attr("text-anchor", "start");
 			}
 
 		},
@@ -152,7 +179,7 @@ export default {
 </script>
 
 <style>
-.pathline {
+.pathline1 {
 	fill: none;
 	stroke: #ed3700;
 }
