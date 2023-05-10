@@ -12,7 +12,11 @@
       <label class="select-county col-sm">Fylke:<br/>
         <v-select
           v-model="chosenCounty"
-          :options="counties" label="Navn" placeholder="--- Fylke ---" >
+          :options="counties"
+          label="Navn"
+          placeholder="--- Fylke ---"
+          :close-on-select="true"
+          :clearable="true">
         </v-select>
       </label>
       <label class="select-community col-sm">
@@ -20,15 +24,25 @@
         <v-select
           v-model="chosenCommunity"
           :disabled="!communities.length"
-          :options="communities" label="Navn" placeholder="--- Kommune ---" >
+          :options="communities"
+          label="Navn"
+          placeholder="--- Kommune ---"
+          :close-on-select="true"
+          :clearable="true"
+          :reset-on-options-change="true">
         </v-select>
       </label>
-      <label class="select-school col-sm" v-if="institutionType === 'school'">
+      <label class="select-school col-sm" v-if="institutionType === 'school'" >
         Skole:<br/>
         <v-select
           v-model="chosenInstitution"
           :disabled="!schools.length"
-          :options="schools" label="FulltNavn" placeholder="--- Skole ---" >
+          :options="schools"
+          label="FulltNavn"
+          placeholder="--- Skole ---"
+          :close-on-select="true"
+          :clearable="true"
+          :reset-on-options-change="true">
         </v-select>
       </label>
       <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
@@ -36,7 +50,12 @@
         <v-select
           v-model="chosenInstitution"
           :disabled="!kindergartens.length"
-          :options="kindergartens" label="FulltNavn" placeholder="--- Barnehage ---" >
+          :options="kindergartens"
+          label="FulltNavn"
+          placeholder="--- Barnehage ---"
+          :close-on-select="true"
+          :clearable="true"
+          :reset-on-options-change="true">
         </v-select>
       </label>
     </div>

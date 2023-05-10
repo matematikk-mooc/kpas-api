@@ -2,39 +2,79 @@
 	<section class="dropdown-section">
 		<label v-if="settings.custom_county_category_id" id="select-county">
 			{{ settings.custom_county_category_name }}:<br />
-			<v-select class="gselect" v-model="chosenCounty" :clearable="true" :disabled="!counties.length" :options="counties" label="name"
-				placeholder="--- Fylke ---">
+			<v-select class="gselect"
+				v-model="chosenCounty"
+				:clearable="true"
+				:disabled="!counties.length"
+				:options="counties"
+				label="name"
+				placeholder="--- Fylke ---"
+				:close-on-select="true"
+          		:reset-on-options-change="true">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_community_category_id" id="select-community">
 			{{ settings.custom_community_category_name }}:<br />
-			<v-select class="gselect" v-model="chosenCommunity" :clearable="true" :disabled="!communities.length" :options="communities" label="name"
-			placeholder="--- Kommune ---">
-		</v-select>
+			<v-select class="gselect"
+				v-model="chosenCommunity"
+				:clearable="true"
+				:disabled="!communities.length"
+				:options="communities"
+				label="name"
+				placeholder="--- Kommune ---"
+				:close-on-select="true"
+          		:reset-on-options-change="true">
+			</v-select>
 		</label>
 		<label v-if="settings.custom_institution_category_id" id="select-institution">
 			{{ categories.find(e=> e.id == settings.custom_institution_category_id).name }}:<br />
-			<v-select class="gselect" v-model="chosenInstitution" :clearable="true" :disabled="!institutions.length" :options="institutions" label="name"
-				placeholder="--- Institusjon ---">
+			<v-select class="gselect"
+				v-model="chosenInstitution"
+				:clearable="true"
+				:disabled="!institutions.length"
+				:options="institutions"
+				label="name"
+				placeholder="--- Institusjon ---"
+				:close-on-select="true"
+          		:reset-on-options-change="true">
 			</v-select>
 		</label>
 	</section>
-	<section class="dropdown-section">	
+	<section class="dropdown-section">
 		<label v-if="settings.custom_national_faculty_category_id" id="select-facultynational">
 			Faggruppe nasjonal:<br />
-			<v-select class="gselect" v-model="chosenFacultyNational" :clearable="true" :disabled="!facultiesNational.length" :options="facultiesNational" label="name"
-				placeholder="--- Faggruppe (nasjonalt) ---">
+			<v-select class="gselect"
+				v-model="chosenFacultyNational"
+				:clearable="true"
+				:disabled="!facultiesNational.length"
+				:options="facultiesNational"
+				label="name"
+				placeholder="--- Faggruppe (nasjonalt) ---"
+				:close-on-select="true"
+          		:reset-on-options-change="true">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_county_faculty_category_id" id="select-facultycounty">
 			{{ settings.custom_county_faculty_category_name }}<br />
-			<v-select class="gselect" v-model="chosenFacultyCounty" :clearable="true" :disabled="!facultiesCounty.length" :options="facultiesCounty" label="name"
-			placeholder="--- Faggruppe (fylke) ---">
+			<v-select class="gselect"
+				v-model="chosenFacultyCounty"
+				:clearable="true"
+				:disabled="!facultiesCounty.length"
+				:options="facultiesCounty"
+				label="name"
+				placeholder="--- Faggruppe (fylke) ---"
+				:close-on-select="true"
+          		:reset-on-options-change="true">
 		</v-select>
 		</label>
 		<label v-if="settings.custom_community_faculty_category_id" id="select-facultycommunity">
 			{{ settings.custom_community_faculty_category_name }}:<br />
-			<v-select class="gselect" v-model="chosenFacultyCommunity" :clearable="true" :disabled="!facultiesCommunity.length" :options="facultiesCommunity" label="name"
+			<v-select class="gselect"
+				v-model="chosenFacultyCommunity"
+				:clearable="true"
+				:disabled="!facultiesCommunity.length"
+				:options="facultiesCommunity"
+				label="name"
 				placeholder="--- Faggruppe (kommune) ---">
 			</v-select>
 		</label>
@@ -42,14 +82,28 @@
 	<section class="dropdown-section">
 		<label v-if="settings.custom_county_principals_category_id" id="select-countyleader">
 			{{ settings.custom_county_principals_category_name }}:<br />
-			<v-select class="gselect" v-model="chosenCountyLeader" :clearable="true" :disabled="!leaderCountyGroups.length" :options="leaderCountyGroups" label="name"
-				placeholder="--- Leder/Eier (fylke) ---">
+			<v-select class="gselect"
+				v-model="chosenCountyLeader"
+				:clearable="true"
+				:disabled="!leaderCountyGroups.length"
+				:options="leaderCountyGroups"
+				label="name"
+				placeholder="--- Leder/Eier (fylke) ---"
+				:close-on-select="true"
+          		:reset-on-options-change="true">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_community_principals_category_id" id="select-leadercommunity">
 			{{ settings.custom_community_principals_category_name }}:<br />
-			<v-select class="gselect" v-model="chosenCommunityLeader" :clearable="true" :disabled="!leaderCommunityGroups.length" :options="leaderCommunityGroups" label="name"
-				placeholder="--- Leder/Eier (kommune) ---">
+			<v-select class="gselect"
+				v-model="chosenCommunityLeader"
+				:clearable="true"
+				:disabled="!leaderCommunityGroups.length"
+				:options="leaderCommunityGroups"
+				label="name"
+				placeholder="--- Leder/Eier (kommune) ---"
+				:close-on-select="true"
+          		:reset-on-options-change="true">
 			</v-select>
 		</label>
 	</section>
@@ -66,10 +120,10 @@ import "vue-select/dist/vue-select.css";
 export default {
 	name: "DashboardGroupSelect",
 	props: {
-		settings: Object, 
+		settings: Object,
 		categories: Array,
 	},
-	
+
 	data() {
 		return {
 			isError: false,
@@ -82,7 +136,7 @@ export default {
 			leaderCountyGroups: [],
 			leaderCommunityGroups: [],
 			facultiesNational: [],
-			facultiesCounty: [], 
+			facultiesCounty: [],
 			facultiesCommunity: [],
 			chosenCounty: null,
 			chosenCommunity: null,
@@ -96,7 +150,7 @@ export default {
 			courseId: null,
 		}
 	},
-	
+
 	methods: {
 		async getCounties() {
 			try {
@@ -108,7 +162,7 @@ export default {
 				this.isError = false;
 			} catch (e) {
 				this.error = "Kunne ikke hente fylkesgrupper fra kpas.";
-				this.isError = true; 
+				this.isError = true;
 			}
 		},
 		async getCommunities(countyId) {
@@ -240,7 +294,7 @@ export default {
 		else if (this.selectedgroups.facultyNational) { groupId = this.selectedgroups.facultyNational.canvas_id }
 		this.$emit('update', groupId);
 	},
-	
+
 	watch: {
 		async chosenCounty(county) {
 			if(county == null){
@@ -252,10 +306,10 @@ export default {
 			delete this.selectedgroups.community;
 			delete this.selectedgroups.institution;
 			this.selectedgroups.county = county;
-			
+
 			this.communities = [];
 			this.institutions = [];
-			
+
 			await this.getCommunities(county.county_id);
 		},
 		async chosenCommunity(community) {
@@ -268,7 +322,7 @@ export default {
 			this.selectedgroups.community = community;
 
 			this.institutions = [];
-			
+
 			await this.getInstitutions(community.community_id)
 		},
 		async chosenInstitution(institution) {
