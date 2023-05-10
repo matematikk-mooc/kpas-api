@@ -10,7 +10,7 @@
 				label="name"
 				placeholder="--- Fylke ---"
 				:close-on-select="true"
-          		:reset-on-options-change="true">
+				:reset-on-options-change="true">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_community_category_id" id="select-community">
@@ -23,7 +23,7 @@
 				label="name"
 				placeholder="--- Kommune ---"
 				:close-on-select="true"
-          		:reset-on-options-change="true">
+				:reset-on-options-change="true">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_institution_category_id" id="select-institution">
@@ -36,7 +36,7 @@
 				label="name"
 				placeholder="--- Institusjon ---"
 				:close-on-select="true"
-          		:reset-on-options-change="true">
+				:reset-on-options-change="true">
 			</v-select>
 		</label>
 	</section>
@@ -51,7 +51,7 @@
 				label="name"
 				placeholder="--- Faggruppe (nasjonalt) ---"
 				:close-on-select="true"
-          		:reset-on-options-change="true">
+				:reset-on-options-change="true">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_county_faculty_category_id" id="select-facultycounty">
@@ -64,7 +64,7 @@
 				label="name"
 				placeholder="--- Faggruppe (fylke) ---"
 				:close-on-select="true"
-          		:reset-on-options-change="true">
+				:reset-on-options-change="true">
 		</v-select>
 		</label>
 		<label v-if="settings.custom_community_faculty_category_id" id="select-facultycommunity">
@@ -75,7 +75,9 @@
 				:disabled="!facultiesCommunity.length"
 				:options="facultiesCommunity"
 				label="name"
-				placeholder="--- Faggruppe (kommune) ---">
+				placeholder="--- Faggruppe (kommune) ---"
+				:close-on-select="true"
+				:reset-on-options-change="true">
 			</v-select>
 		</label>
 	</section>
@@ -90,7 +92,7 @@
 				label="name"
 				placeholder="--- Leder/Eier (fylke) ---"
 				:close-on-select="true"
-          		:reset-on-options-change="true">
+				:reset-on-options-change="true">
 			</v-select>
 		</label>
 		<label v-if="settings.custom_community_principals_category_id" id="select-leadercommunity">
@@ -103,7 +105,7 @@
 				label="name"
 				placeholder="--- Leder/Eier (kommune) ---"
 				:close-on-select="true"
-          		:reset-on-options-change="true">
+				:reset-on-options-change="true">
 			</v-select>
 		</label>
 	</section>
