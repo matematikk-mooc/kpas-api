@@ -10,9 +10,9 @@
     >
     </v-select>
 
-  
+
     <h1 class="title">{{view_module.title_internal}}</h1>
-    <h3>Resultater fra gruppe: {{ current_group_name }}</h3> 
+    <h3>Resultater fra gruppe: {{ current_group_name }}</h3>
 
     <section class="grouped" >
       <grouped-bar-chart id="view_module.course_id" :data="view_module.questions.slice(0,3)" :likert5ops="this.likert5ops"></grouped-bar-chart>
@@ -30,10 +30,10 @@
       </div>
     </section>
   </div>
-  <div v-else-if="!groupMember && ready"> 
+  <div v-else-if="!groupMember && ready">
     <h2>Du må være medlem av en gruppe for å få tilgang til Dashboard.</h2>
   </div>
-  <div v-else-if="groupTooSmall"> 
+  <div v-else-if="groupTooSmall">
     <h2>Du er medlem av en gruppe vi ikke kan vise frem data til, dette er på bakgrunn av å holde besvarelser anonyme.</h2>
   </div>
   <div v-else>
@@ -48,7 +48,7 @@ export default {
   name: "DashboardView",
   data() {
     return {
-      likert5ops: this.likert5ops, 
+      likert5ops: this.likert5ops,
       connectedToParent: false,
       selectedGroup: null,
       ready: false,
@@ -56,11 +56,11 @@ export default {
       survey_data : null,
       modules: [],
       userGroups: [],
-      usersGroups: [], 
-      categories: null, 
+      usersGroups: [],
+      categories: null,
       categoriesLoaded: false,
       groupsLoaded: false,
-      course_id: null, 
+      course_id: null,
       current_group_name: null,
       groupMember: false,
       groupTooSmall: false,
@@ -100,7 +100,7 @@ export default {
       this.postMessageToParent('kpas-lti.connect');
       window.setTimeout(this.connectToParent, 500);
     },
-  
+
     updateModule(value){
 
       if(value == null){
@@ -153,6 +153,9 @@ export default {
     },
     async isGroupTooSmall(group, type){
       let orgNr = group.description.split(":").at(-1)
+      if(orgNr == "999999999"){
+        return true;
+      }
       let apiResult;
       if(type == "school"){
         let url = "/school/orgnr/" + orgNr;
@@ -175,22 +178,22 @@ export default {
       try {
         console.log(this.userGroups)
         let groupId = "";
-        let groupTooSmall = false; 
+        let groupTooSmall = false;
         if(Object.hasOwn(this.userGroups, 'Skole')){
           groupId = this.userGroups.Skole.id
           this.current_group_name = this.userGroups.Skole.name
           this.groupMember = true
           groupTooSmall = await this.isGroupTooSmall(this.userGroups.Skole, "school")
-          
+
         } else if(Object.hasOwn(this.userGroups, 'Barnehage')){
           groupId = this.userGroups.Barnehage.id
           this.current_group_name = this.userGroups.Barnehage.name
           this.groupMember = true
-          groupTooSmall = await this.isGroupTooSmall(this.userGroups.Barnehage, "kindergarten")           
-  
+          groupTooSmall = await this.isGroupTooSmall(this.userGroups.Barnehage, "kindergarten")
+
         }else {
-          this.groupMember = false; 
-          return;          
+          this.groupMember = false;
+          return;
         }
 
         if(groupTooSmall){
@@ -216,7 +219,7 @@ export default {
     self.course_id = self.settings.custom_canvas_course_id
     await self.getGroupCategories()
     const mql = window.matchMedia('(max-width: 500px)');
-    mql.onchange = (e) => { 
+    mql.onchange = (e) => {
       self.iframeresize();
     }
     window.addEventListener('message', async function(evt) {
@@ -240,7 +243,7 @@ export default {
       }
     }, false);
     self.connectToParent();
-  }, 
+  },
   watch: {
     async groupsLoaded() {
       if(this.groupsLoaded){
@@ -249,13 +252,13 @@ export default {
         this.ready = true;
         this.iframeresize();
       }
-      
+
     }
-    
+
   }
 
 };
-</script> 
+</script>
 
 <style>
 .feedback {

@@ -30,12 +30,13 @@ class Lti3Middleware
             $loginUrl = $login->get_redirect_url();
             $arr = parse_url($loginUrl);
             parse_str($arr['query'], $params); 
-            logger($loginUrl);
+            logger($arr);
 
             return response(view('main.nocookies')->withState($params['state'])
             ->withNonce($params['nonce'])
             ->withTargetUrl($arr['query'])
-            ->withStorageTarget("_parent"));
+            ->withStorageTarget("_parent")
+            ->withPlatformHost($arr['host']));
             
         } catch (LTI\OIDC_Exception $e) {
             throw new LtiException("Exception at Lti3 controller : " . $e->getMessage());
