@@ -1,15 +1,15 @@
 <template>
 
-    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && Object.keys(groups).length"> 
+    <ul class="list-group mt-3 mb-3" v-if="groupsLoaded && sorted.length">
         <li
           class="list-group-item"
-          v-for="(group, name) in groups" 
+          v-for="group in sorted"
         >
-          {{ name }} : {{group.name}}
+          {{ group.category }} : {{group.name}}
         </li>
         <div></div>
     </ul>
-    <div v-else-if="groupsLoaded && !Object.keys(groups).length"
+    <div v-else-if="groupsLoaded && !sorted.length"
         class="alert alert-warning">Du er ikke med i noen grupper. <p>For å være med i gruppediskusjoner må du velge din tilhørighet lenger ned på denne siden.</p>
     </div>
     <p v-else>
@@ -26,6 +26,36 @@
     props: {
       groups: Object,
       groupsLoaded: Boolean
-    }, 
+    },
+    data() {
+      return {
+        sorted: []
+      }
+    },
+    methods: {
+      groupsSort() {
+        let sortedGroups = []
+        if(this.groups["Fylke"]) { sortedGroups.push({...this.groups["Fylke"], ...{"category" : "Fylke"}}) };
+        if(this.groups["Kommune"]) { sortedGroups.push({...this.groups["Kommune"], ...{"category" : "Kommune"}}) };
+        if(this.groups["Skole"]) { sortedGroups.push({...this.groups["Skole"], ...{"category" : "Skole"}}) };
+        if(this.groups["Barnehage"]) { sortedGroups.push({...this.groups["Barnehage"], ...{"category" : "Barnehage"}}) };
+        if(this.groups["Leder/eier (fylke)"]) { sortedGroups.push({...this.groups["Leder/eier (fylke)"], ...{"category" : "Leder/eier (fylke)"}}) };
+        if(this.groups["Leder/eier (kommune)"]) { sortedGroups.push({...this.groups["Leder/eier (kommune)"], ...{"category" : "Leder/eier (kommune)"}}) };
+        if(this.groups["Faggruppe nasjonalt"]) { sortedGroups.push({...this.groups["Faggruppe nasjonalt"], ...{"category" : "Faggruppe nasjonalt"}}) };
+        if(this.groups["Faggruppe fylke"]) { sortedGroups.push({...this.groups["Faggruppe fylke"], ...{"category" : "Faggruppe fylke"}}) };
+        if(this.groups["Faggruppe kommune"]) { sortedGroups.push({...this.groups["Faggruppe kommune"], ...{"category" : "Faggruppe kommune"}}) };
+        this.sorted = sortedGroups
+
+      }
+
+    },
+    watch: {
+      groups() {
+        this.groupsSort()
+      }
+    },
+    mounted() {
+      this.groupsSort()
+    }
   }
 </script>
