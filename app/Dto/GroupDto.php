@@ -33,6 +33,9 @@ class GroupDto extends AbstractDto
     /** @var int|null */
     protected $communityId;
 
+    /** @var string|null */
+    protected $orgNr;
+
     public function getCategoryId(): ?int
     {
         return $this->categoryId;
@@ -113,6 +116,15 @@ class GroupDto extends AbstractDto
         $this->communityId = $communityId;
     }
 
+    public function getOrgNr(): ?string
+    {
+        return $this->orgNr;
+    }
+
+    public function setOrgNr(?string $orgNr): void
+    {
+        $this->orgNr = $orgNr;
+    }
 
     public function getCanvasId(): ?int
     {

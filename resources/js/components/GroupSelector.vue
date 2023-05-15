@@ -125,6 +125,7 @@
           description: `courseId:${this.courseId}:county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`,
           courseId: `${this.courseId}`,
           countyId: `${this.chosenCounty.Fylkesnr}`,
+          orgNr: `${this.chosenCounty.OrgNr}`,
         };
       },
       getCommunityGroup() {
@@ -134,6 +135,7 @@
           courseId: `${this.courseId}`,
           countyId: `${this.chosenCounty.Fylkesnr}`,
           communityId: `${this.chosenCommunity.Kommunenr}`,
+          orgNr: `${this.chosenCommunity.OrgNr}`,
         };
       },
       getInstitutionGroup() {
@@ -143,6 +145,7 @@
           courseId: `${this.courseId}`,
           countyId: `${this.chosenCounty.Fylkesnr}`,
           communityId: `${this.chosenCommunity.Kommunenr}`,
+          orgNr: `${this.chosenInstitution.OrgNr}`,
         };
       },
       async assignToGroups() {
