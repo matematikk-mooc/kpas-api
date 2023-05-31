@@ -1,5 +1,5 @@
 <template>
-  <h2 class="qText" v-html="this.data.text"></h2>
+  <h3 class="qText" v-html="this.data.text"></h3>
   <div :id=this.id></div>
 </template>
 
@@ -17,7 +17,8 @@ export default {
     id: "",
     svgHeight: 0, 
     svgWidth: 0, 
-    svg: null
+    svg: null,
+    likert5ops: {}
   },
   data() {
     return {
@@ -30,13 +31,13 @@ export default {
 
   methods: {
     mapData(){
-      this.dataArray = Object.keys(this.data.submission_data).map((key) => Object({"option": key.split("_").pop() == 'none'? "Vet ikke" : key.split("_").pop(), "count":  parseInt(this.data.submission_data[key])}));
+      this.dataArray = Object.keys(this.data.submission_data).map((key) => Object({"option": key.split("_").pop() == 'none'? this.likert5ops["likert_scale_5pt_none"] : this.likert5ops["likert_scale_5pt_" + key.split("_").pop()], "count":  parseInt(this.data.submission_data[key])}));
 
     },
     createChart() {
       this.mapData();
       // margins and dimensions, possible props
-      let margin = {top: 20, right: 20, bottom: 30, left: 40},
+      let margin = {top: 20, right: 20, bottom: 90, left: 40},
       width = this.svgWidth - margin.left - margin.right,
       height = this.svgHeight - margin.top - margin.bottom;
       
@@ -58,7 +59,7 @@ export default {
       
       // Scale the range of the data in the domains
       xAxis.domain(chartData.map(function(d) { return d.option; }));
-      yAxis.domain([0, max(chartData, function(d) { return d.count; })]);
+      yAxis.domain([0, max(chartData, function(d) { return d.count; })+1]);
 
       const t = svg.transition().duration(750);
 
@@ -79,12 +80,19 @@ export default {
       .attr("class", "bartext")
       .attr("x", function(d) { return xAxis(d.option) + xAxis.bandwidth()/2; })
       .attr("y", function(d) { return yAxis(d.count) -  10; })
-      .text(function(d) { return d.count; });
+      .text(d => {if (d.count != 0) { return d.count }});
     
       // X-axis
       svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(axisBottom(xAxis));
+      .call(axisBottom(xAxis))
+      .selectAll("text")
+      .attr("class", "label-text")
+      .attr("y", 15)
+    	.attr("x", 0)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(45)")
+      .style("text-anchor", "start");;
       
       // Y-axis
       svg.append("g")
@@ -106,6 +114,10 @@ export default {
 
 .bar {
   fill: #6d889d;
+}
+
+.label-text {
+  font-size: .5rem;
 }
 
 .qText {

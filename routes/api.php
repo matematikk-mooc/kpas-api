@@ -102,3 +102,4 @@ Route::get('course/{courseId}/count', 'CourseController@getStudentCount');
 
 Route::get('school/orgnr/{orgNr}', 'NxrController@getSchool');
 Route::get('kindergarten/orgnr/{orgNr}', 'NxrController@getKindergarten');
+Route::get('/modules/{moduleId}/per_date', 'ModuleController@moduleStatisticsPerDate');
