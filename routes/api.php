@@ -80,10 +80,6 @@ Route::group(['prefix' => 'faculties', 'middleware' => 'lti'], function () {
     Route::get('/', 'FacultyController@index');
 });
 
-Route::group(['prefix' => 'command'], function () {
-    Route::get('migrate', 'CommandController@migrate');
-});
-
 Route::prefix('user')->group(function () {
     Route::prefix('merge')->group(function () {
         Route::get('/token', [MergeUserController::class, 'createToken'])->middleware('lti');
