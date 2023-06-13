@@ -42,7 +42,7 @@
         v-model="groups"
       ></group-selector>
     <hr/>
-      <div>
+      <div class="update-button">
         <button
           class="btn"
           :disabled="!isReady"
@@ -410,3 +410,9 @@
     }
   }
 </script>
+
+<style>
+  .update-button {
+    padding-bottom: 2em;
+  }
+</style>
