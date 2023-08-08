@@ -13,17 +13,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $course_id
  * @property int $county_id
  * @property int $community_id
+ * @property string $org_nr
  */
 class Group extends Model
 {
 
-    protected $nullable = ['course_id', 'county_id', 'community_id']; 
+    protected $nullable = ['course_id', 'county_id', 'community_id', 'org_nr'];
     protected $fillable = [
         'canvas_id',
         'name',
         'course_id',
-        'county_id', 
+        'county_id',
         'community_id',
+        'org_nr',
         'description',
         'category_id',
     ];
