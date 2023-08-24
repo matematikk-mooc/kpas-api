@@ -52,6 +52,19 @@ class CourseSettingsRepository
 
     public function updateCourseSettings(int $courseId, CourseSettingsRequest $courseSettings)
     {
+
+        CourseSettings::updateOrCreate(
+            ['course_id' => $courseId],
+            [
+                'course_id' => $courseId,
+                'unmaintained_since' => new DateTime($courseSettings['unmaintained_since']),
+                'role_support' => $courseSettings['role_support'],
+                'licence' => $courseSettings['licence'],
+                'multilang' => $courseSettings['multilang'],
+                'banner_type' => $courseSettings['banner_type'],
+                'banner_text' => $courseSettings['banner_text'],
+            ]
+        );
         $newCourseCategory = $courseSettings['courseCategory'][0];
         $courseCategory = CourseCategory::updateOrCreate(
             ['course_id' => $courseId],
@@ -80,19 +93,6 @@ class CourseSettingsRepository
                 ]);
             }
         }
-
-        CourseSettings::updateOrCreate(
-            ['course_id' => $courseId],
-            [
-                'course_id' => $courseId,
-                'unmaintained_since' => new DateTime($courseSettings['unmaintained_since']),
-                'role_support' => $courseSettings['role_support'],
-                'licence' => $courseSettings['licence'],
-                'multilang' => $courseSettings['multilang'],
-                'banner_type' => $courseSettings['banner_type'],
-                'banner_text' => $courseSettings['banner_text'],
-            ]
-        );
 
         return $this->getCourseSettings($courseId);
 
