@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
 
 
 /**
@@ -16,6 +17,7 @@ class CourseCategory extends Model
 {
 
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $primaryKey = [
         'course_id',
@@ -30,9 +32,13 @@ class CourseCategory extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
+    // public function courseSettings()
+    // {
+    //     return $this->belongsTo(CourseSettings::class, 'course_id', 'course_id');
+    // }
 
 
     /**
