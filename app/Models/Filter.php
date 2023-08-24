@@ -5,12 +5,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CourseFilter;
 
 /**
  * @property int $id
  * @property string $filter_name
  */
-class Filters extends Model
+class Filter extends Model
 {
 
     public $timestamps = false;

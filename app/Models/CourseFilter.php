@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Filter;
 
 
 /**
  * @property int $course_id
  * @property int $filter_id
  */
-class CourseFilters extends Model
+class CourseFilter extends Model
 {
 
     public $timestamps = false;
-
+    public $incrementing = false;
     protected $primaryKey = [
         'course_id',
         'filter_id',
@@ -26,8 +27,13 @@ class CourseFilters extends Model
 
     public function filter()
     {
-        return $this->belongsTo(Filter::class);
+        return $this->belongsTo(Filter::class, 'filter_id', 'id');
     }
+
+    // public function courseSettings()
+    // {
+    //     return $this->belongsTo(CourseSetting::class, 'course_id', 'course_id');
+    // }
 
 
 

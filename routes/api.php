@@ -99,3 +99,13 @@ Route::get('course/{courseId}/count', 'CourseController@getStudentCount');
 Route::get('school/orgnr/{orgNr}', 'NxrController@getSchool');
 Route::get('kindergarten/orgnr/{orgNr}', 'NxrController@getKindergarten');
 Route::get('/modules/{moduleId}/per_date', 'ModuleController@moduleStatisticsPerDate');
+
+
+Route::get('filters', 'CourseSettingsController@getFilters');
+Route::get('categories', 'CourseSettingsController@getCategories');
+Route::get('categories/{categoryId}', 'CourseSettingsController@getCategory');
+Route::get('course/{courseId}/category', 'CourseSettingsController@getCourseCategory');
+Route::get('course/{courseId}/filters', 'CourseSettingsController@getCourseFilters');
+Route::get('course/{courseId}/settings', 'CourseSettingsController@getCourseSettings');
+Route::put('course/{courseId}/settings', 'CourseSettingsController@updateCourseSettings');
+
