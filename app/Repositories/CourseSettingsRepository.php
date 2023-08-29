@@ -23,6 +23,16 @@ class CourseSettingsRepository
         return Category::all();
     }
 
+    public function getBannerTypes()
+    {
+        return array('ALERT', 'NOTIFICATION', 'FEEDBACK', 'UNMAINTAINED','NONE');
+    }
+
+    public function getMultilangTypes()
+    {
+        return array('ALL', 'SE', 'NN', 'NONE');
+    }
+
     public function getCategory(int $categoryId)
     {
         return Category::find($categoryId);
@@ -57,7 +67,7 @@ class CourseSettingsRepository
             ['course_id' => $courseId],
             [
                 'course_id' => $courseId,
-                'unmaintained_since' => new DateTime($courseSettings['unmaintained_since']),
+                'unmaintained_since' => $courseSettings['unmaintained_since']? new DateTime($courseSettings['unmaintained_since']) : null,
                 'role_support' => $courseSettings['role_support'],
                 'licence' => $courseSettings['licence'],
                 'multilang' => $courseSettings['multilang'],

@@ -11,17 +11,17 @@
         $courseSettings = $courseSettingsRepository->getCourseSettings($course_id);
         $filters = $courseSettingsRepository->getFilters();
         $categories = $courseSettingsRepository->getCategories();
+        $bannertypes = $courseSettingsRepository->getBannerTypes();
+        $multilangtypes = $courseSettingsRepository->getMultilangTypes();
     @endphp
 
-<h1>Filters</h1>
-        @php
-            var_dump($filters);
-        @endphp
-
-<h1>Categories</h1>
-        @php
-            var_dump($categories);
-        @endphp
+<course-settings-view
+                 :courseid="{{ json_encode($course_id) }}"
+                 :filters="{{ json_encode($filters) }}"
+                 :coursesettings="{{ json_encode($courseSettings) }}"
+                 :categories="{{ json_encode($categories) }}"
+                 :bannertypes="{{ json_encode($bannertypes) }}"
+                 :multilangtypes="{{ json_encode($multilangtypes) }}" ></course-settings-view>
 
 @endsection
 
