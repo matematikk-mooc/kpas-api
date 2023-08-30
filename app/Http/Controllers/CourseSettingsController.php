@@ -6,6 +6,8 @@ use App\Repositories\CourseSettingsRepository;
 use App\Http\Responses\SuccessResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\CourseSettings\CourseSettingsRequest;
+use App\Http\Requests\CourseSettings\FilterRequest;
+use App\Http\Requests\CourseSettings\CategoryRequest;
 
 
 class CourseSettingsController extends Controller
@@ -57,6 +59,22 @@ class CourseSettingsController extends Controller
         $courseSettingsRepository = new CourseSettingsRepository();
         $result = $courseSettingsRepository->getCourseSettings($courseId);
         logger($result);
+        return new SuccessResponse($result);
+
+    }
+
+    public function addFilter(FilterRequest $filter): SuccessResponse
+    {
+        $courseSettingsRepository = new CourseSettingsRepository();
+        $result = $courseSettingsRepository->addFilter($filter);
+        return new SuccessResponse($result);
+
+    }
+
+    public function addCategory(CategoryRequest $category): SuccessResponse
+    {
+        $courseSettingsRepository = new CourseSettingsRepository();
+        $result = $courseSettingsRepository->addCategory($category);
         return new SuccessResponse($result);
 
     }

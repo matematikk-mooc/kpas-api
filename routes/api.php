@@ -108,4 +108,5 @@ Route::get('course/{courseId}/category', 'CourseSettingsController@getCourseCate
 Route::get('course/{courseId}/filters', 'CourseSettingsController@getCourseFilters');
 Route::get('course/{courseId}/settings', 'CourseSettingsController@getCourseSettings');
 Route::put('course/{courseId}/settings', 'CourseSettingsController@updateCourseSettings');
-
+Route::post('filters', 'CourseSettingsController@addFilter');
+Route::post('categories', 'CourseSettingsController@addCategory');

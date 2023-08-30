@@ -9,6 +9,8 @@ use App\Models\CourseCategory;
 use App\Models\CourseFilter;
 use \DateTime;
 use App\Http\Requests\CourseSettings\CourseSettingsRequest;
+use App\Http\Requests\CourseSettings\FilterRequest;
+use App\Http\Requests\CourseSettings\CategoryRequest;
 
 class CourseSettingsRepository
 {
@@ -58,6 +60,26 @@ class CourseSettingsRepository
             'courseFilter',
             'courseFilter.filter'
         ])->where('course_id', $courseId)->first();
+    }
+
+    public function addFilter(FilterRequest $filter)
+    {
+        $filter = Filter::create([
+            'filter_name' => $filter['filter_name'],
+            'type' => $filter['type'],
+        ]);
+        return $filter;
+    }
+
+    public function addCategory(CategoryRequest $category)
+    {
+        logger($category);
+        $category = Category::create([
+            'name' => $category['name'],
+            'position' => $category['position'],
+            'color_code' => $category['color_code'],
+        ]);
+        return $category;
     }
 
     public function updateCourseSettings(int $courseId, CourseSettingsRequest $courseSettings)

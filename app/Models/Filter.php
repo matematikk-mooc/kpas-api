@@ -17,6 +17,7 @@ class Filter extends Model
     public $timestamps = false;
     protected $fillable = [
         'filter_name',
+        'type'
     ];
 
     public function courseFilter()
