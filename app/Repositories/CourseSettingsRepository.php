@@ -35,6 +35,11 @@ class CourseSettingsRepository
         return array('ALL', 'SE', 'NN', 'NONE');
     }
 
+    public function getFilterTypes()
+    {
+        return array('CATEGORY', 'TARGET');
+    }
+
     public function getCategory(int $categoryId)
     {
         return Category::find($categoryId);
