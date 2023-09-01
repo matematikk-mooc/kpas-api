@@ -67,6 +67,16 @@ class CourseSettingsRepository
         ])->where('course_id', $courseId)->first();
     }
 
+    public function getCourseSettingsForAllCourses()
+    {
+        return CourseSettings::with([
+            'courseCategory',
+            'courseCategory.category',
+            'courseFilter',
+            'courseFilter.filter'
+        ])->get();
+    }
+
     public function addFilter(FilterRequest $filter)
     {
         $filter = Filter::create([

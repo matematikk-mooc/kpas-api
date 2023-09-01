@@ -63,6 +63,14 @@ class CourseSettingsController extends Controller
 
     }
 
+    public function getCourseSettingsForAllCourses(): SuccessResponse
+    {
+        $courseSettingsRepository = new CourseSettingsRepository();
+        $result = $courseSettingsRepository->getCourseSettingsForAllCourses();
+        return new SuccessResponse($result);
+
+    }
+
     public function addFilter(FilterRequest $filter): SuccessResponse
     {
         $courseSettingsRepository = new CourseSettingsRepository();
