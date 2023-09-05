@@ -27,6 +27,7 @@ class CourseSettings extends Model
         'multilang',
         'banner_type',
         'banner_text',
+        'image_id'
     ];
     protected $nullable = ['unmaintained_since', 'banner_text'];
 
@@ -34,6 +35,11 @@ class CourseSettings extends Model
     {
         return $this->hasOne(CourseCategory::class, 'course_id', 'course_id');
     }
+
+    public function image()
+    {
+        return $this->hasOne(CourseImage::class, 'id', 'image_id');
+    }   
 
     public function courseFilter()
     {

@@ -1,10 +1,8 @@
-@php use App\Repositories\CourseSettingsRepository; use App\Models\CourseSettings; use App\Models\CourseFilter; use App\Models\CourseCategory; use App\Models\Filter; use App\Models\Category; @endphp
+@php use App\Repositories\CourseSettingsRepository; use App\Models\CourseSettings; use App\Models\CourseFilter; use App\Models\CourseCategory; use App\Models\Filter; use App\Models\Category; use App\Models\CourseImage; @endphp
 @extends('layouts.app')
 
 @section('content')
     @php
-        logger($settings);
-
         $isadmin = false;
 
         $roles = $settings["custom_canvas_roles"];
@@ -22,6 +20,7 @@
         $bannertypes = $courseSettingsRepository->getBannerTypes();
         $multilangtypes = $courseSettingsRepository->getMultilangTypes();
         $filtertypes = $courseSettingsRepository->getFilterTypes();
+        $courseimages = $courseSettingsRepository->getCourseImages();
     @endphp
 
 <course-settings-view
@@ -32,7 +31,8 @@
                  :bannertypes="{{ json_encode($bannertypes) }}"
                  :multilangtypes="{{ json_encode($multilangtypes) }}"
                  :filtertypes="{{ json_encode($filtertypes) }}"
-                 :isadmin= "{{ json_encode($isadmin) }}"></course-settings-view>
+                 :isadmin= "{{ json_encode($isadmin) }}"
+                 :courseimages = "{{ json_encode($courseimages) }}"></course-settings-view>
 
 @endsection
 

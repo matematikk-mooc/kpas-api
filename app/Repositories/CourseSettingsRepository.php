@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\CourseSettings;
 use App\Models\CourseCategory;
 use App\Models\CourseFilter;
+use App\Models\CourseImage;
 use \DateTime;
 use App\Http\Requests\CourseSettings\CourseSettingsRequest;
 use App\Http\Requests\CourseSettings\FilterRequest;
@@ -63,7 +64,8 @@ class CourseSettingsRepository
             'courseCategory',
             'courseCategory.category',
             'courseFilter',
-            'courseFilter.filter'
+            'courseFilter.filter',
+            'image'
         ])->where('course_id', $courseId)->first();
     }
 
@@ -73,8 +75,13 @@ class CourseSettingsRepository
             'courseCategory',
             'courseCategory.category',
             'courseFilter',
-            'courseFilter.filter'
+            'courseFilter.filter',
+            'image'
         ])->get();
+    }
+
+    public function getCourseImages(){
+        return CourseImage::all();
     }
 
     public function addFilter(FilterRequest $filter)
@@ -88,7 +95,6 @@ class CourseSettingsRepository
 
     public function addCategory(CategoryRequest $category)
     {
-        logger($category);
         $category = Category::create([
             'name' => $category['name'],
             'position' => $category['position'],
@@ -99,7 +105,6 @@ class CourseSettingsRepository
 
     public function updateCourseSettings(int $courseId, CourseSettingsRequest $courseSettings)
     {
-
         CourseSettings::updateOrCreate(
             ['course_id' => $courseId],
             [
@@ -110,17 +115,20 @@ class CourseSettingsRepository
                 'multilang' => $courseSettings['multilang'],
                 'banner_type' => $courseSettings['banner_type'],
                 'banner_text' => $courseSettings['banner_text'],
+                'image_id' => $courseSettings['image_id']
             ]
         );
-        $newCourseCategory = $courseSettings['courseCategory'][0];
-        $courseCategory = CourseCategory::updateOrCreate(
-            ['course_id' => $courseId],
-            [
-                'category_id' => $newCourseCategory['category_id'],
-                'new' => $newCourseCategory['new'],
-                'position' => $newCourseCategory['position']
-            ]
-        );
+        if($courseSettings['courseCategory'] != null){
+            $newCourseCategory = $courseSettings['courseCategory'][0];
+            $courseCategory = CourseCategory::updateOrCreate(
+                ['course_id' => $courseId],
+                [
+                    'category_id' => $newCourseCategory['category_id'],
+                    'new' => $newCourseCategory['new']? true : false,
+                    'position' => $newCourseCategory['position']
+                ]
+            );
+        }
 
         $currentCourseFilters = CourseFilter::where('course_id', $courseId)->get();
         $courseFilters = $courseSettings['courseFilters'];
@@ -144,6 +152,4 @@ class CourseSettingsRepository
         return $this->getCourseSettings($courseId);
 
     }
-
-
 }

@@ -3,7 +3,7 @@
 
     <p>Kategorinavn: <input type="text" v-model="category_name"/></p>
     <p>Kategoriposisjon: <input type="number" default=0 v-model="position"/></p>
-    <p>Kategorifarge: <input type="text" v-model="category_color"/></p>
+    <p>Kategoritema: <input type="text" v-model="category_color"/> (Kategoritema theme_*number* må finnes som tema i frontend)</p>
 
     <button @click="createCategory">Opprett kategori</button>
     <div v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</div>
@@ -49,7 +49,6 @@ export default{
                 this.position = 0;
                 this.responseCode = response.data.status;
             }
-            console.log(response);
             this.$emit('update', response.data.result);
         }
     }

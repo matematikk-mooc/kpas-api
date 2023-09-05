@@ -58,7 +58,6 @@ class CourseSettingsController extends Controller
     {
         $courseSettingsRepository = new CourseSettingsRepository();
         $result = $courseSettingsRepository->getCourseSettings($courseId);
-        logger($result);
         return new SuccessResponse($result);
 
     }
@@ -67,6 +66,14 @@ class CourseSettingsController extends Controller
     {
         $courseSettingsRepository = new CourseSettingsRepository();
         $result = $courseSettingsRepository->getCourseSettingsForAllCourses();
+        return new SuccessResponse($result);
+
+    }
+
+    public function getCourseImages(): SuccessResponse
+    {
+        $courseSettingsRepository = new CourseSettingsRepository();
+        $result = $courseSettingsRepository->getCourseImages();
         return new SuccessResponse($result);
 
     }
@@ -90,7 +97,6 @@ class CourseSettingsController extends Controller
     public function updateCourseSettings(CourseSettingsRequest $request, int $courseId): SuccessResponse
     {
         $courseSettingsRepository = new CourseSettingsRepository();
-        logger($request);
         $result = $courseSettingsRepository->updateCourseSettings($courseId, $request);
         return new SuccessResponse($result);
 

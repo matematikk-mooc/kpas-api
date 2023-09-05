@@ -4,7 +4,8 @@
         <h1> KPAS kompetansepakke innstillinger</h1>
         <p>Lisens: <input type="checkbox" true-value="1" false-value="0" v-model="currentcourseSettings.licence"/></p>
         <p>Rolle support: <input type="checkbox" true-value="1" false-value="0" v-model="currentcourseSettings.role_support"/></p>
-        <p>Vedlikehold avsluttet: <input type="date" clearable v-model="currentcourseSettings.unmaintained_since"></p>
+        <p>Vedlikehold avsluttet: <input type="checkbox" true-value="1" false-value="0" v-model="unmaintained"/></p>
+        <p v-if="unmaintained == '1'">Dato for vedlikehold avsluttet: <input type="date" clearable v-model="currentcourseSettings.unmaintained_since"></p>
 
         <section>
             Banner:
@@ -54,18 +55,38 @@
             ></v-select>
             Plassering i kategori:
             <input type="number" default=0 v-model="currentcourseSettings.course_category.position"/>
-            <p>Ny pakke: <input type="checkbox" true-value="1" false-value="0" v-model="currentcourseSettings.course_category.new"/></p>
+            <p>Ny pakke: <input type="checkbox" default="0" true-value="1" false-value="0" v-model="currentcourseSettings.course_category.new"/></p>
 
         </section>
-        <button @click="updateCourseSettings">Lagre</button>
 
-        <span class="ml-3" v-if="isSubmitting">Sender <div class="spinner-border text-success"></div></span>
-        <div v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</div>
-        <div v-if="error" class='alert alert-danger kpasAlert'>{{ error }}</div>
+        <section>
+            <div v-if="imageSelected">
+                <p>Valgt bilde: </p>
+                <img :src="selectedImage.path" />
+                <br/>
+                <button @click="openPopup">Velg bilde</button>
+            </div>
+        </section>
+        <section class="image-selector" v-if="open">
+                <v-layout row wrap primary-title v-for="image in courseImages" :key="image.id">
+                    <v-flex xs6>
+                        <img @click="selectImage(image)" v-bind:src="`${image.path}`" alt="illustration">
+                    </v-flex>
+                </v-layout>
+        </section>
+
+        <section>
+            <br/>
+            <button @click="updateCourseSettings">Lagre</button>
+            <span class="ml-3" v-if="isSubmitting">Sender <div class="spinner-border text-success"></div></span>
+            <div v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</div>
+            <div v-if="error" class='alert alert-danger kpasAlert'>{{ error }}</div>
+        </section>
 
         <div v-if="isadmin">
-            <course-settings-category-create @update="newCategoryUpdate"></course-settings-category-create>
+            <h1>Admin funksjoner</h1>
             <course-settings-filter-create :filterTypes="filterTypes" @update="newFilterUpdate"></course-settings-filter-create>
+            <course-settings-category-create @update="newCategoryUpdate"></course-settings-category-create>
         </div>
     </div>
 
@@ -89,7 +110,8 @@ export default{
         multilangtypes: [],
         bannertypes: [],
         filtertypes: [],
-        isadmin: Boolean
+        isadmin: Boolean,
+        courseimages: []
     },
     components:{
         CourseSettingsCategoryCreate,
@@ -108,22 +130,47 @@ export default{
             error:  undefined,
             isSubmitting: false,
             responseCode: undefined,
+            courseImages: this.courseimages,
+            open: false,
+            selectedImage: {},
+            imageSelected: false,
+            unmaintained: "0"
         }
     },
     created() {
-        console.log(this.isadmin)
         if(this.coursesettings && this.coursesettings.course_category){
             this.setSelectedCategory();
         }
         if(this.coursesettings && this.coursesettings.course_filter){
             this.setSelectedFilters();
         }
+        if(this.coursesettings && this.coursesettings.image){
+            this.setSelectedImage();
+        }
         if(!this.coursesettings){
             this.setEmptyCourseSettings();
         }
+        if(this.currentcourseSettings.unmaintained_since != null){
+            this.unmaintained = "1";
+        }
+
+
+    },
+    updated() {
 
     },
     methods: {
+        selectImage(image){
+            this.selectedImage = image;
+            this.open = false;
+            this.imageSelected = true;
+        },
+        openPopup(){
+            this.open = true;
+        },
+        toggleDialog(){
+            this.dialog = !this.dialog;
+        },
         setSelectedFilters() {
             this.coursesettings.course_filter.forEach(filter => {
                 this.selectedFilters.push(this.allFilters.find(f => f.id == filter.filter_id))
@@ -132,6 +179,10 @@ export default{
         setSelectedCategory() {
             this.selectedCategory = this.allCategories.find(c => c.id == this.coursesettings.course_category.category_id)
         },
+        setSelectedImage() {
+            this.selectedImage = this.courseImages.find(i => i.id == this.coursesettings.image.id)
+            this.imageSelected = true;
+        },
         setEmptyCourseSettings() {
             this.currentcourseSettings.unmaintained_since = null;
             this.currentcourseSettings.licence = 0;
@@ -139,11 +190,10 @@ export default{
             this.currentcourseSettings.banner_type = 'NONE';
             this.currentcourseSettings.banner_text = null;
             this.currentcourseSettings.multilang = 'NONE';
-            this.currentcourseSettings.course_category = {
-                position: 0,
-                new: 0
-            }
             this.currentcourseSettings.course_filter = [];
+            this.currentcourseSettings.image_id = null;
+            this.currentcourseSettings.course_category.position = 0;
+            this.currentcourseSettings.course_category.new = false;
         },
         newCategoryUpdate(category) {
             this.allCategories.push(category)
@@ -155,6 +205,9 @@ export default{
             this.responseCode = undefined;
             this.isSubmitting = true;
             let response = undefined;
+            if(this.unmaintained == "0"){
+                this.currentcourseSettings.unmaintained_since = null;
+            }
             try {
                 response = await api.put('course/' + this.courseid + '/settings', {
                     cookie: window.cookie,
@@ -164,24 +217,24 @@ export default{
                     banner_type: this.currentcourseSettings.banner_type,
                     banner_text: this.currentcourseSettings.banner_text,
                     multilang: this.currentcourseSettings.multilang,
-                    courseCategory: [{
+                    courseCategory: this.selectedCategory.id ? [{
                         course_id: this.courseid,
                         category_id: this.selectedCategory.id,
                         position: this.currentcourseSettings.course_category.position,
                         new: this.currentcourseSettings.course_category.new
-                    }],
-                    courseFilters: this.selectedFilters.map(f => {
+                    }] : null,
+                    courseFilters: this.selectedFilters? this.selectedFilters.map(f => {
                         return {
                             course_id: this.courseid,
                             filter_id: f.id
                         }
-                    })
+                    }) : [],
+                    image_id: this.selectedImage? this.selectedImage.id : null
                 })
             } catch (e) {
-                if(response.data.status != 200){
                     this.isSubmitting = false;
                     this.error = "Noe gikk galt, prøv igjen senere"
-                }
+                    console.log(e)
             }
             if (response.data.status == 200) {
                 this.isSubmitting = false;
@@ -212,5 +265,18 @@ input {
 }
 button {
     margin-bottom: 1em;
+    margin-top: 1em;
+}
+
+img{
+    height: 8em;
+    &:hover{
+        cursor: pointer;
+    }
+}
+.image-selector {
+    height: 30em;
+    overflow-y: scroll;
+    border: 1px solid gray;
 }
 </style>
