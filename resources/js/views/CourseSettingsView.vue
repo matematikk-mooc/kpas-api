@@ -192,6 +192,7 @@ export default{
             this.currentcourseSettings.multilang = 'NONE';
             this.currentcourseSettings.course_filter = [];
             this.currentcourseSettings.image_id = null;
+            this.currentcourseSettings.course_category = {};
             this.currentcourseSettings.course_category.position = 0;
             this.currentcourseSettings.course_category.new = false;
         },
