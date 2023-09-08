@@ -64,8 +64,8 @@
                 <p>Valgt bilde: </p>
                 <img :src="selectedImage.path" />
                 <br/>
-                <button @click="openPopup">Velg bilde</button>
             </div>
+            <button @click="openPopup">Velg bilde</button>
         </section>
         <section class="image-selector" v-if="open">
                 <v-layout row wrap primary-title v-for="image in courseImages" :key="image.id">
