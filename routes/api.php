@@ -107,5 +107,7 @@ Route::get('categories/{categoryId}', 'CourseSettingsController@getCategory');
 Route::get('course/{courseId}/category', 'CourseSettingsController@getCourseCategory');
 Route::get('course/{courseId}/filters', 'CourseSettingsController@getCourseFilters');
 Route::get('course/{courseId}/settings', 'CourseSettingsController@getCourseSettings');
-Route::put('course/{courseId}/settings', 'CourseSettingsController@updateCourseSettings');
-
+Route::put('course/{courseId}/settings', 'CourseSettingsController@updateCourseSettings')->middleware('lti');
+Route::post('filters', 'CourseSettingsController@addFilter')->middleware('lti');
+Route::post('categories', 'CourseSettingsController@addCategory')->middleware('lti');
+Route::get('courses/settings', 'CourseSettingsController@getCourseSettingsForAllCourses');

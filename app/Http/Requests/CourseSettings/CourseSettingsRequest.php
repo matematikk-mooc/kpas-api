@@ -18,6 +18,7 @@ class CourseSettingsRequest extends FormRequest
             'multilang' => ['required', Rule::in(['ALL', 'SE', 'NN', 'NONE', 0, 1, 2, 3])],
             'courseFilters' => 'array|nullable',
             'courseCategory' => 'array|nullable',
+            'image_id' => 'required|integer|exists:course_images,id'
         ];
     }
 }

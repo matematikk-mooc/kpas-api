@@ -39,10 +39,7 @@ class ModuleController extends Controller
     }
 
     public function moduleStatisticsPerDate(Request $request, int $moduleId){
-        logger("HERE BF");
         $data = $this->moduleService->getModuleStatisticsPerDate($moduleId);
-        logger("HERE!!!!");
-        logger(print_r($data, true));
         $res = $data->getBody()->getContents();
         return new SuccessResponse($res);
     }

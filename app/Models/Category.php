@@ -9,7 +9,7 @@ use App\Models\CourseCategory;
 
 /**
  * @property int $id
- * @property string $category_name
+ * @property string $name
  * @property int $position
  * @property string color_code
  */
@@ -18,7 +18,7 @@ class Category extends Model
 
     public $timestamps = false;
     protected $fillable = [
-        'category_name',
+        'name',
         'position',
         'color_code',
     ];
