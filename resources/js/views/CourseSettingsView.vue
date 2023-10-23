@@ -87,6 +87,7 @@
             <h1>Admin funksjoner</h1>
             <course-settings-filter-create :filterTypes="filterTypes" @update="newFilterUpdate"></course-settings-filter-create>
             <course-settings-category-create @update="newCategoryUpdate"></course-settings-category-create>
+            <course-settings-set-highligthed-course :courses="publiccourses" :current="currenthighlighted"></course-settings-set-highligthed-course>
         </div>
     </div>
 
@@ -99,6 +100,7 @@ import "vue-select/dist/vue-select.css";
 import api from '../api';
 import CourseSettingsCategoryCreate from '../components/CourseSettingsCategoryCreate.vue';
 import CourseSettingsFilterCreate from '../components/CourseSettingsFilterCreate.vue';
+import CourseSettingsSetHighligthedCourse from '../components/CourseSettingsSetHighligthedCourse.vue';
 
 export default{
     name: "CourseSettingsView",
@@ -111,11 +113,14 @@ export default{
         bannertypes: [],
         filtertypes: [],
         isadmin: Boolean,
-        courseimages: []
+        courseimages: [],
+        publiccourses: [],
+        currenthighlighted: {}
     },
     components:{
         CourseSettingsCategoryCreate,
-        CourseSettingsFilterCreate
+        CourseSettingsFilterCreate,
+        CourseSettingsSetHighligthedCourse
     },
     data () {
         return {

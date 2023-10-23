@@ -78,6 +78,14 @@ class CourseSettingsController extends Controller
 
     }
 
+    public function getHighLightedCourse(): SuccessResponse
+    {
+        $courseSettingsRepository = new CourseSettingsRepository();
+        $result = $courseSettingsRepository->getHighLightedCourse();
+        return new SuccessResponse($result);
+
+    }
+
     public function addFilter(FilterRequest $filter): SuccessResponse
     {
         $courseSettingsRepository = new CourseSettingsRepository();
@@ -98,6 +106,16 @@ class CourseSettingsController extends Controller
     {
         $courseSettingsRepository = new CourseSettingsRepository();
         $result = $courseSettingsRepository->updateCourseSettings($courseId, $request);
+        return new SuccessResponse($result);
+
+    }
+
+    public function updateHighlightedCourse(Request $request): SuccessResponse
+    {
+        logger("updateHighlightedCourse");
+        $courseSettingsRepository = new CourseSettingsRepository();
+        $result = $courseSettingsRepository->updateHighlightedCourse($request->get('courseId'));
+        logger($result);
         return new SuccessResponse($result);
 
     }

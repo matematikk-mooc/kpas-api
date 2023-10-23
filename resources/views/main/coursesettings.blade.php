@@ -1,4 +1,4 @@
-@php use App\Repositories\CourseSettingsRepository; use App\Models\CourseSettings; use App\Models\CourseFilter; use App\Models\CourseCategory; use App\Models\Filter; use App\Models\Category; use App\Models\CourseImage; @endphp
+@php use App\Repositories\CourseSettingsRepository; use App\Models\CourseSettings; use App\Models\CourseFilter; use App\Models\CourseCategory; use App\Models\Filter; use App\Models\Category; use App\Models\CourseImage; use App\Services\CanvasService; use App\Repositories\CanvasRepository; use GuzzleHttp\Client; @endphp
 @extends('layouts.app')
 
 @section('content')
@@ -13,6 +13,7 @@
         $course_id = intval($settings["custom_canvas_course_id"]);
 
         $courseSettingsRepository = new CourseSettingsRepository();
+        $canvasRepository = new CanvasRepository(new CanvasService(new Client()));
 
         $courseSettings = $courseSettingsRepository->getCourseSettings($course_id);
         $filters = $courseSettingsRepository->getFilters();
@@ -21,6 +22,8 @@
         $multilangtypes = $courseSettingsRepository->getMultilangTypes();
         $filtertypes = $courseSettingsRepository->getFilterTypes();
         $courseimages = $courseSettingsRepository->getCourseImages();
+        $currenthighlighted = $courseSettingsRepository->getHighlightedCourse();
+        $publicCourses = $canvasRepository->getPublicCourses();
     @endphp
 
 <course-settings-view
@@ -32,7 +35,9 @@
                  :multilangtypes="{{ json_encode($multilangtypes) }}"
                  :filtertypes="{{ json_encode($filtertypes) }}"
                  :isadmin= "{{ json_encode($isadmin) }}"
-                 :courseimages = "{{ json_encode($courseimages) }}"></course-settings-view>
+                 :courseimages = "{{ json_encode($courseimages) }}"
+                 :publiccourses = "{{ json_encode($publicCourses) }}"
+                 :currenthighlighted = "{{ json_encode($currenthighlighted) }}"></course-settings-view>
 
 @endsection
 

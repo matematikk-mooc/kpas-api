@@ -62,7 +62,7 @@ class CanvasService
             throw $exception;
         }
     }
-    
+
     public function getTotalStudents(string $courseId): array
     {
         try {
@@ -311,6 +311,13 @@ class CanvasService
     }
 
     public function getAllCourses()
+    {
+        $accountId = config('canvas.account_id');
+        $url = "accounts/{$accountId}/courses";
+        return $this->request($url, 'GET', [], [], true);
+    }
+
+    public function getAllPublishedCourses()
     {
         $accountId = config('canvas.account_id');
         $url = "accounts/{$accountId}/courses";
