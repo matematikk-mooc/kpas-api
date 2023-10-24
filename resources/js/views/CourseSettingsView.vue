@@ -50,7 +50,7 @@
             label="name"
             placeholder="--- Category ---"
             :close-on-select="true"
-            :clearable="true"
+            :clearable="false"
             v-model="selectedCategory"
             ></v-select>
             Plassering i kategori:
@@ -131,13 +131,13 @@ export default{
             bannerTypes : this.bannertypes,
             multilangTypes : this.multilangtypes,
             selectedFilters : [],
-            selectedCategory : {},
+            selectedCategory : undefined,
             error:  undefined,
             isSubmitting: false,
             responseCode: undefined,
             courseImages: this.courseimages,
             open: false,
-            selectedImage: {},
+            selectedImage: undefined,
             imageSelected: false,
             unmaintained: "0"
         }
@@ -209,8 +209,19 @@ export default{
         },
         async updateCourseSettings() {
             this.responseCode = undefined;
+            this.error = undefined;
             this.isSubmitting = true;
             let response = undefined;
+            if(this.selectedCategory == undefined){
+                this.error = "Du må velge kategori";
+                this.isSubmitting = false;
+                return;
+            }
+            if(this.selectedImage == undefined) {
+                this.error = "Du må velge bilde";
+                this.isSubmitting = false;
+                return;
+            }
             if(this.unmaintained == "0"){
                 this.currentcourseSettings.unmaintained_since = null;
             }

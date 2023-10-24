@@ -27,8 +27,13 @@ export default{
     methods: {
         async createCategory() {
             let response = undefined;
+            this.error = undefined;
             if(this.category_name == '' || this.category_name == null){
                 this.error = "Kategorinavn kan ikke være tomt"
+                return;
+            }
+            if(this.category_color == '' || this.category_color == null){
+                this.error = "Kategoritema kan ikke være tomt"
                 return;
             }
             try {
