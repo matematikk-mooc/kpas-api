@@ -110,6 +110,8 @@ Route::get('course/{courseId}/settings', 'CourseSettingsController@getCourseSett
 Route::put('course/{courseId}/settings', 'CourseSettingsController@updateCourseSettings')->middleware('lti');
 Route::post('filters', 'CourseSettingsController@addFilter')->middleware('lti');
 Route::post('categories', 'CourseSettingsController@addCategory')->middleware('lti');
+Route::put('settings/highlighted', 'CourseSettingsController@updateHighlightedCourse')->middleware('lti');
+Route::get('settings/highlighted', 'CourseSettingsController@getHighLightedCourse');
 Route::get('courses/settings', 'CourseSettingsController@getCourseSettingsForAllCourses');
 
 Route::get('course/{courseId}/moduletitles', 'CanvasController@getModuleTitles');

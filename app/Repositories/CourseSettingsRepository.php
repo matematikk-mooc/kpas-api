@@ -12,6 +12,7 @@ use \DateTime;
 use App\Http\Requests\CourseSettings\CourseSettingsRequest;
 use App\Http\Requests\CourseSettings\FilterRequest;
 use App\Http\Requests\CourseSettings\CategoryRequest;
+use App\Models\HighlightedCourses;
 
 class CourseSettingsRepository
 {
@@ -82,6 +83,27 @@ class CourseSettingsRepository
 
     public function getCourseImages(){
         return CourseImage::all();
+    }
+
+    public function getHighLightedCourse(){
+        $highlightedCourse = HighlightedCourses::where('id', 1)->first();
+        if($highlightedCourse){
+            return $highlightedCourse;
+        }
+        else{
+            return null;
+        }
+    }
+
+    public function updateHighlightedCourse(int $courseId)
+    {
+        HighlightedCourses::updateOrCreate(
+            ['id' => 1],
+            [
+                'course_id' => $courseId,
+            ]
+        );
+        return $this->getHighLightedCourse();
     }
 
     public function addFilter(FilterRequest $filter)
