@@ -50,7 +50,7 @@
             label="name"
             placeholder="--- Category ---"
             :close-on-select="true"
-            :clearable="true"
+            :clearable="false"
             v-model="selectedCategory"
             ></v-select>
             Plassering i kategori:
