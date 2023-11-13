@@ -1,23 +1,24 @@
+import './bootstrap';
 
-import GroupEnrollView from "./views/GroupEnrollView";
-import MergeUserView from "./views/MergeUserView";
-import DiplomaView from "./views/DiplomaView";
-import NoDiplomaView from "./views/NoDiplomaView";
-import KpasEmbedView from "./views/KpasEmbedView";
-import DashboardView from "./views/DashboardView";
 import AdminDashboardView from "./views/AdminDashboardView";
 import BarChart from "./components/charts/BarChart";
+import CourseSettignsView from "./views/CourseSettingsView";
+import DashboardGroupSelect from "./components/DashboardGroupSelect";
+import DashboardView from "./views/DashboardView";
+import DiplomaView from "./views/DiplomaView";
+import FloatingVue from 'floating-vue';
+import GroupEnrollView from "./views/GroupEnrollView";
 import GroupedBarChart from "./components/charts/GroupedBarChart";
 import HorizontalBarChart from "./components/charts/HorizontalBarChart";
-import OpenAnswer from "./components/OpenAnswer";
-import DashboardGroupSelect from "./components/DashboardGroupSelect";
-import {createApp} from "vue/dist/vue.esm-bundler";
-import './bootstrap';
-import FloatingVue from 'floating-vue';
-import vSelect from "vue-select";
-import SurveyView from "./views/SurveyView.vue";
-import NoCookies from "./views/NoCookies.vue"
+import KpasEmbedView from "./views/KpasEmbedView";
 import LineChart from "./components/charts/LineChart";
+import MergeUserView from "./views/MergeUserView";
+import NoCookies from "./views/NoCookies.vue"
+import NoDiplomaView from "./views/NoDiplomaView";
+import OpenAnswer from "./components/OpenAnswer";
+import SurveyView from "./views/SurveyView.vue";
+import {createApp} from "vue/dist/vue.esm-bundler";
+import vSelect from "vue-select";
 
 //import jqueryExports from "jquery";
 //import 'select2';
@@ -64,5 +65,6 @@ app.component("horizontal-bar-chart", HorizontalBarChart);
 app.component("dashboard-select", DashboardGroupSelect);
 app.component("no-cookies-view", NoCookies);
 app.component("line-chart", LineChart);
+app.component("course-settings-view", CourseSettignsView);
 
 app.mount("#app")
