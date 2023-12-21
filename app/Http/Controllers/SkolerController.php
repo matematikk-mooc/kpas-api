@@ -10,18 +10,6 @@ use App\Skole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
-function filter_obsolete_counties($data)
-{
-    $obsolete_counties = ["01", "02", "04", "05", "06", "07", "08", "09", "10", "12", "13", "14", "16", "17", "19", "20"];
-    $valid_counties = [];
-    foreach ($data as $county) {
-        if (!in_array($county->Fylkesnr, $obsolete_counties)) {
-            array_push($valid_counties, $county);
-        }
-    }
-    return $valid_counties;
-}
-
 function format_return_data($data)
 {
     return collect($data)
@@ -43,8 +31,7 @@ class SkolerController extends Controller
      */
     public function all_fylke()
     {
-        $all_fylke = Fylke::all();
-        $all_fylke = filter_obsolete_counties($all_fylke);
+        $all_fylke = Fylke::where('nedlagt', false)->get();
         return new SuccessResponse(format_return_data($all_fylke));
     }
 
