@@ -9,9 +9,9 @@
         </li>
         <div></div>
     </ul>
-    <div v-else-if="groupsLoaded && !sorted.length"
-        class="alert alert-warning">Du er ikke med i noen grupper. <p>For å være med i gruppediskusjoner må du velge din tilhørighet lenger ned på denne siden.</p>
-    </div>
+    <message type="warn" v-else-if="groupsLoaded && !sorted.length"
+       >Du er ikke med i noen grupper. <p>For å være med i gruppediskusjoner må du velge din tilhørighet lenger ned på denne siden.</p>
+    </message>
     <p v-else>
       Laster inn dine grupper...
     </p>
@@ -19,10 +19,12 @@
 </template>
 
 <script>
-
+import message from './Message.vue';
   export default {
     name: "CurrentGroup",
-
+    components: {
+      message
+    },
     props: {
       groups: Object,
       groupsLoaded: Boolean

@@ -109,8 +109,7 @@
 			</v-select>
 		</label>
 	</section>
-
-	<div v-if="isError" class='alert alert-danger kpasAlert'> {{error}} </div>
+<message type="error" v-if="isError">{{error}}</message>
 
 </template>
 
@@ -121,6 +120,9 @@ import "vue-select/dist/vue-select.css";
 
 export default {
 	name: "DashboardGroupSelect",
+	components: {
+      message
+    },
 	props: {
 		settings: Object,
 		categories: Array,

@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div v-bind:style=" chosenCounty && chosenCommunity && (chosenInstitution || !institutionType)? 'border: none;' : 'padding: 10px; border: 1px solid red;' " >
-
       <span v-if="institutionType === 'school'" v-tooltip.top-center="`
       Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.`">&#9432;</span>
       <span v-else-if="institutionType === 'kindergarten'" v-tooltip.top-center="`
       Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
       `">&#9432;</span>
 
-
+      <message type="error" v-if="hasFormError">
+        Feltene er obligatoriske, vennligst velg en på alle feltene.
+      </message>
       <label class="select-county col-sm">Fylke:<br/>
         <v-select
           v-model="chosenCounty"
@@ -16,6 +16,7 @@
           label="Navn"
           placeholder="--- Fylke ---"
           :close-on-select="true"
+          @blur="validateOnBlur(chosenCounty)"
           :clearable="true">
         </v-select>
       </label>
@@ -29,6 +30,7 @@
           placeholder="--- Kommune ---"
           :close-on-select="true"
           :clearable="true"
+           @blur="validateOnBlur(chosenCommunity)"
           :reset-on-options-change="true">
         </v-select>
       </label>
@@ -42,6 +44,7 @@
           placeholder="--- Skole ---"
           :close-on-select="true"
           :clearable="true"
+           @blur="validateOnBlur(chosenInstitution)"
           :reset-on-options-change="true">
         </v-select>
       </label>
@@ -55,23 +58,28 @@
           placeholder="--- Barnehage ---"
           :close-on-select="true"
           :clearable="true"
+           @blur="validateOnBlur(chosenInstitution)"
           :reset-on-options-change="true">
         </v-select>
       </label>
     </div>
-    <div v-if="error"
-         class="alert alert-danger">{{error}}
-    </div>
-  </div>
+    
+    <message type="error" v-if="error">
+      {{error}}
+    </message>
 </template>
 
 <script>
   import api from '../api';
   import 'floating-vue/dist/style.css';
   import "vue-select/dist/vue-select.css";
+  import message from './Message.vue';
 
   export default {
-    name: "GroupSelector",
+  name: "GroupSelector",
+    components: {
+      message
+    },
     props: {
       courseId: Number,
       institutionType: String
@@ -89,12 +97,14 @@
         chosenCommunity: null,
         chosenInstitution: null,
         error: '',
+        hasFormError: false
       }
     },
 
     methods: {
       clearError() {
         this.error = "";
+        this.hasFormError = false;
       },
       reportError(e) {
         this.error = e + " Prøv igjen senere og ta kontakt med kompetansesupport@udir.no dersom feilen vedvarer.";
@@ -147,6 +157,11 @@
           orgNr: `${this.chosenCounty.OrgNr}`,
         };
       },
+      validateOnBlur(formValue) {
+        if (formValue === null || formValue.length < 1) {
+        this.hasFormError=true
+      }
+    },
       getCommunityGroup() {
         return {
           name: `${this.chosenCommunity.Navn}`,
