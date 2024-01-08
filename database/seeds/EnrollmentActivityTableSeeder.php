@@ -1,6 +1,6 @@
 <?php
 
-use App\EnrollmentActivity;
+use App\Models\EnrollmentActivity;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 
