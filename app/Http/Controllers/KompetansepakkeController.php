@@ -18,7 +18,7 @@ class KompetansepakkeController extends Controller
     }
 
     /**
-     * Show the form for creating aClass App\Services\HistoryService located in ./app/Services/MatomoService.php does not comply with psr-4 autoloading standard. Skipping. new resource.
+     * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
