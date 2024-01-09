@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Barnehage;
-use App\Fylke;
+use App\Models\Barnehage;
+use App\Models\Fylke;
 use App\Http\Responses\SuccessResponse;
-use App\Kommune;
-use App\Skole;
+use App\Models\Kommune;
+use App\Models\Skole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 

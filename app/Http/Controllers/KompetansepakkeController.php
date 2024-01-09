@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Kompetansepakke;
+use App\Models\Kompetansepakke;
 use Illuminate\Http\Request;
 
 class KompetansepakkeController extends Controller

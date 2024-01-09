@@ -4,8 +4,8 @@ namespace App\Services;
 use App\Services\CanvasService;
 use GuzzleHttp\Client;
 use App\Exceptions\CanvasException;
-use App\Kompetansepakke;
-use App\Diploma;
+use App\Models\Kompetansepakke;
+use App\Models\Diploma;
 
 class DiplomaService
 {

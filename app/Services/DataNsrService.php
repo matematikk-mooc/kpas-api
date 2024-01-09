@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Barnehage;
-use App\Fylke;
-use App\Kommune;
-use App\Skole;
+use App\Models\Barnehage;
+use App\Models\Fylke;
+use App\Models\Kommune;
+use App\Models\Skole;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -38,7 +38,7 @@ class DataNsrService
     {
         try{
             return $this->request($this->nsrDomain, "v3/enhet/$orgnr");
-        } 
+        }
         catch (\Exception $e){
             throw new Exception("Could not find school with orgnr $orgnr");
         }
@@ -48,7 +48,7 @@ class DataNsrService
     {
         try{
             return $this->request($this->nbrDomain, "v3/enhet/$orgnr");
-        } 
+        }
         catch (\Exception $e) {
             throw new Exception("Could not find kindergarten with orgnr $orgnr");
         }
@@ -85,7 +85,7 @@ class DataNsrService
         $fylkesnummer = array();
 
         // Make an assosiative array of NSR id to enhet
-        // and find all fylkesnummers in use 
+        // and find all fylkesnummers in use
         foreach ($enheter as $enhet) {
             $idToEnhet[$enhet->NSRId] = $enhet;
             $fylkesnummer[$enhet->FylkeNr] = true;
@@ -106,7 +106,7 @@ class DataNsrService
                 if(!($i % 1000)) {
                     logger("GetEnheter processed " . $i);
                 }
-    
+
                 if (!isset($idToEnhet[$enhetInFylke->NSRId])) {
                     continue;
                 }
@@ -237,4 +237,3 @@ class DataNsrService
         logger("store_kindergartens complete.");
     }
 }
-
