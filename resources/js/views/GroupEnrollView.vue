@@ -11,6 +11,13 @@
       </div>
       <hr/>
       <h2>Dine grupper</h2>
+      <div v-if="preKommunereform2024">
+        <div style="font-size: 14px;" class="alert alert-danger">
+          Per 01.01.2024 ble <a style="font-size: 14px;" href="https://www.regjeringen.no/no/tema/kommuner-og-regioner/kommunestruktur/nye-kommune-og-fylkesnummer-fra-1.-januar-2024/id2924701/" target="_blank">Kommunereformen 2024</a> innført. Dersom du jobber i ett fylke eller kommune som er berørt av kommunereformen 2024 må du velge nye grupper. Du finner oppdaterte kommuner i gruppevalget nedenfor.
+          Merk: Vestfold og Telemark, Viken og Troms og Finnmark er ikke gyldige valg lengre, disse er fjernet fra listen.
+          Når du bytter gruppe blir historikken din flyttet til ny gruppe.
+        </div>
+      </div>
       <current-group
         :groups="currentGroups"
         :groupsLoaded="currentGroupsLoaded"
@@ -121,12 +128,22 @@
         roleIsSet: true,
         groupResult: 0,
         getRoleResult: 0,
+        preKommunereform2024: false,
       }
     },
 
     methods: {
-      mounted() {
-        self.iframeresize();
+      preKommunereform2024Check(){
+        if(this.currentGroups == null){
+          return;
+        }
+        const patternNumbers = [30, 38, 54]; // 30 = Viken, 38 = Vestfold og Telemark, 54 = Troms og Finnmark
+        const pattern = `county:(${patternNumbers.join('|')})`;
+        const regex = new RegExp(pattern, 'g');
+        if(this.currentGroups.Fylke.description.match(regex)){
+          console.log("Fylke er berørt av kommunereformen 2024");
+          this.preKommunereform2024 = true;
+        }
       },
       groupsAreSet() {
         var noOfGroups = Object.keys(this.groups).length;
@@ -305,6 +322,7 @@
             const updateMessage = {
               subject: 'kpas-lti.update'
             }
+            this.preKommunereform2024 = false;
             window.parent.postMessage(JSON.stringify(updateMessage), "*");
           }
         }
@@ -403,10 +421,13 @@
       self.connectToParent();
 
       console.log("Hent kategorier...");
-      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution(), self.getSettings()]);
-      this.iframeresize();
-      console.log("KPAS ready to display.");
-      self.everythingIsReady = true;
+      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution(), self.getSettings()]).then(() => {
+        console.log("All promises resolved.");
+        self.updateIsReady();
+        self.iframeresize();
+        self.preKommunereform2024Check();
+        self.everythingIsReady = true;
+      });
     }
   }
 </script>
