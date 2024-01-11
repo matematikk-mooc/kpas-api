@@ -41,7 +41,7 @@ class KompetansepakkeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Kompetansepakke  $kompetansepakke
+     * @param  \App\Models\Kompetansepakke  $kompetansepakke
      * @return \Illuminate\Http\Response
      */
     public function show(Kompetansepakke $kompetansepakke)
@@ -52,7 +52,7 @@ class KompetansepakkeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Kompetansepakke  $kompetansepakke
+     * @param  \App\Models\Kompetansepakke  $kompetansepakke
      * @return \Illuminate\Http\Response
      */
     public function edit(Kompetansepakke $kompetansepakke)
@@ -64,7 +64,7 @@ class KompetansepakkeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Kompetansepakke  $kompetansepakke
+     * @param  \App\Models\Kompetansepakke  $kompetansepakke
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Kompetansepakke $kompetansepakke)
@@ -75,7 +75,7 @@ class KompetansepakkeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Kompetansepakke  $kompetansepakke
+     * @param  \App\Models\Kompetansepakke  $kompetansepakke
      * @return \Illuminate\Http\Response
      */
     public function destroy(Kompetansepakke $kompetansepakke)
