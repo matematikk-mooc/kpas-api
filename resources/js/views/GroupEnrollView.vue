@@ -134,7 +134,7 @@
 
     methods: {
       preKommunereform2024Check(){
-        if(this.currentGroups == null){
+        if(this.currentGroups == null || this.currentGroups.Fylke == undefined || this.currentGroups.Fylke.description == undefined){
           return;
         }
         const patternNumbers = [30, 38, 54]; // 30 = Viken, 38 = Vestfold og Telemark, 54 = Troms og Finnmark
