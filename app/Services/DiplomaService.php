@@ -20,7 +20,7 @@ class DiplomaService
 
         $courseId = $settings['custom_canvas_course_id'];
 
-        $kompetansepakke = \App\Kompetansepakke::where('course_id', $courseId)->first();
+        $kompetansepakke = \App\Models\Kompetansepakke::where('course_id', $courseId)->first();
         $diplomaCourseDescription = $kompetansepakke ? $kompetansepakke->diplom_beskrivelse : "";
         $diplomaDeliveredBy = $kompetansepakke ? $kompetansepakke->utviklet_av : "";
 
