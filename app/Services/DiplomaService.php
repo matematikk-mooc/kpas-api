@@ -79,7 +79,7 @@ class DiplomaService
     }
 
     private function storeDiplomaCompletionForUser($userId, $courseId) {
-        \App\Diploma::updateOrCreate(['user_id' => $userId],['course_id' => $courseId]);
+        \App\Models\Diploma::updateOrCreate(['user_id' => $userId],['course_id' => $courseId]);
     }
 
     public function hasDeservedDiploma($settings) {
