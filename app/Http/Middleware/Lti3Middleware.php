@@ -19,7 +19,7 @@ class Lti3Middleware
     * @throws LtiException
     */
     public function handle($request, Closure $next)
-    {   
+    {
         $config_directory = $request->query("config_directory", "configs");
         logger("Middleware config directory:".$config_directory);
         logger("Target URL:".$request->input("target_link_uri"));
@@ -29,19 +29,19 @@ class Lti3Middleware
             $login = $lti_oidc_login->do_oidc_login_redirect($request->input("target_link_uri"), $request->toArray());
             $loginUrl = $login->get_redirect_url();
             $arr = parse_url($loginUrl);
-            parse_str($arr['query'], $params); 
+            parse_str($arr['query'], $params);
             logger($arr);
 
             return response(view('main.nocookies')->withState($params['state'])
             ->withNonce($params['nonce'])
             ->withTargetUrl($arr['query'])
-            ->withStorageTarget("_parent")
+            ->withStorageTarget("post_message_forwarding")
             ->withPlatformHost($arr['host']));
-            
+
         } catch (LTI\OIDC_Exception $e) {
             throw new LtiException("Exception at Lti3 controller : " . $e->getMessage());
         }
-        
+
         return $next($request);
     }
 }
