@@ -181,7 +181,9 @@ export default {
 }
 
 .btn-primary:hover {
-  border: 0.125rem solid #00468e;
+  background: #00468e;
+  color: white;
+  text-decoration:none;
 }
 
 .survey-question-title{
