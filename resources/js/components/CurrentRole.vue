@@ -1,15 +1,15 @@
 <template>
-  <message type="default">
+  <Message type="default">
       <span v-html="information"></span>
-  </message>
+  </Message>
 </template>
 
 <script>
-import message from './Message.vue';
+import Message from './Message.vue';
 export default {
   name: "CurrentRole",
   components: {
-      message
+      Message
     },
   props: {
       isPrincipal: Boolean,

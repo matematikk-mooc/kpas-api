@@ -46,6 +46,7 @@
         @updateGroups="updateGroups"
         :courseId="courseId"
         :institutionType="institutionType"
+        :currentGroups="currentGroups"
         v-model="groups"
       ></group-selector>
     <hr/>

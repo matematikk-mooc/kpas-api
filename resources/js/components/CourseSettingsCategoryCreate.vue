@@ -6,18 +6,18 @@
     <p>Kategoritema: <input type="text" v-model="category_color"/> (Kategoritema theme_*number* må finnes som tema i frontend)</p>
 
     <button @click="createCategory">Opprett kategori</button>
-    <message type="success" v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</message>
-    <message type="error" v-if="error" class='alert alert-danger kpasAlert'>{{ error }}</message>
+    <Message type="success" v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</Message>
+    <Message type="error" v-if="error" class='alert alert-danger kpasAlert'>{{ error }}</Message>
 </template>
 
 <script>
 import api from '../api';
-import message from './Message.vue';
+import Message from './Message.vue';
 
 export default{
     name: "CourseSettingsCategoryCreate",
     components: {
-      message
+      Message
     },
     data() {
         return {

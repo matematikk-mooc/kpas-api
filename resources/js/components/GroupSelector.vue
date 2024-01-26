@@ -6,9 +6,9 @@
       Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
       `">&#9432;</span>
 
-      <message type="error" v-if="hasFormError">
+      <Message type="error" v-if="hasFormError">
         Feltene er obligatoriske, vennligst velg en på alle feltene.
-      </message>
+      </Message>
       <label class="select-county col-sm">Fylke:<br/>
         <v-select
           v-model="chosenCounty"
@@ -63,26 +63,27 @@
         </v-select>
       </label>
     </div>
-    
-    <message type="error" v-if="error">
+
+    <Message type="error" v-if="error">
       {{error}}
-    </message>
+    </Message>
 </template>
 
 <script>
   import api from '../api';
   import 'floating-vue/dist/style.css';
   import "vue-select/dist/vue-select.css";
-  import message from './Message.vue';
+  import Message from './Message.vue';
 
   export default {
   name: "GroupSelector",
     components: {
-      message
+      Message
     },
     props: {
       courseId: Number,
-      institutionType: String
+      institutionType: String,
+      currentGroups: Object
     },
 
     data() {
@@ -189,6 +190,7 @@
 
     async created() {
       await this.getCounties();
+      console.log(currentGroups)
     },
     updated() {
       this.$emit('update');

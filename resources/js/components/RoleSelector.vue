@@ -5,18 +5,18 @@
       <br>
       <input type="radio" id="deltager" name="role" :value=false v-model="wantToBePrincipal" @input="$emit('update:modelValue', false)">
       <label for="deltager">{{participantDescription}}</label>
-    <message type="error" v-if="wantToBePrincipal && institutionType">{{principalWarning}}
-    </message>
+    <Message type="error" v-if="wantToBePrincipal && institutionType">{{principalWarning}}
+    </Message>
 
     </div>
 </template>
 
 <script lang="js">
-import message from './Message.vue';
+import Message from './Message.vue';
   export default {
   name: "RoleSelector",
   components: {
-      message
+      Message
     },
     props: {
         isPrincipal: Boolean,
