@@ -14,6 +14,10 @@ export default {
   props: {
       isPrincipal: Boolean,
       information: String
+  },
+  created() {
+    console.log("isPrincipal: ", this.isPrincipal);
+    console.log("information: ", this.information);
   }
 }
 </script>

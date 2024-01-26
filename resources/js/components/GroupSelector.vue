@@ -1,10 +1,11 @@
 <template>
   <div>
-      <span v-if="institutionType === 'school'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.`">&#9432;</span>
-      <span v-else-if="institutionType === 'kindergarten'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
-      `">&#9432;</span>
+      <span v-if="institutionType === 'school'">
+        Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
+      </span>
+      <span v-if="institutionType === 'kindergarten'">
+        Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
+      </span>
 
       <Message type="error" v-if="hasFormError">
         Feltene er obligatoriske, vennligst velg en på alle feltene.
@@ -14,7 +15,7 @@
           v-model="chosenCounty"
           :options="counties"
           label="Navn"
-          placeholder="--- Fylke ---"
+          :placeholder="currentGroups['Fylke'] ? currentGroups['Fylke'].name : 'Fylke'"
           :close-on-select="true"
           @blur="validateOnBlur(chosenCounty)"
           :clearable="true">
@@ -27,7 +28,7 @@
           :disabled="!communities.length"
           :options="communities"
           label="Navn"
-          placeholder="--- Kommune ---"
+          :placeholder="currentGroups['Kommune']? currentGroups['Kommune'].name : 'Kommune'"
           :close-on-select="true"
           :clearable="true"
            @blur="validateOnBlur(chosenCommunity)"
@@ -41,7 +42,7 @@
           :disabled="!schools.length"
           :options="schools"
           label="FulltNavn"
-          placeholder="--- Skole ---"
+          :placeholder="currentGroups['Skole']? currentGroups['Skole'].name : 'Skole'"
           :close-on-select="true"
           :clearable="true"
            @blur="validateOnBlur(chosenInstitution)"
@@ -55,7 +56,7 @@
           :disabled="!kindergartens.length"
           :options="kindergartens"
           label="FulltNavn"
-          placeholder="--- Barnehage ---"
+          :placeholder="currentGroups['Barnehage']? currentGroups['Barnehage'].name : 'Barnehage'"
           :close-on-select="true"
           :clearable="true"
            @blur="validateOnBlur(chosenInstitution)"
@@ -190,7 +191,7 @@
 
     async created() {
       await this.getCounties();
-      console.log(currentGroups)
+      console.log(this.currentGroups)
     },
     updated() {
       this.$emit('update');

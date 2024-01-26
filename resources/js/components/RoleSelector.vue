@@ -1,11 +1,18 @@
 <template>
   <div>
-      <input type="radio" id="radioSkoleleder" name="role" :value=true v-model="wantToBePrincipal" @input="$emit('update:modelValue', true)">
-      <label for="radioSkoleleder">{{leaderDescription}}</label>
-      <br>
-      <input type="radio" id="deltager" name="role" :value=false v-model="wantToBePrincipal" @input="$emit('update:modelValue', false)">
-      <label for="deltager">{{participantDescription}}</label>
-    <Message type="error" v-if="wantToBePrincipal && institutionType">{{principalWarning}}
+    <Message type="default">
+      <span>
+        <input type="radio" id="radioSkoleleder" name="role" :value=true v-model="wantToBePrincipal" @input="$emit('update:modelValue', true)">
+        <label for="radioSkoleleder" class="role-label">{{leaderDescription}}</label>
+      </span>
+      <p>Når du velger rollen som eier/leder får du tilgang til hele kompetansepakken, både de modulene som er tilpasset eier/leder og for de ansatte. Vi anbefaler at du går igjennom eier/leder og modul 1-4 slik at du blir godt kjent med innholdet i kompetansepakken.</p>
+    </Message>
+    <Message type="default">
+      <span>
+        <input type="radio" id="deltager" name="role" :value=false v-model="wantToBePrincipal" @input="$emit('update:modelValue', false)">
+        <label for="deltager" class="role-label ">{{participantDescription}}</label>
+      </span>
+      <p>Alle ansatte som ikke har eier/leder-rolle velger rollen som deltaker. Alle deltakere har anledning til å endre sin rolle senere.</p>
     </Message>
 
     </div>
@@ -53,3 +60,9 @@ import Message from './Message.vue';
     }
   }
 </script>
+<style scoped>
+  .role-label {
+    font-weight: bold;
+    font-size: 18px;
+  }
+</style>
