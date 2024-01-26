@@ -163,3 +163,28 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+
+.btn-primary {
+  cursor: pointer;
+  position: relative;
+  color: #303030;
+  background: white;
+  border: 0.125rem solid #303030;
+  border-radius: 0.1875rem;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  bottom: -0.05rem;
+}
+
+.btn-primary:hover {
+  border: 0.125rem solid #00468e;
+}
+
+.survey-question-title{
+  display: inline;
+}
+</style>
