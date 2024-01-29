@@ -182,7 +182,7 @@
       },
       iframeresize() {
         this.$nextTick(function () {
-          var h = document.body.clientHeight + 100;
+          var h = document.body.clientHeight + 250;
           parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
         });
       },
@@ -383,6 +383,9 @@
         console.log(this.settings);
       }
 
+    },
+    updated() {
+      this.iframeresize();
     },
     async created() {
       this.ENROLLED = 1;
