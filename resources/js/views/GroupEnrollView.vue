@@ -121,8 +121,7 @@
         roleIsSet: true,
         groupResult: 0,
         getRoleResult: 0,
-        preKommunereform2024: false,
-        // facultyGroup: '',
+        preKommunereform2024: false
       }
     },
 
@@ -423,8 +422,6 @@
         self.updateIsReady();
         self.iframeresize();
         self.preKommunereform2024Check();
-        // self.facultyGroup = self.currentGroups['Faggruppe nasjonalt']? self.currentGroups['Faggruppe nasjonalt'].name : '';
-        // console.log(self.facultyGroup);
         self.everythingIsReady = true;
       });
     }
