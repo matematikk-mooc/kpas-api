@@ -15,22 +15,24 @@
           v-model="chosenCounty"
           :options="counties"
           label="Navn"
-          :placeholder="currentGroups['Fylke'] ? currentGroups['Fylke'].name : 'Fylke'"
+          :placeholder="placeholderCounty"
           :close-on-select="true"
           @blur="validateOnBlur(chosenCounty)"
-          :clearable="true">
+          :clearable="false">
         </v-select>
       </label>
       <label class="select-community col-sm">
         Kommune:<br/>
         <v-select
+          id="community-v-select"
+          ref="communityVSelect"
           v-model="chosenCommunity"
           :disabled="!communities.length"
           :options="communities"
           label="Navn"
-          :placeholder="currentGroups['Kommune']? currentGroups['Kommune'].name : 'Kommune'"
+          :placeholder="placeholderCommunity"
           :close-on-select="true"
-          :clearable="true"
+          :clearable="false"
            @blur="validateOnBlur(chosenCommunity)"
           :reset-on-options-change="true">
         </v-select>
@@ -38,13 +40,14 @@
       <label class="select-school col-sm" v-if="institutionType === 'school'" >
         Skole:<br/>
         <v-select
+          id="school-v-select"
           v-model="chosenInstitution"
           :disabled="!schools.length"
           :options="schools"
           label="FulltNavn"
-          :placeholder="currentGroups['Skole']? currentGroups['Skole'].name : 'Skole'"
+          :placeholder="placeholderSchool"
           :close-on-select="true"
-          :clearable="true"
+          :clearable="false"
            @blur="validateOnBlur(chosenInstitution)"
           :reset-on-options-change="true">
         </v-select>
@@ -52,13 +55,14 @@
       <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
         Barnehage:<br/>
         <v-select
+          id="kindergarten-v-select"
           v-model="chosenInstitution"
           :disabled="!kindergartens.length"
           :options="kindergartens"
           label="FulltNavn"
-          :placeholder="currentGroups['Barnehage']? currentGroups['Barnehage'].name : 'Barnehage'"
+          :placeholder="placeholderKindergarten"
           :close-on-select="true"
-          :clearable="true"
+          :clearable="false"
            @blur="validateOnBlur(chosenInstitution)"
           :reset-on-options-change="true">
         </v-select>
@@ -99,7 +103,11 @@
         chosenCommunity: null,
         chosenInstitution: null,
         error: '',
-        hasFormError: false
+        hasFormError: false,
+        placeholderSchool: this.currentGroups['Skole'] ? this.currentGroups['Skole'].name : 'Skole',
+        placeholderKindergarten: this.currentGroups['Barnehage'] ? this.currentGroups['Barnehage'].name : 'Barnehage',
+        placeholderCommunity: this.currentGroups['Kommune'] ? this.currentGroups['Kommune'].name : 'Kommune',
+        placeholderCounty: this.currentGroups['Fylke'] ? this.currentGroups['Fylke'].name : 'Fylke',
       }
     },
 
@@ -210,6 +218,10 @@
         this.assignToGroups();
 
         await this.getCommunities(county.Fylkesnr);
+        this.placeholderCommunity = 'Kommune';
+        this.placeholderSchool = 'Skole';
+        this.placeholderKindergarten = 'Barnehage';
+
       },
       async chosenCommunity(community) {
         delete this.selectedgroups.institution;

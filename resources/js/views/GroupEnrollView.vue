@@ -67,9 +67,7 @@
 <script>
   import api from '../api';
   import RoleSelector from "../components/RoleSelector";
-  import CurrentRole from "../components/CurrentRole";
   import GroupSelector from "../components/GroupSelector";
-  import CurrentGroup from "../components/CurrentGroup";
   import FacultySelector from "../components/FacultySelector";
   import Message from "../components/Message";
 
@@ -77,9 +75,7 @@
     name: "GroupEnrollView",
     components: {
       RoleSelector,
-      CurrentRole,
       GroupSelector,
-      CurrentGroup,
       FacultySelector,
       Message
     },
