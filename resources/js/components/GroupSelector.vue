@@ -24,8 +24,6 @@
       <label class="select-community col-sm">
         Kommune:<br/>
         <v-select
-          id="community-v-select"
-          ref="communityVSelect"
           v-model="chosenCommunity"
           :disabled="!communities.length"
           :options="communities"
@@ -40,7 +38,6 @@
       <label class="select-school col-sm" v-if="institutionType === 'school'" >
         Skole:<br/>
         <v-select
-          id="school-v-select"
           v-model="chosenInstitution"
           :disabled="!schools.length"
           :options="schools"
@@ -55,7 +52,6 @@
       <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
         Barnehage:<br/>
         <v-select
-          id="kindergarten-v-select"
           v-model="chosenInstitution"
           :disabled="!kindergartens.length"
           :options="kindergartens"
