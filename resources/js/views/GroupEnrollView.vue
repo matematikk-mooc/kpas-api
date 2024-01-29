@@ -27,6 +27,7 @@
       <faculty-selector
         @updateFaculty="updateFaculty"
         :faculties="faculties"
+        :currentFaculty="currentGroups['Faggruppe nasjonalt']? currentGroups['Faggruppe nasjonalt'].name : ''"
         v-model="faculty"
       />
       <group-selector
@@ -125,6 +126,7 @@
         groupResult: 0,
         getRoleResult: 0,
         preKommunereform2024: false,
+        // facultyGroup: '',
       }
     },
 
@@ -422,6 +424,8 @@
         self.updateIsReady();
         self.iframeresize();
         self.preKommunereform2024Check();
+        // self.facultyGroup = self.currentGroups['Faggruppe nasjonalt']? self.currentGroups['Faggruppe nasjonalt'].name : '';
+        // console.log(self.facultyGroup);
         self.everythingIsReady = true;
       });
     }
