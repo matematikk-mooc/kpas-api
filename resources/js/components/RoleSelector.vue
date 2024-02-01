@@ -5,14 +5,14 @@
         <input type="radio" id="radioSkoleleder" name="role" :value=true v-model="wantToBePrincipal" @input="$emit('update:modelValue', true)">
         <label for="radioSkoleleder" class="role-label">{{leaderDescription}}</label>
       </span>
-      <p>Når du velger rollen som eier/leder får du tilgang til hele kompetansepakken, både de modulene som er tilpasset eier/leder og for de ansatte. Vi anbefaler at du går igjennom eier/leder og modul 1-4 slik at du blir godt kjent med innholdet i kompetansepakken.</p>
+      <p>Velg denne rollen dersom du skal ha tilgang til prossesstøtte for gjennomføring av kompetansepakken.</p>
     </Message>
     <Message type="default">
       <span>
         <input type="radio" id="deltager" name="role" :value=false v-model="wantToBePrincipal" @input="$emit('update:modelValue', false)">
         <label for="deltager" class="role-label ">{{participantDescription}}</label>
       </span>
-      <p>Alle ansatte som ikke har eier/leder-rolle velger rollen som deltaker. Alle deltakere har anledning til å endre sin rolle senere.</p>
+      <p>Velg denne rollen dersom du skal gjennomføre en kompetansepakke.</p>
     </Message>
 
     </div>
