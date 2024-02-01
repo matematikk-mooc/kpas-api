@@ -11,17 +11,21 @@
         ></v-select>
     </section>
     <button @click="createFilter">Opprett filter</button>
-    <div v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</div>
-    <div v-if="error" class='alert alert-danger kpasAlert'>{{ error }}</div>
+    <Message type="success" v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</Message>
+    <Message type="error" v-if="error">{{ error }}</Message>
 
 
 </template>
 
 <script>
 import api from '../api';
+import Message from './Message.vue';
 
 export default{
     name: "CourseSettingsFilterCreate",
+    components: {
+      Message
+    },
     props: {
         filterTypes: []
     },

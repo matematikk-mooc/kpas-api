@@ -1,19 +1,30 @@
 <template>
   <div>
-      <input type="radio" id="radioSkoleleder" name="role" :value=true v-model="wantToBePrincipal" @input="$emit('update:modelValue', true)">
-      <label for="radioSkoleleder">{{leaderDescription}}</label>
-      <br>
-      <input type="radio" id="deltager" name="role" :value=false v-model="wantToBePrincipal" @input="$emit('update:modelValue', false)">
-      <label for="deltager">{{participantDescription}}</label>
-    <div v-if="wantToBePrincipal && institutionType" class="alert alert-info">{{principalWarning}}
-    </div>
+    <Message type="default">
+      <span>
+        <input type="radio" id="radioSkoleleder" name="role" :value=true v-model="wantToBePrincipal" @input="$emit('update:modelValue', true)">
+        <label for="radioSkoleleder" class="role-label">{{leaderDescription}}</label>
+      </span>
+      <p>Velg denne rollen dersom du skal ha tilgang til prossesstøtte for gjennomføring av kompetansepakken.</p>
+    </Message>
+    <Message type="default">
+      <span>
+        <input type="radio" id="deltager" name="role" :value=false v-model="wantToBePrincipal" @input="$emit('update:modelValue', false)">
+        <label for="deltager" class="role-label ">{{participantDescription}}</label>
+      </span>
+      <p>Velg denne rollen dersom du skal gjennomføre en kompetansepakke.</p>
+    </Message>
 
     </div>
 </template>
 
 <script lang="js">
+import Message from './Message.vue';
   export default {
-    name: "RoleSelector",
+  name: "RoleSelector",
+  components: {
+      Message
+    },
     props: {
         isPrincipal: Boolean,
         institutionType: String,
@@ -49,3 +60,9 @@
     }
   }
 </script>
+<style scoped>
+  .role-label {
+    font-weight: bold;
+    font-size: 18px;
+  }
+</style>
