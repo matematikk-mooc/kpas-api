@@ -1,22 +1,24 @@
 <template>
   <div>
-    <div v-bind:style=" chosenCounty && chosenCommunity && (chosenInstitution || !institutionType)? 'border: none;' : 'padding: 10px; border: 1px solid red;' " >
+      <span v-if="institutionType === 'school'">
+        Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
+      </span>
+      <span v-if="institutionType === 'kindergarten'">
+        Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
+      </span>
 
-      <span v-if="institutionType === 'school'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.`">&#9432;</span>
-      <span v-else-if="institutionType === 'kindergarten'" v-tooltip.top-center="`
-      Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
-      `">&#9432;</span>
-
-
+      <Message type="error" v-if="hasFormError">
+        Feltene er obligatoriske, vennligst velg en på alle feltene.
+      </Message>
       <label class="select-county col-sm">Fylke:<br/>
         <v-select
           v-model="chosenCounty"
           :options="counties"
           label="Navn"
-          placeholder="--- Fylke ---"
+          :placeholder="placeholderCounty"
           :close-on-select="true"
-          :clearable="true">
+          @blur="validateOnBlur(chosenCounty)"
+          :clearable="false">
         </v-select>
       </label>
       <label class="select-community col-sm">
@@ -26,9 +28,10 @@
           :disabled="!communities.length"
           :options="communities"
           label="Navn"
-          placeholder="--- Kommune ---"
+          :placeholder="placeholderCommunity"
           :close-on-select="true"
-          :clearable="true"
+          :clearable="false"
+           @blur="validateOnBlur(chosenCommunity)"
           :reset-on-options-change="true">
         </v-select>
       </label>
@@ -39,9 +42,10 @@
           :disabled="!schools.length"
           :options="schools"
           label="FulltNavn"
-          placeholder="--- Skole ---"
+          :placeholder="placeholderSchool"
           :close-on-select="true"
-          :clearable="true"
+          :clearable="false"
+           @blur="validateOnBlur(chosenInstitution)"
           :reset-on-options-change="true">
         </v-select>
       </label>
@@ -52,29 +56,35 @@
           :disabled="!kindergartens.length"
           :options="kindergartens"
           label="FulltNavn"
-          placeholder="--- Barnehage ---"
+          :placeholder="placeholderKindergarten"
           :close-on-select="true"
-          :clearable="true"
+          :clearable="false"
+           @blur="validateOnBlur(chosenInstitution)"
           :reset-on-options-change="true">
         </v-select>
       </label>
     </div>
-    <div v-if="error"
-         class="alert alert-danger">{{error}}
-    </div>
-  </div>
+
+    <Message type="error" v-if="error">
+      {{error}}
+    </Message>
 </template>
 
 <script>
   import api from '../api';
   import 'floating-vue/dist/style.css';
   import "vue-select/dist/vue-select.css";
+  import Message from './Message.vue';
 
   export default {
-    name: "GroupSelector",
+  name: "GroupSelector",
+    components: {
+      Message
+    },
     props: {
       courseId: Number,
-      institutionType: String
+      institutionType: String,
+      currentGroups: Object
     },
 
     data() {
@@ -89,12 +99,18 @@
         chosenCommunity: null,
         chosenInstitution: null,
         error: '',
+        hasFormError: false,
+        placeholderSchool: this.currentGroups['Skole'] ? this.currentGroups['Skole'].name : 'Skole',
+        placeholderKindergarten: this.currentGroups['Barnehage'] ? this.currentGroups['Barnehage'].name : 'Barnehage',
+        placeholderCommunity: this.currentGroups['Kommune'] ? this.currentGroups['Kommune'].name : 'Kommune',
+        placeholderCounty: this.currentGroups['Fylke'] ? this.currentGroups['Fylke'].name : 'Fylke',
       }
     },
 
     methods: {
       clearError() {
         this.error = "";
+        this.hasFormError = false;
       },
       reportError(e) {
         this.error = e + " Prøv igjen senere og ta kontakt med kompetansesupport@udir.no dersom feilen vedvarer.";
@@ -147,6 +163,11 @@
           orgNr: `${this.chosenCounty.OrgNr}`,
         };
       },
+      validateOnBlur(formValue) {
+        if (formValue === null || formValue.length < 1) {
+        this.hasFormError=true
+      }
+    },
       getCommunityGroup() {
         return {
           name: `${this.chosenCommunity.Navn}`,
@@ -174,6 +195,7 @@
 
     async created() {
       await this.getCounties();
+      console.log(this.currentGroups)
     },
     updated() {
       this.$emit('update');
@@ -192,6 +214,10 @@
         this.assignToGroups();
 
         await this.getCommunities(county.Fylkesnr);
+        this.placeholderCommunity = 'Kommune';
+        this.placeholderSchool = 'Skole';
+        this.placeholderKindergarten = 'Barnehage';
+
       },
       async chosenCommunity(community) {
         delete this.selectedgroups.institution;
