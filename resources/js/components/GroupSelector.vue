@@ -10,7 +10,8 @@
       <Message type="error" v-if="hasFormError">
         Feltene er obligatoriske, vennligst velg en på alle feltene.
       </Message>
-      <label class="select-county col-sm">Fylke:<br/>
+      <div class="selectors-groups">
+      <label class="select-county">Fylke:<br/>
         <v-select
           v-model="chosenCounty"
           :options="counties"
@@ -21,7 +22,7 @@
           :clearable="false">
         </v-select>
       </label>
-      <label class="select-community col-sm">
+      <label class="select-community">
         Kommune:<br/>
         <v-select
           v-model="chosenCommunity"
@@ -35,7 +36,7 @@
           :reset-on-options-change="true">
         </v-select>
       </label>
-      <label class="select-school col-sm" v-if="institutionType === 'school'" >
+      <label class="select-school" v-if="institutionType === 'school'" >
         Skole:<br/>
         <v-select
           v-model="chosenInstitution"
@@ -49,7 +50,7 @@
           :reset-on-options-change="true">
         </v-select>
       </label>
-      <label class="select-school col-sm" v-if="institutionType === 'kindergarten'">
+      <label class="select-school" v-if="institutionType === 'kindergarten'">
         Barnehage:<br/>
         <v-select
           v-model="chosenInstitution"
@@ -64,6 +65,7 @@
         </v-select>
       </label>
     </div>
+    </div>
 
     <Message type="error" v-if="error">
       {{error}}
@@ -72,7 +74,6 @@
 
 <script>
   import api from '../api';
-  import 'floating-vue/dist/style.css';
   import "vue-select/dist/vue-select.css";
   import Message from './Message.vue';
 
@@ -239,3 +240,15 @@
     }
   }
 </script>
+
+<style scoped>
+  .selectors-groups {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .selectors-groups label {
+    width: 100%;
+  }
+</style>

@@ -21,7 +21,6 @@
         "easyrdf/easyrdf": "^1.1",
         "encore/laravel-admin": "^1.7",
         "fideloper/proxy": "^4.0",
-        "fruitcake/laravel-cors": "^2.2",
         "guzzlehttp/guzzle": "^7.0.1",
         "highsolutions/laravel-environments": "*",
         "imsglobal/lti-1p3-tool": "dev-master",
@@ -30,6 +29,7 @@
         "league/oauth2-client": "^2.4",
         "mantas-done/subtitles": "^0.3.10",
         "nesbot/carbon": "*",
+        "spatie/laravel-data": "^3.11",
         "spatie/laravel-ignition": "^1.0",
         "symfony/polyfill-iconv": "^1.26",
         "vimeo/laravel": "^5.6"

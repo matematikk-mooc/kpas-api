@@ -115,7 +115,6 @@
 
 <script>
 import api from '../api';
-import 'floating-vue/dist/style.css';
 import "vue-select/dist/vue-select.css";
 import Message from './Message.vue';
 

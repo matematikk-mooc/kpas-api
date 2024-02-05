@@ -268,7 +268,7 @@ export default {
   width: auto ;
 }
 .dashboard {
-  background-color: #eaeaea;
+  background-color: white;
   align-content: center;
 }
 .grouped {

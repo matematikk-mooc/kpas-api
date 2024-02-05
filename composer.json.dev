@@ -22,7 +22,6 @@
         "encore/laravel-admin": "^1.7",
         "spatie/laravel-ignition": "^1.0",
         "fideloper/proxy": "^4.0",
-        "fruitcake/laravel-cors": "^2.2",
         "guzzlehttp/guzzle": "^7.0.1",
         "highsolutions/laravel-environments": "*",
         "imsglobal/lti-1p3-tool": "dev-master",
