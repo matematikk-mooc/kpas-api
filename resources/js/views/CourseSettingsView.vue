@@ -95,7 +95,6 @@
 
 
 <script>
-import 'floating-vue/dist/style.css';
 import "vue-select/dist/vue-select.css";
 import api from '../api';
 import CourseSettingsCategoryCreate from '../components/CourseSettingsCategoryCreate.vue';
