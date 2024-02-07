@@ -4,7 +4,7 @@ namespace App\Services;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
-class HistoryService
+class MatomoService
 {
     protected $guzzleClient;
     protected $statistics_base_url;
@@ -14,9 +14,9 @@ class HistoryService
         $this->statistics_base_url = config('statistics-api.base_url');
     }
 
-    public function getUserHistory(int $userId, string $from, string $to) {
-        logger("HistoryService::getUserHistory");
-        $url = "{$this->statistics_base_url}/statistics/user/{$userId}/history/?from={$from}&to={$to}&format=json";
+    public function matomoData(int $courseid, string $from, string $to) {
+        logger("MatomoService::getMatomoData");
+        $url = "{$this->statistics_base_url}/statistics/course/{$courseid}/pages?from={$from}&to={$to}&format=json";
         logger($url);
 
         $this->guzzleClient = new Client();
@@ -24,29 +24,10 @@ class HistoryService
         return $res;
     }
 
-    public function getUserContextHistory(int $userId, int $contextId, string $from, string $to) {
-        logger("HistoryService::getUserContextHistory");
-        $url = "{$this->statistics_base_url}/statistics/user/{$userId}/context/{$contextId}/history/?from={$from}&to={$to}&format=json";
-        logger($url);
 
-        $this->guzzleClient = new Client();
-        $res = $this->guzzleClient->request('GET', $url, [], [], false);
-        return $res;
-    }
-
-    public function getContextHistory(int $contextId, string $from, string $to) {
-        logger("HistoryService::getContextHistory");
-        $url = "{$this->statistics_base_url}/statistics/context/{$contextId}/history/?from={$from}&to={$to}&format=json";
-        logger($url);
-
-        $this->guzzleClient = new Client();
-        $res = $this->guzzleClient->request('GET', $url, [], [], false);
-        return $res;
-    }
-
-    protected function request(string $userId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
-    {   
-        $fullUrl = "{$this->statistics_base_url}/statistics/user/{$userId}/history/?from={$fromDate}&to={$toDate}";
+    protected function request(string $courseId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
+    {
+        $fullUrl = "{$this->statistics_base_url}/statistics/course/{$courseId}/pages?from={$fromDate}&to={$toDate}";
         logger($fullUrl);
 
         try {
@@ -60,11 +41,11 @@ class HistoryService
             $decodedContent = json_decode($response->getBody()->getContents());
             $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
 
-            logger("HistoryService::request returning content");
+            logger("MatomoService::request returning content");
 
             return $content;
         } catch (ClientException $exception) {
-            logger("HistoryService::request exception:");
+            logger("MatomoService::request exception:");
             throw $exception;
         }
     }

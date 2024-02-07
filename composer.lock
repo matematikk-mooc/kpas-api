@@ -2970,12 +2970,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/matematikk-mooc/lti-1-3-php-library.git",
-                "reference": "47bcb4eb3cea9cefb9653bbd5e962a49f66cbbd2"
+                "reference": "40d1e1db05293c2cdf2df0e735b2ba43fcefdd58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matematikk-mooc/lti-1-3-php-library/zipball/47bcb4eb3cea9cefb9653bbd5e962a49f66cbbd2",
-                "reference": "47bcb4eb3cea9cefb9653bbd5e962a49f66cbbd2",
+                "url": "https://api.github.com/repos/matematikk-mooc/lti-1-3-php-library/zipball/40d1e1db05293c2cdf2df0e735b2ba43fcefdd58",
+                "reference": "40d1e1db05293c2cdf2df0e735b2ba43fcefdd58",
                 "shasum": ""
             },
             "require": {
@@ -2986,7 +2986,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "IMSGlobal\\LTI\\": "src/lti"
+                    "IMSGlobal\\LTI\\": "src/lti/"
                 }
             },
             "authors": [
@@ -2998,7 +2998,7 @@
             "support": {
                 "source": "https://github.com/matematikk-mooc/lti-1-3-php-library/tree/master"
             },
-            "time": "2023-04-17T10:32:15+00:00"
+            "time": "2024-02-07T11:14:56+00:00"
         },
         {
             "name": "kelunik/certificate",
