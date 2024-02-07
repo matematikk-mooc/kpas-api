@@ -15,7 +15,7 @@ class MatomoController extends Controller
         logger("MatomoController.matomoStatistics");
         logger($courseId);
         $matomoService = new MatomoService();
-        $data = $matomoService->getMatomoData($courseId, $request->from, $request->to);
+        $data = $matomoService->matomoData($courseId, $request->from, $request->to);
         $res = $data->getBody()->getContents();
         return new SuccessResponse($res);
     }
