@@ -9,16 +9,16 @@
         $courseModules = $canvasRepository->getCourseModules($courseId);
     @endphp
 
-<kpas-embed-view    
-    courseid="{{$courseId}}" 
-    :coursemodules="{{ json_encode($courseModules) }}" 
-    appurl="{{ config('app.url') }}" 
-    diplomamode="{{$diplomaMode}}" 
-    statisticsmode="{{$statisticsMode}}" 
-    dashboardmode="{{$dashboardMode}}" 
+<kpas-embed-view
+    courseid="{{$courseId}}"
+    :coursemodules="{{ json_encode($courseModules) }}"
+    appurl="{{ config('app.url') }}"
+    diplomamode="{{$diplomaMode}}"
+    statisticsmode="{{$statisticsMode}}"
+    dashboardmode="{{$dashboardMode}}"
     surveyMode="{{$surveyMode}}"
-    admindashboardmode="{{$adminDashboardMode}}" 
-    launchid="{{$id}}" 
+    admindashboardmode="{{$adminDashboardMode}}"
+    launchid="{{$id}}"
     configdirectory="{{$configDirectory}}">
 </kpas-embed-view>
 
@@ -28,4 +28,3 @@
     <script>window.cookie = '{{ session()->getId() }}';</script>
 
 @endsection
-
