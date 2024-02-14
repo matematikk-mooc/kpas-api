@@ -1,7 +1,9 @@
 <template>
-  <div v-if="stateNotFound">
-    <p>Kunne ikke autentisere. Vennligst prøv igjen.</p>
-    <p> {{ errorMessage }} </p>
+  <div>
+    <div v-if="stateNotFound">
+      <p>Kunne ikke autentisere. Vennligst prøv igjen.</p>
+      <p> {{ errorMessage }} </p>
+    </div>
   </div>
 </template>
 
@@ -14,7 +16,7 @@ export default {
     targeturl: "",
     storagetarget: "",
     platformhost: ""
-    
+
   },
   data() {
     return {
@@ -22,69 +24,93 @@ export default {
       errorMessage : ""
     }
   },
+  methods: {
+    postMessageToParent(subject) {
+      const message = {
+        subject: subject
+      };
+      window.parent.postMessage(JSON.stringify(message), "*");
+    },
+    getRoles() {
+      this.postMessageToParent("kpas-lti.getcurrentuserroles");
+    },
+  },
   created() {
-    document.body.style.backgroundColor = "#eaeaea"
-    let platformOIDCLoginURL = "https://" + this.platformhost + "/api/lti/authorize_redirect?"
-    let platformOrigin = new URL(platformOIDCLoginURL).origin;
-    let frameName = this.storagetarget;
-    let parent = window.parent || window.opener;
-    let targetFrame = frameName === "_parent" ? parent : parent.frames[frameName];
-    const redirect = () => {
-      window.location.href = platformOIDCLoginURL + this.targeturl
+    let OIDCHost = "https://sso.canvaslms.com";
+    if(this.platformhost.includes(".test.")) {
+      OIDCHost = "https://sso.test.canvaslms.com";
     }
-    
-    //this is not recognized inside eventlistener
-    var self = this
-    window.addEventListener('message', function (event) {
-      // This isn't a message we're expecting
-      
-      if (typeof event.data !== "object"){
-        this.errorMessage = "Ugyldig datatype";
-        this.stateNotFound = true;
+    else if(this.platformhost.includes(".beta.")) {
+      OIDCHost = "https://sso.beta.canvaslms.com";
+    }
+    let platformOIDCLoginURL = OIDCHost + "/api/lti/authorize_redirect?";
+    let frameName = this.storagetarget;
+    let parentWindow = window.parent || window.opener;
+    let targetFrame = parentWindow.frames[frameName];
+
+    const self = this;
+
+    const redirect = () => {
+      window.location.href = platformOIDCLoginURL + this.targeturl;
+    };
+
+    window.addEventListener('message', function(event) {
+
+      if (event.data.subject == "kpas-lti.rolesofuser"){
+        if((event.data.roles.includes("admin") || event.data.roles.includes("teacher")) && event.data.path.endsWith("/edit") ) {
+          redirect();
+        } else {
+          self.errorMessage = "Du har ikke tilgang til denne ressursen";
+          self.stateNotFound = true;
+        }
         return;
       }
-      
-      // Validate it's the response type you expect
+
+      if (typeof event.data !== "object") {
+        self.errorMessage = "Ugyldig datatype";
+        self.stateNotFound = true;
+        return;
+      }
+
       if (event.data.subject !== "lti.put_data.response" && event.data.subject !== "lti.get_data.response") {
-        this.errorMessage = "Ugyldig emnefelt: " + event.data.subject;
+        self.errorMessage = "Ugyldig emnefelt: " + event.data.subject;
+        self.stateNotFound = true;
         return;
       }
-      
-      // Validate the message id matches the id you sent
-      let wantedState = "kpas_state_"+ self.state
+
+      let wantedState = "kpas_state_" + self.state;
       if (event.data.message_id !== wantedState) {
-        this.errorMessage = "Ugyldig message_id: " + event.data.message_id;
-        this.stateNotFound = true;
-        // this is not the response you're looking for
+        self.errorMessage = "Ugyldig message_id: " + event.data.message_id;
+        self.stateNotFound = true;
         return;
       }
-      
-      // Validate that the event's origin is the same as the derived platform origin
-      if (event.origin !== platformOrigin) {
-        this.errorMessage = "Ugyldig avsender: " + event.origin;
-        this.stateNotFound = true;
+
+      if (event.origin !== OIDCHost) {
+        self.errorMessage = "Ugyldig avsender: " + event.origin;
+        self.stateNotFound = true;
         return;
       }
-      
-      // handle errors
-      if (event.data.error){
-        // handle errors
-        this.errorMessage = "Feilmelding: " + event.data.error.code + " " + event.data.error.message;
-        this.stateNotFound = true;
+
+      if (event.data.error) {
+        self.errorMessage = "Feilmelding: " + event.data.error.code + " " + event.data.error.message;
+        self.stateNotFound = true;
         return;
       }
-      console.log(event.data)
-      redirect()
-    })
-    
+      redirect();
+    });
+
     targetFrame.postMessage({
       "subject": "lti.put_data",
       "message_id": "kpas_state_" + this.state,
       "key": "lti1p3_" + this.state,
       "value": this.state
-    } , platformOrigin )
-    
+    }, OIDCHost);
+
+    setTimeout(function() {
+      self.getRoles();
+    }, 3000);
   }
-}            
+
+}
 
 </script>
