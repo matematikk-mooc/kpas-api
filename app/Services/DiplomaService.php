@@ -101,6 +101,12 @@ class DiplomaService
         if(str_contains($enrollments, "Account Admin")) {
             return true;
         }
+        if(str_contains($enrollments, "Udir-Innholdsprodusent")) {
+            return true;
+        }
+        if(str_contains($enrollments, "Udir-forvalter")) {
+            return true;
+        }
 
         $bIncludeIndentedItems = str_contains($enrollments, $principalRoleName);
         $modules = $canvas_service->getModulesForCourse($courseId, $userId);
