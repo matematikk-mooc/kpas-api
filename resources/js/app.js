@@ -1,12 +1,9 @@
-import './bootstrap';
-
 import AdminDashboardView from "./views/AdminDashboardView";
 import BarChart from "./components/charts/BarChart";
 import CourseSettignsView from "./views/CourseSettingsView";
 import DashboardGroupSelect from "./components/DashboardGroupSelect";
 import DashboardView from "./views/DashboardView";
 import DiplomaView from "./views/DiplomaView";
-import FloatingVue from 'floating-vue';
 import GroupEnrollView from "./views/GroupEnrollView";
 import GroupedBarChart from "./components/charts/GroupedBarChart";
 import HorizontalBarChart from "./components/charts/HorizontalBarChart";
@@ -48,7 +45,6 @@ import vSelect from "vue-select";
 
 const app = createApp({});
 
-app.use(FloatingVue);
 app.component('group-enroll-view', GroupEnrollView);
 app.component('merge-user-view', MergeUserView);
 app.component('diploma-view', DiplomaView);

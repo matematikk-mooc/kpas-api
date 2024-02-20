@@ -20,7 +20,7 @@ RUN composer install \
                 --optimize-autoloader
 
 # NPM INSTALL + COMPILE ASSETS
-FROM node:16-alpine3.15 AS nodeBuild
+FROM node:21.6.1-alpine3.19 AS nodeBuild
 COPY --from=composerBuild /var/www/html /var/www/html
 WORKDIR /var/www/html
 RUN npm install
