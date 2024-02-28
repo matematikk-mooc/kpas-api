@@ -324,6 +324,12 @@
           const result = await api.get('/enrollment/', {
             params: { cookie: window.cookie }
           });
+
+          if(result.data.result.length === 0) {
+            this.getRoleResult = this.ENROLL_GET_FAILED;
+            return;
+          }
+
           this.isPrincipal = result.data.result.find(enrollment => enrollment.role === import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
           if(this.isPrincipal) {
             this.information = this.getPrincipalInformation();

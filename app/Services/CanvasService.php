@@ -352,7 +352,7 @@ class CanvasService
             $result = $this->request($url);
 
             if(empty($result)) {
-                throw new CanvasException('No results found');
+                return [];
             }
 
             foreach($result as $item) {
