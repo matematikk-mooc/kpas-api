@@ -54,6 +54,7 @@ Route::group(['prefix' => 'survey'], function() {
     Route::delete('/{surveyId}/submission/delete', 'SurveyController@deleteUserSubmission')->middleware('lti');
     Route::get('/{surveyId}/user/{userId}', 'SurveyController@getUserSubmission')->middleware('lti');
     Route::get('/course/{courseId}', 'SurveyController@getCourseSurveys')->middleware('lti');
+    Route::get('/course/{courseId}/no_essay', 'SurveyController@getCourseSurveysWithoutOpenAnswerResponses')->middleware('lti');
 });
 
 Route::group(['prefix' => 'statistics'], function () {
