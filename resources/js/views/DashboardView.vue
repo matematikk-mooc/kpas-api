@@ -18,7 +18,8 @@
       <grouped-bar-chart id="view_module.course_id" :data="view_module.questions.slice(0,3)" :likert5ops="this.likert5ops"></grouped-bar-chart>
     </section>
 
-    <section class="barview" v-if="view_module.questions.length > 4">
+    <!-- Setting >= here because no essays are returned -->
+    <section class="barview" v-if="view_module.questions.length >= 4">
       <div v-for="(question, i) in view_module.questions.slice(3)" :key="i">
         <bar-chart v-if="question.question_type == 'likert_scale_5pt'" :id="'q' + i" :data="question" :likert5ops="this.likert5ops" :svgWidth=600 :svgHeight=400></bar-chart>
       </div>
@@ -201,7 +202,7 @@ export default {
           return
         }
 
-        let url = "/survey/course/" + this.course_id + "?group=" + groupId + "&format=json";
+        let url = "/survey/course/" + this.course_id + "/no_essay?group=" + groupId + "&format=json";
         const apiResult = await api.get(url, {
           params: { cookie: window.cookie }
         });
