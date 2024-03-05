@@ -298,4 +298,50 @@ class SurveyRepository
         return $sums;
     }
 
+
+    //---------- METHODS TO EXCLUDE ESSAY QUESTIONS -----------//
+
+    /**
+     * @param int $courseId
+     * @param int|null $groupId
+     * @return mixed
+     * @throws Exception
+     */
+    private function getSurveysWithOptionalFilteringNoEssays(int $courseId, ?int $groupId): mixed
+    {
+        $surveys = Survey::with([
+            'questions' => function ($query) {
+                $query->where('deleted', false)
+                    ->where('question_type', '!=', 'essay');
+            },
+            'questions.submissionData' => function ($query) use ($groupId) {
+                $query->whereHas('submission', function ($query) use ($groupId) {
+                    if ($groupId) {
+                        $query->whereIn('user_id', function ($query) use ($groupId) {
+                            $query->select('canvas_user_id')->from('join_canvas_group_users')->where('canvas_group_id', $groupId);
+                        })->where('deleted', false);
+                    }
+                });
+            },
+            'questions.submissionData.submission:id,submitted'
+        ])->where([['course_id', '=', $courseId], ['deleted', '=', false]])->get();
+
+
+        return self::countScalaQuestionResponseValues($surveys);
+    }
+
+    /**
+     * Returns all surveys, with submissions excluding essay questions, for a given course and group.
+     *
+     * @param int $courseId
+     * @param int $groupId
+     * @return mixed
+     * @throws Exception
+     */
+    public function getSurveysFilteredOnGroupExcludingEssays(int $courseId, int $groupId): mixed
+    {
+        return $this->getSurveysWithOptionalFilteringNoEssays($courseId, $groupId);
+    }
+
+
 }
