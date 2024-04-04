@@ -53,7 +53,7 @@ export default {
 			.scale(yScale);
 
 			const xaxis = d3.axisBottom()
-			.ticks(data.length)
+			.ticks(data.length >10? 10 : data.length)
 			.tickFormat(d3.timeFormat('%b %d'))
 			.scale(xScale);
 
