@@ -49,7 +49,7 @@ export default {
 			.range([ height, 0 ]);
 
 			const yaxis = d3.axisLeft()
-			.ticks((data).length)
+			.ticks((data).length > 15 ? 15 : (data).length)
 			.scale(yScale);
 
 			const xaxis = d3.axisBottom()
