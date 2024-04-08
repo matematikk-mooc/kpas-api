@@ -121,7 +121,7 @@
         roleIsSet: true,
         groupResult: 0,
         getRoleResult: 0,
-        preKommunereform2024: false
+        preKommunereform2024: false,
       }
     },
 
@@ -238,6 +238,10 @@
         return result;
       },
       async addUserGroups() {
+        if(this.courseId == -1) {
+          this.groupResult = this.ADDTO_GROUPS_FAILED;
+          return;
+        }
         if (this.groupsAreSet()) {
           const params = Object.assign({},
             this.groups, {
@@ -362,7 +366,7 @@
           this.clearError("groupError");
         } catch(e)
         {
-          this.reportError("groupError", "Kunne ikke hente grupper.");
+          this.reportError("groupError", "Kunne ikke hente gruppekategorier.");
         }
       },
 
@@ -374,15 +378,6 @@
         });
         this.faculties = response.data.result;
       },
-      async getSettings() {
-        const response = await api.get('/settings', {
-          params: {
-            cookie: window.cookie,
-          }
-        });
-        this.settings = response.data.result;
-        console.log(this.settings);
-      }
 
     },
     updated() {
@@ -423,7 +418,7 @@
       self.connectToParent();
 
       console.log("Hent kategorier...");
-      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution(), self.getSettings()]).then(() => {
+      await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution()]).then(() => {
         console.log("All promises resolved.");
         self.updateIsReady();
         self.iframeresize();
