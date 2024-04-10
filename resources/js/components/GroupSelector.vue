@@ -166,10 +166,20 @@
       },
       validateOnBlur(formValue) {
         if (formValue === null || formValue.length < 1) {
-        this.hasFormError=true
-      }
-    },
+          this.hasFormError=true
+        }
+      },
       getCommunityGroup() {
+        if(this.chosenCommunity.Navn === "Annen"){
+          return {
+            name: `${this.chosenCommunity.Navn}`,
+            description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
+            courseId: `${this.courseId}`,
+            countyId: 99,
+            communityId: 99,
+            orgNr: `${this.chosenCommunity.OrgNr}`,
+          };
+        }
         return {
           name: `${this.chosenCommunity.Navn}`,
           description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
@@ -180,6 +190,16 @@
         };
       },
       getInstitutionGroup() {
+        if (this.chosenInstitution.FulltNavn === "Annen"){
+          return {
+            name: `${this.chosenInstitution.FulltNavn}`,
+            description: `courseId:${this.courseId}:${this.institutionType}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
+            courseId: `${this.courseId}`,
+            countyId: 99,
+            communityId: 99,
+            orgNr: `${this.chosenInstitution.OrgNr}`,
+          };
+        }
         return {
           name: `${this.chosenInstitution.FulltNavn}`,
           description: `courseId:${this.courseId}:${this.institutionType}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
