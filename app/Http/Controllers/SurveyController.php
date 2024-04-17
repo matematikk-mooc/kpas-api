@@ -62,7 +62,8 @@ class SurveyController extends Controller
         return new SuccessResponse($result);
     }
 
-    public function createUserSubmission(AddUserSubmissionRequest $request, int $surveyId) {
+    public function createUserSubmission(AddUserSubmissionRequest $request, int $surveyId)
+    {
         logger("SurveyController@createUserSubmission");
 
         $settings = session()->get('settings');
@@ -80,7 +81,8 @@ class SurveyController extends Controller
         return new SuccessResponse(null);
     }
 
-    public function deleteUserSubmission(Request $request, int $surveyId) {
+    public function deleteUserSubmission(Request $request, int $surveyId)
+    {
         logger("SurveyController@deleteUserSubmission");
 
         $settings = session()->get('settings');

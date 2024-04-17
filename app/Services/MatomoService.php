@@ -14,7 +14,8 @@ class MatomoService
         $this->statisticsBaseUrl = config('statistics-api.base_url');
     }
 
-    public function matomoData(int $courseid, string $from, string $to) {
+    public function matomoData(int $courseid, string $from, string $to)
+    {
         logger("MatomoService::getMatomoData");
         $url = "{$this->statisticsBaseUrl}/statistics/course/{$courseid}/pages?from={$from}&to={$to}&format=json";
         logger($url);

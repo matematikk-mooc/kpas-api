@@ -31,7 +31,8 @@ class SurveyQuestion extends Model
      */
     public const QUESTION_TYPE_LIKERT_SCALE_5_POINTS = "likert_scale_5pt";
 
-    public static function getLikertScaleOptions(): array {
+    public static function getLikertScaleOptions(): array
+    {
         return [
             "likert_scale_5pt_1" => "I svært liten grad",
             "likert_scale_5pt_2" => "I liten grad",
@@ -63,4 +64,3 @@ class SurveyQuestion extends Model
     }
 
 }
-

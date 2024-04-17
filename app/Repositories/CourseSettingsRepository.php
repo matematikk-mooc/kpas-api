@@ -81,11 +81,13 @@ class CourseSettingsRepository
         ])->get();
     }
 
-    public function getCourseImages(){
+    public function getCourseImages()
+    {
         return CourseImage::all();
     }
 
-    public function getHighLightedCourse(){
+    public function getHighLightedCourse()
+    {
         $highlightedCourse = HighlightedCourses::where('id', 1)->first();
         if($highlightedCourse){
             return $highlightedCourse;

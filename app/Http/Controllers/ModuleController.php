@@ -38,7 +38,8 @@ class ModuleController extends Controller
         return new SuccessResponse($res);
     }
 
-    public function moduleStatisticsPerDate(Request $request, int $moduleId){
+    public function moduleStatisticsPerDate(Request $request, int $moduleId)
+    {
         $data = $this->moduleService->getModuleStatisticsPerDate($moduleId);
         $res = $data->getBody()->getContents();
         return new SuccessResponse($res);
