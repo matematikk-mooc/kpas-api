@@ -13,7 +13,7 @@ class Kommune extends Model
     protected $primaryKey = 'Kommunenr';
     protected $fillable = ['Fylkesnr', 'Navn', 'OrgNr', 'Kommunenr', 'ErNedlagt'];
 
-    public function CreateAnnenKommune() {
+    public function createAnnenKommune() {
         $key[$this->getKeyName()] = Kommune::$annetKommuneNr;
         Kommune::updateOrCreate($key, [
             'Fylkesnr' => Fylke::$annetFylkesNr,
@@ -24,7 +24,7 @@ class Kommune extends Model
         ]);
 
     }
-    public function UpdateKommune($community) {
+    public function updateKommune($community) {
         $key[$this->getKeyName()] = $community[$this->getKeyName()];
         Kommune::updateOrCreate($key, $community);
     }

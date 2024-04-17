@@ -80,7 +80,7 @@ class WorkerController extends Controller
         return $request->session()->get('group');
     }
 
-    protected function setGroup($group)
+    protected function setGroup(Request $request, $group)
     {
         return $request->session()->put($group);
     }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property int $course_id
- * @property date|null $unmaintained_since
+ * @property \date|null $unmaintained_since
  * @property string|null $banner_text
  * @property string $banner_type
  * @property bool $licence
@@ -39,7 +39,7 @@ class CourseSettings extends Model
     public function image()
     {
         return $this->hasOne(CourseImage::class, 'id', 'image_id');
-    }   
+    }
 
     public function courseFilter()
     {

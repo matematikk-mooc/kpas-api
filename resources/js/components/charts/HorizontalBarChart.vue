@@ -10,7 +10,7 @@ export default{
 	props: {
 		data: Array
 	},
-	
+
 	mounted() {
 		this.drawDiagram();
 	},
@@ -19,34 +19,34 @@ export default{
 			d3.selectAll("table").remove()
 			this.drawDiagram()
 		}
-	},	
+	},
 	methods: {
 		drawDiagram() {
 			let diagramData = this.data;
 
 			const MAX_X = 1;
-			
+
 			// These should match CSS
 			const SMALL_BREAKPOINT = 768;
 			const PREFFERED_COLUMN_WIDTH = {
 				LARGE: 300,
 				SMALL: 300
 			};
-			
+
 			const container = d3.select("#diagramContainer");
 			const workingWidth = 800;
 			// Column 1 (name column) is given a set width
 			const column1width = window.innerWidth > SMALL_BREAKPOINT ? PREFFERED_COLUMN_WIDTH.LARGE : PREFFERED_COLUMN_WIDTH.SMALL;
 			// Rest of width is given to column 2
 			const column2width = workingWidth - column1width;
-			
+
 			const currentSort = {};
-			
+
 			const table = container.append("table")
 			.attr("class", "table-completed")
 			.attr("width", workingWidth)
 			.attr("role", "table");
-			
+
 			const headers = [
 			{
 				name: "Tittel",
@@ -63,14 +63,14 @@ export default{
 				colspan: MAX_X
 			}
 			];
-			
+
 			if (currentSort.sortDirection && currentSort.sortField) {
 				const previouslySorted = headers[1].currentSort.sortField;
 				if (previouslySorted) {
 					previouslySorted.sortDirection = currentSort.sortDirection;
 				}
 			}
-			
+
 			const thead = table.append("thead");
 			// Names of columns
 			const tableHeader = thead.append("tr")
@@ -86,15 +86,15 @@ export default{
 			.attr("role", "columnheader")
 			.attr("scope", "col")
 			.attr("aria-sort", d => d.sortDirection);
-			
+
 			window.requestAnimationFrame(() => {
         		table.style('--table-header-height', tableHeader.offsetHeight);
     		});
-			
+
 			// When sorting, get the needed translate amount to get from old position to new
 			const getTranslatePosition = (d, el) => {
 				const newIndex = diagramData.map(_d => _d.title).indexOf(d.title);
-				
+
 				const newOffsetTop = diagramData.reduce((acc, _d, i) => {
 					if (i < newIndex) {
 						acc += _d.rowHeight;
@@ -105,7 +105,7 @@ export default{
 				const translateAmount = newOffsetTop - currentOffsetTop;
 				return translateAmount;
 			};
-			
+
 			const sortRows = async () => {
 				const rows = table.selectAll("tbody tr");
 				await rows.transition()
@@ -115,7 +115,7 @@ export default{
 					return `translate3d(0,${getTranslatePosition(d, this)}px,0)`;
 				})
 				.end();
-				
+
 				window.requestAnimationFrame(function () {
 					rows.style("transform", "translate3d(0,0px,0)")
 					.style("border-color", null)
@@ -123,26 +123,26 @@ export default{
 					.order();
 				});
 			};
-			
+
 			const handleSortClick = (headerEl, sortField) => {
 				const header = d3.select(headerEl);
 				const sort = header.attr("aria-sort");
 				th.attr("aria-sort", "none");
-				
+
 				header.attr("aria-sort", () => {
 					if (sort === "none" || sort === "ascending") return "descending";
 					return "ascending";
 				});
-				
+
 				// Save state for reuse when redrawing chart after resize
 				currentSort.sortDirection = header.attr("aria-sort");
 				currentSort.sortField = sortField;
-				
+
 				// Use d3.ascending / d3.descending function with array.sort to sort data array
 				diagramData = diagramData.slice().sort((a, b) => d3[header.attr("aria-sort")](a[sortField], b[sortField]));
 				sortRows();
 			};
-			
+
 			th.append("button")
 			.attr("class", "column-sorter")
 			.attr("id", d => d.id)
@@ -150,30 +150,30 @@ export default{
 			.on("click", function (event, d) {
 				handleSortClick(this.parentNode, d.sortField);
 			});
-			
+
 			/* ---------------------- */
 			/* -------- BODY -------- */
-			
+
 			const tbody = table.append("tbody");
 			const tr = tbody.selectAll("tr")
 			.data(diagramData, d => d.title)
 			.enter()
 			.append("tr")
 			.attr("style", d => `transform: translate3d(0,0px,0)`);
-			
-			
+
+
 			// Create the name column
 			tr.append("td").attr("class", "data name")
 			.attr("width", column1width)
 			.text(function (d) {
-				return d.title; 
+				return d.title;
 			});
-			
+
 			// Create the percent value column
 			tr.append("td").attr("class", "data value")
 			.append("div")
 			.attr("class", "bar")
-			.text(function(d) { 
+			.text(function(d) {
 				return d.count;
 			})
 			.attr("style", function(d) {
@@ -184,13 +184,13 @@ export default{
 				var barWidth = d.count / max_value * 100;
 				return "width:" + barWidth + "%";
 			})
-			
-			// Add row height to each row object 
+
+			// Add row height to each row object
 			diagramData = diagramData.map((d) => {
 				d.rowHeight = 34;
 				return d;
 			});
-			
+
 		}
 	}
 }
@@ -230,11 +230,10 @@ export default{
 
 .table-header th {
 	background: #BAC6D8;
-	-webkit-print-color-adjust: exact !important; 
-	color-adjust: exact !important;                 
-	print-color-adjust: exact !important;   
+	-webkit-print-color-adjust: exact !important;
+	print-color-adjust: exact !important;
 	position: -webkit-sticky;
-} 
+}
 
 .table-header th:first-child {
 	text-align: left;
@@ -265,15 +264,14 @@ export default{
 	transition: 0.2s ease-out background;
 	min-width: 3px;
 	-webkit-print-color-adjust: exact !important;   /* Chrome, Safari 6 – 15.3, Edge */
-	color-adjust: exact !important;                 /* Firefox 48 – 96 */
-	print-color-adjust: exact !important;      
+	print-color-adjust: exact !important;
 }
 
 .table-completed .bar:hover{
 	background: #9DBF9D;
 }
 
-/* Sort buttons and arrow indicators */ 
+/* Sort buttons and arrow indicators */
 .column-sorter {
 	height: 100%;
 	text-align: left;
@@ -314,7 +312,7 @@ export default{
 	border-top-color: transparent;
 }
 
-.form-inline {  
+.form-inline {
 	display: flex;
 	flex-flow: row wrap;
 	align-items: center;

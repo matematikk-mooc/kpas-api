@@ -26,7 +26,7 @@ class Skole extends Model
         'Lengdegrad',
     ];
 
-    public function CreateAnnenSkole() {
+    public function createAnnenSkole() {
         $annenNsrId = '99';
         $key[$this->getKeyName()] = $annenNsrId;
         Skole::updateOrCreate($key,
@@ -47,7 +47,7 @@ class Skole extends Model
         ]);
     }
 
-    public function UpdateSkole($school) {
+    public function updateSkole($school) {
         $key[$this->getKeyName()] = $school[$this->getKeyName()];
         Skole::updateOrCreate($key, $school);
     }

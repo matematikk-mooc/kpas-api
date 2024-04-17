@@ -38,7 +38,7 @@ class SurveyController extends Controller
     }
 
     //Method to exclude essay questions in response
-    public function getCourseSurveysWithoutOpenAnswerResponses(Request $request, $courseId): SuccessResponse
+    public function getCourseSurveysWithoutOpenAnswerResponses(Request $request, $courseId)
     {
         $surveyRepository = new SurveyRepository();
         try {
@@ -47,7 +47,7 @@ class SurveyController extends Controller
                 return new SuccessResponse($result);
             }
         }
-        catch(Exception $e) {
+        catch(\Exception $e) {
             logger("Could not get surveys. Error: " . $e->getMessage());
         }
 

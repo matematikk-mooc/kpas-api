@@ -26,7 +26,7 @@ class Barnehage extends Model
         'Lengdegrad',
     ];
 
-    public function CreateAnnenBarnehage() {
+    public function createAnnenBarnehage() {
         $annenNsrId = '99';
         $annenOrgNr = '999999999';
         $key[$this->getKeyName()] = $annenOrgNr;
@@ -48,7 +48,7 @@ class Barnehage extends Model
 
     }
 
-    public function UpdateBarnehage($kindergarten) {
+    public function updateBarnehage($kindergarten) {
         $key[$this->getKeyName()] = $kindergarten[$this->getKeyName()];
         Barnehage::updateOrCreate($key, $kindergarten);
     }

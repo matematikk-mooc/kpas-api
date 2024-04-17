@@ -23,7 +23,7 @@ class HistoryController extends Controller
     {
         $historyService = new HistoryService();
         logger($request);
-        $data = $historyService->getUserHistory($userId, $contextId, $request->from, $request->to);
+        $data = $historyService->getUserContextHistory($userId, $contextId, $request->from, $request->to);
         $res = $data->getBody()->getContents();
         return new SuccessResponse($res);
     }

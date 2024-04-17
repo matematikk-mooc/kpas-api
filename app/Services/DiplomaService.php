@@ -20,7 +20,7 @@ class DiplomaService
 
         $courseId = $settings['custom_canvas_course_id'];
 
-        $kompetansepakke = \App\Models\Kompetansepakke::where('course_id', $courseId)->first();
+        $kompetansepakke = Kompetansepakke::where('course_id', $courseId)->first();
         $diplomaCourseDescription = $kompetansepakke ? $kompetansepakke->diplom_beskrivelse : "";
         $diplomaDeliveredBy = $kompetansepakke ? $kompetansepakke->utviklet_av : "";
 
@@ -79,7 +79,7 @@ class DiplomaService
     }
 
     private function storeDiplomaCompletionForUser($userId, $courseId) {
-        \App\Models\Diploma::updateOrCreate(['user_id' => $userId],['course_id' => $courseId]);
+        Diploma::updateOrCreate(['user_id' => $userId],['course_id' => $courseId]);
     }
 
     public function hasDeservedDiploma($settings) {
@@ -88,7 +88,7 @@ class DiplomaService
 
         $courseId = $settings["custom_canvas_course_id"];
         $userId = $settings["custom_canvas_user_id"];
-        $client = new \GuzzleHttp\Client();
+        $client = new Client();
         $canvas_service = new CanvasService($client);
 
 

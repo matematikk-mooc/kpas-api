@@ -8,7 +8,7 @@ use EasyRdf;
 
 class GrepController extends Controller
 {
-    private function getGF5() 
+    private function getGF5()
     {
         $sparqlEndpoint = env("GREP_SPARQL_ENDPOINT", "");
         logger("SPARQL ENDPOINT:" . $sparqlEndpoint);
@@ -27,7 +27,7 @@ class GrepController extends Controller
             ?lp u:url-data ?lpJson ;
             u:tittel ?lpTittel ;
             u:kode ?lpKode .
-            FILTER (lang(?lpTittel) = "default") 
+            FILTER (lang(?lpTittel) = "default")
         } ORDER BY ?lp ?km
         ';
         $result = $sparql->query($query);
@@ -37,8 +37,7 @@ class GrepController extends Controller
     {
         $result = $this->getGF5();
         $data = ['grep' => $result];
-        logger($data);
+        logger('data', $data);
         return view('grep.grep', $data);
-    }    
+    }
 }
-

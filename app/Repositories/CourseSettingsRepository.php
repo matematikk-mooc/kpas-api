@@ -90,9 +90,7 @@ class CourseSettingsRepository
         if($highlightedCourse){
             return $highlightedCourse;
         }
-        else{
-            return null;
-        }
+        return null;
     }
 
     public function updateHighlightedCourse(int $courseId)

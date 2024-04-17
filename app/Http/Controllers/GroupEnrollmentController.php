@@ -13,7 +13,7 @@ class GroupEnrollmentController extends Controller
     {
         $enrollmentService = new GroupEnrollmentService();
         logger($request);
-        $data = $enrollmentService->getGroupEnrollmentData($courseId, $request->from, $request->to);
+        $data = $enrollmentService->getGroupEnrollment($courseId, $request->from, $request->to);
         $res = $data->getBody()->getContents();
         return new SuccessResponse($res);
     }

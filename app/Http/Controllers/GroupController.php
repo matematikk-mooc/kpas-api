@@ -13,6 +13,7 @@ use App\Services\DataportenService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
+use App\Http\Responses\ErrorResponse;
 
 
 class GroupController extends Controller
@@ -176,7 +177,7 @@ class GroupController extends Controller
         if($nationalCategoryId) {
             logger("Create national faculty group.");
             $facultyStripped = $this->getStrippedFacultyName($faculty);
-            $nationalFacultyDescription = "faculty:" . $facultyStripped . ":courseId:" . $courseId . ":national" ; 
+            $nationalFacultyDescription = "faculty:" . $facultyStripped . ":courseId:" . $courseId . ":national" ;
             $nationalFacultyArray = array("Name"=>$faculty, "Description"=>$nationalFacultyDescription);
             $nationalFaculty = new GroupDto($nationalFacultyArray);
             $nationalFaculty->setCategoryId($nationalCategoryId);
@@ -214,7 +215,7 @@ class GroupController extends Controller
 
     public function getStoredGroups()
     {
-        return Group::all(); 
+        return Group::all();
     }
 
     public function getCourseGroups($courseId)
@@ -247,7 +248,7 @@ class GroupController extends Controller
     public function getStudentCount(string $groupId) {
         try {
             return new SuccessResponse($this->canvasRepository->getTotalStudentsByGroup($groupId)['antallBrukere']);
-        } catch (Exeption $e) {
+        } catch (\Exception $e) {
             return new ErrorResponse($e->getMessage());
         }
     }
