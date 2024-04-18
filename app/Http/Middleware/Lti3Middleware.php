@@ -31,7 +31,7 @@ class Lti3Middleware
             $arr = parse_url($loginUrl);
             parse_str($arr['query'], $params);
             logger($arr);
-            
+
             return response(view('main.nocookies')->withState($params['state'])
             ->withNonce($params['nonce'])
             ->withTargetUrl($arr['query'])

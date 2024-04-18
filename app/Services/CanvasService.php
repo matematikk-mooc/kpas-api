@@ -370,7 +370,8 @@ class CanvasService
         }
     }
 
-    public function getModulesForCourse(int $courseId, int $studentId) {
+    public function getModulesForCourse(int $courseId, int $studentId)
+    {
         try {
             $modulesHref = "courses/${courseId}/modules";
             $modules = $this->request($modulesHref, 'GET', [], [], true);
@@ -420,7 +421,8 @@ class CanvasService
         }
     }
 
-    public function mergeUsers(int $fromUserId, int $toUserId) {
+    public function mergeUsers(int $fromUserId, int $toUserId)
+    {
         $url = "users/$fromUserId/merge_into/$toUserId";
         return $this->request($url, 'PUT');
     }

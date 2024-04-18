@@ -13,9 +13,9 @@ class EnrollmentActivityController extends Controller
         return EnrollmentActivity::all();
     }
 
-    public function show(int $course_id, Request $request)
+    public function show(int $courseId, Request $request)
     {
-        $enrollment = EnrollmentActivity::where('course_id', '=', $course_id);
+        $enrollment = EnrollmentActivity::where('course_id', '=', $courseId);
 
         if ($request->has('from')) {
             $enrollment->where('activity_date', '>=', $request->from);
@@ -35,10 +35,10 @@ class EnrollmentActivityController extends Controller
         return response()->json($UserActivity, 201);
     }
 
-    public function delete(int $course_id)
+    public function delete(int $courseId)
     {
 
-        $UserActivity = EnrollmentActivity::where('course_id', '=', $course_id)->first();
+        $UserActivity = EnrollmentActivity::where('course_id', '=', $courseId)->first();
         $UserActivity->delete();
         return response()->json(null, 204);
     }

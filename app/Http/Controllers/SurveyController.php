@@ -38,7 +38,7 @@ class SurveyController extends Controller
     }
 
     //Method to exclude essay questions in response
-    public function getCourseSurveysWithoutOpenAnswerResponses(Request $request, $courseId): SuccessResponse
+    public function getCourseSurveysWithoutOpenAnswerResponses(Request $request, $courseId)
     {
         $surveyRepository = new SurveyRepository();
         try {
@@ -47,7 +47,7 @@ class SurveyController extends Controller
                 return new SuccessResponse($result);
             }
         }
-        catch(Exception $e) {
+        catch(\Exception $e) {
             logger("Could not get surveys. Error: " . $e->getMessage());
         }
 
@@ -62,7 +62,8 @@ class SurveyController extends Controller
         return new SuccessResponse($result);
     }
 
-    public function createUserSubmission(AddUserSubmissionRequest $request, int $surveyId) {
+    public function createUserSubmission(AddUserSubmissionRequest $request, int $surveyId)
+    {
         logger("SurveyController@createUserSubmission");
 
         $settings = session()->get('settings');
@@ -80,7 +81,8 @@ class SurveyController extends Controller
         return new SuccessResponse(null);
     }
 
-    public function deleteUserSubmission(Request $request, int $surveyId) {
+    public function deleteUserSubmission(Request $request, int $surveyId)
+    {
         logger("SurveyController@deleteUserSubmission");
 
         $settings = session()->get('settings');

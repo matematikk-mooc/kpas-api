@@ -39,7 +39,7 @@ class DataNsrService
         try{
             return $this->request($this->nsrDomain, "v3/enhet/$orgnr");
         }
-        catch (\Exception $e){
+        catch (Exception $e){
             throw new Exception("Could not find school with orgnr $orgnr");
         }
     }
@@ -49,7 +49,7 @@ class DataNsrService
         try{
             return $this->request($this->nbrDomain, "v3/enhet/$orgnr");
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             throw new Exception("Could not find kindergarten with orgnr $orgnr");
         }
     }
@@ -128,7 +128,7 @@ class DataNsrService
             $response = $this->guzzleClient->request("GET", $fullUrl, [
                 'verify' => false,
             ]);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             logger($e);
         }
 
@@ -140,13 +140,13 @@ class DataNsrService
         logger("store_counties");
         $model = new Fylke();
 
-        $model->CreateAnnetFylke();
+        $model->createAnnetFylke();
 
         $counties = $this->getCounties();
         foreach ($counties as $value) {
             $county = (array)$value;
             try {
-                $model->UpdateFylke($county);
+                $model->updateFylke($county);
             } catch (\Throwable $e) {
                 logger($e);
             }
@@ -159,7 +159,7 @@ class DataNsrService
         logger("store_communities");
         $model = new Kommune();
 
-        $model->CreateAnnenKommune();
+        $model->createAnnenKommune();
 
         $community_keys = $model->getFillable();
         $communities = $this->getCommunities();
@@ -167,7 +167,7 @@ class DataNsrService
             $community = (array)$value;
             try {
                 $filter_fields = filter_institution_fields($community, $community_keys);
-                $model->UpdateKommune($filter_fields);
+                $model->updateKommune($filter_fields);
             } catch (\Throwable $e) {
                 logger($e);
             }
@@ -179,7 +179,7 @@ class DataNsrService
     {
         $model = new Skole();
 
-        $model->CreateAnnenSkole();
+        $model->createAnnenSkole();
 
         $school_keys = $model->getFillable();
         $org = $this->getSchools();
@@ -200,7 +200,7 @@ class DataNsrService
                 Arr::set($school, 'Kommunenr', $value->KommuneNr);
                 try {
                     $filter_fields = filter_institution_fields($school, $school_keys);
-                    $model->UpdateSkole($filter_fields);
+                    $model->updateSkole($filter_fields);
                 } catch (\Throwable $e) {
                     logger("Failure when processing school:" . print_r($value, true));
                     logger($e);
@@ -214,7 +214,7 @@ class DataNsrService
     {
         $model = new Barnehage();
 
-        $model->CreateAnnenBarnehage();
+        $model->createAnnenBarnehage();
 
         $kindergartens_keys = $model->getFillable();
         $org = $this->getKindergartens();
@@ -228,7 +228,7 @@ class DataNsrService
             $kindergarten = (array) $value;
             try {
                 $filter_fields = filter_institution_fields($kindergarten, $kindergartens_keys);
-                $model->UpdateBarnehage($filter_fields);
+                $model->updateBarnehage($filter_fields);
             } catch (\Throwable $e) {
                 logger("Failure when processing kindergarten:" . print_r($value, true));
                 logger($e);

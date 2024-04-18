@@ -7,46 +7,49 @@ use Illuminate\Http\Request;
 class HistoryService
 {
     protected $guzzleClient;
-    protected $statistics_base_url;
+    protected $statisticsBaseUrl;
 
     public function __construct()
     {
-        $this->statistics_base_url = config('statistics-api.base_url');
+        $this->statisticsBaseUrl = config('statistics-api.base_url');
     }
 
-    public function getUserHistory(int $userId, string $from, string $to) {
+    public function getUserHistory(int $userId, string $from, string $to)
+    {
         logger("HistoryService::getUserHistory");
-        $url = "{$this->statistics_base_url}/statistics/user/{$userId}/history/?from={$from}&to={$to}&format=json";
+        $url = "{$this->statisticsBaseUrl}/statistics/user/{$userId}/history/?from={$from}&to={$to}&format=json";
         logger($url);
 
         $this->guzzleClient = new Client();
-        $res = $this->guzzleClient->request('GET', $url, [], [], false);
+        $res = $this->guzzleClient->request('GET', $url, []);
         return $res;
     }
 
-    public function getUserContextHistory(int $userId, int $contextId, string $from, string $to) {
+    public function getUserContextHistory(int $userId, int $contextId, string $from, string $to)
+    {
         logger("HistoryService::getUserContextHistory");
-        $url = "{$this->statistics_base_url}/statistics/user/{$userId}/context/{$contextId}/history/?from={$from}&to={$to}&format=json";
+        $url = "{$this->statisticsBaseUrl}/statistics/user/{$userId}/context/{$contextId}/history/?from={$from}&to={$to}&format=json";
         logger($url);
 
         $this->guzzleClient = new Client();
-        $res = $this->guzzleClient->request('GET', $url, [], [], false);
+        $res = $this->guzzleClient->request('GET', $url, []);
         return $res;
     }
 
-    public function getContextHistory(int $contextId, string $from, string $to) {
+    public function getContextHistory(int $contextId, string $from, string $to)
+    {
         logger("HistoryService::getContextHistory");
-        $url = "{$this->statistics_base_url}/statistics/context/{$contextId}/history/?from={$from}&to={$to}&format=json";
+        $url = "{$this->statisticsBaseUrl}/statistics/context/{$contextId}/history/?from={$from}&to={$to}&format=json";
         logger($url);
 
         $this->guzzleClient = new Client();
-        $res = $this->guzzleClient->request('GET', $url, [], [], false);
+        $res = $this->guzzleClient->request('GET', $url, []);
         return $res;
     }
 
     protected function request(string $userId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
-    {   
-        $fullUrl = "{$this->statistics_base_url}/statistics/user/{$userId}/history/?from={$fromDate}&to={$toDate}";
+    {
+        $fullUrl = "{$this->statisticsBaseUrl}/statistics/user/{$userId}/history/?from={$fromDate}&to={$toDate}";
         logger($fullUrl);
 
         try {

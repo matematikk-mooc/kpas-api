@@ -159,7 +159,7 @@ class CanvasRepository
 
     public function getModulesForCourse(int $courseId, $studentId)
     {
-        return $this->canvasService->getModulesForCourse($userId, $courseId);
+        return $this->canvasService->getModulesForCourse($courseId, $studentId);
     }
 
     public function getPublicCourses()

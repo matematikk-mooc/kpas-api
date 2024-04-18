@@ -9,7 +9,8 @@ use App\Models\Diploma;
 
 class DiplomaService
 {
-    public function getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma) {
+    public function getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma)
+    {
         logger("getDiplomaHtml");
         logger("Downloadlink:" . $downloadLink);
         logger($settings);
@@ -20,7 +21,7 @@ class DiplomaService
 
         $courseId = $settings['custom_canvas_course_id'];
 
-        $kompetansepakke = \App\Models\Kompetansepakke::where('course_id', $courseId)->first();
+        $kompetansepakke = Kompetansepakke::where('course_id', $courseId)->first();
         $diplomaCourseDescription = $kompetansepakke ? $kompetansepakke->diplom_beskrivelse : "";
         $diplomaDeliveredBy = $kompetansepakke ? $kompetansepakke->utviklet_av : "";
 
@@ -35,7 +36,8 @@ class DiplomaService
             ->withHasDeservedDiploma($hasDeservedDiploma);
     }
 
-    private function hasCompletedModule($module, $isLastModule, $bIncludeIndentedItems) {
+    private function hasCompletedModule($module, $isLastModule, $bIncludeIndentedItems)
+    {
         $items = $module->items;
 
         $moduleCompleted = true;
@@ -65,7 +67,8 @@ class DiplomaService
         return $moduleCompleted;
     }
 
-    private function findLastModuleNo($modules) {
+    private function findLastModuleNo($modules)
+    {
         $lastModuleNo = 0;
         $noOfModules = count($modules);
 
@@ -78,17 +81,19 @@ class DiplomaService
         return $lastModuleNo;
     }
 
-    private function storeDiplomaCompletionForUser($userId, $courseId) {
-        \App\Models\Diploma::updateOrCreate(['user_id' => $userId],['course_id' => $courseId]);
+    private function storeDiplomaCompletionForUser($userId, $courseId)
+    {
+        Diploma::updateOrCreate(['user_id' => $userId],['course_id' => $courseId]);
     }
 
-    public function hasDeservedDiploma($settings) {
+    public function hasDeservedDiploma($settings)
+    {
         logger("hasDeservedDiploma BEGIN");
         logger($settings);
 
         $courseId = $settings["custom_canvas_course_id"];
         $userId = $settings["custom_canvas_user_id"];
-        $client = new \GuzzleHttp\Client();
+        $client = new Client();
         $canvas_service = new CanvasService($client);
 
 
