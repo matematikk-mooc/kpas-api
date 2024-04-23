@@ -63,4 +63,4 @@ app.component("no-cookies-view", NoCookies);
 app.component("line-chart", LineChart);
 app.component("course-settings-view", CourseSettignsView);
 
-app.mount("#app")
+app.mount("#app");

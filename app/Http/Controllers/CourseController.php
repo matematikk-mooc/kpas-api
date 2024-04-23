@@ -41,10 +41,11 @@ class CourseController extends Controller
         return new SuccessResponse($courseOwnerIsChildAccountOfUdir);
     }
 
-    public function getStudentCount(string $courseId) {
+    public function getStudentCount(string $courseId)
+    {
         try {
             return new SuccessResponse($this->canvasService->getTotalStudents($courseId)['antallBrukere']);
-        } catch (Exeption $e) {
+        } catch (\Exception $e) {
             return new ErrorResponse($e->getMessage());
         }
     }

@@ -158,7 +158,8 @@ class SurveyRepository
      * @param int $userID
      * @return void
      */
-    public function deleteUserSubmission(int $surveyID, int $userID): void {
+    public function deleteUserSubmission(int $surveyID, int $userID): void
+    {
         $surveySubmission = SurveySubmission::where([
             ['survey_id', '=', $surveyID],
             ['user_id', '=', $userID],
@@ -263,7 +264,8 @@ class SurveyRepository
     /**
      * @throws Exception
      */
-    private static function countScalaQuestionResponseValues($surveys) {
+    private static function countScalaQuestionResponseValues($surveys)
+    {
         $surveys = json_decode($surveys);
         foreach($surveys as $survey){
             foreach($survey->questions as $question){

@@ -7,37 +7,37 @@ use Illuminate\Http\Request;
 class ModuleService
 {
     protected $guzzleClient;
-    protected $statistics_base_url;
+    protected $statisticsBaseUrl;
 
     public function __construct()
     {
         logger(config('statistics-api.base_url'));
-        $this->statistics_base_url = config('statistics-api.base_url');
+        $this->statisticsBaseUrl = config('statistics-api.base_url');
         $this->guzzleClient = new Client();
     }
 
     public function getModuleStatistics(int $courseId)
     {
-        $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/modules?format=json";
+        $url = "{$this->statisticsBaseUrl}/statistics/course/{$courseId}/modules?format=json";
         return $this->guzzleClient->request('GET', $url);
     }
 
     public function getModuleStatisticsByGroup(int $courseId, $groupId)
     {
-        $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/modules?group={$groupId}&format=json";
+        $url = "{$this->statisticsBaseUrl}/statistics/course/{$courseId}/modules?group={$groupId}&format=json";
         return $this->guzzleClient->request('GET', $url);
     }
 
     public function getModuleStatisticsCount(int $courseId)
     {
-        $url = "{$this->statistics_base_url}/statistics/course/{$courseId}/modules/count?format=json";
+        $url = "{$this->statisticsBaseUrl}/statistics/course/{$courseId}/modules/count?format=json";
         return $this->guzzleClient->request('GET', $url);
 
     }
 
     public function getModuleStatisticsPerDate(int $moduleId)
     {
-        $url = "{$this->statistics_base_url}/statistics/modules/{$moduleId}/per_date";
+        $url = "{$this->statisticsBaseUrl}/statistics/modules/{$moduleId}/per_date";
         return $this->guzzleClient->request('GET', $url);
     }
 }

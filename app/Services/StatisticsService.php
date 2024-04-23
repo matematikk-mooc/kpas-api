@@ -8,11 +8,11 @@ use Illuminate\Http\Request;
 class StatisticsService
 {
     protected $guzzleClient;
-    protected $statistics_base_url;
+    protected $statisticsBaseUrl;
 
     public function __construct()
     {
-        $this->statistics_base_url = config('statistics-api.base_url');
+        $this->statisticsBaseUrl = config('statistics-api.base_url');
     }
 
     public function getStatisticsHtml($settings) {
@@ -26,13 +26,15 @@ class StatisticsService
     public function getUserActivity(int $courseId, Request $request) {
         logger("StatisticsService::getUserActivity");
 
-        $url = "{$this->statistics_base_url}/statistics/user_activity/" . $courseId . "?";
+        $url = "{$this->statisticsBaseUrl}/statistics/user_activity/" . $courseId . "?";
 
         if ($request->has('from')) {
+            $from = $request->from;
             $url .= "from=" . $from . "&";
         }
 
         if ($request->has('to')) {
+            $to = $request->to;
             $url .= "to=" . $to;
         }
 
@@ -40,12 +42,12 @@ class StatisticsService
         logger($url);
         return $this->guzzleClient->request($url);
     }
-    
+
     protected function request(string $courseId, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
-        $fullUrl = "{$this->statistics_base_url}/statistics/{$courseId}/count";
+        $fullUrl = "{$this->statisticsBaseUrl}/statistics/{$courseId}/count";
         logger($fullUrl);
-        
+
         try {
             $content = [];
             $response = $this->guzzleClient->request($method, $fullUrl, [
@@ -58,7 +60,7 @@ class StatisticsService
             $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
 
             logger("CanvasService: returning content");
-            
+
             return $content;
         } catch (ClientException $exception) {
             logger("StatisticsService.request exception:");

@@ -11,7 +11,7 @@ use App\Models\CourseCategory;
  * @property int $id
  * @property string $name
  * @property int $position
- * @property string color_code
+ * @property string $color_code
  */
 class Category extends Model
 {

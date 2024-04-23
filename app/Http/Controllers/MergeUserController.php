@@ -18,11 +18,12 @@ class KpasCanvasCourse
     public function __construct($courseId, $courseName)
     {
         $this->courseId = $courseId;
-        $this->courseName = $courseName;        
+        $this->courseName = $courseName;
     }
 }
 
-class MergeUserController extends Controller {
+class MergeUserController extends Controller
+{
     private const CODE_TIMEOUT_SECONDS = 30 * 60;
     private const ID_TOKEN_DELIMITER = '-';
 
@@ -33,10 +34,11 @@ class MergeUserController extends Controller {
         $this->canvasRepository = $canvasRepository;
     }
 
-    public function createToken(Request $request) {
+    public function createToken(Request $request)
+    {
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("Creating token for user $userId");
-        
+
         $codeEntry = CanvasUserMergeToken::firstOrNew([
             'canvas_user_id' => $userId,
         ]);
@@ -49,10 +51,11 @@ class MergeUserController extends Controller {
         return implode([$userId, self::ID_TOKEN_DELIMITER, $token]);
     }
 
-    public function mergeUser(Request $request) {
+    public function mergeUser(Request $request)
+    {
         $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("User $toUserId sent request to merge user");
-        
+
         $parsedToken = $this->parseToken($request);
         if (is_null($parsedToken)) {
             return response('Ugyldig kode.', 403);
@@ -74,7 +77,8 @@ class MergeUserController extends Controller {
         }
     }
 
-    public function getCourseIntersection(Request $request) {
+    public function getCourseIntersection(Request $request)
+    {
         $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
         logger("User $toUserId sent request to get course intersection");
         $parsedToken = $this->parseToken($request);
@@ -117,11 +121,12 @@ class MergeUserController extends Controller {
         return $course_conflicts;
     }
 
-    private function parseToken(Request $request): ?ParsedToken {
+    private function parseToken(Request $request): ?ParsedToken
+    {
         $idToken = $request->header('X-merge-token');
 
         if (is_null($idToken)) {
-            logger("Got request missing token from user $toUserId");
+            logger("Got request missing token from user");
             return null;
         }
 
@@ -141,9 +146,10 @@ class MergeUserController extends Controller {
      * Method to validate tokens, note that it is vulnerable to timing attacks to determine why a token is not valid
      * or if a user id has a token in the DB. This is unlikely to be an issue in this case, but something to be aware of.
      */
-    private function validateToken(int $userId, string $token): bool {
+    private function validateToken(int $userId, string $token): bool
+    {
         $codeEntry = CanvasUserMergeToken::where('canvas_user_id', $userId)->first();
-        
+
         if (is_null($codeEntry)) {
             logger("No token in DB for $userId");
             return false;
@@ -161,11 +167,13 @@ class MergeUserController extends Controller {
     }
 }
 
-class ParsedToken {
+class ParsedToken
+{
     public $userId;
     public $token;
 
-    function __construct(int $userId, string $token) {
+    function __construct(int $userId, string $token)
+    {
         $this->userId = $userId;
         $this->token = $token;
     }

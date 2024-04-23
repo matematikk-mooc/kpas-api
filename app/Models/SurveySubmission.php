@@ -19,7 +19,8 @@ class SurveySubmission extends Model
         'submitted',
         'deleted'
     ];
-    public function survey(){
+    public function survey()
+    {
         return $this->belongsTo(Survey::class);
     }
 

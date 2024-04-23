@@ -30,7 +30,8 @@ class Group extends Model
         'category_id',
     ];
 
-    public function users(){
+    public function users()
+    {
         return $this->hasMany(JoinCanvasGroupUser::class, 'canvas_user_id', 'user_id');
     }
 

@@ -7,27 +7,28 @@ use Illuminate\Http\Request;
 class MatomoService
 {
     protected $guzzleClient;
-    protected $statistics_base_url;
+    protected $statisticsBaseUrl;
 
     public function __construct()
     {
-        $this->statistics_base_url = config('statistics-api.base_url');
+        $this->statisticsBaseUrl = config('statistics-api.base_url');
     }
 
-    public function matomoData(int $courseid, string $from, string $to) {
+    public function matomoData(int $courseid, string $from, string $to)
+    {
         logger("MatomoService::getMatomoData");
-        $url = "{$this->statistics_base_url}/statistics/course/{$courseid}/pages?from={$from}&to={$to}&format=json";
+        $url = "{$this->statisticsBaseUrl}/statistics/course/{$courseid}/pages?from={$from}&to={$to}&format=json";
         logger($url);
 
         $this->guzzleClient = new Client();
-        $res = $this->guzzleClient->request('GET', $url, [], [], false);
+        $res = $this->guzzleClient->request('GET', $url, []);
         return $res;
     }
 
 
-    protected function request(string $courseId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
+    protected function request(string $courseId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [])
     {
-        $fullUrl = "{$this->statistics_base_url}/statistics/course/{$courseId}/pages?from={$fromDate}&to={$toDate}";
+        $fullUrl = "{$this->statisticsBaseUrl}/statistics/course/{$courseId}/pages?from={$fromDate}&to={$toDate}";
         logger($fullUrl);
 
         try {
