@@ -7,13 +7,13 @@ services:
       - MYSQL_DATABASE=KpasDEV
       - MYSQL_ROOT_PASSWORD=KpasDEV
     ports:
-      - '3310:3310'
+      - '3306:3306'
     volumes:
       - db:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
   kpas:
     container_name: kpas
-    build: 
+    build:
       context: .
       dockerfile: dev.Dockerfile
     depends_on:
@@ -24,13 +24,13 @@ services:
       APP_DEBUG: "true"
       APP_ENV: "local"
       APP_NAME: "KPAS DEV"
-      APP_URL: "http://localhost"
+      APP_URL: <ngrok-url>
       LOG_CHANNEL: "stack"
       DEBUGBAR_ENABLED: "true"
-      CANVAS_HOST: "https://bibsys.test.instructure.com"
+      CANVAS_HOST: "https://*.instructure.com"
       DB_CONNECTION: mysql
       DB_HOST: db
-      DB_PORT: 3310
+      DB_PORT: 3306
       DB_USERNAME: root
       DB_PASSWORD: KpasDEV
       DB_DATABASE: KpasDEV
@@ -41,4 +41,3 @@ services:
 volumes:
   db:
     driver: local
-    
