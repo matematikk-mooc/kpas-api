@@ -36,6 +36,8 @@ https://kpas.staging.kompetanse.udir.no/docs
 - Open an ngrok tunnel
 - Update the .env file and docker-compose file
 - Create an LTI developer key in Canvas
+- Add the LTI to a course
+- Update the config_platform.json file
 
 
 
@@ -62,4 +64,3 @@ To populate the database, run the following commands:
 php artisan fetch_from:nsr
 php artisan fetch_from:canvas
 ```
-
