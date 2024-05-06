@@ -22,6 +22,10 @@ class Fylke extends Model
     }
     public function updateFylke($county)
     {
+        if (!isset($county['nedlagt'])) {
+            $county['nedlagt'] = false;
+        }
+
         $key[$this->getKeyName()] = $county[$this->getKeyName()];
         Fylke::updateOrCreate($key, $county);
     }

@@ -26,11 +26,13 @@ class DataNsrService
     private $guzzleClient;
     private $nsrDomain;
     private $nbrDomain;
+    private $nxrDomain;
 
     public function __construct(Client $guzzleClient)
     {
         $this->nsrDomain = 'https://data-nsr.udir.no/';
         $this->nbrDomain = 'https://data-nbr.udir.no/';
+        $this->nxrDomain = 'https://data-nxr-fellestjeneste.udir.no/';
         $this->guzzleClient = $guzzleClient;
     }
 
@@ -57,14 +59,14 @@ class DataNsrService
 
     public function getCounties(): array
     {
-        $fylker = $this->request($this->nsrDomain, 'fylker');
+        $fylker = $this->request($this->nxrDomain, 'api/legacy/fylker');
         logger(print_r($fylker,true));
         return $fylker;
     }
 
     public function getCommunities(): array
     {
-        return $this->request($this->nsrDomain, 'kommuner');
+        return $this->request($this->nxrDomain, 'api/legacy/kommuner');
     }
 
     public function getSchools(): array
@@ -146,6 +148,10 @@ class DataNsrService
         foreach ($counties as $value) {
             $county = (array)$value;
             try {
+                if (!isset($county['OrgNr']) || !isset($county['OrgNrFylkesmann'])) {
+                    #This county is no longer active
+                    continue;
+                }
                 $model->updateFylke($county);
             } catch (\Throwable $e) {
                 logger($e);
@@ -166,6 +172,10 @@ class DataNsrService
         foreach ($communities as $value) {
             $community = (array)$value;
             try {
+                if (!isset($community['OrgNr'])) {
+                    #This community is no longer active
+                    continue;
+                }
                 $filter_fields = filter_institution_fields($community, $community_keys);
                 $model->updateKommune($filter_fields);
             } catch (\Throwable $e) {
