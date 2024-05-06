@@ -20,8 +20,47 @@ https://kpas.kompetanse.udir.no/docs
 https://kpas.staging.kompetanse.udir.no/docs
 
 ## Development
-To run the application locally, run the following command:
+
+
+### Prerequisite
+- docker
+- docker compose
+- ngrok
+
+### The following things needs to be done prior to building:
+- Add a .env file to the root directory of the repo.
+- Add a new directory to the 'database' directory, where you add a config_platform.json file
+- Genereate a api access key in Canvas.
+- Generate a jwt keyset in the 'jwt_key_kpas' directory
+- Use the public jwt key to generate a jwk.
+- Open an ngrok tunnel
+- Update the .env file and docker-compose file
+- Create an LTI developer key in Canvas
+- Add the LTI to a course
+- Update the config_platform.json file
+
+
+
+### To run the application locally, run the following command:
 ```
-docker compose -f dev.docker-compose.yaml up --build 
+docker compose -f dev.docker-compose.yaml up --build
 ```
 This will start the application on port 8080.
+
+
+### Migrate and populate the database:
+To make sure the migrations are ran and populate the database, access the container:
+```
+docker exec -it kpas bash
+```
+
+Inside the container run this command to migrate:
+```
+php artisan migrate
+```
+
+To populate the database, run the following commands:
+```
+php artisan fetch_from:nsr
+php artisan fetch_from:canvas
+```
