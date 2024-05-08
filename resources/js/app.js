@@ -6,6 +6,7 @@ import DashboardView from "./views/DashboardView";
 import DiplomaView from "./views/DiplomaView";
 import GroupEnrollView from "./views/GroupEnrollView";
 import GroupedBarChart from "./components/charts/GroupedBarChart";
+import HealthMonitorView from "./views/HealthMonitorView";
 import HorizontalBarChart from "./components/charts/HorizontalBarChart";
 import KpasEmbedView from "./views/KpasEmbedView";
 import LineChart from "./components/charts/LineChart";
@@ -62,5 +63,6 @@ app.component("dashboard-select", DashboardGroupSelect);
 app.component("no-cookies-view", NoCookies);
 app.component("line-chart", LineChart);
 app.component("course-settings-view", CourseSettignsView);
+app.component("health-monitor-view", HealthMonitorView);
 
 app.mount("#app");

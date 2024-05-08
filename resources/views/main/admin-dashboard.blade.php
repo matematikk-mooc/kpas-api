@@ -10,13 +10,43 @@
         $courseModules = $canvasRepository->getCourseModules($course_id);
     @endphp
 
-    <admin-dashboard-view :settings="{{ json_encode($settings) }}"
+    <button id="dashboard-view-switch" type="button" class="btn btn-primary" style="float: right;" onclick="toggleStatistics()">
+        Helsesjekk
+    </button>
+
+    <admin-dashboard-view id="udir-view" :settings="{{ json_encode($settings) }}"
                  :likert5ops="{{ json_encode($likertScale5ptOptions) }}"
                  :coursemodules="{{ json_encode($courseModules) }}" >
     </admin-dashboard-view>
 
+    <health-monitor-view style="display: none" id="health-view"></health-monitor-view>
+
 @endsection
 
 @section('scripts')
-    <script>window.cookie = '{{ session()->getId() }}';</script>
+    <script>
+        window.cookie = '{{ session()->getId() }}';
+        var health_view = false;
+        function toggleStatistics() {
+            health_view? health_view = false : health_view = true;
+            toggleViews(health_view);
+            updateButtonText(health_view);
+         }
+        function toggleViews(health_view) {
+            var adminDashboardView = document.querySelector('#udir-view');
+            var healthCheckView = document.querySelector('#health-view');
+
+            if (health_view) {
+                adminDashboardView.setAttribute('style', 'display: none');
+                healthCheckView.setAttribute('style', 'display: block');
+            } else {
+                adminDashboardView.setAttribute('style', 'display: block');
+                healthCheckView.setAttribute('style', 'display: none');
+            }
+        }
+        function updateButtonText(health_view) {
+            var button = document.querySelector('#dashboard-view-switch');
+            button.textContent = health_view ? 'Udir Dashboard' : 'Helsesjekk';
+        }
+    </script>
 @endsection
