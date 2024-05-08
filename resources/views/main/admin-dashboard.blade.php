@@ -10,7 +10,7 @@
         $courseModules = $canvasRepository->getCourseModules($course_id);
     @endphp
 
-    <button id="dashboard-view-switch" type="button" class="btn btn-primary" style="float: right;" onclick="toggleStatistics()">
+    <button id="dashboard-view-switch" type="button" class="btn btn-primary" style="float: right;" onclick="toggle()">
         Helsesjekk
     </button>
 
@@ -27,7 +27,7 @@
     <script>
         window.cookie = '{{ session()->getId() }}';
         var health_view = false;
-        function toggleStatistics() {
+        function toggle() {
             health_view? health_view = false : health_view = true;
             toggleViews(health_view);
             updateButtonText(health_view);
