@@ -12,7 +12,7 @@
 
 
     <h1 class="title">{{view_module.title_internal}}</h1>
-    <h3>Resultater fra gruppe: {{ current_group_name }}</h3>
+    <h3>Resultater fra {{ current_group_type }}: {{ current_group_name }}</h3>
 
     <section class="grouped" >
       <grouped-bar-chart id="view_module.course_id" :data="view_module.questions.slice(0,3)" :likert5ops="this.likert5ops"></grouped-bar-chart>
@@ -63,6 +63,7 @@ export default {
       groupsLoaded: false,
       course_id: null,
       current_group_name: null,
+      current_group_type: "gruppe",
       groupMember: false,
       groupTooSmall: false,
     };
@@ -156,45 +157,63 @@ export default {
       let orgNr = group.description.split(":").at(-1)
       if(orgNr == "999999999"){
         return true;
+      }else if(type == "municipality") {
+        return false;
       }
+
       let apiResult;
       if(type == "school"){
         let url = "/school/orgnr/" + orgNr;
         apiResult = await api.get(url, {
           params: { cookie: window.cookie }
         });
-      }
-      else if(type == "kindergarten"){
+      }else if(type == "kindergarten"){
         let url = "/kindergarten/orgnr/" + orgNr;
         apiResult = await api.get(url, {
           params: { cookie: window.cookie }
         });
       }
+
       if(apiResult.data.result.AnsatteTil <= 5){
         return true;
       }
+
       return false;
     },
     async getSurveyData() {
       try {
         console.log(this.userGroups)
         let groupId = "";
+        let groupDescription = "";
         let groupTooSmall = false;
+        
         if(Object.hasOwn(this.userGroups, 'Skole')){
           groupId = this.userGroups.Skole.id
+          groupDescription = this.userGroups.Skole.description
           this.current_group_name = this.userGroups.Skole.name
+          this.current_group_type = !this.current_group_name.toLowerCase().includes("skole") ? "skole" : "gruppe"
           this.groupMember = true
           groupTooSmall = await this.isGroupTooSmall(this.userGroups.Skole, "school")
 
         } else if(Object.hasOwn(this.userGroups, 'Barnehage')){
           groupId = this.userGroups.Barnehage.id
+          groupDescription = this.userGroups.Skole.description
           this.current_group_name = this.userGroups.Barnehage.name
+          this.current_group_type = !this.current_group_name.toLowerCase().includes("barnehage") ? "barnehage" : "gruppe"
           this.groupMember = true
           groupTooSmall = await this.isGroupTooSmall(this.userGroups.Barnehage, "kindergarten")
-
         }else {
           this.groupMember = false;
           return;
+        }
+
+        let orgNr = groupDescription.split(":").at(-1)
+        if(orgNr == "999999999" && Object.hasOwn(this.userGroups, 'Kommune')){
+          groupId = this.userGroups.Kommune.id
+          this.current_group_name = this.userGroups.Kommune.name
+          this.current_group_type = !this.current_group_name.toLowerCase().includes("kommune") ? "kommune" : "gruppe"
+          this.groupMember = true
+          groupTooSmall = await this.isGroupTooSmall(this.userGroups.Kommune, "municipality")
         }
 
         if(groupTooSmall){
@@ -209,8 +228,7 @@ export default {
         this.survey_data = apiResult.data.result;
         this.modules = this.survey_data.map(survey => survey.title_internal)
         this.updateModule(this.modules[0]);
-      } catch(e)
-      {
+      } catch(e) {
         console.log("Could not get survey data.", e);
       }
     },
