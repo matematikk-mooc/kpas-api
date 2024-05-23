@@ -59,14 +59,17 @@ class DataNsrService
 
     public function getCounties(): array
     {
-        $fylker = $this->request($this->nxrDomain, 'api/legacy/fylker');
+        $today = date("Y-m-d");
+        $fylker = $this->request($this->nxrDomain, 'api/v2/fylkedata?datotid='.$today);
+
         logger(print_r($fylker,true));
         return $fylker;
     }
 
     public function getCommunities(): array
     {
-        return $this->request($this->nxrDomain, 'api/legacy/kommuner');
+        $today = date("Y-m-d");
+        return $this->request($this->nxrDomain, 'api/v2/kommunedata?datotid='.$today);
     }
 
     public function getSchools(): array
@@ -143,16 +146,22 @@ class DataNsrService
         $model = new Fylke();
 
         $model->createAnnetFylke();
-
+        $county_keys = $model->getFillable();
         $counties = $this->getCounties();
         foreach ($counties as $value) {
             $county = (array)$value;
             try {
-                if (!isset($county['OrgNr']) || !isset($county['OrgNrFylkesmann'])) {
+                if (!isset($county['FylkeskommuneOrganisasjonsnummer']) || !isset($county['StatsforvalterOrganisasjonsnummer'])) {
                     #This county is no longer active
                     continue;
                 }
-                $model->updateFylke($county);
+                #Nxr uses different field names, map them to our database column names
+                $county['OrgNr'] = $county['FylkeskommuneOrganisasjonsnummer'];
+                $county['OrgNrFylkesmann'] = $county['StatsforvalterOrganisasjonsnummer'];
+                $county['Fylkesnr'] = $county['Fylkesnummer'];
+                $county['Navn'] = $county['Fylkesnavn'];
+                $filter_fields = filter_institution_fields($county, $county_keys);
+                $model->updateFylke($filter_fields);
             } catch (\Throwable $e) {
                 logger($e);
             }
@@ -172,10 +181,16 @@ class DataNsrService
         foreach ($communities as $value) {
             $community = (array)$value;
             try {
-                if (!isset($community['OrgNr'])) {
+                if (!isset($community['KommuneOrganisasjonsnummer'])) {
                     #This community is no longer active
                     continue;
                 }
+                #Nxr uses different field names, map them to our database column names
+                $community['OrgNr'] = $community['KommuneOrganisasjonsnummer'];
+                $community['Kommunenr'] = $community['Kommunenummer'];
+                $community['Navn'] = $community['Kommunenavn'];
+                $community['Fylkesnr'] = $community['Fylkesnummer'];
+                $community['ErNedlagt'] = isset($community['ArvtakerKommuneDataIdListe']);
                 $filter_fields = filter_institution_fields($community, $community_keys);
                 $model->updateKommune($filter_fields);
             } catch (\Throwable $e) {
