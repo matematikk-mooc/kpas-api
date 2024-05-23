@@ -226,36 +226,57 @@
       async chosenCounty(county) {
         delete this.selectedgroups.community;
         delete this.selectedgroups.institution;
-        this.selectedgroups.county = this.getCountyGroup();
 
         this.communities = [];
         this.schools = [];
         this.kindergartens = [];
 
-        this.assignToGroups();
-
-        await this.getCommunities(county.Fylkesnr);
         this.placeholderCommunity = 'Kommune';
         this.placeholderSchool = 'Skole';
         this.placeholderKindergarten = 'Barnehage';
 
+        if (county == null) {
+          this.selectedgroups = {};
+          this.placeholderCounty = 'Fylke';
+        } else {
+          this.selectedgroups.county = this.getCountyGroup();
+          this.assignToGroups();
+          await this.getCommunities(county.Fylkesnr);
+        }
       },
       async chosenCommunity(community) {
         delete this.selectedgroups.institution;
-        this.selectedgroups.community = this.getCommunityGroup();
-        this.assignToGroups();
 
-        if (this.institutionType === "school") {
-          this.schools = [];
-          await this.getSchools(community.Kommunenr);
-        } else if (this.institutionType === "kindergarten") {
-          this.kindergartens = [];
-          await this.getKindergartens(community.Kommunenr);
+        this.schools = [];
+        this.kindergartens = [];
+        this.placeholderSchool = 'Skole';
+        this.placeholderKindergarten = 'Barnehage';
+
+
+        if (community == null) {
+          delete this.selectedgroups.community;
+          this.placeholderCommunity = 'Kommune';
+        } else {
+          this.selectedgroups.community = this.getCommunityGroup();
+          this.assignToGroups();
+
+          if (this.institutionType === "school") {
+            await this.getSchools(community.Kommunenr);
+          } else if (this.institutionType === "kindergarten") {
+            await this.getKindergartens(community.Kommunenr);
+          }
         }
       },
       async chosenInstitution(institution) {
-        this.selectedgroups.institution = this.getInstitutionGroup();
-        this.assignToGroups();
+        if (institution == null) {
+          delete this.selectedgroups.institution;
+
+          this.placeholderSchool = 'Skole';
+          this.placeholderKindergarten = 'Barnehage';
+        } else {
+          this.selectedgroups.institution = this.getInstitutionGroup();
+          this.assignToGroups();
+        }
       }
     }
   }
