@@ -85,16 +85,45 @@ class DataNsrService
         $counties = Fylke::where("nedlagt", false)->pluck("Fylkesnr")->toArray();
 
         $enheter = [];
-        foreach($counties as $county) {
-            $enheter_in_fylke = $this->request($domain, "v3/enheter/fylke/$county");
+        foreach ($counties as $county) {
+            //Skip the "Annet" county
+            if ($county == '99') {
+                continue;
+            }
+            $requestBody = [
+                "Fylkenr" => $county,
+                "InkluderNedlagte" => false,
+                "InkluderAktive" => true,
+                "InkluderSkoler" => true,
+                "InkluderBarnehager" => true,
+                "InkluderEiere" => false,
+                "InkluderAndreEnheter" => false,
+            ];
+
+            $enheter_in_fylke = $this->postRequest($domain, "v3/enheter/sok", $requestBody);
             $enheter = array_merge($enheter, $enheter_in_fylke);
         }
         return $enheter;
     }
 
+    private function postRequest(string $domain, string $endpoint, array $body): array
+    {
+        $fullUrl = $domain . $endpoint;
+        try {
+            $response = $this->guzzleClient->post($fullUrl, [
+                'json' => $body,
+                'verify' => false,
+            ]);
+            $responseBody = $response->getBody()->getContents();
+            return json_decode($responseBody, true);
+        } catch (\Throwable $e) {
+            logger($e);
+            return [];
+        }
+    }
+
     private function request(string $domain, string $url)
     {
-        logger($url);
         $fullUrl = $domain . $url;
         try {
             $response = $this->guzzleClient->request("GET", $fullUrl, [
@@ -177,18 +206,17 @@ class DataNsrService
         $org = $this->getSchools();
 
         $i = 0;
-        foreach ($org as $value) {
-            if ($value->ErSkole && $value->ErAktiv &&
-                ($value->ErSkoleeier ||
-                $value->ErGrunnskole ||
-                $value->ErPrivatskole ||
-                $value->ErOffentligSkole))
+        foreach ($org as $school) {
+            if ($school['ErSkole'] && $school['ErAktiv'] &&
+                ($school['ErSkoleeier'] ||
+                $school['ErGrunnskole'] ||
+                $school['ErPrivatskole'] ||
+                $school['ErOffentligSkole']))
             {
                 $i++;
                 if(!($i % 1000)) {
                     logger("store_schools processed " . $i);
                 }
-                $school = (array) $value;
                 try {
                     $school['NSRId'] = $school['Orgnr'];
                     $school['OrgNr'] = $school['Orgnr'];
@@ -202,7 +230,7 @@ class DataNsrService
 
                     $model->updateSkole($filter_fields);
                 } catch (\Throwable $e) {
-                    logger("Failure when processing school:" . print_r($value, true));
+                    logger("Failure when processing school:" . print_r($school, true));
                     logger($e);
                 }
             }
@@ -220,12 +248,11 @@ class DataNsrService
         $org = $this->getKindergartens();
 
         $i = 0;
-        foreach ($org as $value) {
+        foreach ($org as $kindergarten) {
             $i++;
             if(!($i % 1000)) {
                 logger("store_kindergartens processed " . $i);
             }
-            $kindergarten = (array) $value;
             if (!$kindergarten['ErAktiv']){
                 continue;
             }
@@ -241,7 +268,7 @@ class DataNsrService
                 $filter_fields = filter_institution_fields($kindergarten, $kindergartens_keys);
                 $model->updateBarnehage($filter_fields);
             } catch (\Throwable $e) {
-                logger("Failure when processing kindergarten:" . print_r($value, true));
+                logger("Failure when processing kindergarten:" . print_r($kindergarten, true));
                 logger($e);
             }
         }
