@@ -29,13 +29,14 @@ class Skole extends Model
     public function createAnnenSkole()
     {
         $annenNsrId = '99';
-        $key[$this->getKeyName()] = $annenNsrId;
+        $annenOrgNr = '999999999';
+        $key[$this->getKeyName()] = $annenOrgNr;
         Skole::updateOrCreate($key,
         [
             'Kommunenr' => Kommune::$annetKommuneNr,
             'Navn' => Skole::$annetSkoleNavn,
             'FulltNavn' => Skole::$annetSkoleNavn,
-            'OrgNr' => '999999999',
+            'OrgNr' => $annenOrgNr,
             'NSRId' => $annenNsrId,
             'ErSkole' => true,
             'ErSkoleEier' => false,

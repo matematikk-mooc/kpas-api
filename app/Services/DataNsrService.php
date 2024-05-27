@@ -8,8 +8,6 @@ use App\Models\Kommune;
 use App\Models\Skole;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Arr;
 
 function filter_institution_fields($data, $school_keys)
 {
@@ -186,7 +184,6 @@ class DataNsrService
                 $value->ErPrivatskole ||
                 $value->ErOffentligSkole))
             {
-                logger($value->Navn . " " . $value->ErAktiv);
                 $i++;
                 if(!($i % 1000)) {
                     logger("store_schools processed " . $i);
