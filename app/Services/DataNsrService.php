@@ -84,45 +84,14 @@ class DataNsrService
 
     private function getEnheter(string $domain): array
     {
-        // Get all enheter
-        $enheter = $this->request($domain, 'enheter');
-        $idToEnhet = array();
-        $fylkesnummer = array();
+        $counties = Fylke::where("nedlagt", false)->pluck("Fylkesnr")->toArray();
 
-        // Make an assosiative array of NSR id to enhet
-        // and find all fylkesnummers in use
-        foreach ($enheter as $enhet) {
-            $idToEnhet[$enhet->NSRId] = $enhet;
-            $fylkesnummer[$enhet->FylkeNr] = true;
+        $enheter = [];
+        foreach($counties as $county) {
+            $enheter_in_fylke = $this->request($domain, "v3/enheter/fylke/$county");
+            $enheter = array_merge($enheter, $enheter_in_fylke);
         }
-
-        // For each distinct fylkesnummer, fetch enheter again to also get longitude and latitude
-        $i = 0;
-        foreach ($fylkesnummer as $id => $ignore) {
-            if (!is_numeric($id)) {
-                logger("Invalid county number:" .$id);
-                continue;
-            }
-
-            // Add lengde and breddegrad from fylke-call to enhet
-            $inFylke = $this->request($domain, "enheter/fylke/$id");
-            foreach ($inFylke as $enhetInFylke) {
-                $i++;
-                if(!($i % 1000)) {
-                    logger("GetEnheter processed " . $i);
-                }
-
-                if (!isset($idToEnhet[$enhetInFylke->NSRId])) {
-                    continue;
-                }
-
-                $enhet = $idToEnhet[$enhetInFylke->NSRId];
-                $enhet->{'Lengdegrad'} = $enhetInFylke->Lengdegrad ?? '';
-                $enhet->{'Breddegrad'} = $enhetInFylke->Breddegrad ?? '';
-            }
-        }
-
-        return $idToEnhet;
+        return $enheter;
     }
 
     private function request(string $domain, string $url)
@@ -211,20 +180,29 @@ class DataNsrService
 
         $i = 0;
         foreach ($org as $value) {
-            if ($value->ErSkole ||
-                $value->ErSkoleEier ||
-                $value->ErGrunnSkole ||
-                $value->ErPrivatSkole ||
-                $value->ErOffentligSkole)
+            if ($value->ErSkole && $value->ErAktiv &&
+                ($value->ErSkoleeier ||
+                $value->ErGrunnskole ||
+                $value->ErPrivatskole ||
+                $value->ErOffentligSkole))
             {
+                logger($value->Navn . " " . $value->ErAktiv);
                 $i++;
                 if(!($i % 1000)) {
                     logger("store_schools processed " . $i);
                 }
                 $school = (array) $value;
-                Arr::set($school, 'Kommunenr', $value->KommuneNr);
                 try {
+                    $school['NSRId'] = $school['Orgnr'];
+                    $school['OrgNr'] = $school['Orgnr'];
+                    $school['FylkeNr'] = $school['Fylkesnr'];
+                    $school['FulltNavn'] = $school['Navn'];
+                    $school['ErSkoleEier'] = $school['ErSkoleeier'];
+                    $school['ErGrunnSkole'] = $school['ErGrunnskole'];
+                    $school['ErPrivatSkole'] = $school['ErPrivatskole'];
+
                     $filter_fields = filter_institution_fields($school, $school_keys);
+
                     $model->updateSkole($filter_fields);
                 } catch (\Throwable $e) {
                     logger("Failure when processing school:" . print_r($value, true));
@@ -251,7 +229,18 @@ class DataNsrService
                 logger("store_kindergartens processed " . $i);
             }
             $kindergarten = (array) $value;
+            if (!$kindergarten['ErAktiv']){
+                continue;
+            }
             try {
+                $kindergarten['NSRId'] = $kindergarten['Orgnr'];
+                $kindergarten['OrgNr'] = $kindergarten['Orgnr'];
+                $kindergarten['FylkeNr'] = $kindergarten['Fylkesnr'];
+                $kindergarten['KommuneNr'] = $kindergarten['Kommunenr'];
+                $kindergarten['FulltNavn'] = $kindergarten['Navn'];
+                $kindergarten['ErBarnehageEier'] = $kindergarten['ErBarnehageeier'];
+
+
                 $filter_fields = filter_institution_fields($kindergarten, $kindergartens_keys);
                 $model->updateBarnehage($filter_fields);
             } catch (\Throwable $e) {

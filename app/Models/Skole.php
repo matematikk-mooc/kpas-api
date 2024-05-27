@@ -9,7 +9,7 @@ class Skole extends Model
 {
     public static $annetSkoleNavn = "Annen";
     public $incrementing = false;
-    protected $primaryKey = 'NSRId';
+    protected $primaryKey = 'OrgNr';
     protected $fillable = [
         'Kommunenr',
         'Navn',
