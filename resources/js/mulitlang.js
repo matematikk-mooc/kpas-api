@@ -26,4 +26,3 @@ export function extractLabelForSelectedLanguage(label, param) {
     // If there's no language codes or matches, return the label as is.
     return label;
   }
-  
