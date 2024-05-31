@@ -15,9 +15,9 @@
 
       <v-select
       class="selector"
-      :disabled="!coursemodules.length"
+      :disabled="!modules.length"
       label="name"
-      :options="coursemodules"
+      :options="modules"
       :clearable="true"
       placeholder="Velg modul"
       @update:modelValue="updateModule"
@@ -31,14 +31,14 @@
         placeholder="Velg survey"
         @update:modelValue="updateSurvey"
         ></v-select>
-
     </section>
+
     <h2 v-if="completed_count_item.length && current_module" class="title">Markert som fullført </h2>
     <section class="completed-section" v-if="modules_statistics_per_date">
       <line-chart :data="modules_statistics_per_date"></line-chart>
     </section>
     <section class="completed-section" v-if="completed_count_item.length && current_module" >
-      <horizontal-bar-chart class="completed" :data="completed_count_item"> </horizontal-bar-chart>
+      <horizontal-bar-chart class="completed" :data="completed_count_item" :lang="selectedLang" :multilang="multilang"> </horizontal-bar-chart>
     </section>
 
     <h2 v-if="view_survey" class="title">{{view_survey.title_internal}}</h2>
@@ -80,6 +80,7 @@
   import api from "../api";
   import DashboardGroupSelect from "../components/DashboardGroupSelect";
   import "vue-select/dist/vue-select.css";
+  import { extractLabelForSelectedLanguage } from "../mulitlang";
 
   export default {
     name: "AdminDashboardView",
@@ -106,6 +107,9 @@
         current_module: null,
         connectedToParent: false,
         allowed: false,
+        multilang: false,
+        selectedLang: null,
+        modules: [],
       }
     },
     methods: {
@@ -128,6 +132,9 @@
       },
       getBgColor() {
         this.postMessageToParent('kpas-lti.getBgColor');
+      },
+      getCurrentLang() {
+        this.postMessageToParent('kpas-lti.getcurrentlang');
       },
       connectToParent() {
         if(this.connectedToParent === true) {
@@ -165,6 +172,14 @@
           this.categories = response.data.result;
         } catch(e){
           console.error("Could not get group categories.", e)
+        }
+      },
+      async filterModuletitles(){
+
+        if(this.multilang){
+          this.modules.forEach(e => {
+            e.name = extractLabelForSelectedLanguage(e.name, this.selectedLang)
+          })
         }
       },
       async updateGroupId(value) {
@@ -208,6 +223,12 @@
             params: { cookie: window.cookie }
           });
           this.survey_data = apiResult.data.result;
+
+          if(this.multilang){
+            this.survey_data.forEach(e => {
+              e.title_internal = extractLabelForSelectedLanguage(e.title_internal, this.selectedLang)
+            })
+          }
           if(this.current_module) {
             this.view_survey = this.survey_data.filter(e => e.module_id == this.current_module)[0]
           }
@@ -278,6 +299,7 @@
     },
 
     async created() {
+      this.modules = this.coursemodules;
       const allowedRoles = ['Admin', 'Udirforvalter', 'Udir-forvalter']
       this.allowed = allowedRoles.some(
         (element) => this.settings.custom_canvas_roles.includes(element)
@@ -297,8 +319,13 @@
             document.body.style.backgroundColor = msg.bgColor;
           } else if(msg.subject == "kpas-lti.ltiparentready") {
             console.log("parent ready")
+            self.getCurrentLang();
             self.connectedToParent = true;
             self.getBgColor();
+          }
+          else if(msg.subject == "kpas-lti.lang") {
+            self.selectedLang = msg.lang;
+            self.multilang = msg.isMultiLang;
           }
         } catch(e) {
           //This message is not for us.
@@ -309,6 +336,8 @@
       await this.getStudentCount();
       await this.getModulesStatistics();
       await this.getSurveyData();
+      await this.filterModuletitles();
+
       this.ready = true;
     },
   };
