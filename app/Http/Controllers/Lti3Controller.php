@@ -72,6 +72,7 @@ class Lti3Controller extends Controller
         $adminDashboardMode = config('constants.options.ADMIN_DASHBOARD_MODE');
         $kpasMode = $request->query("kpasMode", $roleMode);
         $courseSettingsMode = config('constants.options.COURSE_SETTINGS_MODE');
+
         if ($launch->is_resource_launch()) {
             logger('Resource Launch!');
         } else if ($launch->is_deep_link_launch()) {
@@ -109,7 +110,8 @@ class Lti3Controller extends Controller
             $kpasUserView = (string)$settings['kpas_user_view'];
         }
 
-        if ($kpasUserView != 'user_management') {
+        $isCourseView = $kpasUserView != 'user_management' && $kpasUserView != 'user_deletion';
+        if ($isCourseView) {
             $settings["canvas_course_id"] = (string)$settings['canvas_course_id'];
             try {
                 $settings = $this->get_categories($settings);
@@ -170,7 +172,11 @@ class Lti3Controller extends Controller
         if ($kpasUserView == 'user_management') {
             logger("Display user management view.");
             return view('usermerge.index');
+        } else if ($kpasUserView == 'user_deletion') {
+            logger("Display user deletion view.");
+            return view('userdeletion.index');
         }
+
         return view('lti.index');
     }
 

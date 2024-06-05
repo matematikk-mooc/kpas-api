@@ -1,7 +1,7 @@
 <?php
 
-# get schools api
 use App\Http\Controllers\MergeUserController;
+use App\Http\Controllers\UserDeletionController;
 
 Route::post('institution', 'Lti3Controller@institution')->middleware('lti');
 
@@ -86,6 +86,14 @@ Route::prefix('user')->group(function () {
         Route::get('/token', [MergeUserController::class, 'createToken'])->middleware('lti');
         Route::get('/intersection', [MergeUserController::class, 'getCourseIntersection'])->middleware('lti');
         Route::get('/perform', [MergeUserController::class, 'mergeUser'])->middleware('lti');
+    });
+
+    Route::prefix('delete')->group(function () {
+        Route::get('/token', [UserDeletionController::class, 'getToken'])->middleware('lti');
+        Route::post('/token', [UserDeletionController::class, 'createToken'])->middleware('lti');
+
+        Route::put('/verify', [UserDeletionController::class, 'verifyToken'])->middleware('lti');
+        Route::put('/cancel', [UserDeletionController::class, 'cancelToken'])->middleware('lti');
     });
 });
 

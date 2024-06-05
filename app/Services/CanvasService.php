@@ -427,6 +427,19 @@ class CanvasService
         return $this->request($url, 'PUT');
     }
 
+    public function deleteUser(int $userId)
+    {
+        $accountId = config('canvas.account_id');
+        $url = "accounts/{$accountId}/users/{$userId}";
+        return $this->request($url, 'DELETE');
+    }
+
+    public function getUser(int $userId)
+    {
+        $url = "users/{$userId}";
+        return $this->request($url, 'GET');
+    }
+
     public function removeUserFromGroup(int $groupId, int $userId)
     {
         return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
