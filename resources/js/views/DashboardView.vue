@@ -45,6 +45,7 @@
 
 <script>
 import api from "../api";
+import { extractLabelForSelectedLanguage } from "../mulitlang";
 export default {
   name: "DashboardView",
   data() {
@@ -66,6 +67,8 @@ export default {
       current_group_type: "gruppe",
       groupMember: false,
       groupTooSmall: false,
+      multilang: false,
+      selectedLang: null,
     };
   },
   props: {
@@ -102,7 +105,9 @@ export default {
       this.postMessageToParent('kpas-lti.connect');
       window.setTimeout(this.connectToParent, 500);
     },
-
+    getCurrentLanguage() {
+      this.postMessageToParent('kpas-lti.getcurrentlang');
+    },
     updateModule(value){
 
       if(value == null){
@@ -226,6 +231,11 @@ export default {
           params: { cookie: window.cookie }
         });
         this.survey_data = apiResult.data.result;
+        if(this.multilang){
+          this.survey_data.forEach(e => {
+            e.title_internal = extractLabelForSelectedLanguage(e.title_internal, this.selectedLang)
+          })
+        }
         this.modules = this.survey_data.map(survey => survey.title_internal)
         this.updateModule(this.modules[0]);
       } catch(e) {
@@ -237,6 +247,7 @@ export default {
     let self = this;
     self.course_id = self.settings.custom_canvas_course_id
     await self.getGroupCategories()
+    self.getCurrentLanguage();
     const mql = window.matchMedia('(max-width: 500px)');
     mql.onchange = (e) => {
       self.iframeresize();
@@ -256,6 +267,10 @@ export default {
         }else if(msg.subject == "kpas-lti.usergroups") {
           self.usersGroups = msg.groups;
           self.groupsLoaded = true;
+        }
+        else if(msg.subject == "kpas-lti.lang") {
+          self.multilang = msg.isMultiLang;
+          self.selectedLang = msg.lang;
         }
       } catch(e) {
         //This message is not for us.
