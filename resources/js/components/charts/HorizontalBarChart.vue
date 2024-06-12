@@ -4,11 +4,14 @@
 
 <script>
 import * as d3 from "d3";
+import { extractLabelForSelectedLanguage } from "../../mulitlang";
 
 export default{
 	name: 'HorizontalBarChart',
 	props: {
-		data: Array
+		data: Array,
+		multilang: Boolean,
+		lang: String
 	},
 
 	mounted() {
@@ -22,6 +25,7 @@ export default{
 	},
 	methods: {
 		drawDiagram() {
+			let self = this;
 			let diagramData = this.data;
 
 			const MAX_X = 1;
@@ -166,7 +170,7 @@ export default{
 			tr.append("td").attr("class", "data name")
 			.attr("width", column1width)
 			.text(function (d) {
-				return d.title;
+				return self.multilang? extractLabelForSelectedLanguage(d.title, self.lang) : d.title;
 			});
 
 			// Create the percent value column
