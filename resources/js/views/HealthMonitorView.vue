@@ -1,60 +1,99 @@
 <template>
     <div>
-        <button @click="miniUUCheck()">Kjør mini-UUCheck</button>
-        <div v-if="didRun && content">
-            <h3>UUCheck resultater</h3>
-            <p>Antall feil: {{ errorCount }}</p>
-            <p>Antall advarsler: {{ warningCount }}</p>
-            <div v-for="item in this.content">
-                <h3>{{ item.itemName }}</h3>
-                <div v-for="error in item.errors">
-                    <p>{{ error.message }}: {{ error.description }} </p>
-                </div>
-                <div v-for="warning in item.warnings">
-                    <p>{{ warning.message }}: {{ warning.description }}</p>
-                </div>
+        <div class="health-cards">
+            <div class="health-cards-overview health-cards-item health-cards-box">
+                <HealthCard
+                    className="--overview"
+                    title="Helsesjekk"
+                    :notSupported="true"
+                />
             </div>
-        </div>
-        <div v-else-if="didRun && !content">
-            <p>Fant ingen problemer under kjøring av UUCheck. Husk at denne testen ikke sjekker filer, og bare gjør en begrenset sjekk av sider.</p>
+
+            <div class="health-cards-uu health-cards-item health-cards-box">
+                <HealthCard
+                    className="--uu"
+                    title="UU-sjekk"
+                    :lastExecuted="uuState.lastRun"
+                    :isLoading="uuState.isLoading"
+                    :payload="uuState.payload"
+                    :handleRefresh="runUUCheck"
+                />
+            </div>
+
+            <div class="health-cards-other health-cards-box">
+                <HealthCard
+                    className="--links"
+                    title="Lenkesjekk"
+                    :notSupported="true"
+                />
+
+                <HealthCard
+                    className="--transcripts"
+                    title="Videotekstsjekk"
+                    :notSupported="true"
+                />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import UUCheck from '../uucheck.js';
+import HealthCard from "../components/HealthCard"
+
 export default {
     name: "HealthMonitorView",
     props: {
         moduleitems: Array,
         courseid: Number
     },
+    components: {
+        HealthCard
+    },
     data() {
         return {
-            courseID: 637,
-            content: null,
-            errorCount: 0,
-            warningCount: 0,
-            didRun: false
+            uuState: {
+                lastRun: "",
+                payload: null,
+                isLoading: false
+            }
         };
     },
     methods: {
-        async miniUUCheck() {
-            let result = await UUCheck(this.moduleitems, this.courseid);
-            if(result.length > 1) {
-                this.content = result.slice(0, -1);
-            }
-            if(result[result.length - 1].type == "summary") {
-                this.warningCount = result[result.length - 1].warnings
-                this.warningCount = result[result.length - 1].warnings
-                this.errorCount = result[result.length - 1].errors;
-            }
-            this.didRun = true;
-        },
+        async runUUCheck() {
+            console.log("UU_CHECK_RUN");
+            const now = new Date();
+            const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            this.uuState = { ...this.uuState, isLoading: true };
+
+            let payload = await UUCheck(this.moduleitems, this.courseid);
+            this.uuState = { ...this.uuState, isLoading: false, payload: payload, lastRun: nowFormatted };
+            console.log("UU_CHECK", this.uuState);
+        }
     }
 
-    }
+}
 </script>
 
 <style>
+.health-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    padding-top: 40px;
+    padding-bottom: 80px;
+    gap: 20px;
+}
+
+.health-cards-box {
+    display: flex;
+    flex: 1 1 300px;
+}
+
+.health-cards-other {
+    flex-direction: column;
+    row-gap: 20px;
+}
 </style>

@@ -32,6 +32,7 @@ class CanvasGraphQLService
                             content {
                                 ... on Page {
                                     _id
+                                    title
                                 }
                                 ... on Assignment {
                                     _id
