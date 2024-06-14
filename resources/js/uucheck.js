@@ -171,11 +171,15 @@ export const htmlValidation = {
             if (!table.querySelector('caption')) {
                 returnPayload.messages.push(utils.payloadMessage(messageTypes.error, elementTypes.table, validationMessages.table.caption));
                 returnPayload.messageTypes.error += 1;
+            } else {
+                returnPayload.messageTypes.success += 1;
             }
 
             if (!table.querySelector('th')) {
                 returnPayload.messages.push(utils.payloadMessage(messageTypes.error, elementTypes.table, validationMessages.table.title));
                 returnPayload.messageTypes.error += 1;
+            } else {
+                returnPayload.messageTypes.success += 1;
             }
         }
 
@@ -185,6 +189,8 @@ export const htmlValidation = {
         if (typeof content === 'string' && content.includes('style=')) {
             returnPayload.messages.push(utils.payloadMessage(messageTypes.warning, elementTypes.style, validationMessages.style.custom));
             returnPayload.messageTypes.warning += 1;
+        } else {
+            returnPayload.messageTypes.success += 1;
         }
 
         return returnPayload;

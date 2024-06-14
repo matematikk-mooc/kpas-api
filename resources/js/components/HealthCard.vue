@@ -36,8 +36,8 @@
                 </p>
             </div>
 
-            <div class="health-card-body-categories" v-if="hasMessagesCount">
-                <div class="health-card-body-categories-bar">
+            <div class="health-card-body-categories">
+                <div class="health-card-body-categories-bar" v-if="hasMessagesCount">
                     <span v-for="category in categories" :key="category.title"
                         :style="{ background: category.color, width: calculateWidth(category.count) + '%' }"></span>
                 </div>
@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="health-card-footer" v-if="hasData && hasMessagesCount">
+        <div class="health-card-footer" v-if="hasData && hasMessagesCount && totalMessagesCount != this.payload.messageTypes.success">
             <Button class="udir-link" @click="toggleDetails">
                 {{ showDetails ? "Skjul detaljer" : "Vis detaljer" }}
             </Button>
@@ -96,7 +96,8 @@ export default {
     data() {
         return {
             isRefreshing: false,
-            showDetails: false
+            showDetails: false,
+            messageTypesMeta: messageTypes
         }
     },
     computed: {
