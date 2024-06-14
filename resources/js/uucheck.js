@@ -226,91 +226,34 @@ export const contentTypeChecks = {
 }
 
 export const messageTypes = {
-    error: {
-        _color: "#e31b0c",
-        _key: "error",
-        nb: "Feil"
-    },
-
-    contrast: {
-        _color: "#f88078",
-        _key: "contrast",
-        nb: "Kontrastfeil"
-    },
-
-    warning: {
-        _color: "#ff9800",
-        _key: "warning",
-        nb: "Advarsler"
-    },
-
-    note: {
-        _color: "#e0e0e0",
-        _key: "note",
-        nb: "Merknader"
-    },
-
-    success: {
-        _color: "#3b873e",
-        _key: "success",
-        nb: "Bra!"
-    },
+    error: { _color: "#e31b0c", _key: "error", nb: "Feil" },
+    contrast: { _color: "#f88078", _key: "contrast", nb: "Kontrastfeil" },
+    warning: { _color: "#ff9800", _key: "warning", nb: "Advarsler" },
+    note: { _color: "#e0e0e0", _key: "note", nb: "Merknader" },
+    success: { _color: "#3b873e", _key: "success", nb: "Bra!" },
 };
 
 export const elementTypes = {
-    heading: {
-        _key: "heading",
-        nb: "Overskrift"
-    },
-    image: {
-        _key: "image",
-        nb: "Bilde"
-    },
-    table: {
-        _key: "table",
-        nb: "Tabell"
-    },
-    style: {
-        _key: "style",
-        nb: "Stil"
-    }
+    heading: { _key: "heading", nb: "Overskrift" },
+    image: { _key: "image", nb: "Bilde" },
+    table: { _key: "table", nb: "Tabell" },
+    style: { _key: "style", nb: "Stil" }
 };
 
 export const validationMessages = {
     heading: {
-        order: {
-            _key: "message.heading.order",
-            nb: "Feil i hierarkiet."
-        }
+        order: { _key: "message.heading.order", nb: "Feil i hierarkiet." }
     },
     image: {
-        decorative: {
-            _key: "message.image.decorative",
-            nb: "Merket som dekorativt på den gamle ustandardiserte måten."
-        },
-        alt: {
-            _key: "message.image.alt",
-            nb: "Må markeres som dekorativt eller få alternativ tekst som ikke er filnavnet."
-        },
-        altLong: {
-            _key: "message.image.altLong",
-            nb: "Alternativ tekst er lengre enn den anbefalte grensen på 120 tegn."
-        }
+        decorative: { _key: "message.image.decorative", nb: "Merket som dekorativt på den gamle ustandardiserte måten." },
+        alt: { _key: "message.image.alt", nb: "Må markeres som dekorativt eller få alternativ tekst som ikke er filnavnet." },
+        altLong: { _key: "message.image.altLong", nb: "Alternativ tekst er lengre enn den anbefalte grensen på 120 tegn." }
     },
     table: {
-        caption: {
-            _key: "message.table.caption",
-            nb: "Mangler overskrift."
-        },
-        title: {
-            _key: "message.table.title",
-            nb: "Mangler titler på rader og/eller kolonner."
-        }
+        caption: { _key: "message.table.caption", nb: "Mangler overskrift." },
+        title: { _key: "message.table.title", nb: "Mangler titler på rader og/eller kolonner." }
     },
     style: {
-        custom: {
-            _key: "message.style.custom",
-            nb: "Sjekk om det brukes for å lage overskrift, ødelegger kontrast eller fører til andre problemer."
-        }
+        custom: { _key: "message.style.custom", nb: "Sjekk om det brukes for å lage overskrift, ødelegger kontrast eller fører til andre problemer." }
     }
 };
