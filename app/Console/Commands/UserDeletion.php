@@ -45,7 +45,7 @@ class UserDeletion extends Command
     public function handle()
     {
         $this->info("{$this->signature} - Starting...");
-        $confirmedDeleteTokens = UserDeletionToken::where("confirmed_at", "<", Carbon::now()->subSeconds(self::DELETE_TIMEOUT_SECONDS))
+        $confirmedDeleteTokens = UserDeletionToken::where("confirmed_at", "<", Carbon::now("UTC")->subSeconds(self::DELETE_TIMEOUT_SECONDS))
             ->whereNull("canceled_at")
             ->whereNull("deleted_at")
             ->get();
@@ -58,7 +58,7 @@ class UserDeletion extends Command
         $this->info("{$this->signature} - List all users that are scheduled to be deleted:\n");
         $client = new Client();
         $canvasService = new CanvasService($client);
-        
+
         $usersToDelete = [];
         foreach ($confirmedDeleteTokens as $key => $confirmedDeleteTokensItem) {
             $tokenId = $confirmedDeleteTokensItem->id;
@@ -107,7 +107,7 @@ class UserDeletion extends Command
                 $this->info("  - Successfully deleted $userEmail from Canvas (CanvasID: {$userId})");
 
                 $activeToken = UserDeletionToken::where("id", $tokenId)->first();
-                $activeToken->deleted_at = Carbon::now();
+                $activeToken->deleted_at = Carbon::now("UTC");
                 $activeToken->save();
             } catch (\Throwable $th) {
                 $this->warn("  - Failed deleting {$userEmail} from Canvas (CanvasID: {$userId})\n    - {$th->getMessage()}");
