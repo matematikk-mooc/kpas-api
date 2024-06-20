@@ -319,9 +319,8 @@ class CanvasService
 
     public function getAllPublishedCourses()
     {
-        $accountId = config('canvas.account_id');
-        $url = "accounts/{$accountId}/courses";
-        return $this->request($url, 'GET', [], [], true);
+        $url = "/search/all_courses?open_enrollment_only=true&per_page=999";
+        return $this->request($url, 'GET', [], [], true, true);
     }
 
     public function getCourseModules($courseId)
@@ -432,13 +431,15 @@ class CanvasService
         return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
     }
 
-    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
+    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false, bool $skip_auth = false)
     {
         $fullUrl = "{$this->domain}/{$url}";
 
-        $headers = array_merge([
-            'Authorization' => 'Bearer ' . $this->accessKey,
-        ], $headers);
+        if ($skip_auth != true) {
+            $headers = array_merge([
+                'Authorization' => 'Bearer ' . $this->accessKey,
+            ], $headers);
+        }
 
         $isFinished = false;
 
