@@ -502,4 +502,22 @@ class CanvasService
             return $this->accountIsChildOf($udirCanvasParentAccountId, $parentAccountId);
         }
     }
+
+    public function getCourseData(int $courseId)
+    {
+        $url = "courses/{$courseId}";
+        return $this->request($url, 'GET');
+    }
+
+    public function getCoursePages(int $courseId)
+    {
+        $url = "courses/{$courseId}/pages?per_page=100";
+        return $this->request($url, 'GET');
+    }
+
+    public function getCoursePageContent(int $courseId, int $pageId)
+    {
+        $url = "courses/{$courseId}/pages/{$pageId}";
+        return $this->request($url, 'GET');
+    }
 }
