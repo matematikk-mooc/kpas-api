@@ -36,7 +36,7 @@
         <h4>Verify request</h4>
 
         <p>Something about the email and instructions on how to proceed. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-        
+
         <div class="user-verify-form-code">
           <label for="email-code">Tast inn kode:</label>
 
@@ -55,7 +55,7 @@
       <form class="user-cancel-form" @submit.prevent="submitCancelForm" v-if="!formLoading && showCancelForm">
         <h4>Quarantine request</h4>
 
-        <p>We have now recived a verified request to delete your user account at: <b>{{ formatDateToLocal(tokenPayload.createdAt) }}</b></p>
+        <p>We have now recived a verified request to delete your user account at: <b>{{ formatDateToLocal(tokenPayload.confirmedAt) }}</b></p>
         <p>You have the option to cancel this request by clicking the button below for at least 30 days, after this you user account will permanently be deleted and cannot be recoverd.</p>
 
         <button class="kpas-button" type="submit">Avbryt slett meg</button>
@@ -101,8 +101,15 @@ export default {
       this.showCancelForm = name == "cancel";
     },
     formatDateToLocal(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleString();
+      return new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Oslo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).format(new Date(dateString + 'Z'));
     },
     async getToken() {
         try {
@@ -145,7 +152,7 @@ export default {
         console.error(error);
       } finally {
         await this.getToken();
-      } 
+      }
     },
     async submitVerifyForm() {
       this.formLoading = true;
@@ -177,7 +184,7 @@ export default {
         console.error(error);
       } finally {
         await this.getToken();
-      } 
+      }
     }
   }
 };

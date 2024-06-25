@@ -15,25 +15,27 @@ use Illuminate\Http\Request;
 class UserDeletionController extends Controller {
     private const VERIFY_TIMEOUT_SECONDS = 60 * 30; // 1 minute * 30 = 30 minutes
 
-    public function getToken(Request $request) {
+    public function getToken() {
         $userId = Arr::get(session()->get("settings"), "custom_canvas_user_id");
 
         $activeToken = UserDeletionToken::where("canvas_user_id", $userId)
-            ->where(function ($query) {
-                $query->whereNull("confirmed_at")
-                    ->where("created_at", ">", Carbon::now("UTC")->subSeconds(self::VERIFY_TIMEOUT_SECONDS));
-            })
-            ->orWhere(function ($query) {
-                $query->whereNotNull("confirmed_at");
-            })
-            ->whereNull("deleted_at")
             ->whereNull("canceled_at")
+            ->where(function ($query) {
+                $query->where(function ($innerQuery) {
+                    $innerQuery->whereNull("confirmed_at")
+                        ->where("created_at", ">", Carbon::now("UTC")->subSeconds(self::VERIFY_TIMEOUT_SECONDS));
+                })
+                ->orWhere(function ($innerQuery) {
+                    $innerQuery->whereNotNull("confirmed_at");
+                });
+            })
             ->first();
         if (empty($activeToken)) return response()->json(["message" => "Fant ingen aktiv kode"], 404);
 
-        $localTimezone = $request->timezone ?? 'UTC';
-        $createdAtLocal = Carbon::parse($activeToken->created_at)->setTimezone($localTimezone);
-        $confirmedAtLocal = $activeToken->confirmed_at ? Carbon::parse($activeToken->confirmed_at)->setTimezone($localTimezone) : null;
+        $createdAtLocal = Carbon::parse($activeToken->created_at)->toDateTimeString();
+        $confirmedAtLocal = $activeToken->confirmed_at ? Carbon::parse($activeToken->confirmed_at)->toDateTimeString() : null;
+        $deletedAtLocal = $activeToken->deleted_at ? Carbon::parse($activeToken->deleted_at)->toDateTimeString() : null;
+        $canceledAtLocal = $activeToken->canceled_at ? Carbon::parse($activeToken->canceled_at)->toDateTimeString() : null;
 
         return response()->json([
             "message" => null,
@@ -41,20 +43,22 @@ class UserDeletionController extends Controller {
                 "id" => $activeToken->id,
                 "canvasId" => $activeToken->canvas_user_id,
                 "createdAt" => $createdAtLocal,
-                "confirmedAt" => $confirmedAtLocal
+                "confirmedAt" => $confirmedAtLocal,
+                "canceledAt" => $canceledAtLocal,
+                "deletedAt" => $deletedAtLocal
             ]
         ]);
     }
 
-    private function getActiveTokenId(Request $request) {
-        $activeToken = $this->getToken($request)->getOriginalContent();
+    private function getActiveTokenId() {
+        $activeToken = $this->getToken()->getOriginalContent();
         return isset($activeToken["payload"]) ? $activeToken["payload"]["id"] : null;
     }
 
-    public function createToken(Request $request) {
+    public function createToken() {
         $userId = Arr::get(session()->get("settings"), "custom_canvas_user_id");
 
-        $activeTokenId = $this->getActiveTokenId($request);
+        $activeTokenId = $this->getActiveTokenId();
         if ($activeTokenId != null) return response()->json(["message" => "Det finnes allerede en aktiv kode"], 409);
 
         $client = new Client();
@@ -89,7 +93,7 @@ class UserDeletionController extends Controller {
         $emailToken = $request->json("emailToken");
         if(empty($emailToken)) return response()->json(["message" => "Påkrevd verdi mangler: emailToken"], 400);
 
-        $activeTokenId = $this->getActiveTokenId($request);
+        $activeTokenId = $this->getActiveTokenId();
         if ($activeTokenId == null) return response()->json(["message" => "Fant ingen aktiv kode med ubekreftet status"], 404);
 
         $activeToken = UserDeletionToken::where("canvas_user_id", $userId)->where("id", $activeTokenId)->first();
@@ -105,10 +109,10 @@ class UserDeletionController extends Controller {
         return response()->json(["message" => null]);
     }
 
-    public function cancelToken(Request $request) {
+    public function cancelToken() {
         $userId = Arr::get(session()->get("settings"), "custom_canvas_user_id");
 
-        $activeTokenId = $this->getActiveTokenId($request);
+        $activeTokenId = $this->getActiveTokenId();
         if ($activeTokenId == null) return response()->json(["message" => "Fant ingen aktiv kode"], 404);
 
         $activeToken = UserDeletionToken::where("canvas_user_id", $userId)->where("id", $activeTokenId)->first();
