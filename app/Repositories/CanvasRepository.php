@@ -194,6 +194,14 @@ class CanvasRepository
         $user = $this->canvasService->mergeUsers($fromUserId, $toUserId);
     }
 
+    public function deleteUser(int $userId) {
+        $user = $this->canvasService->deleteUser($userId);
+    }
+
+    public function getUser(int $userId) {
+        $user = $this->canvasService->getUser($userId);
+    }
+
     public function removeUserFromGroups(int $userId, $groupsToRemove): void
     {
         if(!$groupsToRemove)

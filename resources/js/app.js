@@ -11,6 +11,7 @@ import HorizontalBarChart from "./components/charts/HorizontalBarChart";
 import KpasEmbedView from "./views/KpasEmbedView";
 import LineChart from "./components/charts/LineChart";
 import MergeUserView from "./views/MergeUserView";
+import UserDeletionView from "./views/UserDeletionView";
 import NoCookies from "./views/NoCookies.vue"
 import NoDiplomaView from "./views/NoDiplomaView";
 import OpenAnswer from "./components/OpenAnswer";
@@ -48,6 +49,7 @@ const app = createApp({});
 
 app.component('group-enroll-view', GroupEnrollView);
 app.component('merge-user-view', MergeUserView);
+app.component('user-deletion-view', UserDeletionView);
 app.component('diploma-view', DiplomaView);
 app.component('no-diploma-view', NoDiplomaView);
 app.component('kpas-embed-view', KpasEmbedView);
