@@ -72,11 +72,36 @@ class UserDeletionController extends Controller {
         $token = Token::generate(9);
         $hashedToken = password_hash($token, PASSWORD_BCRYPT, ["cost" => 12]);
 
+        $emailMessage = "Hei,
+
+Vi har mottatt forespørsel for sletting av kontoen din. For å fullføre denne prosessen, vennligst bruk koden nedenfor for å bekrefte slettingen. Hvis du ikke har startet denne prosessen eller tror det har skjedd en feil, vennligst kontakt med oss umiddelbart.
+
+Følg disse trinnene for å fullføre slettingen:
+    1. Gå tilbake til Kompetanseportalen.
+    2, Tast inn bekreftelseskoden.
+    3. Bekreft slettingen.
+
+Din bekreftelseskode: $token
+
+
+Etter at du har bekreftet slettingen med koden, vil kontoen din bli satt i en karanteneperiode på 30 dager. Hvis du ombestemmer deg i løpet av denne perioden, kan du logge inn igjen og trykke avbryt for å kansellere prosessen. Etter karanteneperioden vil all informasjon knyttet til kontoen din bli permanent slettet.
+
+Vennligst husk å laste ned dine kompetansebevis før du bekrefter slettingen, da disse ikke kan gjenopprettes etterpå.
+
+
+Vi setter pris på tiden du har brukt hos oss og håper å se deg igjen i fremtiden. Du kan alltid lage en ny profil dersom du skulle ønske det.
+
+Hvis du har noen spørsmål eller trenger hjelp, vennligst kontakt oss på kompetansesupport@udir.no.
+
+Med vennlig hilsen,
+Kompetanseportalen
+UDIR - DIT";
+
         logger("Sending token for user deletion to '$userEmail': $userId");
-        Mail::raw("Kode: $token", function ($message) use ($userEmail) {
+        Mail::raw($emailMessage, function ($message) use ($userEmail) {
             $message
                 ->to($userEmail)
-                ->subject("Kompetanseportalen - Slett Meg");
+                ->subject("Kompetanseportalen - Bekreftelse på sletting av konto");
         });
 
         UserDeletionToken::create([

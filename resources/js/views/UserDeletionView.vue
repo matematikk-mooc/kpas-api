@@ -3,17 +3,15 @@
     <h2>Slett Meg</h2>
 
     <div>
-      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+      <p>Ved å benytte slett meg funksjonen kan du permanent fjerne kontoen din fra Kompetanseportalen. Vennligst vær oppmerksom på at denne handlingen er permanent og at brukeren ikke kan gjenopprettes.   Vi setter pris på tiden du har brukt hos oss og håper å se deg igjen i fremtiden!</p>
 
       <div class="user-deletion-list">
-        <h3><b>You will permanently lose:</b></h3>
+        <h3><b>Når du sletter kontoen din, godtar du følgende vilkår:</b></h3>
 
         <ul>
-          <li>Your Profile</li>
-          <li>Access to courses</li>
-          <li>Saved progress</li>
-          <li>Diplomas</li>
-          <li>Etc...</li>
+          <li>Jeg forstår at ved å slette kontoen min, vil min profil, tilgang til kurs, lagret fremgang i kurs, og kompetansebevis bli permanent fjernet etter en karanteneperiode på 30 dager.</li>
+          <li>Jeg forstår at jeg kan angre meg og avbryte prossesen ved å logge inn igjen i løpet av karanteneperioden.</li>
+          <li>Jeg bekrefter at jeg har lastet ned alle mine kompetansebevis og annen viktig informasjon før jeg sletter kontoen, da disse ikke kan gjenopprettes etter sletting.</li>
         </ul>
       </div>
 
@@ -24,7 +22,7 @@
       <form class="user-delete-form" @submit.prevent="submitDeleteForm" v-if="!formLoading && showDeleteForm">
         <label class="user-delete-form-accept" for="accept-risk">
           <input id="accept-risk" type="checkbox" v-model="acceptedRisk" required>
-          <p>I understand my user will be permanently delete and there is no way to undo this action after 30 days.</p>
+          <p>Jeg godtar vilkårene for sletting av kontoen min</p>
         </label>
 
         <button class="kpas-button" type="submit" :disabled="!acceptedRisk">Send kode på epost</button>
@@ -33,18 +31,18 @@
       </form>
 
       <form class="user-verify-form" @submit.prevent="submitVerifyForm" v-if="!formLoading && showVerifyForm">
-        <h4>Verify request</h4>
+        <h4>Verifiser slettingen</h4>
 
-        <p>Something about the email and instructions on how to proceed. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+        <p>Du har nå motatt en epost med en verifiseringskode. Når du limer inn koden fra e-posten og trykker på "Verifiser kode", vil prosessen være over, og kontoen din vil bli satt i en karanteneperiode på 30 dager før den slettes permanent. I løpet av disse 30 dagene kan du ombestemme deg og gjenopprette kontoen ved å logge inn igjen og trykke avbryt. Etter karanteneperioden vil all informasjon knyttet til kontoen din bli permanent slettet.</p>
 
         <div class="user-verify-form-code">
-          <label for="email-code">Tast inn kode:</label>
+          <label for="email-code">Bekreftelseskode:</label>
 
           <input id="email-code" v-model="emailCode" minlength="4" required>
         </div>
 
         <div class="user-verify-form-buttons">
-          <button class="kpas-button" type="submit">Verifiser kode</button>
+          <button class="kpas-button" type="submit">Verifiser</button>
 
           <button class="kpas-button btn-secondary" @click="submitCancelForm">Avbryt</button>
         </div>
@@ -53,12 +51,11 @@
       </form>
 
       <form class="user-cancel-form" @submit.prevent="submitCancelForm" v-if="!formLoading && showCancelForm">
-        <h4>Quarantine request</h4>
+        <h4>Karanteneperiode</h4>
 
-        <p>We have now recived a verified request to delete your user account at: <b>{{ formatDateToLocal(tokenPayload.confirmedAt) }}</b></p>
-        <p>You have the option to cancel this request by clicking the button below for at least 30 days, after this you user account will permanently be deleted and cannot be recoverd.</p>
+        <p>Kontoen din er nå i en karanteneperiode på 30 dager. Hvis du ombestemmer deg i løpet av denne perioden, kan du logge inn igjen og trykke avbryt for å kansellere prosessen. Etter karanteneperioden vil all informasjon knyttet til kontoen din bli permanent slettet.</p>
 
-        <button class="kpas-button" type="submit">Avbryt slett meg</button>
+        <button class="kpas-button" type="submit">Avbryt</button>
 
         <span class="kpas-button-error" v-if="formErrorMessage != ''"><b>Error:</b> {{ formErrorMessage }}</span>
       </form>
@@ -217,7 +214,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  max-width: 500px;
+  max-width: 380px;
   padding: 20px;
   background: #ffebee;
   border-radius: 5px;
