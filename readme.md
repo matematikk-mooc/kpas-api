@@ -43,7 +43,7 @@ https://kpas.staging.kompetanse.udir.no/docs
 
 ### To run the application locally, run the following command:
 ```
-docker compose -f dev.docker-compose.yaml up --build
+docker compose up
 ```
 This will start the application on port 8080.
 
@@ -51,7 +51,7 @@ This will start the application on port 8080.
 ### Migrate and populate the database:
 To make sure the migrations are ran and populate the database, access the container:
 ```
-docker exec -it kpas bash
+docker exec -it kpas_app bash
 ```
 
 Inside the container run this command to migrate:
