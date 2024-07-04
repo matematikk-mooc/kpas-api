@@ -1,4 +1,4 @@
-@php use App\Models\SurveyQuestion; use App\Services\CanvasService; use App\Repositories\CanvasRepository; use GuzzleHttp\Client; @endphp
+@php use App\Models\SurveyQuestion; use App\Services\CanvasService; use App\Repositories\CanvasRepository; use GuzzleHttp\Client; use App\Services\CanvasGraphQLService; use App\Repositories\CanvasGraphQLRepository; @endphp
 @extends('layouts.app')
 
 @section('content')
@@ -8,6 +8,10 @@
         $canvasRepository = new CanvasRepository($canvasService);
         $course_id = intval($settings["custom_canvas_course_id"]);
         $courseModules = $canvasRepository->getCourseModules($course_id);
+        $canvasGraphQLService = new CanvasGraphQLService();
+        $canvasGraphQLRepository = new CanvasGraphQLRepository($canvasGraphQLService);
+        $modulesItems = $canvasGraphQLRepository->modulesConnection($course_id);
+
     @endphp
 
     <button id="dashboard-view-switch" type="button" class="btn btn-primary" style="float: right;" onclick="toggle()">
@@ -19,7 +23,7 @@
                  :coursemodules="{{ json_encode($courseModules) }}" >
     </admin-dashboard-view>
 
-    <health-monitor-view style="display: none" id="health-view"></health-monitor-view>
+    <health-monitor-view id="health-view" :courseid="{{$course_id}}" :moduleitems="{{json_encode($modulesItems)}}"></health-monitor-view>
 
 @endsection
 
@@ -27,6 +31,7 @@
     <script>
         window.cookie = '{{ session()->getId() }}';
         var health_view = false;
+        toggle(health_view);
         function toggle() {
             health_view? health_view = false : health_view = true;
             toggleViews(health_view);
