@@ -15,7 +15,7 @@ while IFS='=' read -r key value; do
     
     if [[ -z "${!key}" ]]; then
       export "$key=$value"
-      echo "- IMPORT: $key"
+      echo "- IMPORTED: $key"
     else
       echo "- ERROR: $key"
     fi
@@ -31,7 +31,6 @@ nvm install
 echo -e "\n\n\n[3/6] Install NPM packages"
 echo -e "##############################################################\n"
 npm install
-# npm run watch # !DEBUG: Move to supervisord
 
 echo -e "\n\n\n[4/6] Install composer packages"
 echo -e "##############################################################\n"
