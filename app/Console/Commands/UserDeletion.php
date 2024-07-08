@@ -73,7 +73,8 @@ class UserDeletion extends Command
                             "ID" => $tokenId,
                             "CanvasID" => $canvasUserData->id,
                             "Email" => $canvasUserData->email,
-                            "ConfirmedAt" => $confirmedDeleteTokensItem->confirmed_at
+                            "CanceledAt" => $confirmedDeleteTokensItem->canceled_at,
+                            "ConfirmedAt" => $confirmedDeleteTokensItem->confirmed_at,
                         ]
                     );
                 }
@@ -82,7 +83,7 @@ class UserDeletion extends Command
             }
         }
 
-        $headers = ["ID", "CanvasID", "Email", "ConfirmedAt"];
+        $headers = ["ID", "CanvasID", "Email", "CanceledAt", "ConfirmedAt"];
         $this->table($headers, $usersToDelete);
 
         $paramPrompts = $this->option("prompts") == "true";
