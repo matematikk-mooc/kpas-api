@@ -25,6 +25,7 @@ class BffController extends Controller
     public function getCoursesForFrontpage(bool $skip_cache = false)
     {
         try {
+            $accountIds = [99, 100, 102, 103, 137, 138, 139, 145];
             $courseSettingsRepository = new CourseSettingsRepository();
             $returnData = [
                 "courses" => [],
@@ -38,7 +39,16 @@ class BffController extends Controller
             $courseFilters = $courseSettingsRepository->getFilters();
             $highligthedCourse = $courseSettingsRepository->getHighLightedCourse();
             
-            $returnData["courses"] = $courses;
+            $coursesFiltered = [];
+            foreach ($courses as $courseKey => $courseItem) {
+                $courseObject = $courseItem->course;
+                $courseAccountId = $courseObject->account_id;
+                if (in_array($courseAccountId, $accountIds)) {
+                    array_push($coursesFiltered, $courseItem);
+                }
+            }
+
+            $returnData["courses"] = $coursesFiltered;
             $returnData["settings"] = $courseSettings;
             $returnData["filters"] = $courseFilters;
             $returnData["highligthed"] = $highligthedCourse;
