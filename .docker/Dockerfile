@@ -1,17 +1,21 @@
 FROM php:8.3-fpm
 
 RUN apt-get update && apt-get install -y \
+    jq \
     nano \
     curl \
     nginx \
     supervisor \
     zip \
     unzip \
+    vim-common \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    zlib1g-dev && \
+    zlib1g-dev \
+    openssh-client \
+    openssl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install gd \
