@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\LtiException;
 use App\Ltiv3\LTI3_Database;
 use App\Services\CanvasService;
-use App\Services\DiplomaService;
+use App\Services\DiplomaV2Service;
 use App\Services\StatisticsService;
 use App\Services\AdminDashboardService;
 use App\Services\DashboardService;
@@ -131,40 +131,36 @@ class Lti3Controller extends Controller
             $logoList = $request->query("logo", $noLogoList);
             Arr::set($settings_new, 'settings.custom_diploma_logo_list', $logoList);
         }
+
         session(['settings' => $settings_new['settings']]);
-
         logger("Lti3Middleware has settings.");
-
         $settings = session()->get('settings');
+
         if ($kpasMode == $diplomaMode) {
-            $downloadLink = true;
             logger("embed diploma");
 
-            $diplomaService = new DiplomaService();
-            $hasDeservedDiploma = $diplomaService->hasDeservedDiploma($settings);
-            if(!$hasDeservedDiploma) {
-                $downloadLink = false;
-            }
+            $userId = $settings["custom_canvas_user_id"];
+            $userName = $settings['custom_canvas_user_display_name'];
+            $courseId = $settings["custom_canvas_course_id"];
+            $courseName = $settings['custom_canvas_course_name'];
+            $courseUserRoles = $settings['custom_canvas_roles'];
+            $courseDiplomaLogos = $settings['custom_diploma_logo_list'];
 
-            return $diplomaService->getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma);
-        }
-        else if($kpasMode == $statisticsMode) {
+            $diplomaV2Service = new DiplomaV2Service($userId, $userName, $courseId, $courseName, $courseUserRoles, $courseDiplomaLogos);
+            return $diplomaV2Service->render();
+        } else if ($kpasMode == $statisticsMode) {
             $statisticsService = new StatisticsService();
             return $statisticsService->getStatisticsHtml($settings);
-        }
-        else if($kpasMode == $dashboardMode) {
+        } else if ($kpasMode == $dashboardMode) {
             $dashboardService = new DashboardService();
             return $dashboardService->getDashboardHtml($settings);
-        }
-        else if($kpasMode == $surveyMode){
+        } else if ($kpasMode == $surveyMode){
             $surveyService = new SurveyService();
             return $surveyService->getSurveyBlade($settings);
-        }
-        else if($kpasMode == $adminDashboardMode){
+        } else if ($kpasMode == $adminDashboardMode){
             $adminDashboardService = new AdminDashboardService();
             return $adminDashboardService->getAdminDashboardBlade($settings);
-        }
-        else if($kpasMode == $courseSettingsMode) {
+        } else if ($kpasMode == $courseSettingsMode) {
             $courseSettingsService = new CourseSettingsService();
             return $courseSettingsService->getCourseSettingsBlade($settings);
         }
@@ -264,30 +260,28 @@ class Lti3Controller extends Controller
 
     public function diplomaPdf(Request $request)
     {
-        logger("Diploma");
+        logger("DiplomaPDF");
         $settings = session()->get('settings');
         logger($settings);
 
-        $diplomaService = new DiplomaService();
-        $hasDeservedDiploma = $diplomaService->hasDeservedDiploma($settings);
-        if($hasDeservedDiploma) {
-            $dompdf = new Dompdf();
+        $userId = $settings["custom_canvas_user_id"];
+        $userName = $settings['custom_canvas_user_display_name'];
+        $courseId = $settings["custom_canvas_course_id"];
+        $courseName = $settings['custom_canvas_course_name'];
+        $courseUserRoles = $settings['custom_canvas_roles'];
+        $courseDiplomaLogos = $settings['custom_diploma_logo_list'];
 
-            //To make images/ references work.
-            $dompdf->getOptions()->setChroot(public_path());
+        $diplomaV2Service = new DiplomaV2Service($userId, $userName, $courseId, $courseName, $courseUserRoles, $courseDiplomaLogos);
+        if (!$diplomaV2Service->isCourseCompleted()) return (new ErrorResponse("Alle krav må fullføres før diplom kan lastes ned.", 403))->toResponse($request);
 
-            //To make external references to css etc. work.
-            $dompdf->getOptions()->set('isRemoteEnabled', true);
-            $downloadLink = false;
-            $noLogoList = [];
-            $logoList = $request->query("logo", $noLogoList);
+        $dompdf = new Dompdf();
+        $dompdf->getOptions()->setChroot(public_path());
+        $dompdf->getOptions()->set('isRemoteEnabled', true); // To make external references to css etc. work.
 
-            $html = $diplomaService->getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma);
-            $dompdf->loadHtml($html);
-            $dompdf->render();
-            $dompdf->stream("Diplom.pdf");
-        } else {
-            return (new ErrorResponse("Alle krav må fullføres før diplom kan lastes ned.", 403))->toResponse($request);
-        }
+        $html = $diplomaV2Service->render();
+        $dompdf->loadHtml($html);
+
+        $dompdf->render();
+        $dompdf->stream("Diplom.pdf");
     }
 }
