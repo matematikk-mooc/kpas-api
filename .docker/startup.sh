@@ -12,7 +12,7 @@ while IFS='=' read -r key value; do
   if [[ ! "$key" =~ ^# ]] && [[ -n "$key" ]]; then
     value=$(echo "$value" | sed -e 's/^"//' -e 's/"$//')
     value=$(echo "$value" | sed -e "s/^'//" -e "s/'$//")
-    
+
     if [[ -z "${!key}" ]]; then
       export "$key=$value"
       echo "- IMPORTED: $key"
