@@ -47,6 +47,7 @@ services:
 networks:
   kpas_network:
     driver: bridge
+    name: kpas_network
 
 volumes:
   kpas_db_data:
