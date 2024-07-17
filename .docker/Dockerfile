@@ -34,7 +34,7 @@ RUN docker-php-ext-install gd \
 ##############################################################
 
 # 1. Install NVM
-ENV NVM_DIR /usr/local/nvm
+ENV NVM_DIR=/usr/local/nvm
 RUN mkdir -p $NVM_DIR \
     && export NVM_DIR=$NVM_DIR \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -48,7 +48,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 WORKDIR /var/www/html
 USER root
-ENV NVM_DIR /usr/local/nvm
+ENV NVM_DIR=/usr/local/nvm
 
 EXPOSE 8080
 ENTRYPOINT ["/var/www/html/.docker/startup.sh"]
