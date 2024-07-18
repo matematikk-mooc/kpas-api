@@ -12,7 +12,7 @@
 import { scaleLinear, scaleBand } from "d3-scale";
 import { max } from "d3-array";
 import { select, selectAll } from "d3-selection";
-import {axisBottom, axisLeft, tickSizeOuter} from "d3-axis";
+import { axisBottom, axisLeft } from "d3-axis";
 
 export default {
 	name: 'BarChart',
@@ -105,7 +105,7 @@ export default {
 			.attr("class", "axis")
 			.attr("transform", "translate(0," + height + ")")
 			.attr("x", d => x0(d.question))
-      .call(axisBottom(x1).tickSizeOuter(0))
+	  .call(axisBottom(x1).tickSizeOuter(0))
       .selectAll("text")
       .attr("y", 15)
     	.attr("x", 0)
