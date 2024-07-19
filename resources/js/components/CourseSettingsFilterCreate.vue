@@ -1,8 +1,6 @@
 <template>
-    <h2>Opprett nytt filter </h2>
-
-    <p>Filternavn: <input type="text" v-model="filter_name"/></p>
-    <section>Filtertype:
+    <p>Navn: <input type="text" v-model="filter_name"/></p>
+    <section>Type:
         <v-select
         :options="filterTypes"
         :close-on-select="true"
@@ -10,11 +8,9 @@
         :clearable="false"
         ></v-select>
     </section>
-    <button @click="createFilter">Opprett filter</button>
+    <button class="kpas-button" @click="createFilter">Opprett kategori</button>
     <Message type="success" v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</Message>
     <Message type="error" v-if="error">{{ error }}</Message>
-
-
 </template>
 
 <script>

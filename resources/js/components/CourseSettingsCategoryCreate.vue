@@ -1,11 +1,9 @@
 <template>
-    <h2>Opprett ny kategori </h2>
+    <p>Navn: <input type="text" v-model="category_name"/></p>
+    <p>Posisjon: <input type="number" default=0 v-model="position"/></p>
+    <p>Tema: <input type="text" v-model="category_color"/> (theme_*number* må finnes som tema i frontend)</p>
 
-    <p>Kategorinavn: <input type="text" v-model="category_name"/></p>
-    <p>Kategoriposisjon: <input type="number" default=0 v-model="position"/></p>
-    <p>Kategoritema: <input type="text" v-model="category_color"/> (Kategoritema theme_*number* må finnes som tema i frontend)</p>
-
-    <button @click="createCategory">Opprett kategori</button>
+    <button class="kpas-button" @click="createCategory">Opprett fargetema</button>
     <Message type="success" v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</Message>
     <Message type="error" v-if="error" class='alert alert-danger kpasAlert'>{{ error }}</Message>
 </template>
@@ -33,11 +31,11 @@ export default{
             let response = undefined;
             this.error = undefined;
             if(this.category_name == '' || this.category_name == null){
-                this.error = "Kategorinavn kan ikke være tomt"
+                this.error = "Navn kan ikke være tomt"
                 return;
             }
             if(this.category_color == '' || this.category_color == null){
-                this.error = "Kategoritema kan ikke være tomt"
+                this.error = "Tema kan ikke være tomt"
                 return;
             }
             try {

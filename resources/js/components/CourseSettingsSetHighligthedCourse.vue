@@ -1,5 +1,4 @@
 <template>
-    <h2>Velg fremhevet kompetansepakke </h2>
     <section>kompetansepakke:
         <v-select
         :options="courses"
@@ -9,10 +8,9 @@
         :clearable="false"
         ></v-select>
     </section>
-    <button @click="setHighlightedCourse">Lagre fremhevet kompetansepakke</button>
+    <button class="kpas-button" @click="setHighlightedCourse">Lagre fremhevet kompetansepakke</button>
     <div v-if="responseCode == 200" class='alert alert-success kpasAlert'>Oppdateringen var vellykket!</div>
     <div v-if="error" class='alert alert-danger kpasAlert'>{{ error }}</div>
-
 </template>
 
 <script>
