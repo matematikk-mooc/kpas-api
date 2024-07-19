@@ -426,6 +426,19 @@ class CanvasService
         return $this->request($url, 'PUT');
     }
 
+    public function deleteUser(int $userId)
+    {
+        $accountId = config('canvas.account_id');
+        $url = "accounts/{$accountId}/users/{$userId}";
+        return $this->request($url, 'DELETE');
+    }
+
+    public function getUser(int $userId)
+    {
+        $url = "users/{$userId}";
+        return $this->request($url, 'GET');
+    }
+
     public function removeUserFromGroup(int $groupId, int $userId)
     {
         return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
@@ -502,5 +515,23 @@ class CanvasService
         }else{
             return $this->accountIsChildOf($udirCanvasParentAccountId, $parentAccountId);
         }
+    }
+
+    public function getCourseData(int $courseId)
+    {
+        $url = "courses/{$courseId}";
+        return $this->request($url, 'GET');
+    }
+
+    public function getCoursePages(int $courseId)
+    {
+        $url = "courses/{$courseId}/pages?per_page=100";
+        return $this->request($url, 'GET');
+    }
+
+    public function getCoursePageContent(int $courseId, int $pageId)
+    {
+        $url = "courses/{$courseId}/pages/{$pageId}";
+        return $this->request($url, 'GET');
     }
 }

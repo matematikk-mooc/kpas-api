@@ -8,8 +8,6 @@ use App\Models\Kommune;
 use App\Models\Skole;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Arr;
 
 function filter_institution_fields($data, $school_keys)
 {
@@ -59,14 +57,17 @@ class DataNsrService
 
     public function getCounties(): array
     {
-        $fylker = $this->request($this->nxrDomain, 'api/legacy/fylker');
+        $today = date("Y-m-d");
+        $fylker = $this->request($this->nxrDomain, 'api/v2/fylkedata?datotid='.$today);
+
         logger(print_r($fylker,true));
         return $fylker;
     }
 
     public function getCommunities(): array
     {
-        return $this->request($this->nxrDomain, 'api/legacy/kommuner');
+        $today = date("Y-m-d");
+        return $this->request($this->nxrDomain, 'api/v2/kommunedata?datotid='.$today);
     }
 
     public function getSchools(): array
@@ -81,50 +82,48 @@ class DataNsrService
 
     private function getEnheter(string $domain): array
     {
-        // Get all enheter
-        $enheter = $this->request($domain, 'enheter');
-        $idToEnhet = array();
-        $fylkesnummer = array();
+        $counties = Fylke::where("nedlagt", false)->pluck("Fylkesnr")->toArray();
 
-        // Make an assosiative array of NSR id to enhet
-        // and find all fylkesnummers in use
-        foreach ($enheter as $enhet) {
-            $idToEnhet[$enhet->NSRId] = $enhet;
-            $fylkesnummer[$enhet->FylkeNr] = true;
-        }
-
-        // For each distinct fylkesnummer, fetch enheter again to also get longitude and latitude
-        $i = 0;
-        foreach ($fylkesnummer as $id => $ignore) {
-            if (!is_numeric($id)) {
-                logger("Invalid county number:" .$id);
+        $enheter = [];
+        foreach ($counties as $county) {
+            //Skip the "Annet" county
+            if ($county == '99') {
                 continue;
             }
+            $requestBody = [
+                "Fylkenr" => $county,
+                "InkluderNedlagte" => false,
+                "InkluderAktive" => true,
+                "InkluderSkoler" => true,
+                "InkluderBarnehager" => true,
+                "InkluderEiere" => false,
+                "InkluderAndreEnheter" => false,
+            ];
 
-            // Add lengde and breddegrad from fylke-call to enhet
-            $inFylke = $this->request($domain, "enheter/fylke/$id");
-            foreach ($inFylke as $enhetInFylke) {
-                $i++;
-                if(!($i % 1000)) {
-                    logger("GetEnheter processed " . $i);
-                }
-
-                if (!isset($idToEnhet[$enhetInFylke->NSRId])) {
-                    continue;
-                }
-
-                $enhet = $idToEnhet[$enhetInFylke->NSRId];
-                $enhet->{'Lengdegrad'} = $enhetInFylke->Lengdegrad ?? '';
-                $enhet->{'Breddegrad'} = $enhetInFylke->Breddegrad ?? '';
-            }
+            $enheter_in_fylke = $this->postRequest($domain, "v3/enheter/sok", $requestBody);
+            $enheter = array_merge($enheter, $enheter_in_fylke);
         }
+        return $enheter;
+    }
 
-        return $idToEnhet;
+    private function postRequest(string $domain, string $endpoint, array $body): array
+    {
+        $fullUrl = $domain . $endpoint;
+        try {
+            $response = $this->guzzleClient->post($fullUrl, [
+                'json' => $body,
+                'verify' => false,
+            ]);
+            $responseBody = $response->getBody()->getContents();
+            return json_decode($responseBody, true);
+        } catch (\Throwable $e) {
+            logger($e);
+            return [];
+        }
     }
 
     private function request(string $domain, string $url)
     {
-        logger($url);
         $fullUrl = $domain . $url;
         try {
             $response = $this->guzzleClient->request("GET", $fullUrl, [
@@ -143,16 +142,22 @@ class DataNsrService
         $model = new Fylke();
 
         $model->createAnnetFylke();
-
+        $county_keys = $model->getFillable();
         $counties = $this->getCounties();
         foreach ($counties as $value) {
             $county = (array)$value;
             try {
-                if (!isset($county['OrgNr']) || !isset($county['OrgNrFylkesmann'])) {
+                if (!isset($county['FylkeskommuneOrganisasjonsnummer']) || !isset($county['StatsforvalterOrganisasjonsnummer'])) {
                     #This county is no longer active
                     continue;
                 }
-                $model->updateFylke($county);
+                #Nxr uses different field names, map them to our database column names
+                $county['OrgNr'] = $county['FylkeskommuneOrganisasjonsnummer'];
+                $county['OrgNrFylkesmann'] = $county['StatsforvalterOrganisasjonsnummer'];
+                $county['Fylkesnr'] = $county['Fylkesnummer'];
+                $county['Navn'] = $county['Fylkesnavn'];
+                $filter_fields = filter_institution_fields($county, $county_keys);
+                $model->updateFylke($filter_fields);
             } catch (\Throwable $e) {
                 logger($e);
             }
@@ -172,10 +177,16 @@ class DataNsrService
         foreach ($communities as $value) {
             $community = (array)$value;
             try {
-                if (!isset($community['OrgNr'])) {
+                if (!isset($community['KommuneOrganisasjonsnummer'])) {
                     #This community is no longer active
                     continue;
                 }
+                #Nxr uses different field names, map them to our database column names
+                $community['OrgNr'] = $community['KommuneOrganisasjonsnummer'];
+                $community['Kommunenr'] = $community['Kommunenummer'];
+                $community['Navn'] = $community['Kommunenavn'];
+                $community['Fylkesnr'] = $community['Fylkesnummer'];
+                $community['ErNedlagt'] = isset($community['ArvtakerKommuneDataIdListe']);
                 $filter_fields = filter_institution_fields($community, $community_keys);
                 $model->updateKommune($filter_fields);
             } catch (\Throwable $e) {
@@ -195,24 +206,31 @@ class DataNsrService
         $org = $this->getSchools();
 
         $i = 0;
-        foreach ($org as $value) {
-            if ($value->ErSkole ||
-                $value->ErSkoleEier ||
-                $value->ErGrunnSkole ||
-                $value->ErPrivatSkole ||
-                $value->ErOffentligSkole)
+        foreach ($org as $school) {
+            if ($school['ErSkole'] && $school['ErAktiv'] &&
+                ($school['ErSkoleeier'] ||
+                $school['ErGrunnskole'] ||
+                $school['ErPrivatskole'] ||
+                $school['ErOffentligSkole']))
             {
                 $i++;
                 if(!($i % 1000)) {
                     logger("store_schools processed " . $i);
                 }
-                $school = (array) $value;
-                Arr::set($school, 'Kommunenr', $value->KommuneNr);
                 try {
+                    $school['NSRId'] = $school['Orgnr'];
+                    $school['OrgNr'] = $school['Orgnr'];
+                    $school['FylkeNr'] = $school['Fylkesnr'];
+                    $school['FulltNavn'] = $school['Navn'];
+                    $school['ErSkoleEier'] = $school['ErSkoleeier'];
+                    $school['ErGrunnSkole'] = $school['ErGrunnskole'];
+                    $school['ErPrivatSkole'] = $school['ErPrivatskole'];
+
                     $filter_fields = filter_institution_fields($school, $school_keys);
+
                     $model->updateSkole($filter_fields);
                 } catch (\Throwable $e) {
-                    logger("Failure when processing school:" . print_r($value, true));
+                    logger("Failure when processing school:" . print_r($school, true));
                     logger($e);
                 }
             }
@@ -230,17 +248,27 @@ class DataNsrService
         $org = $this->getKindergartens();
 
         $i = 0;
-        foreach ($org as $value) {
+        foreach ($org as $kindergarten) {
             $i++;
             if(!($i % 1000)) {
                 logger("store_kindergartens processed " . $i);
             }
-            $kindergarten = (array) $value;
+            if (!$kindergarten['ErAktiv']){
+                continue;
+            }
             try {
+                $kindergarten['NSRId'] = $kindergarten['Orgnr'];
+                $kindergarten['OrgNr'] = $kindergarten['Orgnr'];
+                $kindergarten['FylkeNr'] = $kindergarten['Fylkesnr'];
+                $kindergarten['KommuneNr'] = $kindergarten['Kommunenr'];
+                $kindergarten['FulltNavn'] = $kindergarten['Navn'];
+                $kindergarten['ErBarnehageEier'] = $kindergarten['ErBarnehageeier'];
+
+
                 $filter_fields = filter_institution_fields($kindergarten, $kindergartens_keys);
                 $model->updateBarnehage($filter_fields);
             } catch (\Throwable $e) {
-                logger("Failure when processing kindergarten:" . print_r($value, true));
+                logger("Failure when processing kindergarten:" . print_r($kindergarten, true));
                 logger($e);
             }
         }

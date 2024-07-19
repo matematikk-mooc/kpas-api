@@ -123,7 +123,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'enabled_ssl' => env('ENABLED_SSL', false),
+    'enabled_ssl' => env('APP_SSL', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -152,7 +152,7 @@ return [
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
-        // Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Mail\MailServiceProvider::class,
         // Illuminate\Notifications\NotificationServiceProvider::class,
         // Illuminate\Pagination\PaginationServiceProvider::class,
         // Illuminate\Pipeline\PipelineServiceProvider::class,
@@ -213,7 +213,7 @@ return [
         'Hash' => Illuminate\Support\Facades\Hash::class,
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
-        // 'Mail' => Illuminate\Support\Facades\Mail::class,
+        'Mail' => Illuminate\Support\Facades\Mail::class,
         // 'Notification' => Illuminate\Support\Facades\Notification::class,
         // 'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,

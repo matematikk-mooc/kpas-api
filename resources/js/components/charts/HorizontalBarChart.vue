@@ -3,12 +3,17 @@
 </template>
 
 <script>
-import * as d3 from "d3";
+import { select, selectAll } from "d3-selection";
+import { max } from "d3-array";
+import { transition } from "d3-transition";
+import { extractLabelForSelectedLanguage } from "../../mulitlang";
 
 export default{
 	name: 'HorizontalBarChart',
 	props: {
-		data: Array
+		data: Array,
+		multilang: Boolean,
+		lang: String
 	},
 
 	mounted() {
@@ -16,12 +21,13 @@ export default{
 	},
 	watch: {
 		data(){
-			d3.selectAll("table").remove()
+			selectAll("table").remove()
 			this.drawDiagram()
 		}
 	},
 	methods: {
 		drawDiagram() {
+			let self = this;
 			let diagramData = this.data;
 
 			const MAX_X = 1;
@@ -33,7 +39,7 @@ export default{
 				SMALL: 300
 			};
 
-			const container = d3.select("#diagramContainer");
+			const container = select("#diagramContainer");
 			const workingWidth = 800;
 			// Column 1 (name column) is given a set width
 			const column1width = window.innerWidth > SMALL_BREAKPOINT ? PREFFERED_COLUMN_WIDTH.LARGE : PREFFERED_COLUMN_WIDTH.SMALL;
@@ -125,7 +131,7 @@ export default{
 			};
 
 			const handleSortClick = (headerEl, sortField) => {
-				const header = d3.select(headerEl);
+				const header = select(headerEl);
 				const sort = header.attr("aria-sort");
 				th.attr("aria-sort", "none");
 
@@ -166,7 +172,7 @@ export default{
 			tr.append("td").attr("class", "data name")
 			.attr("width", column1width)
 			.text(function (d) {
-				return d.title;
+				return self.multilang? extractLabelForSelectedLanguage(d.title, self.lang) : d.title;
 			});
 
 			// Create the percent value column
