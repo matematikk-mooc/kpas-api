@@ -1,7 +1,10 @@
 <template>
   <div class="group-tool" v-if="everythingIsReady">
+    <div>
       <h2>Velg rolle</h2>
+
       <Message v-if="roleError" type="error"><span>{{roleError}}</span></Message>
+
       <role-selector
         :isPrincipal="isPrincipal"
         :institutionType="institutionType"
@@ -9,58 +12,65 @@
         :participantDescription="participantDescription"
         v-model="wantToBePrincipal"
       ></role-selector>
+    </div>
+
+    <div>
       <h2>Velg grupper</h2>
-      <Message type="error" v-if="wantToBePrincipal && institutionType">{{principalWarning}}
-      </Message>
-      <div v-if="groupError"
-        class="alert alert-danger">{{groupError}}
-      </div>
+
+      <Message type="error" v-if="wantToBePrincipal && institutionType">{{principalWarning}}</Message>
+
+      <div v-if="groupError" class="alert alert-danger">{{groupError}}</div>
+
       <div v-if="preKommunereform2024">
         <Message type="error">
           <span>
           Per 01.01.2024 ble <a style="font-size: 14px;" href="https://www.regjeringen.no/no/tema/kommuner-og-regioner/kommunestruktur/nye-kommune-og-fylkesnummer-fra-1.-januar-2024/id2924701/" target="_blank">Kommunereformen 2024</a> innført. Dersom du jobber i ett fylke eller kommune som er berørt av kommunereformen 2024 må du velge nye grupper. Du finner oppdaterte kommuner i gruppevalget nedenfor.
           Merk: Vestfold og Telemark, Viken og Troms og Finnmark er ikke gyldige valg lengre, disse er fjernet fra listen.
           Når du bytter gruppe blir historikken din flyttet til ny gruppe.
-        </span>
+          </span>
         </Message>
       </div>
+
       <faculty-selector
         @updateFaculty="updateFaculty"
         :faculties="faculties"
         :currentFaculty="currentGroups['Faggruppe nasjonalt']? currentGroups['Faggruppe nasjonalt'].name : ''"
         v-model="faculty"
       />
-      <group-selector
-        @updateGroups="updateGroups"
-        :courseId="courseId"
-        :institutionType="institutionType"
-        :currentGroups="currentGroups"
-        v-model="groups"
-      ></group-selector>
-      <div class="update-button">
-        <button
-          class="btn"
-          :disabled="!isReady"
-          :class="{
-            'btn-primary': isReady,
-            'btn-secondary disabled': !isReady,
-          }"
-          @click="enroll"
-        >
-          Oppdater
-        </button>
-      </div>
+    </div>
+
+    <group-selector
+      @updateGroups="updateGroups"
+      :courseId="courseId"
+      :institutionType="institutionType"
+      :currentGroups="currentGroups"
+      v-model="groups"
+    ></group-selector>
+
+    <div class="update-button">
+      <button
+        class="btn"
+        :disabled="!isReady"
+        :class="{
+          'btn-primary': isReady,
+          'btn-secondary disabled': !isReady,
+        }"
+        @click="enroll"
+      >
+        Oppdater
+      </button>
+    </div>
 
 
-      <Message v-if="isLoading" type="warn"><span>Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span></Message>
-      <Message v-if="enrollResult == ENROLL_FAILED" type="error"><span>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</span></Message>
-      <Message v-if="getRoleResult == ENROLL_GET_FAILED" type="error"><span>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</span></Message>
-      <Message v-if="groupResult == ADDTO_GROUPS_FAILED" type="error"><span>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</span></Message>
-      <Message v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" type="success"><span>Oppdateringen var vellykket!</span></Message>
-
+    <Message v-if="isLoading" type="warn"><span>Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span></Message>
+    <Message v-if="enrollResult == ENROLL_FAILED" type="error"><span>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</span></Message>
+    <Message v-if="getRoleResult == ENROLL_GET_FAILED" type="error"><span>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</span></Message>
+    <Message v-if="groupResult == ADDTO_GROUPS_FAILED" type="error"><span>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</span></Message>
+    <Message v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" type="success"><span>Oppdateringen var vellykket!</span></Message>
   </div>
+
   <div v-else>
-      <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
+    <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
   </div>
 </template>
 
@@ -222,6 +232,7 @@
         }
         if(this.categories && this.usersGroups) {
           this.currentGroups = this.categorizeGroups(this.usersGroups, this.categories);
+          this.faculty = this.currentGroups['Faggruppe nasjonalt'] ? this.currentGroups['Faggruppe nasjonalt'].name : null;
           this.iframeresize();
         }
         this.currentGroupsLoaded = true;
@@ -288,7 +299,7 @@
           this.enrollResult = this.ENROLLED;
         } catch(e) {
           this.enrollResult = this.ENROLL_FAILED;
-//          this.reportError("roleError", "Kunne ikke oppdatere rollen.");
+          // this.reportError("roleError", "Kunne ikke oppdatere rollen.");
           this.iframeresize();
         }
       },
@@ -430,8 +441,6 @@
 </script>
 
 <style scoped>
-
-
   h2{
     margin-top: .5em;
     margin-bottom: .5em;
@@ -483,5 +492,4 @@
     display: flex;
     flex-direction: column;
   }
-
 </style>
