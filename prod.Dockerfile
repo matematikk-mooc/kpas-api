@@ -1,5 +1,5 @@
 # GENERATE DOCS
-FROM composer:2.4.3 AS generateDocs
+FROM composer:2.7 AS generateDocs
 COPY . /var/www/html
 WORKDIR /var/www/html
 RUN composer install \
@@ -9,7 +9,7 @@ RUN composer install \
 RUN php artisan scribe:generate
 
 # COMPOSER INSTALL
-FROM composer:2.4.3 AS composerBuild
+FROM composer:2.7 AS composerBuild
 COPY . /var/www/html
 COPY --from=generateDocs /var/www/html/public/docs /var/www/html/public/docs
 WORKDIR /var/www/html
@@ -20,7 +20,7 @@ RUN composer install \
                 --optimize-autoloader
 
 # NPM INSTALL + COMPILE ASSETS
-FROM node:21.6.1-alpine3.19 AS nodeBuild
+FROM node:20.17-alpine3.19 AS nodeBuild
 COPY --from=composerBuild /var/www/html /var/www/html
 WORKDIR /var/www/html
 RUN npm install
@@ -28,7 +28,7 @@ RUN npm run build
 
 
 # SERVER
-FROM php:8.1-fpm
+FROM php:8.3-fpm
 
 #Install packages
 RUN apt-get update && apt-get install -y \
