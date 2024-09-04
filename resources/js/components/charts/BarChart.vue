@@ -7,8 +7,7 @@
 import { scaleLinear, scaleBand } from "d3-scale";
 import { max } from "d3-array";
 import { select } from "d3-selection";
-import {axisBottom, axisLeft} from "d3-axis";
-import * as d3 from "d3";
+import { axisBottom, axisLeft } from "d3-axis";
 
 export default {
   name: 'BarChart',

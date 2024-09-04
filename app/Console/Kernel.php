@@ -14,8 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\StorageLinkCommand::class,
-        Commands\FetchNsrData::class,
-        Commands\UserDeletion::class,
+        Commands\FetchNsrData::class
     ];
 
     /**
@@ -32,8 +31,6 @@ class Kernel extends ConsoleKernel
         // be triggered more often than once every hour, or you
         // want it to be triggered at another minute than :00,
         // you'll need to update the file /docker-prod/laravel-cron
-        $schedule->command('kpas:user_deletion --prompts=false')
-            ->dailyAt('01:00')->runInBackground();
         $schedule->command('fetch_from:nsr')
             ->dailyAt('02:00')->runInBackground();
         $schedule->command('fetch_from:canvas')

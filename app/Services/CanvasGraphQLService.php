@@ -55,21 +55,24 @@ class CanvasGraphQLService
         try {
             $url = str_replace('/v1', '', $this->domain) . '/graphql';
             $headers = array(
-                'Content-Type: application/json',
                 'Authorization: Bearer ' . $this->accessKey,
+                'Content-Type: application/json'
             );
-            $options = array(
-                'http' => array(
-                    'method' => 'POST',
-                    'header' => implode("\r\n", $headers),
-                    'content' => json_encode(array('query' => $queryData, 'variables' => array('courseId' => $course_id)))
-                )
-            );
-            $context = stream_context_create($options);
-            $result = file_get_contents($url, false, $context);
+            $postData = json_encode(array('query' => $queryData, 'variables' => array('courseId' => $course_id)));
+        
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+            $result = curl_exec($ch);
             if ($result === false) {
+                curl_close($ch);
                 throw new Exception('Error fetching data');
             }
+        
+            curl_close($ch);
             $response = json_decode($result, true);
             return $response;
         } catch (Exception $error) {
