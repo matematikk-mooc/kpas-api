@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import * as d3 from "d3";
+import { select, selectAll, scaleTime, scaleLinear, axisLeft, axisBottom, line, extent, sum, timeParse, timeFormat, bisect } from "d3";
 export default {
 	name: "LineChart",
 
@@ -30,31 +30,31 @@ export default {
 			height = 600 - margin.top - margin.bottom
 
 
-			const svg = d3.select("#linechart")
+			const svg = select("#linechart")
 			.append("svg")
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")
 			.attr("transform", `translate(${margin.left},${margin.top})`);
 
-			var dateParser = d3.timeParse("%Y-%m-%d");
+			var dateParser = timeParse("%Y-%m-%d");
 
-			const xScale = d3.scaleTime()
-			.domain(d3.extent(data, function(d) { return dateParser(d.date)}))
+			const xScale = scaleTime()
+			.domain(extent(data, function(d) { return dateParser(d.date)}))
 			.range([ 0, width ]);
 
 
-			const yScale = d3.scaleLinear()
-			.domain([0, d3.sum(data, function(d) { return +d.value; })])
+			const yScale = scaleLinear()
+			.domain([0, sum(data, function(d) { return +d.value; })])
 			.range([ height, 0 ]);
 
-			const yaxis = d3.axisLeft()
+			const yaxis = axisLeft()
 			.ticks((data).length > 15 ? 15 : (data).length)
 			.scale(yScale);
 
-			const xaxis = d3.axisBottom()
+			const xaxis = axisBottom()
 			.ticks(data.length >10? 10 : data.length)
-			.tickFormat(d3.timeFormat('%b %d'))
+			.tickFormat(timeFormat('%b %d'))
 			.scale(xScale);
 
 
@@ -68,13 +68,13 @@ export default {
 			.call(yaxis)
 
 			//Set values for lines per date and total
-			const line = d3.line()
+			const line = line()
 			.x(function(d) { return xScale(dateParser(d.date)); })
 			.y(function(d) { return yScale(d.value); });
 
 			let cur = 0
 
-			const line2 = d3.line()
+			const line2 = line()
 			.x(function(d) { return xScale(dateParser(d.date)); })
 			.y(function(d) { cur = cur + d.value; return yScale(cur); });
 
@@ -133,15 +133,15 @@ export default {
 			.on("mousemove", mousemove);
 
 			function mousemove(event) {
-				const x = xScale.invert(d3.pointer(event)[0]);
+				const x = xScale.invert(pointer(event)[0]);
 				const unixTimestamps = data.map(d => new Date(d.date).getTime());
-				const i = d3.bisect(unixTimestamps, x.getTime() );
+				const i = bisect(unixTimestamps, x.getTime() );
 				const d = data[i-1];
-				const [x1, y] = d3.pointer(event);
+				const [x1, y] = pointer(event);
         tooltip
         .attr('transform', `translate(${x1-100}, ${y-50})`);
 				const partial = data.slice(0, i+1)
-				const sum = d3.sum(partial, function(d) { return +d.value; })
+				const sum = sum(partial, function(d) { return +d.value; })
 				tooltip.html(() => {
 					return `<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Dato:</tspan> ${d.date}</tspan>` +
 					`<tspan x="0" dy="1.2em"><tspan style="font-weight: bold">Antall i dag:</tspan> ${d.value}</tspan>` +

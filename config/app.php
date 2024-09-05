@@ -123,7 +123,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'enabled_ssl' => env('ENABLED_SSL', false),
+    'enabled_ssl' => env('APP_SSL', false),
 
     /*
     |--------------------------------------------------------------------------

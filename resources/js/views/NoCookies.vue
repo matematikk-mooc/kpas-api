@@ -55,6 +55,7 @@ export default {
     };
 
     window.addEventListener('message', function(event) {
+      console.log("API_LTI_MESSAGE_RECEIVED", event);
 
       if (event.data.subject == "kpas-lti.rolesofuser"){
         if((event.data.roles.includes("admin") || event.data.roles.includes("teacher")) && event.data.path.endsWith("/edit") ) {
