@@ -97,6 +97,12 @@ Route::prefix('user')->group(function () {
     });
 });
 
+Route::group(['prefix' => 'bff'], function () {
+    Route::group(['prefix' => 'frontpage'], function () {
+        Route::get('/courses', 'BffController@getCoursesForFrontpage');
+    });
+});
+
 
 Route::get('course/{courseId}/pages', 'MatomoController@getMatomoData');
 Route::get('user/{userId}/history', 'HistoryController@getUserHistoryData');
