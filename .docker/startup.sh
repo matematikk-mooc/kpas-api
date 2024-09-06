@@ -120,4 +120,5 @@ php artisan migrate --force
 
 echo -e "\n\n\n[8/8] Start Supervisor"
 echo -e "##############################################################\n"
+find /var/www/html/storage -type f ! -name '.gitignore' -exec chmod 777 {} \;
 /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

@@ -1,12 +1,12 @@
 {
-    "title": "kpas-local-{{ getenv "CANVAS_ACCESS_KEY_NAME" }}-001",
-    "description": "kpas-local-{{ getenv "CANVAS_ACCESS_KEY_NAME" }}-001",
+    "title": "Rolle og grupper ({{ getenv "CANVAS_ACCESS_KEY_NAME" }})",
+    "description": "Rolle og grupper ({{ getenv "CANVAS_ACCESS_KEY_NAME" }})",
     "target_link_uri": "{{ getenv "APP_URL" }}/launch?config_directory=configs",
     "oidc_initiation_url": "{{ getenv "APP_URL" }}/lti3?config_directory=configs",
     "extensions": [
         {
-            "platform": "canvas.instructure.com",
             "privacy_level": "public",
+            "platform": "canvas.instructure.com",
             "settings": {
                 "platform": "canvas.instructure.com",
                 "placements": [
@@ -15,7 +15,7 @@
                         "message_type": "LtiResourceLinkRequest",
                         "icon_url": "https://icons.iconarchive.com/icons/papirus-team/papirus-places/64/folder-blue-linux-icon.png",
                         "target_link_uri": "{{ getenv "APP_URL" }}/launch?config_directory=configs",
-                        "text": "kpas-local-{{ getenv "CANVAS_ACCESS_KEY_NAME" }}-001",
+                        "text": "Rolle og grupper ({{ getenv "CANVAS_ACCESS_KEY_NAME" }})",
                         "selection_width": 800,
                         "selection_height": 800
                     },
@@ -24,7 +24,7 @@
                         "message_type": "LtiDeepLinkingRequest",
                         "icon_url": "https://icons.iconarchive.com/icons/papirus-team/papirus-places/64/folder-blue-linux-icon.png",
                         "target_link_uri": "{{ getenv "APP_URL" }}/launch?config_directory=configs",
-                        "text": "kpas-local-{{ getenv "CANVAS_ACCESS_KEY_NAME" }}-001",
+                        "text": "Rolle og grupper ({{ getenv "CANVAS_ACCESS_KEY_NAME" }})",
                         "selection_height": 800,
                         "selection_width": 800
                     }
@@ -35,12 +35,10 @@
     "custom_fields": {
         "FACULTY_OPTION_1": "Matematikk 1-7",
         "FACULTY_OPTION_2": "Matematikk 8-10",
-        "FACULTY_OPTION_3": "Matematikk vgs",
-        "FACULTY_OPTION_4": "Kunst og håndverk 1-7",
-        "FACULTY_OPTION_5": "Kunst og håndverk 8-10",
-        "FACULTY_OPTION_6": "Kunst og håndverk vgs",
-        "FACULTY_OPTION_7": "Naturfag 1-7",
-        "FACULTY_OPTION_8": "Naturfag 8-10",
+        "FACULTY_OPTION_3": "Naturfag 1-7",
+        "FACULTY_OPTION_4": "Naturfag 8-10",
+        "FACULTY_OPTION_5": "Kunst & Håndverk 1-10",
+        "FACULTY_OPTION_6": "Musikk 1-10",
         "custom_canvas_roles": "$Canvas.membership.roles",
         "county_category_name": "Fylke",
         "school_category_name": "Skole",
