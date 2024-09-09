@@ -2,6 +2,11 @@
 
 export PATH=$PATH:/usr/local/bin
 
+usermod -u 1000 www-data
+echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+usermod -aG root www-data
+usermod -aG 1000 root
+
 echo -e "\n\n\n[1/8] Copy and import .env variables to the current shell"
 echo -e "##############################################################\n"
 ENV_FILE=".env"
@@ -120,5 +125,4 @@ php artisan migrate --force
 
 echo -e "\n\n\n[8/8] Start Supervisor"
 echo -e "##############################################################\n"
-find /var/www/html/storage -type f ! -name '.gitignore' -exec chmod 777 {} \;
 /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
