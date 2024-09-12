@@ -3,9 +3,6 @@
 export PATH=$PATH:/usr/local/bin
 
 usermod -u 1000 www-data
-echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-usermod -aG root www-data
-usermod -aG 1000 root
 
 echo -e "\n\n\n[1/8] Copy and import .env variables to the current shell"
 echo -e "##############################################################\n"
@@ -29,6 +26,7 @@ while IFS='=' read -r key value; do
   fi
 done < "$ENV_FILE"
 set +o allexport
+chown 1000:1000 .env
 
 echo -e "\n\n\n[2/8] Install NodeJS using NVM"
 echo -e "##############################################################\n"
@@ -38,10 +36,12 @@ nvm install
 echo -e "\n\n\n[3/8] Install NPM packages"
 echo -e "##############################################################\n"
 npm install
+chown -R 1000:1000 node_modules
 
 echo -e "\n\n\n[4/8] Install composer packages"
 echo -e "##############################################################\n"
 composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+chown -R 1000:1000 vendor
 
 echo -e "\n\n\n[5/8] Setup JWT key pair & config"
 echo -e "##############################################################\n"
@@ -67,6 +67,7 @@ else
     jwk=$(pem-jwk $jwtDir/jwtRS256.key.pub | jq '. + {"kid":"2","alg":"RS256","use":"enc"}')
     echo $jwk | jq . > $jwtDir/jwtRS256.json
 fi
+chown -R 1000:1000 $jwtDir
 
 jwtConfigsDir="database/configs"
 if [ -d "$jwtConfigsDir" ]; then
@@ -90,6 +91,7 @@ else
 }
 EOF
 fi
+chown -R 1000:1000 $jwtConfigsDir
 
 echo -e "\n\n\n[6/8] Setup LTI registration templates"
 echo -e "##############################################################\n"
@@ -112,6 +114,7 @@ for template in "$jwtTemplatesDir"/*.tpl; do
 
     echo -e "    - $filename: $outputExec"
 done
+chown -R 1000:1000 $jwtTemplatesOutputDir
 
 echo -e "\n\n\n[7/8] Run artisan commands"
 echo -e "##############################################################\n"
