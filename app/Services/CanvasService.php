@@ -428,7 +428,7 @@ class CanvasService
 
     public function deleteUser(int $userId)
     {
-        $accountId = config('canvas.account_id');
+        $accountId = 1;
         $url = "accounts/{$accountId}/users/{$userId}";
         return $this->request($url, 'DELETE');
     }
@@ -532,6 +532,12 @@ class CanvasService
     public function getCoursePageContent(int $courseId, int $pageId)
     {
         $url = "courses/{$courseId}/pages/{$pageId}";
+        return $this->request($url, 'GET');
+    }
+
+    public function getLinksValidationForCourse(int $courseId)
+    {
+        $url = "courses/{$courseId}/link_validation";
         return $this->request($url, 'GET');
     }
 }

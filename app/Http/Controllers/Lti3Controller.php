@@ -153,7 +153,8 @@ class Lti3Controller extends Controller
             return $statisticsService->getStatisticsHtml($settings);
         } else if ($kpasMode == $dashboardMode) {
             $dashboardService = new DashboardService();
-            return $dashboardService->getDashboardHtml($settings);
+            $courseId = $settings["custom_canvas_course_id"];
+            return $dashboardService->getDashboardHtml($courseId, $settings);
         } else if ($kpasMode == $surveyMode){
             $surveyService = new SurveyService();
             return $surveyService->getSurveyBlade($settings);

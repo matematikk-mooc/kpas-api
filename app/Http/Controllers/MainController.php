@@ -145,8 +145,14 @@ class MainController extends Controller
 
     public function dashboard(Request $request)
     {
-        $dashboardService= new DashboardService();
-        $dashboardData= $dashboardService->getDashboardHtml($settings = NULL);
-        return view('main.dashboard')->withDashboardData($dashboardData);
+        $courseId = null;
+        $hasValidCourseId = $request->has('course_id') && is_numeric($request->input('course_id'));
+        if ($hasValidCourseId) $courseId = (int) $request->input('course_id');
+
+        $dashboardService = new DashboardService();
+        $dashboardData = $dashboardService->getDashboardHtml($courseId, $settings = NULL);
+        return view('main.dashboard')
+            ->withCourseId($courseId)
+            ->withDashboardData($dashboardData);
     }
 }
