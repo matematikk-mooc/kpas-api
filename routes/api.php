@@ -43,6 +43,7 @@ Route::group(['prefix' => 'group'], function () {
 Route::group(['prefix' => 'course'], function () {
     Route::get('/{courseId}/groups', 'GroupController@getCourseGroups')->middleware('lti');
     Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@getCourseGroupsByCategory')->middleware('lti');
+    Route::get('/{courseId}/moduleslist', 'CourseController@getModulesList');
     Route::get('/{courseId}/modules', 'ModuleController@moduleStatistics');
     Route::get('/{courseId}/modules/count', 'ModuleController@moduleStatisticsCount');
 
@@ -102,6 +103,8 @@ Route::group(['prefix' => 'bff'], function () {
         Route::get('/courses', 'BffController@getCoursesForFrontpage');
     });
 });
+
+Route::get('/surveys', 'SurveyController@getSurveyWithQuestions');
 
 Route::get('course/{courseId}/pages', 'MatomoController@getMatomoData');
 Route::get('user/{userId}/history', 'HistoryController@getUserHistoryData');
