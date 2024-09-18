@@ -97,6 +97,11 @@ Route::prefix('user')->group(function () {
     });
 });
 
+Route::group(['prefix' => 'bff'], function () {
+    Route::group(['prefix' => 'frontpage'], function () {
+        Route::get('/courses', 'BffController@getCoursesForFrontpage');
+    });
+});
 
 Route::get('course/{courseId}/pages', 'MatomoController@getMatomoData');
 Route::get('user/{userId}/history', 'HistoryController@getUserHistoryData');
@@ -108,7 +113,6 @@ Route::get('course/{courseId}/count', 'CourseController@getStudentCount');
 Route::get('school/orgnr/{orgNr}', 'NxrController@getSchool');
 Route::get('kindergarten/orgnr/{orgNr}', 'NxrController@getKindergarten');
 Route::get('/modules/{moduleId}/per_date', 'ModuleController@moduleStatisticsPerDate');
-
 
 Route::get('filters', 'CourseSettingsController@getFilters');
 Route::get('categories', 'CourseSettingsController@getCategories');
