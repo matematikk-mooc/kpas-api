@@ -534,4 +534,10 @@ class CanvasService
         $url = "courses/{$courseId}/pages/{$pageId}";
         return $this->request($url, 'GET');
     }
+
+    public function getLinksValidationForCourse(int $courseId)
+    {
+        $url = "courses/{$courseId}/link_validation";
+        return $this->request($url, 'GET');
+    }
 }

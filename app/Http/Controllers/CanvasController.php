@@ -52,4 +52,9 @@ class CanvasController extends Controller
         $page = $this->canvasService->getCoursePageContent($courseId, $pageId);
         return new SuccessResponse($page);
     }
+    public function getLinksValidationForCourse($courseId)
+    {
+        $links = $this->canvasService->getLinksValidationForCourse($courseId);
+        return new SuccessResponse($links);
+    }
 }

@@ -4,7 +4,7 @@
             <div class="health-cards-overview health-cards-item health-cards-box">
                 <HealthCard
                     className="--overview"
-                    title="Helsesjekk"
+                    title="Sanitysjekk"
                     :notSupported="true"
                 />
             </div>
@@ -24,27 +24,39 @@
                 <HealthCard
                     className="--links"
                     title="Lenkesjekk"
-                    :notSupported="true"
+                    :lastExecuted="linksState.lastRun"
+                    :isLoading="linksState.isLoading"
+                    :payload="linksState.payload"
+                    :handleRefresh="runLinksCheck"
+                    :hidePagesChecked="true"
                 />
 
                 <HealthCard
                     className="--transcripts"
                     title="Videotekstsjekk"
-                    :notSupported="true"
+                    :lastExecuted="captionState.lastRun"
+                    :isLoading="captionState.isLoading"
+                    :payload="captionState.payload"
+                    :handleRefresh="runCaptionCheck"
                 />
             </div>
         </div>
+
+        <div id="render-iframes-hidden" style="display: none;"></div>
+
     </div>
 </template>
 
 <script>
+// import SanityCheck from '../sanitycheck.js';
 import UUCheck from '../uucheck.js';
+import LinksCheck from '../linkscheck.js';
+import CaptionCheck from '../captioncheck.js';
 import HealthCard from "../components/HealthCard"
 
 export default {
     name: "HealthMonitorView",
     props: {
-        moduleitems: Array,
         courseid: Number
     },
     components: {
@@ -52,7 +64,22 @@ export default {
     },
     data() {
         return {
+            sanityState: {
+                lastRun: "",
+                payload: null,
+                isLoading: false
+            },
             uuState: {
+                lastRun: "",
+                payload: null,
+                isLoading: false
+            },
+            linksState: {
+                lastRun: "",
+                payload: null,
+                isLoading: false
+            },
+            captionState: {
                 lastRun: "",
                 payload: null,
                 isLoading: false
@@ -60,18 +87,41 @@ export default {
         };
     },
     methods: {
+        async runSanityCheck() {
+            console.log("SANITY_CHECK_RUN");
+            const now = new Date();
+            const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            this.sanityState = { ...this.sanityState, isLoading: true };
+
+            // let payload = await SanityCheck(this.courseid);
+            // this.sanityState = { ...this.sanityState, isLoading: false, payload: payload, lastRun: nowFormatted };
+            console.log("SANITY_CHECK", this.sanityState);
+        },
         async runUUCheck() {
-            console.log("UU_CHECK_RUN");
             const now = new Date();
             const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             this.uuState = { ...this.uuState, isLoading: true };
 
-            let payload = await UUCheck(this.moduleitems, this.courseid);
+            let payload = await UUCheck(this.courseid);
             this.uuState = { ...this.uuState, isLoading: false, payload: payload, lastRun: nowFormatted };
-            console.log("UU_CHECK", this.uuState);
+        },
+        async runLinksCheck() {
+            const now = new Date();
+            const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            this.linksState = { ...this.linksState, isLoading: true };
+
+            let payload = await LinksCheck(this.courseid);
+            this.linksState = { ...this.linksState, isLoading: false, payload: payload, lastRun: nowFormatted };
+        },
+        async runCaptionCheck() {
+            const now = new Date();
+            const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            this.captionState = { ...this.captionState, isLoading: true };
+
+            let payload = await CaptionCheck(this.courseid);
+            this.captionState = { ...this.captionState, isLoading: false, payload: payload, lastRun: nowFormatted };
         }
     }
-
 }
 </script>
 
@@ -90,6 +140,7 @@ export default {
 .health-cards-box {
     display: flex;
     flex: 1 1 300px;
+    max-width: 100%;
 }
 
 .health-cards-other {
