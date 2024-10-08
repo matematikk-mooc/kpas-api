@@ -32,11 +32,15 @@ export default async (courseId) => {
                 }
 
                 if (itemContent == null && itemId != null) {
-                    const itemPageRes = await utils.apiGet(`/course/${courseId}/coursepage/${itemId}`);
-                    if (itemPageRes.status == 200) {
-                        returnPayload.contentTypes.pages += 1;
-                        itemContent = itemPageRes.data?.result?.body;
-                        itemTitle = itemObject?.title;
+                    try {
+                        const itemPageRes = await utils.apiGet(`/course/${courseId}/coursepage/${itemId}`);
+                        if (itemPageRes.status == 200) {
+                            returnPayload.contentTypes.pages += 1;
+                            itemContent = itemPageRes.data?.result?.body;
+                            itemTitle = itemObject?.title;
+                        }
+                    } catch (error) {
+                        console.error(error);   
                     }
                 }
 

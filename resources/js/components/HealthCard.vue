@@ -3,7 +3,7 @@
         <div class="health-card-header">
             <div class="health-card-header-title">
                 <h2>{{ title }}</h2>
-                <p v-if="hasData && !showDetails">Sist kjørt {{ lastExecuted }}</p>
+                <p v-if="!showDetails">{{ hasData ? `Sist kjørt ${lastExecuted}` : description }}</p>
             </div>
 
             <div class="health-card-header-button" v-if="hasData && !showDetails">
@@ -86,6 +86,7 @@ export default {
     props: {
         className: String,
         title: String,
+        description: String,
         lastExecuted: String,
         isLoading: Boolean,
         payload: Object,

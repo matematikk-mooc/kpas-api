@@ -5,7 +5,11 @@
                 <HealthCard
                     className="--overview"
                     title="Sanitysjekk"
-                    :notSupported="true"
+                    description="Sanitetsjekken kontrollerer at kursinnhold som oppgaver, diskusjoner og sider er riktig konfigurert og publisert. Den sjekker fullføringskrav, frister og gruppediskusjoner, og rapporterer feil som må rettes."
+                    :lastExecuted="sanityState.lastRun"
+                    :isLoading="sanityState.isLoading"
+                    :payload="sanityState.payload"
+                    :handleRefresh="runSanityCheck"
                 />
             </div>
 
@@ -13,6 +17,7 @@
                 <HealthCard
                     className="--uu"
                     title="UU-sjekk"
+                    description="UU-sjekken kontrollerer kursinnhold for tilgjengelighetskrav som overskriftsnivåer, bildebeskrivelser, tabellstruktur og inline-stiler, og identifiserer feil for å sikre universell utforming."
                     :lastExecuted="uuState.lastRun"
                     :isLoading="uuState.isLoading"
                     :payload="uuState.payload"
@@ -24,6 +29,7 @@
                 <HealthCard
                     className="--links"
                     title="Lenkesjekk"
+                    description="Lenkesjekken finner feil i lenker, som døde eller ugyldige, og gir en rapport per side med detaljer."
                     :lastExecuted="linksState.lastRun"
                     :isLoading="linksState.isLoading"
                     :payload="linksState.payload"
@@ -34,6 +40,7 @@
                 <HealthCard
                     className="--transcripts"
                     title="Videotekstsjekk"
+                    description="Videotekstingsjekken sørger for at videoer i kurset har korrekt teksting og rapporterer mangler for å sikre tilgjengelighet."
                     :lastExecuted="captionState.lastRun"
                     :isLoading="captionState.isLoading"
                     :payload="captionState.payload"
@@ -48,7 +55,7 @@
 </template>
 
 <script>
-// import SanityCheck from '../sanitycheck.js';
+import SanityCheck from '../sanitycheck.js';
 import UUCheck from '../uucheck.js';
 import LinksCheck from '../linkscheck.js';
 import CaptionCheck from '../captioncheck.js';
@@ -93,33 +100,39 @@ export default {
             const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             this.sanityState = { ...this.sanityState, isLoading: true };
 
-            // let payload = await SanityCheck(this.courseid);
-            // this.sanityState = { ...this.sanityState, isLoading: false, payload: payload, lastRun: nowFormatted };
+            let payload = await SanityCheck(this.courseid);
+            this.sanityState = { ...this.sanityState, isLoading: false, payload: payload, lastRun: nowFormatted };
             console.log("SANITY_CHECK", this.sanityState);
         },
         async runUUCheck() {
+            console.log("UU_CHECK_RUN");
             const now = new Date();
             const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             this.uuState = { ...this.uuState, isLoading: true };
 
             let payload = await UUCheck(this.courseid);
             this.uuState = { ...this.uuState, isLoading: false, payload: payload, lastRun: nowFormatted };
+            console.log("UU_CHECK", this.uuState);
         },
         async runLinksCheck() {
+            console.log("LINKS_CHECK_RUN");
             const now = new Date();
             const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             this.linksState = { ...this.linksState, isLoading: true };
 
             let payload = await LinksCheck(this.courseid);
             this.linksState = { ...this.linksState, isLoading: false, payload: payload, lastRun: nowFormatted };
+            console.log("LINKS_CHECK", this.linksState);
         },
         async runCaptionCheck() {
+            console.log("CAPTION_CHECK_RUN");
             const now = new Date();
             const nowFormatted = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} kl. ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             this.captionState = { ...this.captionState, isLoading: true };
 
             let payload = await CaptionCheck(this.courseid);
             this.captionState = { ...this.captionState, isLoading: false, payload: payload, lastRun: nowFormatted };
+            console.log("CAPTION_CHECK", this.captionState);
         }
     }
 }

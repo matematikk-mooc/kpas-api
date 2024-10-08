@@ -37,6 +37,11 @@ class CanvasController extends Controller
         return $titles;
     }
 
+    public function getCourseModuleItems($courseId, $moduleId)
+    {
+        $moduleItems = $this->canvasService->getCourseModuleItems($courseId, $moduleId);
+        return new SuccessResponse($moduleItems);
+    }
     public function getCourseData($courseId)
     {
         $course = $this->canvasService->getCourseData($courseId);
@@ -47,10 +52,25 @@ class CanvasController extends Controller
         $modules = $this->canvasService->getCoursePages($courseId);
         return new SuccessResponse($modules);
     }
+    public function getCourseFrontPage($courseId)
+    {
+        $frontPage = $this->canvasService->getCourseFrontPage($courseId);
+        return new SuccessResponse($frontPage);
+    }
     public function getCoursePageContent($courseId, $pageId)
     {
         $page = $this->canvasService->getCoursePageContent($courseId, $pageId);
         return new SuccessResponse($page);
+    }
+    public function getCourseDiscussionTopics($courseId)
+    {
+        $topics = $this->canvasService->getCourseDiscussionTopics($courseId);
+        return new SuccessResponse($topics);
+    }
+    public function getAssignmentsForCourse($courseId)
+    {
+        $assignments = $this->canvasService->getAssignmentsForCourse($courseId);
+        return new SuccessResponse($assignments);
     }
     public function getLinksValidationForCourse($courseId)
     {

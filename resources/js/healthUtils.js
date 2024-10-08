@@ -240,11 +240,13 @@ export const messageTypes = {
     error: { _color: "#e31b0c", _key: "error", nb: "Feil" },
     contrast: { _color: "#f88078", _key: "contrast", nb: "Kontrastfeil" },
     warning: { _color: "#ff9800", _key: "warning", nb: "Advarsler" },
-    note: { _color: "#e0e0e0", _key: "note", nb: "Merknader" },
+    note: { _color: "#0057b2", _key: "note", nb: "Merknader" },
     success: { _color: "#3b873e", _key: "success", nb: "Bra!" },
 };
 
 export const elementTypes = {
+    content: { _key: "content", nb: "Innhold" },
+    module: { _key: "module", nb: "Modul" },
     settings: { _key: "settings", nb: "Innstillinger" },
     links: { _key: "links", nb: "Lenker" },
     captions: { _key: "captions", nb: "Undertekster" },
@@ -257,10 +259,26 @@ export const elementTypes = {
 
 export const validationMessages = {
     course: {
-        noModules: { _key: "message.course.noModules", nb: "Moduler er ikke satt opp." },
+        noModules: { _key: "message.course.noModules", nb: "Fant ingen moduler." },
         noFrontPage: { _key: "message.course.noFrontPage", nb: "Forsiden er ikke satt opp." },
         frontPageNotFirstModule: { _key: "message.course.frontPageNotFirstModule", nb: "Forsiden er ikke i første modul." },
-        frontPageNotFirstItem: { _key: "message.course.frontPageNotFirstItem", nb: "Forsiden er ikke første element i første modul." }
+        frontPageNotFirstItem: { _key: "message.course.frontPageNotFirstItem", nb: "Forsiden er ikke første element i første modul." },
+        moduleNotPublished: { _key: "message.course.moduleNotPublished", nb: "Modulen er ikke publisert." },
+        moduleItemNotPublished: { _key: "message.course.moduleItemNotPublished", nb: "Innholdet er ikke publisert." },
+    },
+    content: {
+        missingRequirement: { _key: "message.content.missingRequirement", nb: "Mangler krav for innhold." },
+        missingRequirementMarkAsDone: { _key: "message.content.missingRequirementMarkAsDone", nb: "Mangler anbefalt krav type \"Merk ferdig\" for sider." },
+        missingRequirementSubmit: { _key: "message.content.missingRequirementSubmit", nb: "Mangler anbefalt krav type \"Innlevering Online\" for oppgaver." },
+        missingRequirementContribute: { _key: "message.content.missingRequirementContribute", nb: "Mangler anbefalt krav type \"Bidra\" for diskusjoner." },
+
+        missingSubmissionFileTypes: { _key: "message.content.missingSubmissionFileTypes", nb: "Mangler tillatte filtyper for innlevering." },
+        missingDueDate: { _key: "message.content.missingDueDate", nb: "Mangler innleveringsfrist." },
+        missingPeerReviewType: { _key: "message.content.missingPeerReviewType", nb: "Mangler anbefalt innstilling \"Manuell\" for felles vurdering av oppgaver." },
+        missingPeerReviewDueDateReminder: { _key: "message.content.missingPeerReviewDueDate", nb: "Manuell for felles vudering av oppgaver er anbefalt men husk å legge frist i kalenderen." },
+
+        missingDiscussionType: { _key: "message.content.missingDiscussionType", nb: "Mangler anbefalt innstilling \"threaded\" for diskusjonstype." },
+        missingGroupCategory: { _key: "message.content.missingGroupCategory", nb: "Mangler anbefalt gruppekategori dersom det er mange studenter." },
     },
     heading: {
         order: { _key: "message.heading.order", nb: "Feil i hierarkiet." }

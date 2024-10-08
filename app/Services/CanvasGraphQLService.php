@@ -27,6 +27,7 @@ class CanvasGraphQLService
                 name
                 modulesConnection {
                     nodes {
+                        _id
                         name
                         moduleItems {
                             content {
