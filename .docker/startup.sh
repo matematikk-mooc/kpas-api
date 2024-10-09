@@ -58,6 +58,7 @@ else
     echo $jwk | jq . > $jwtDir/jwtRS256.json
 fi
 chown -R 1000:1000 $jwtDir
+chmod -R u+rw,g+rw $jwtDir
 
 jwtConfigsDir="database/configs"
 if [ -d "$jwtConfigsDir" ]; then
@@ -82,6 +83,7 @@ else
 EOF
 fi
 chown -R 1000:1000 $jwtConfigsDir
+chmod -R u+rw,g+rw $jwtConfigsDir
 
 echo -e "\n\n\n[6/8] Setup LTI registration templates"
 echo -e "##############################################################\n"
@@ -105,16 +107,22 @@ for template in "$jwtTemplatesDir"/*.tpl; do
     echo -e "    - $filename: $outputExec"
 done
 chown -R 1000:1000 $jwtTemplatesOutputDir
+chmod -R u+rw,g+rw $jwtTemplatesOutputDir
 
 echo -e "\n\n\n[7/8] Run artisan commands"
 echo -e "##############################################################\n"
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan migrate --force
+su -s /bin/bash -c "
+    php artisan cache:clear &&
+    php artisan route:clear &&
+    php artisan view:clear &&
+    php artisan config:cache &&
+    php artisan route:cache &&
+    php artisan view:cache &&
+    php artisan migrate --force
+" www-data
+storageDir="/var/www/html/storage"
+chown -R 1000:1000 $storageDir
+chmod -R u+rw,g+rw $storageDir
 
 echo -e "\n\n\n[8/8] Start Supervisor"
 echo -e "##############################################################\n"
