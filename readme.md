@@ -48,13 +48,9 @@ The application leverages LTI (Learning Tools Interoperability) standards for se
 
 ### Setup and populate database
 
-It's advisable to directly import a database dump from the stage environment. Using the CLI method, which involves executing multiple API requests to populate the database, can be inefficient and time-consuming.
+You can use the CLI method to populate the database, which involves executing multiple API requests towards NSR and Canvas LMS. This can be inefficient and time-consuming, so if possible it's advisable to directly import a database dump from the stage environment.
 
-#### Connecting to remote database
-
-Alternatively, you can directly utilize the stage database by updating all variables prefixed with `DB_` in the `.env` file.
-
-#### CLI
+#### Option A: CLI
 
 1. Start up the application: `docker compose up --build`
 1. Log into the docker container: `docker exec -it kpas_app bash`
@@ -63,7 +59,41 @@ Alternatively, you can directly utilize the stage database by updating all varia
     - Nasjonalt skoleregister: `php artisan fetch_from:nsr`
     - Canvas: `php artisan fetch_from:canvas`
 
-### Setup LTI tool in Canvas LMS (TODO)
+#### Option B: Connecting to remote database
+
+Alternatively, you can directly utilize the stage database by updating all variables prefixed with `DB_` in the `.env` file.
+
+### Setup LTI tool in Canvas LMS
+
+#### Register a new LTI tool
+
+1. Login to Canvas LMS with an admin user
+1. Click on Administrator->Unit Canvas->Utviklernøkler
+1. Than click on the button that says + Utviklernøkler->LTI nøkkel
+1. Under Konfigurer->Metode select the "Lim inn json" option
+1. Then open the LTI template you want to add from `database/templates` like `rolle_grouper.json`
+1. Copy & paste the contents into "LTI 1,3 Konfigurasjon" field
+1. Fill out the other fields on the left side
+    1. "Nøkkelnavn" and "Merknader" with the title value from the json contents
+    1. "Eierens epost" with your email
+1. Then click save and activate the key by clicking the toggle button in the list view
+
+#### Add LTI tool to a course
+
+1. From the "Utviklernøkler" page in admin copy the LTI client ID value under "Detaljer" (ex. 37270000000000266)
+1. Paste your client ID into the `database/configs/config_platform.json` file
+1. Go into the course where you want to add the LTI tool
+1. Click on Innstillinger->Apper->Vis applikasjonskonfigurasjoner->+ App
+1. Under the "Konfigurasjonstype" field select the "Av klient-ID" option
+1. Paste the inn your client_id and save
+1. Then find the LTI tool in the list click on the cog icon->Grupperings-ID
+1. Copy & paste the value into your `config_platform.json` file under deployment array (ex. 1230:c2a0c788cf1e97c91dfa1d02933fb1994aa7e81c)
+1. Refresh and the LTI should show up in the side menu, click on it and you are all setup
+
+#### Add LTI tool globally
+
+1. Same proccess as above but instead of going into a course
+1. Click on Administrator->Unit Canvas->Innstillinger and add your LTI there
 
 ## Development
 
