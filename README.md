@@ -40,19 +40,29 @@ The application leverages LTI (Learning Tools Interoperability) standards for se
 
 ## Configuration
 
-### Configure docker compose
+### Docker Compose
 
 1. Open up `docker-compose.yml` and fill out:
-    - `APP_URL`
+    - `CANVAS_ACCESS_KEY_NAME`
     - `CANVAS_ACCESS_KEY`
+    - `APP_URL`
 
-### Setup and populate database
+## Development
+
+### Startup
+
+- Start: `docker compose up`
+    - Visit http://127.0.0.1:8080/api/filters
+
+- Stop: `docker compose down`
+
+### Populate database
 
 You can use the CLI method to populate the database, which involves executing multiple API requests towards NSR and Canvas LMS. This can be inefficient and time-consuming, so if possible it's advisable to directly import a database dump from the stage environment.
 
 #### Option A: CLI
 
-1. Start up the application: `docker compose up --build`
+1. Start up the application: `docker compose up`
 1. Log into the docker container: `docker exec -it kpas_app bash`
 2. Run database migrations: `php artisan migrate`
 3. Populate the database:
@@ -94,13 +104,6 @@ Alternatively, you can directly utilize the stage database by updating all varia
 
 1. Same proccess as above but instead of going into a course
 1. Click on Administrator->Unit Canvas->Innstillinger and add your LTI there
-
-## Development
-
-- Start: `docker compose up`
-    - Visit http://127.0.0.1:8080/api/filters
-
-- Stop: `docker compose down`
 
 ## Deployment (TODO)
 
