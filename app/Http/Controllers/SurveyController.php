@@ -54,6 +54,24 @@ class SurveyController extends Controller
 
     }
 
+    public function getSurveyWithQuestions(Request $request): SuccessResponse
+    {
+        $courseIdParam = $request->course_id;
+        $moduleIdIParam = $request->module_id;
+        $courseIdInt = !empty($courseIdParam) ? intval($courseIdParam) : null;
+        $moduleIdInt = !empty($moduleIdIParam) ? intval($moduleIdIParam) : null;
+
+        if ($courseIdInt == null) {
+            logger("SurveyController@getSurveyWithQuestions - Missing course_id");
+            return response()->json(['message' => 'Missing course_id'], 400);
+        }
+
+        logger("SurveyController@getSurveyWithQuestions");
+        $surveyRepository = new SurveyRepository();
+        $result = $surveyRepository->getSurveysWithQuestions($courseIdInt, $moduleIdInt);
+        return new SuccessResponse($result);
+    }
+
     public function getUserSubmission(int $surveyId, int $userId): SuccessResponse
     {
         logger("SurveyController@getUserSubmission");

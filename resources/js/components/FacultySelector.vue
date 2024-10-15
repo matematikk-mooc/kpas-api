@@ -6,14 +6,8 @@
     >
     <Message type="default">
       <label>
-        <input
-          name="faculty"
-          type="radio"
-          :value="faculty"
+        <input type="radio" name="faculty" :value="faculty" :checked="isFacultySelected(faculty)" @change="handleFacultySelect(faculty)" />
 
-          v-model="chosenFaculty"
-          @input="this.$emit('update:modelValue', faculty)"
-        />
         {{ faculty }}
       </label>
     </Message>
@@ -30,23 +24,19 @@ import Message from './Message.vue';
     },
     props: {
       faculties: { type: Array, default: () => [] },
-      modelValue: String,
-      currentFaculty: String
+      selectedFaculty: Object
     },
-    created() {
-      console.log("current Faculty: ", this.currentFaculty);
-      this.chosenFaculty = this.faculties.find(faculty => faculty === this.currentFaculty);
-    },
-
-    data() {
-      return {
-        chosenFaculty: null,
+    computed: {
+      chosenFaculty() {
+        return this.selectedFaculty != null;
       }
     },
-
-    watch: {
-      chosenFaculty(value) {
-        this.$emit('input', value);
+    methods: {
+      isFacultySelected(faculty) {
+        return this.selectedFaculty?.startsWith(faculty) ?? false;
+      },
+      handleFacultySelect(faculty) {
+        this.$emit('updateSelectedFaculty', faculty);
       }
     }
   }
@@ -58,28 +48,30 @@ import Message from './Message.vue';
     margin: 5px;
     width: 100%;
   }
+  
   label {
     margin: 0;
     display: inline-block;
     width: 100%;
   }
+
   .faculty-selector {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-  }
-  .faculty-item {
-    width: 50%;
-    box-sizing: border-box;
-    padding: 5px;
-  }
-  @media only screen and (max-width: 900px) {
-    .faculty-item {
-      width: 100%;
-    }
-    .faculty-selector {
-      flex-direction: column;
-    }
+    gap: 10px;
   }
 
+  .faculty-selector .message {
+    margin: 0px;
+  }
+
+  .faculty-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 300px;
+    min-width: 250px;
+    width: 100%;
+  }
 </style>
