@@ -27,9 +27,9 @@ services:
       kpas_db:
         condition: service_healthy
     environment:
-      CANVAS_ACCESS_KEY_NAME: ""  # Use a unique name for your access key like "John Doe", final output in Canvas: Rolle og grupper (John Doe)
-      CANVAS_ACCESS_KEY: "" # Generate a new access key here: https://bibsys.test.instructure.com/profile/settings
-      APP_URL: "" # Generate ngrok tunnel URL (eks. https://udir-kpas-api-john.eu.ngrok.io): ngrok http http://localhost:8080 --subdomain udir-kpas-api-<ReplaceWithYourName>
+      APP_URL: "https://udir-kpas-api-marius.eu.ngrok.io" # Start ngrok tunnel: ngrok http http://localhost:8080 --subdomain udir-kpas-api-<ReplaceWithYourName>
+      CANVAS_ACCESS_KEY: "3727~TP2cRTuPK262xBEc8LvwyLV6v2Gmu9DWABW4hmLFFBH7Y6tcHeTCahf2XTtJYkf9" # Generate a new access key here: https://bibsys.test.instructure.com/profile/settings
+      CANVAS_ACCESS_KEY_NAME: "marius" # Use a unique name for your access key like "john", final output: kpas-local-<CANVAS_ACCESS_KEY_NAME>-001
     volumes:
       - ./:/var/www/html
       - .docker/nginx.conf:/etc/nginx/nginx.conf
