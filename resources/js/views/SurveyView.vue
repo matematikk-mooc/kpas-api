@@ -10,14 +10,16 @@
 
       <fieldset v-if="question.question_type == 'likert_scale_5pt'">
         <legend class="survey-question-title">{{question.text}}</legend>
-        <label class="survey-likert-scale-option" v-for="(value, i) in likert5ops" :key="i">
-          <input type="radio"
-                 :id="'likert_'+question.id+'_'+i"
-                 :name="'likert_'+question.id"
-                 :required="question.required"
-                 :value="i" v-model="answers[question.id]">
-          <span>{{value}}</span>
-        </label>
+        <div class="survey-options-container">
+          <label class="survey-likert-scale-option" v-for="(value, i) in likert5ops" :key="i">
+            <input type="radio"
+                  :id="'likert_'+question.id+'_'+i"
+                  :name="'likert_'+question.id"
+                  :required="question.required"
+                  :value="i" v-model="answers[question.id]">
+            <span>{{value}}</span>
+          </label>
+        </div>
       </fieldset>
 
       <div v-if="question.question_type == 'essay'">

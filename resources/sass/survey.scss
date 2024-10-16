@@ -9,7 +9,13 @@
   padding: 1rem 0;
   margin: 1rem 0;
 }
-
+.survey-options-container {
+  display: flex;
+  flex-direction: column; 
+  label {
+    width: unset;
+  }
+}
 .survey-likert-scale-option {
   margin-right: 25px;
 }
