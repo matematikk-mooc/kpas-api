@@ -330,6 +330,24 @@ class CanvasService
         return $this->request($url, 'GET', [], [], true);
     }
 
+    public function getCourseModuleItems($courseId, $moduleId)
+    {
+        $url = "courses/{$courseId}/modules/{$moduleId}/items";
+        return $this->request($url, 'GET', [], [], true);
+    }
+
+    public function getCourseDiscussionTopics($courseId)
+    {
+        $url = "courses/{$courseId}/discussion_topics";
+        return $this->request($url, 'GET', [], [], true);
+    }
+
+    public function getAssignmentsForCourse(int $courseId)
+    {
+        $url = "courses/{$courseId}/assignments";
+        return $this->request($url, 'GET', [], [], true);
+    }
+
     public function getEnrollments(int $userId)
     {
         try {
@@ -529,9 +547,21 @@ class CanvasService
         return $this->request($url, 'GET');
     }
 
+    public function getCourseFrontPage(int $courseId)
+    {
+        $url = "courses/{$courseId}/front_page";
+        return $this->request($url, 'GET');
+    }
+
     public function getCoursePageContent(int $courseId, int $pageId)
     {
         $url = "courses/{$courseId}/pages/{$pageId}";
+        return $this->request($url, 'GET');
+    }
+
+    public function getLinksValidationForCourse(int $courseId)
+    {
+        $url = "courses/{$courseId}/link_validation";
         return $this->request($url, 'GET');
     }
 }

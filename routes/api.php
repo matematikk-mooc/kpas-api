@@ -43,6 +43,7 @@ Route::group(['prefix' => 'group'], function () {
 Route::group(['prefix' => 'course'], function () {
     Route::get('/{courseId}/groups', 'GroupController@getCourseGroups')->middleware('lti');
     Route::get('/{courseId}/category/{categoryId}/groups', 'GroupController@getCourseGroupsByCategory')->middleware('lti');
+    Route::get('/{courseId}/moduleslist', 'CourseController@getModulesList');
     Route::get('/{courseId}/modules', 'ModuleController@moduleStatistics');
     Route::get('/{courseId}/modules/count', 'ModuleController@moduleStatisticsCount');
 
@@ -128,6 +129,11 @@ Route::get('settings/highlighted', 'CourseSettingsController@getHighLightedCours
 Route::get('courses/settings', 'CourseSettingsController@getCourseSettingsForAllCourses');
 
 Route::get('course/{courseId}/moduletitles', 'CanvasController@getModuleTitles');
+Route::get('course/{courseId}/modules/{moduleId}/items', 'CanvasController@getCourseModuleItems');
+Route::get('course/{courseId}/frontpage', 'CanvasController@getCourseFrontPage')->middleware('lti');
+Route::get('course/{courseId}/discussion_topics', 'CanvasController@getCourseDiscussionTopics')->middleware('lti');
+Route::get('course/{courseId}/assignments', 'CanvasController@getAssignmentsForCourse')->middleware('lti');
 Route::get('course/{courseId}/coursedata', 'CanvasController@getCourseData')->middleware('lti');
 Route::get('course/{courseId}/coursepages', 'CanvasController@getCoursePages')->middleware('lti');
 Route::get('course/{courseId}/coursepage/{pageId}', 'CanvasController@getCoursePageContent')->middleware('lti');
+Route::get('course/{courseId}/linksvalidation', 'CanvasController@getLinksValidationForCourse')->middleware('lti');

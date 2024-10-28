@@ -3,7 +3,7 @@
         <div class="health-card-header">
             <div class="health-card-header-title">
                 <h2>{{ title }}</h2>
-                <p v-if="hasData && !showDetails">Sist kjørt {{ lastExecuted }}</p>
+                <p v-if="!showDetails">{{ hasData ? `Sist kjørt ${lastExecuted}` : description }}</p>
             </div>
 
             <div class="health-card-header-button" v-if="hasData && !showDetails">
@@ -32,7 +32,7 @@
                 <p>
                     <b :class="hasErrors ? '--error' : ''">{{ hasErrors ? `${this.payload.messageTypes.error} feil` : "OK" }}</b>
 
-                    {{ totalPages }} sider sjekket.{{ hasData ? "" : " Ingen feil funnet." }}
+                    <span v-if="!hidePagesChecked">{{ totalPages }} sider sjekket.{{ hasData ? "" : " Ingen feil funnet." }}</span>
                 </p>
             </div>
 
@@ -80,17 +80,22 @@
 </template>
 
 <script>
-import { messageTypes } from "../uucheck";
+import { messageTypes } from "../healthUtils";
 
 export default {
     props: {
         className: String,
         title: String,
+        description: String,
         lastExecuted: String,
         isLoading: Boolean,
         payload: Object,
         handleRefresh: Function,
         notSupported: Boolean,
+        hidePagesChecked: {
+            type: Boolean,
+            default: false
+        }
     },
     components: {},
     data() {
@@ -105,14 +110,14 @@ export default {
             return typeof this.lastExecuted == "string" && this.lastExecuted != "";
         },
         hasErrors() {
-            return this.payload.messageTypes.error > 0;
+            return this.payload?.messageTypes?.error > 0;
         },
         totalMessagesCount() {
             let returnCount = 0;
 
-            const messageTypeKeys = Object.keys(this.payload.messageTypes);
+            const messageTypeKeys = this.payload?.messageTypes != null ? Object.keys(this.payload?.messageTypes) : [];
             for (const messageTypeKeysItem of messageTypeKeys) {
-                returnCount += this.payload.messageTypes[messageTypeKeysItem];
+                returnCount += this.payload?.messageTypes[messageTypeKeysItem];
             }
 
             return returnCount;
@@ -123,12 +128,12 @@ export default {
         categories() {
             const returnMessageTypes = [];
 
-            const messageTypeKeys = Object.keys(this.payload.messageTypes);
+            const messageTypeKeys = this.payload?.messageTypes != null ? Object.keys(this.payload?.messageTypes) : [];
             for (const messageTypeKeysItem of messageTypeKeys) {
                 if (this.payload.messageTypes[messageTypeKeysItem] > 0) {
                     const title = messageTypes[messageTypeKeysItem].nb;
                     const color = messageTypes[messageTypeKeysItem]._color;
-                    const count = this.payload.messageTypes[messageTypeKeysItem];
+                    const count = this.payload?.messageTypes[messageTypeKeysItem];
 
                     returnMessageTypes.push({
                         title: title,
@@ -143,9 +148,9 @@ export default {
         totalPages() {
             let returnCount = 0;
 
-            const contentTypeKeys = Object.keys(this.payload.contentTypes);
+            const contentTypeKeys = this.payload?.contentTypes != null ? Object.keys(this.payload?.contentTypes) : [];
             for (const contentTypeKeysItem of contentTypeKeys) {
-                returnCount += this.payload.contentTypes[contentTypeKeysItem];
+                returnCount += this.payload?.contentTypes[contentTypeKeysItem];
             }
 
             return returnCount;

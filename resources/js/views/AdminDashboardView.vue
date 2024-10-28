@@ -116,7 +116,7 @@
 
       iframeresize() {
         this.$nextTick(function () {
-          var h = this.$refs.ltiView.clientHeight + 50
+          var h = document.body.clientHeight + 50
 
           parent.postMessage(
           JSON.stringify({ subject: "lti.frameResize", height: h }),

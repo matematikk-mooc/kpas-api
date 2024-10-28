@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   kpas_db:
     image: mysql:8.0
