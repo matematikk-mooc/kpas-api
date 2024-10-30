@@ -51,7 +51,8 @@ class DiplomaV2Service {
         $lastModuleKey = key(array_slice($modulesForUser, -1, 1, true));
 
         foreach ($modulesForUser as $moduleKey => $moduleItem) {
-            $moduleObject = new DiplomaModule($moduleItem->id, $moduleItem->name,  $moduleItem->completed_at);
+            $completedAt = property_exists($moduleItem, 'completed_at') ? $moduleItem->completed_at : null;
+            $moduleObject = new DiplomaModule($moduleItem->id, $moduleItem->name,  $completedAt);
             $modulePages = $moduleItem->items;
             $lastPageKey = key(array_slice($modulePages, -1, 1, true));
 

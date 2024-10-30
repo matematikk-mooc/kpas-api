@@ -62,7 +62,7 @@ class CourseController extends Controller
         try {
             $response = $this->canvasGraphQLService->modulesConnection($courseId);
             if (!$response) return [];
-    
+
             $course = $response['data']['course'];
             $modules = $course['modulesConnection']['nodes'];
 

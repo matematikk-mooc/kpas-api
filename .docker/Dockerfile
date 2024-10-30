@@ -46,8 +46,8 @@ RUN mkdir -p $NVM_DIR \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # 3. Install gomplate
-RUN curl -L https://github.com/hairyhenderson/gomplate/releases/download/v3.11.3/gomplate_linux-amd64-slim -o /usr/local/bin/gomplate && \
-    chmod +x /usr/local/bin/gomplate
+COPY --from=hairyhenderson/gomplate:stable /gomplate /usr/local/bin/gomplate
+RUN chmod +x /usr/local/bin/gomplate
 
 ##############################################################
 # Startup
