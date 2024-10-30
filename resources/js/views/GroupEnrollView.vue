@@ -122,6 +122,10 @@
     },
     data() {
       return {
+        canvasStudentRoleType: "StudentEnrollment",
+        canvasPrincipalRoleType: "Skoleleder",
+        everythingIsReady: false,
+        information: "Laster inn din rolle...",
         courseId: -1,
         roleIsSet: true,
         connectedToParent: false,
@@ -282,7 +286,7 @@
           const params = Object.assign({},
             this.groups, {
             cookie: window.cookie,
-            role: this.isLeader ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
+            role: this.wantToBePrincipal ? this.canvasPrincipalRoleType : this.canvasStudentRoleType,
             faculty: this.selectedFaculty,
             county: this.selectedGroups?.Fylke,
             community: this.selectedGroups?.Kommune,
@@ -320,7 +324,7 @@
       async enrollUser() {
         try {
           const enrollmentRes = await api.post('/enrollment', {
-            role: this.isLeader ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
+            role: this.wantToBePrincipal ? this.canvasPrincipalRoleType : this.canvasStudentRoleType,
             cookie: window.cookie,
           });
 

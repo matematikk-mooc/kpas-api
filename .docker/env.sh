@@ -1,13 +1,14 @@
 #!/bin/bash
+set -e
 
 if [ -z "$ENV_FILE_PATH" ]; then
-    echo "ERROR: ENV_FILE_PATH is not set. Please define ENV_FILE_PATH before running the script."
-    exit 1
+  echo "ERROR: ENV_FILE_PATH is not set. Please define ENV_FILE_PATH before running the script."
+  exit 1
 fi
 
 if [ ! -f "$ENV_FILE_PATH" ]; then
-    echo "WARNING: .env file not found at $ENV_FILE_PATH. Skipping import."
-    exit 1
+  echo "WARNING: .env file not found at $ENV_FILE_PATH. Skipping import."
+  exit 1
 fi
 
 echo -e "INFO: Importing environment variables from $ENV_FILE_PATH\n"
@@ -25,7 +26,7 @@ while IFS='=' read -r key value; do
       echo "    - ERROR: $key"
     fi
   fi
-done < "$ENV_FILE_PATH"
+done <"$ENV_FILE_PATH"
 
 set +o allexport
 echo -e "\nINFO: Environment variables import completed."
