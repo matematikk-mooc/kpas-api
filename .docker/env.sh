@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 if [ -z "$ENV_FILE_PATH" ]; then
   echo "ERROR: ENV_FILE_PATH is not set. Please define ENV_FILE_PATH before running the script."
