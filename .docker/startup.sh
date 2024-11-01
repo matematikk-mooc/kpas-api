@@ -14,7 +14,7 @@ if [ ! -f "$ENV_FILE_PATH" ]; then
     cp $TEMPLATE_PATH $ENV_FILE_PATH
 fi
 
-echo "export ENV_FILE_PATH=\"$ENV_FILE_PATH\" && source $ENV_SCRIPT_PATH" >> /root/.bashrc
+echo "export ENV_FILE_PATH=\"$ENV_FILE_PATH\" && source $ENV_SCRIPT_PATH" >>/root/.bashrc
 chmod +x /root/.bashrc
 source /root/.bashrc
 
@@ -55,7 +55,7 @@ else
     echo -e "  - Creating new JWT key pair $jwtDir/jwtRS256.jwk..."
     b64_header=$(echo -n '{"kid":"2","alg":"RS256"}' | openssl base64 -e -A | tr '+/' '-_' | tr -d '=')
     jwk=$(pem-jwk $jwtDir/jwtRS256.key.pub | jq '. + {"kid":"2","alg":"RS256","use":"enc"}')
-    echo $jwk | jq . > $jwtDir/jwtRS256.json
+    echo $jwk | jq . >$jwtDir/jwtRS256.json
 fi
 chown -R 1000:1000 $jwtDir
 chmod -R u+rw,g+rw $jwtDir
@@ -68,7 +68,7 @@ else
     mkdir -p "$jwtConfigsDir"
 
     echo -e "  - Creating empty JWT config template $jwtConfigsDir/config_platform.json..."
-    cat <<EOF > $jwtConfigsDir/config_platform.json
+    cat <<EOF >$jwtConfigsDir/config_platform.json
 {
     "https://canvas.test.instructure.com": {
         "client_id": "",

@@ -1,75 +1,73 @@
 <template>
   <div>
-      <span v-if="institutionType === 'school'">
-        Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt skoleregister.
-      </span>
-      <span v-if="institutionType === 'kindergarten'">
-        Listene viser alle fylker, kommuner og organisasjoner i Nasjonalt barnehageregister.
-      </span>
+    <div class="selectors-groups">
+      <label class="select-county">
+        <p>Velg fylke</p>
 
-      <Message type="error" v-if="hasFormError">
-        Feltene er obligatoriske, vennligst velg en på alle feltene.
-      </Message>
-      <div class="selectors-groups">
-      <label class="select-county">Fylke:<br/>
         <v-select
-          v-model="chosenCounty"
-          :options="counties"
           label="Navn"
-          :placeholder="placeholderCounty"
-          :close-on-select="true"
-          @blur="validateOnBlur(chosenCounty)"
-          :clearable="false">
-        </v-select>
+          v-model="selectedCounty"
+          placeholder="Fylke"
+          :options="countiesState?.payload ?? []"
+          :loading="countiesState.isLoading == true"
+          v-if="countiesState.payload != null"
+          @update:modelValue="handleCountyChange($event)"
+        />
+
+        <Message type="error" v-if="countiesState.error != null">{{ countiesState.error }}</Message>
       </label>
-      <label class="select-community">
-        Kommune:<br/>
+
+      <label class="select-community" v-if="selectedCounty != null">
+        <p>Velg kommune</p>
+
         <v-select
-          v-model="chosenCommunity"
-          :disabled="!communities.length"
-          :options="communities"
           label="Navn"
-          :placeholder="placeholderCommunity"
-          :close-on-select="true"
-          :clearable="false"
-           @blur="validateOnBlur(chosenCommunity)"
-          :reset-on-options-change="true">
-        </v-select>
+          v-model="selectedCommunity"
+          placeholder="Kommune"
+          :options="communitiesState?.payload ?? []"
+          :loading="communitiesState.isLoading == true"
+          v-if="communitiesState.payload != null"
+          @update:modelValue="handleCommunityChange($event)"
+        />
+
+        <Message type="error" v-if="communitiesState.error != null">{{ communitiesState.error }}</Message>
       </label>
-      <label class="select-school" v-if="institutionType === 'school'" >
-        Skole:<br/>
+
+      <label class="select-school" v-if="selectedCounty != null && selectedCommunity != null && institutionType === 'school'">
+        <p>Velg skole</p>
+
         <v-select
-          v-model="chosenInstitution"
-          :disabled="!schools.length"
-          :options="schools"
-          label="FulltNavn"
-          :placeholder="placeholderSchool"
-          :close-on-select="true"
-          :clearable="false"
-           @blur="validateOnBlur(chosenInstitution)"
-          :reset-on-options-change="true">
-        </v-select>
+          label="Navn"
+          v-model="selectedSchool"
+          placeholder="Skole"
+          :options="schoolsState?.payload ?? []"
+          :loading="schoolsState.isLoading == true"
+          v-if="schoolsState.payload != null"
+          @update:modelValue="handleSchoolChange($event)"
+        />
+
+        <Message type="error" v-if="schoolsState.error != null">{{ schoolsState.error }}</Message>
       </label>
-      <label class="select-school" v-if="institutionType === 'kindergarten'">
-        Barnehage:<br/>
+
+      <label class="select-kindergarten" v-if="selectedCounty != null && selectedCommunity != null && institutionType === 'kindergarten'">
+        <p>Velg barnehage</p>
+
         <v-select
-          v-model="chosenInstitution"
-          :disabled="!kindergartens.length"
-          :options="kindergartens"
-          label="FulltNavn"
-          :placeholder="placeholderKindergarten"
-          :close-on-select="true"
-          :clearable="false"
-           @blur="validateOnBlur(chosenInstitution)"
-          :reset-on-options-change="true">
-        </v-select>
+          label="Navn"
+          v-model="selectedKindergarten"
+          placeholder="Barnehage"
+          :single-line="true"
+          density="compact"
+          :options="kindergartensState?.payload ?? []"
+          :loading="kindergartensState.isLoading == true"
+          v-if="kindergartensState.payload != null"
+          @update:modelValue="handleKindergartenChange($event)"
+        />
+
+        <Message type="error" v-if="kindergartensState.error != null">{{ kindergartensState.error }}</Message>
       </label>
     </div>
-    </div>
-
-    <Message type="error" v-if="error">
-      {{error}}
-    </Message>
+  </div>
 </template>
 
 <script>
@@ -82,201 +80,221 @@
     components: {
       Message
     },
+
     props: {
       courseId: Number,
       institutionType: String,
-      currentGroups: Object
+      selectedGroups: Object,
     },
 
     data() {
       return {
-        isLoading: false,
-        selectedgroups: {},
-        counties: [],
-        communities: [],
-        schools: [],
-        kindergartens: [],
-        chosenCounty: null,
-        chosenCommunity: null,
-        chosenInstitution: null,
-        error: '',
-        hasFormError: false,
-        placeholderSchool: this.currentGroups['Skole'] ? this.currentGroups['Skole'].name : 'Skole',
-        placeholderKindergarten: this.currentGroups['Barnehage'] ? this.currentGroups['Barnehage'].name : 'Barnehage',
-        placeholderCommunity: this.currentGroups['Kommune'] ? this.currentGroups['Kommune'].name : 'Kommune',
-        placeholderCounty: this.currentGroups['Fylke'] ? this.currentGroups['Fylke'].name : 'Fylke',
+        countiesState: {
+          payload: null,
+          isLoading: true,
+          error: null
+        },
+        communitiesState: {
+          countyNumber: null,
+          payload: null,
+          isLoading: true,
+          error: null
+        },
+        schoolsState: {
+          communityNumber: null,
+          payload: null,
+          isLoading: true,
+          error: null
+        },
+        kindergartensState: {
+          communityNumber: null,
+          payload: null,
+          isLoading: true,
+          error: null
+        },
       }
-    },
-
-    methods: {
-      clearError() {
-        this.error = "";
-        this.hasFormError = false;
-      },
-      reportError(e) {
-        this.error = e + " Prøv igjen senere og ta kontakt med kompetansesupport@udir.no dersom feilen vedvarer.";
-        this.$parent.iframeresize();
-      },
-      async getCounties() {
-        try {
-          const result = await api.get('/nsr/counties');
-          this.counties = result.data.result;
-          this.clearError();
-        } catch (e) {
-          this.reportError("Kunne ikke hente fylker fra nasjonalt skoleregister.");
-        }
-      },
-      async getCommunities(countyNo) {
-        try {
-          const result = await api.get(`/nsr/counties/${countyNo}/communities`);
-          this.communities = result.data.result;
-          this.clearError();
-        } catch (e) {
-          this.reportError("Kunne ikke hente kommuner fra nasjonalt skoleregister.");
-        }
-      },
-
-      async getSchools(communityNo) {
-        try {
-          const result = await api.get(`/nsr/communities/${communityNo}/schools`);
-          this.schools = result.data.result;
-          this.clearError();
-        } catch (e) {
-          this.reportError("Kunne ikke hente skoler fra kpas-api.");
-        }
-      },
-      async getKindergartens(communityNo) {
-        try {
-          const result = await api.get(`/kindergartens/${communityNo}`);
-          this.kindergartens = result.data.result;
-          this.clearError();
-        } catch (e) {
-          this.reportError("Kunne ikke hente barnehager fra kpas-api.");
-        }
-      },
-
-      getCountyGroup() {
-        return {
-          name: this.chosenCounty.Navn,
-          description: `courseId:${this.courseId}:county:${this.chosenCounty.Fylkesnr}:${this.chosenCounty.OrgNr}`,
-          courseId: `${this.courseId}`,
-          countyId: `${this.chosenCounty.Fylkesnr}`,
-          orgNr: `${this.chosenCounty.OrgNr}`,
-        };
-      },
-      validateOnBlur(formValue) {
-        if (formValue === null || formValue.length < 1) {
-          this.hasFormError=true
-        }
-      },
-      getCommunityGroup() {
-        if(this.chosenCommunity.Navn === "Annen"){
-          return {
-            name: `${this.chosenCommunity.Navn}`,
-            description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
-            courseId: `${this.courseId}`,
-            countyId: 99,
-            communityId: 99,
-            orgNr: `${this.chosenCommunity.OrgNr}`,
-          };
-        }
-        return {
-          name: `${this.chosenCommunity.Navn}`,
-          description: `courseId:${this.courseId}:community:${this.chosenCommunity.Kommunenr}:${this.chosenCommunity.OrgNr}`,
-          courseId: `${this.courseId}`,
-          countyId: `${this.chosenCounty.Fylkesnr}`,
-          communityId: `${this.chosenCommunity.Kommunenr}`,
-          orgNr: `${this.chosenCommunity.OrgNr}`,
-        };
-      },
-      getInstitutionGroup() {
-        if (this.chosenInstitution.FulltNavn === "Annen"){
-          return {
-            name: `${this.chosenInstitution.FulltNavn}`,
-            description: `courseId:${this.courseId}:${this.institutionType}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
-            courseId: `${this.courseId}`,
-            countyId: 99,
-            communityId: 99,
-            orgNr: `${this.chosenInstitution.OrgNr}`,
-          };
-        }
-        return {
-          name: `${this.chosenInstitution.FulltNavn}`,
-          description: `courseId:${this.courseId}:${this.institutionType}:${this.chosenInstitution.NSRId}:${this.chosenInstitution.OrgNr}`,
-          courseId: `${this.courseId}`,
-          countyId: `${this.chosenCounty.Fylkesnr}`,
-          communityId: `${this.chosenCommunity.Kommunenr}`,
-          orgNr: `${this.chosenInstitution.OrgNr}`,
-        };
-      },
-      async assignToGroups() {
-        this.$emit('updateGroups', this.selectedgroups);
-      },
     },
 
     async created() {
       await this.getCounties();
-      console.log(this.currentGroups)
-    },
-    updated() {
-      this.$emit('update');
+      if (this.selectedCounty != null) await this.getCommunities(this.selectedCounty.Fylkesnr);
+      if (this.institutionType == 'school' && this.selectedCommunity != null) await this.getSchools(this.selectedCommunity.Kommunenr);
+      else if (this.institutionType == 'kindergarten' && this.selectedCommunity != null) await this.getKindergartens(this.selectedCommunity.Kommunenr);
     },
 
     watch: {
-      async chosenCounty(county) {
-        delete this.selectedgroups.community;
-        delete this.selectedgroups.institution;
+      selectedGroups: {
+        deep: true,
+        handler: async function () {
+          const newCountyFylkesnr = this.selectedCounty?.Fylkesnr;
+          if (newCountyFylkesnr != null && newCountyFylkesnr != this.communitiesState?.countyNumber) await this.getCommunities(newCountyFylkesnr);
+          const newCommunityKommunenr = this.selectedCommunity?.Kommunenr;
+          
+          const fetchSchools = this.institutionType == 'school' && newCommunityKommunenr != null && newCommunityKommunenr != this.schoolsState?.communityNumber;
+          if (fetchSchools) await this.getSchools(newCommunityKommunenr);
 
-        this.communities = [];
-        this.schools = [];
-        this.kindergartens = [];
-
-        this.placeholderCommunity = 'Kommune';
-        this.placeholderSchool = 'Skole';
-        this.placeholderKindergarten = 'Barnehage';
-
-        if (county == null) {
-          this.selectedgroups = {};
-          this.placeholderCounty = 'Fylke';
-        } else {
-          this.selectedgroups.county = this.getCountyGroup();
-          this.assignToGroups();
-          await this.getCommunities(county.Fylkesnr);
+          const fetchKindergartens = this.institutionType == 'kindergarten' && newCommunityKommunenr != null && newCommunityKommunenr != this.kindergartensState?.communityNumber;
+          if (fetchKindergartens) await this.getKindergartens(newCommunityKommunenr);
         }
+      }
+    },
+
+    computed: {
+      selectedCounty() {
+        if (this.selectedGroups?.Fylke?.name == null) return null;
+        return this.countiesState.payload?.find(county => 
+          county.Navn?.replace(" ", "")?.toLowerCase() == this.selectedGroups.Fylke.name?.replace(" ", "")?.toLowerCase()
+        );
       },
-      async chosenCommunity(community) {
-        delete this.selectedgroups.institution;
-
-        this.schools = [];
-        this.kindergartens = [];
-        this.placeholderSchool = 'Skole';
-        this.placeholderKindergarten = 'Barnehage';
-
-
-        if (community == null) {
-          delete this.selectedgroups.community;
-          this.placeholderCommunity = 'Kommune';
-        } else {
-          this.selectedgroups.community = this.getCommunityGroup();
-          this.assignToGroups();
-
-          if (this.institutionType === "school") {
-            await this.getSchools(community.Kommunenr);
-          } else if (this.institutionType === "kindergarten") {
-            await this.getKindergartens(community.Kommunenr);
-          }
-        }
+      selectedCommunity() {
+        if (this.selectedGroups?.Kommune?.name == null) return null;
+        return this.communitiesState.payload?.find(community => 
+          community.Navn?.replace(" ", "")?.toLowerCase() == this.selectedGroups.Kommune.name?.replace(" ", "")?.toLowerCase()
+        );
       },
-      async chosenInstitution(institution) {
-        if (institution == null) {
-          delete this.selectedgroups.institution;
+      selectedSchool() {
+        if (this.selectedGroups?.Skole?.name == null) return null;
+        return this.schoolsState.payload?.find(school =>
+          school.FulltNavn?.replace(" ", "")?.toLowerCase() == this.selectedGroups.Skole.name?.replace(" ", "")?.toLowerCase()
+        );
+      },
+      selectedKindergarten() {
+        if (this.selectedGroups?.Barnehage?.name == null) return null;
+        return this.kindergartensState.payload?.find(kindergarten => 
+          kindergarten.FulltNavn?.replace(" ", "")?.toLowerCase() == this.selectedGroups.Barnehage.name?.replace(" ", "")?.toLowerCase()
+        );
+      }
+    },
 
-          this.placeholderSchool = 'Skole';
-          this.placeholderKindergarten = 'Barnehage';
-        } else {
-          this.selectedgroups.institution = this.getInstitutionGroup();
-          this.assignToGroups();
+    methods: {
+      async getCounties() {
+        this.countiesState.isLoading = true;
+        this.countiesState.payload = null;
+        this.countiesState.error = null;
+
+        await api.get('/nsr/counties')
+          .then((response) => this.countiesState.payload = response.data.result)
+          .catch(() => this.countiesState.error = "Kunne ikke hente fylker fra nasjonalt skoleregister.");
+
+        this.countiesState.isLoading = false;
+      },
+      handleCountyChange(newCounty){
+        const newSelectedGroups = this.selectedGroups;
+        delete newSelectedGroups.Fylke;
+        delete newSelectedGroups.Kommune;
+        delete newSelectedGroups.Skole;
+        delete newSelectedGroups.Barnehage;
+
+        if (newCounty != null) {
+          newSelectedGroups.Fylke = {
+            name: newCounty.Navn,
+            description: `courseId:${this.courseId}:county:${newCounty.Fylkesnr}:${newCounty.OrgNr}`,
+            courseId: `${this.courseId}`,
+            countyId: `${newCounty.Fylkesnr}`,
+            orgNr: `${newCounty.OrgNr}`,
+          };
         }
+
+        this.$emit('updateSelectedGroups', newSelectedGroups);
+      },
+
+      async getCommunities(countyNumber) {
+        this.communitiesState.isLoading = true;
+        this.communitiesState.payload = null;
+        this.communitiesState.error = null;
+
+        await api.get(`/nsr/counties/${countyNumber}/communities`)
+          .then((response) => this.communitiesState.payload = response.data.result)
+          .catch(() => this.communitiesState.error = "Kunne ikke hente kommuner fra nasjonalt skoleregister.");
+
+        this.communitiesState.countyNumber = this.selectedCounty?.Fylkesnr;
+        this.communitiesState.isLoading = false;
+        
+      },
+      handleCommunityChange(newCommunity){
+        const newSelectedGroups = { ...this.selectedGroups };
+        delete newSelectedGroups.Kommune;
+        delete newSelectedGroups.Skole;
+        delete newSelectedGroups.Barnehage;
+
+        if (newCommunity != null) {
+          const isOther = newCommunity.Navn == "Annen";
+          newSelectedGroups.Kommune = {
+            name: `${newCommunity.Navn}`,
+            description: `courseId:${this.courseId}:community:${newCommunity.Kommunenr}:${newCommunity.OrgNr}`,
+            courseId: `${this.courseId}`,
+            countyId: isOther ? 99 : `${this.selectedCounty.Fylkesnr}`,
+            communityId: isOther ? 99 : `${newCommunity.Kommunenr}`,
+            orgNr: `${newCommunity.OrgNr}`,
+          };
+
+          if (this.institutionType == 'school') this.getSchools(newCommunity.Kommunenr);
+          else if (this.institutionType == 'kindergarten') this.getKindergartens(newCommunity.Kommunenr);
+        }
+
+        this.$emit('updateSelectedGroups', newSelectedGroups);
+      },
+
+      async getSchools(communityNumber) {
+        this.schoolsState.isLoading = true;
+        this.schoolsState.payload = null;
+        this.schoolsState.error = null;
+
+        await api.get(`/nsr/communities/${communityNumber}/schools`)
+          .then((response) => this.schoolsState.payload = response.data.result)
+          .catch(() => this.schoolsState.error = "Kunne ikke hente skoler fra nasjonalt skoleregister.");
+
+        this.schoolsState.communityNumber = this.selectedCommunity?.Kommunenr;
+        this.schoolsState.isLoading = false;
+      },
+      handleSchoolChange(newSchool){
+        const newSelectedGroups = { ...this.selectedGroups };
+        delete newSelectedGroups.Skole;
+
+        if (newSchool != null) {
+          const isOther = newSchool.Navn == "Annen";
+          newSelectedGroups.Skole = {
+            name: `${newSchool.FulltNavn}`,
+            description: `courseId:${this.courseId}:${this.institutionType}:${newSchool.NSRId}:${newSchool.OrgNr}`,
+            courseId: `${this.courseId}`,
+            countyId: isOther ? 99 : `${this.selectedCounty.Fylkesnr}`,
+            communityId: isOther ? 99 : `${this.selectedCommunity.Kommunenr}`,
+            orgNr: `${newSchool.OrgNr}`,
+          };
+        }
+
+        this.$emit('updateSelectedGroups', newSelectedGroups);
+      },
+
+      async getKindergartens(communityNumber) {
+        this.kindergartensState.isLoading = true;
+        this.kindergartensState.payload = null;
+        this.kindergartensState.error = null;
+
+        await api.get(`/kindergartens/${communityNumber}`)
+          .then((response) => this.kindergartensState.payload = response.data.result)
+          .catch(() => this.kindergartensState.error = "Kunne ikke hente barnehager fra kpas-api.");
+
+        this.kindergartensState.communityNumber = this.selectedCommunity?.Kommunenr;
+        this.kindergartensState.isLoading = false;
+      },
+      handleKindergartenChange(newKindergarten){
+        const newSelectedGroups = { ...this.selectedGroups };
+        delete newSelectedGroups.Barnehage;
+
+        if (newKindergarten != null) {
+          const isOther = newKindergarten.Navn == "Annen";
+          newSelectedGroups.Barnehage = {
+            name: `${newKindergarten.FulltNavn}`,
+            description: `courseId:${this.courseId}:${this.institutionType}:${newKindergarten.NSRId}:${newKindergarten.OrgNr}`,
+            courseId: `${this.courseId}`,
+            countyId: isOther ? 99 : `${this.selectedCounty.Fylkesnr}`,
+            communityId: isOther ? 99 : `${this.selectedCommunity.Kommunenr}`,
+            orgNr: `${newKindergarten.OrgNr}`,
+          };
+        }
+
+        this.$emit('updateSelectedGroups', newSelectedGroups);
       }
     }
   }
@@ -285,11 +303,21 @@
 <style scoped>
   .selectors-groups {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
   }
 
   .selectors-groups label {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    min-width: 250px;
+    max-width: 300px;
+    padding: 0px;
+  }
+
+  .selectors-groups label p {
+    margin-bottom: 5px;
   }
 </style>

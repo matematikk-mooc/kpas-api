@@ -358,3 +358,222 @@ $orangeGradientBoxShadow: #FF832B;
     }
   }
 }
+
+.kpas-embed-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.kpas-embed-subtitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.kpas-embed-button-wrapper {
+  margin-bottom: 8px;
+}
+
+.kpas-embed-button-wrapper button {
+  font-size: 14px;
+  padding: 0px;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  border-radius: 5px;
+
+}
+
+.kpas-embed-button-wrapper button:hover, .kpas-embed-button-wrapper button:focus {
+  text-decoration: none;
+}
+
+.kpas-embed-button {
+  text-decoration: none;
+  background: #303030;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.kpas-embed-button:disabled {
+  background: #CCCCCC;
+  color: #666666;
+}
+
+.kpas-embed-tools .embed-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.kpas-embed-tools .embed-tool {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 300px;
+  transition: all 0.3s ease;
+  background: #F1F1F1;
+  color: #000000;
+  text-decoration: none;
+  border: 2px solid #F1F1F1;
+  border-radius: 5px;
+  padding: 18px;
+}
+
+.kpas-embed-tools .embed-tool.--hidden {
+  opacity: 0;
+}
+
+.kpas-embed-tools .embed-tool:hover, .kpas-embed-tools .embed-tool:focus {
+  background: transparent;
+  border-color: #000000;
+}
+
+.kpas-embed-tools .embed-tool h5 {
+  text-decoration: underline;
+}
+
+.kpas-embed-tools .embed-tool:hover h5, .kpas-embed-tools .embed-tool:focus h5 {
+  text-decoration: none;
+}
+
+.kpas-embed-tools .embed-tool p {
+  margin-bottom: 0px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.kpas-embed-diplom .embed-diplom-logos {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.kpas-embed-diplom .embed-diplom-logo {
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
+.kpas-embed-diplom .embed-diplom-logo input {
+  margin-right: 10px;
+}
+
+.kpas-embed-survey .selector {
+  margin: 0px;
+}
+
+.kpas-embed-survey label {
+  width: auto;
+  padding: 0px;
+  padding-bottom: 8px;
+}
+
+.kpas-embed-survey .embed-survey-module {
+  margin-bottom: 40px;
+}
+
+.kpas-embed-survey .embed-survey-find {
+  margin-bottom: 40px;
+}
+
+.kpas-embed-survey .embed-survey-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 325px;
+}
+
+.embed-survey-title-wrapper {
+  margin-bottom: 20px;
+}
+
+.kpas-embed-survey .embed-survey-input-wrapper input[type="text"] {
+  width: 100%;
+}
+
+.kpas-embed-survey .embed-survey-questions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.kpas-embed-survey .embed-survey-questions {
+  margin-top: 30px;
+}
+
+.kpas-embed-survey .embed-survey-questions-wrapper {
+  display: flex;
+  flex: 1 1 300px;
+  flex-direction: column;
+}
+
+.kpas-embed-survey p {
+  margin-bottom: 8px;
+}
+
+.kpas-embed-survey .embed-survey-question {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  background: #f1f1f1;
+  border-radius: 5px;
+  padding: 18px;
+}
+
+.kpas-embed-survey .embed-survey-question p, .kpas-embed-survey .embed-survey-question input {
+  margin-bottom: 20px;
+}
+
+.kpas-embed-survey .embed-survey-question input {
+  background: white;
+}
+
+.kpas-survey-embed {
+  display: inline-block;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.faculty-selector {
+  margin-bottom: 30px;
+}
+
+.group-role-selector {
+  margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.group-role-selector .message {
+  flex: 1 1 350px;
+  margin: 0px;
+  max-width: 450px;
+}
+
+.group-role-selector .message p {
+  margin-bottom: 0px;
+}
+
+.group-role-selector .message label {
+  padding-top: 0px;
+}
+
+.group-tool .update-button {
+  margin-top: 40px;
+}
+
+.group-tool h2 {
+  margin-bottom: 20px !important;
+}

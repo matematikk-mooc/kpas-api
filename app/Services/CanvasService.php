@@ -446,7 +446,7 @@ class CanvasService
 
     public function deleteUser(int $userId)
     {
-        $accountId = config('canvas.account_id');
+        $accountId = 1;
         $url = "accounts/{$accountId}/users/{$userId}";
         return $this->request($url, 'DELETE');
     }

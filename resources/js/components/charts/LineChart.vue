@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { select, selectAll, scaleTime, scaleLinear, axisLeft, axisBottom, line, extent, sum, timeParse, timeFormat, bisect } from "d3";
+import { select, scaleTime, scaleLinear, axisLeft, axisBottom, line as d3Line, extent, sum, timeParse, timeFormat, bisect } from "d3";
 export default {
 	name: "LineChart",
 
@@ -68,13 +68,13 @@ export default {
 			.call(yaxis)
 
 			//Set values for lines per date and total
-			const line = line()
+			const line = d3Line()
 			.x(function(d) { return xScale(dateParser(d.date)); })
 			.y(function(d) { return yScale(d.value); });
 
 			let cur = 0
 
-			const line2 = line()
+			const line2 = d3Line()
 			.x(function(d) { return xScale(dateParser(d.date)); })
 			.y(function(d) { cur = cur + d.value; return yScale(cur); });
 

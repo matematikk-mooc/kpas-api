@@ -1,76 +1,74 @@
 <template>
-  <div class="group-tool" v-if="everythingIsReady">
-    <div>
-      <h2>Velg rolle</h2>
+  <div class="group-tool">
+    <div v-if="everythingIsReady">
+      <div>
+        <h2>1. Velg rolle</h2>
+       
+        <role-selector
+          :institutionType="institutionType"
+          :leaderDescription="leaderDescription"
+          :participantDescription="participantDescription"
 
-      <Message v-if="roleError" type="error"><span>{{roleError}}</span></Message>
+          :isLeader="isLeader"
+          @updateIsLeader="updateIsLeader"
+        />
 
-      <role-selector
-        :isPrincipal="isPrincipal"
-        :institutionType="institutionType"
-        :leaderDescription="leaderDescription"
-        :participantDescription="participantDescription"
-        v-model="wantToBePrincipal"
-      ></role-selector>
-    </div>
-
-    <div>
-      <h2>Velg grupper</h2>
-
-      <Message type="error" v-if="wantToBePrincipal && institutionType">{{principalWarning}}</Message>
-
-      <div v-if="groupError" class="alert alert-danger">{{groupError}}</div>
-
-      <div v-if="preKommunereform2024">
-        <Message type="error">
-          <span>
-          Per 01.01.2024 ble <a style="font-size: 14px;" href="https://www.regjeringen.no/no/tema/kommuner-og-regioner/kommunestruktur/nye-kommune-og-fylkesnummer-fra-1.-januar-2024/id2924701/" target="_blank">Kommunereformen 2024</a> innført. Dersom du jobber i ett fylke eller kommune som er berørt av kommunereformen 2024 må du velge nye grupper. Du finner oppdaterte kommuner i gruppevalget nedenfor.
-          Merk: Vestfold og Telemark, Viken og Troms og Finnmark er ikke gyldige valg lengre, disse er fjernet fra listen.
-          Når du bytter gruppe blir historikken din flyttet til ny gruppe.
-          </span>
-        </Message>
+        <Message v-if="roleError" type="error"><span>{{ roleError }}</span></Message>
       </div>
 
-      <faculty-selector
-        @updateFaculty="updateFaculty"
-        :faculties="faculties"
-        :currentFaculty="currentGroups['Faggruppe nasjonalt']? currentGroups['Faggruppe nasjonalt'].name : ''"
-        v-model="faculty"
-      />
+      <div>
+        <div v-if="faculties?.length">
+          <h2>2. Velg fakultet</h2>
+          <div v-if="groupError" class="alert alert-danger">{{ groupError }}</div>
+
+          <faculty-selector :faculties="faculties" :selectedFaculty="selectedFaculty" @updateSelectedFaculty="updateSelectedFaculty" />
+
+          <Message v-if="groupError" type="error"><span>{{ groupError }}</span></Message>
+        </div>
+
+        <div v-if="!faculties?.length || isFacultySelected">
+          <h2>{{ faculties?.length ? "3" : "2" }}. Velg grupper</h2>
+
+          <div v-if="preKommunereform2024">
+            <Message type="warn">
+              <span>
+                Per 01.01.2024 ble <a style="font-size: 14px;" href="https://www.regjeringen.no/no/tema/kommuner-og-regioner/kommunestruktur/nye-kommune-og-fylkesnummer-fra-1.-januar-2024/id2924701/" target="_blank">Kommunereformen 2024</a> innført. Dersom du jobber i ett fylke eller kommune som er berørt av kommunereformen 2024 må du velge nye grupper. Du finner oppdaterte kommuner i gruppevalget nedenfor.
+                Merk: Vestfold og Telemark, Viken og Troms og Finnmark er ikke gyldige valg lengre, disse er fjernet fra listen.
+                Når du bytter gruppe blir historikken din flyttet til ny gruppe.
+              </span>
+            </Message>
+          </div>
+
+          <Message type="info" v-if="isLeader && institutionType != null">{{ principalWarning }}</Message>
+
+          <group-selector
+            :courseId="courseId"
+            :institutionType="institutionType"
+
+            :selectedGroups="selectedGroups"
+            @updateSelectedGroups="updateSelectedGroupsState"
+          />
+
+          <Message v-if="groupResult == ADDTO_GROUPS_FAILED" type="error"><span>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</span></Message>
+        </div>
+      </div>
+
+      <div>
+        <div class="update-button">
+          <Message v-if="isLoading" type="warn"><span>Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span></Message>
+          <Message v-if="getRoleResult == ENROLL_GET_FAILED" type="error"><span>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</span></Message>
+          <Message v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" type="success"><span>Oppdateringen var vellykket!</span></Message>
+
+          <button class="btn btn-primary" @click="enroll" v-if="isUpdateReady">
+            Oppdater
+          </button>
+        </div>
+      </div>
     </div>
 
-    <group-selector
-      @updateGroups="updateGroups"
-      :courseId="courseId"
-      :institutionType="institutionType"
-      :currentGroups="currentGroups"
-      v-model="groups"
-    ></group-selector>
-
-    <div class="update-button">
-      <button
-        class="btn"
-        :disabled="!isReady"
-        :class="{
-          'btn-primary': isReady,
-          'btn-secondary disabled': !isReady,
-        }"
-        @click="enroll"
-      >
-        Oppdater
-      </button>
+    <div v-else>
+      <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
     </div>
-
-
-    <Message v-if="isLoading" type="warn"><span>Oppdaterer din rolle og gruppetilhørighet. Dette kan ta litt tid. Ikke lukk nettleseren.<div class="spinner-border text-danger"></div></span></Message>
-    <Message v-if="enrollResult == ENROLL_FAILED" type="error"><span>Kunne ikke oppdatere rollen din. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</span></Message>
-    <Message v-if="getRoleResult == ENROLL_GET_FAILED" type="error"><span>Du er ikke registrert med noen rolle i kompetansepakken og kan derfor ikke endre den eller melde deg inn i noen grupper.</span></Message>
-    <Message v-if="groupResult == ADDTO_GROUPS_FAILED" type="error"><span>Kunne ikke melde deg inn i gruppene. Prøv igjen senere eller ta kontakt med kompetansesupport@udir.no for å få hjelp.</span></Message>
-    <Message v-if="enrollResult == ENROLLED && groupResult == ADDED_TO_GROUPS" type="success"><span>Oppdateringen var vellykket!</span></Message>
-  </div>
-
-  <div v-else>
-    <span class="ml-3">Laster rolle og gruppeverktøyet. <div class="spinner-border text-success"></div></span>
   </div>
 </template>
 
@@ -90,6 +88,23 @@
       Message
     },
     computed: {
+      isUpdateReady() {
+        if (this.isLoading) return false;
+        else if (this.getRoleResult == this.ENROLL_GET_FAILED) return false;
+        else if (this.isLeader != true && this.isLeader != false) return false;
+        else if (this.faculties?.length && !this.isFacultySelected) return false;
+        else if (!this.isGroupSelected) return false;
+
+        return true;
+      },
+      isFacultySelected() {
+        return this.selectedFaculty != null;
+      },
+      isGroupSelected() {
+        if (this.institutionType == "school") return this.selectedGroups?.Fylke != null && this.selectedGroups?.Kommune != null && this.selectedGroups?.Skole != null;
+        else if (this.institutionType == "kindergarten") return this.selectedGroups?.Fylke != null && this.selectedGroups?.Kommune != null && this.selectedGroups?.Barnehage != null;
+        return this.selectedGroups?.Fylke != null && this.selectedGroups?.Kommune != null;
+      },
       studentText() {
         return this.participantDescription;
       },
@@ -98,74 +113,74 @@
       },
       principalWarning() {
         if(this.institutionType == "school") {
-          return "NB! Dersom du er skoleeier kan du velge tilhørighet til Annet/Annen fylke/kommune/skole.";
+          return "NB! Dersom du er skoleeier kan du velge \"Annen\" for skole.";
         } else if(this.institutionType == "kindergarten") {
-          return "NB! Dersom du er barnehageeier kan du velge tilhørighet til Annet/Annen fylke/kommune/barnehage.";
+          return "NB! Dersom du er barnehageeier kan du velge \"Annen\" for barnehage.";
         }
         return "";
       },
     },
     data() {
       return {
+        canvasStudentRoleType: "StudentEnrollment",
+        canvasPrincipalRoleType: "Skoleleder",
         everythingIsReady: false,
         information: "Laster inn din rolle...",
         courseId: -1,
-        currentGroupsLoaded: false,
+        roleIsSet: true,
         connectedToParent: false,
-        groupsLoaded: false,
-        categoriesLoaded: false,
-        isPrincipal: false,
-        wantToBePrincipal: undefined,
+        preKommunereform2024: false,
+        faculties: [],
+        
+        isLeader: false,
+        selectedFaculty: null,
+        selectedGroups: null,
+        initGroups: null,
+
         institutionType: null,
         leaderDescription: null,
         participantDescription: null,
-        groups: [],
-        currentGroups: null,
-        faculties: [],
-        isLoading: false,
-        isReady: false,
-        faculty: null,
-        roleError: '',
-        groupError: '',
+        information: "Laster inn din rolle...",
+
+        categoriesLoaded: false,
+        groupsLoaded: false,
         enrollResult: 0,
-        roleIsSet: true,
         groupResult: 0,
         getRoleResult: 0,
-        preKommunereform2024: false,
+
+        isLoading: false,
+        everythingIsReady: false,
+
+        roleError: '',
+        groupError: '',
       }
     },
 
     methods: {
+      updateIsLeader(newIsLeader) {
+        this.isLeader = newIsLeader == true;
+      },
+      updateSelectedFaculty(newFacultyName) {
+        this.selectedFaculty = newFacultyName;
+      },
+      updateSelectedGroupsState(newGroups) {
+        this.selectedGroups = newGroups;
+      },
+
       preKommunereform2024Check(){
-        if(this.currentGroups == null || this.currentGroups.Fylke == undefined || this.currentGroups.Fylke.description == undefined){
-          return;
-        }
+        const groupHasFylke = this.selectedGroups != null && this.selectedGroups.Fylke != undefined && this.selectedGroups.Fylke.description == undefined;
+        if(!groupHasFylke) return;
+
         const patternNumbers = [30, 38, 54]; // 30 = Viken, 38 = Vestfold og Telemark, 54 = Troms og Finnmark
         const pattern = `county:(${patternNumbers.join('|')})`;
         const regex = new RegExp(pattern, 'g');
-        if(this.currentGroups.Fylke.description.match(regex)){
+        
+        if(this.selectedGroups.Fylke.description.match(regex)){
           console.log("Fylke er berørt av kommunereformen 2024");
           this.preKommunereform2024 = true;
         }
       },
-      groupsAreSet() {
-        var noOfGroups = Object.keys(this.groups).length;
-        return this.institutionType ?  noOfGroups === 3 : noOfGroups === 2;
-      },
-      updateIsReady() {
-        this.isReady = !this.isLoading &&
-                        this.groupsAreSet() &&
-                        this.roleIsSet &&
-                        this.getRoleResult != this.ENROLL_GET_FAILED &&
-                        (this.faculties.length === 0 || this.faculty !== null);
-      },
-      updateFaculty() {
-        this.updateIsReady();
-      },
-      updateGroups(selectedGroups) {
-        this.groups = selectedGroups;
-        this.updateIsReady();
-      },
+
       clearError(errorType) {
           if(errorType == "roleError") {
             this.roleError = "";
@@ -191,9 +206,6 @@
           parent.postMessage(JSON.stringify({ subject:"lti.frameResize", height: h }), "*");
         });
       },
-      getRoleText(isPrincipal) {
-        return isPrincipal ? this.leaderDescription : this.participantDescription;
-      },
       getPrincipalInformation() {
         return this.leaderDescription;
       },
@@ -214,28 +226,38 @@
         this.postMessageToParent('kpas-lti.getBgColor');
       },
       connectToParent() {
-        if(this.connectedToParent === true) {
-          return;
-        }
+        if(this.connectedToParent === true) return;
         this.postMessageToParent('kpas-lti.connect');
         window.setTimeout(this.connectToParent, 500);
       },
-      updateCurrentGroups() {
-        console.log("updateCurrentGroups");
+      updateSelectedGroups() {
+        console.log("updateSelectedGroups");
         if(!this.categoriesLoaded) {
           console.log("categories not ready yet.");
           return;
         }
+
         if(!this.groupsLoaded) {
           console.log("groups not ready yet.");
           return;
         }
+
         if(this.categories && this.usersGroups) {
-          this.currentGroups = this.categorizeGroups(this.usersGroups, this.categories);
-          this.faculty = this.currentGroups['Faggruppe nasjonalt'] ? this.currentGroups['Faggruppe nasjonalt'].name : null;
+          this.selectedGroups = this.categorizeGroups(this.usersGroups, this.categories);
+          this.initGroups = this.categorizeGroups(this.usersGroups, this.categories);
+
+          if (this.selectedGroups['Faggruppe nasjonalt']) {
+            this.selectedFaculty = this.selectedGroups['Faggruppe nasjonalt']?.name;
+          } else if (this.selectedGroups['Faggruppe fylke']) {
+            this.selectedFaculty = this.selectedGroups['Faggruppe fylke']?.name;
+          } else if (this.selectedGroups['Faggruppe kommune']) {
+            this.selectedFaculty = this.selectedGroups['Faggruppe kommune']?.name;
+          } else {
+            this.selectedFaculty = null;
+          }
+
           this.iframeresize();
         }
-        this.currentGroupsLoaded = true;
       },
       categorizeGroups(groups, categories) {
         var result = {};
@@ -253,17 +275,28 @@
           this.groupResult = this.ADDTO_GROUPS_FAILED;
           return;
         }
-        if (this.groupsAreSet()) {
+        if (this.isGroupSelected) {
+          let institution = null;
+          if(this.institutionType == "school") {
+            institution = this.selectedGroups?.Skole;
+          } else if(this.institutionType == "kindergarten") {
+            institution = this.selectedGroups?.Barnehage;
+          }
+
           const params = Object.assign({},
             this.groups, {
             cookie: window.cookie,
-            role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
-            faculty: this.faculty,
-            currentGroups: this.currentGroups,
-            courseId: this.courseId
+            role: this.wantToBePrincipal ? this.canvasPrincipalRoleType : this.canvasStudentRoleType,
+            faculty: this.selectedFaculty,
+            county: this.selectedGroups?.Fylke,
+            community: this.selectedGroups?.Kommune,
+            currentGroups: this.initGroups,
+            courseId: this.courseId,
+            ...(institution ? { institution } : {})
           });
+
           try {
-            const result = await api.post('/group/user/bulk', params);
+            await api.post('/group/user/bulk', params);
             this.clearError("groupError");
             this.iframeresize();
             this.groupResult = this.ADDED_TO_GROUPS;
@@ -290,73 +323,60 @@
       },
       async enrollUser() {
         try {
-          await api.post('/enrollment', {
-            role: this.wantToBePrincipal ? import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE : import.meta.env.VITE_CANVAS_STUDENT_ROLE_TYPE,
+          const enrollmentRes = await api.post('/enrollment', {
+            role: this.wantToBePrincipal ? this.canvasPrincipalRoleType : this.canvasStudentRoleType,
             cookie: window.cookie,
           });
-          this.clearError("roleError");
-          this.iframeresize();
-          this.enrollResult = this.ENROLLED;
+
+          if (enrollmentRes.data.status != 200) {
+            this.reportError("roleError", enrollmentRes.data.result);
+          } else {
+            this.clearError("roleError");
+            this.enrollResult = this.ENROLLED;
+          }         
         } catch(e) {
-          this.enrollResult = this.ENROLL_FAILED;
-          // this.reportError("roleError", "Kunne ikke oppdatere rollen.");
-          this.iframeresize();
+          this.reportError("roleError", "Kunne ikke oppdatere rollen.");
         }
+
+        this.iframeresize();
       },
       async enroll() {
-        if(this.isLoading) {
-          return;
-        }
-        console.log("WTBP:" + this.wantToBePrincipal);
-        if (this.isReady) {
-          this.isLoading = true;
-          this.enrollResult = 0;
-          this.groupResult = 0;
-          try {
-            await this.enrollUser();
-            await this.addUserGroups();
-            this.isPrincipal = this.wantToBePrincipal;
-            if(this.isPrincipal) {
-              this.information = this.getPrincipalInformation();
-            } else {
-              this.information = this.getParticipantInformation();
-            }
-          } catch (e) {
-            console.log("Failed to update user information.");
-          } finally {
-            this.isLoading = false;
-            this.getUsersGroups();
-            const updateMessage = {
-              subject: 'kpas-lti.update'
-            }
-            this.preKommunereform2024 = false;
-            window.parent.postMessage(JSON.stringify(updateMessage), "*");
+        if(this.isLoading || !this.isUpdateReady) return;
+
+        this.isLoading = true;
+        this.enrollResult = 0;
+        this.groupResult = 0;
+
+        try {
+          await this.enrollUser();
+          await this.addUserGroups();
+          this.information = this.isLeader ? this.getPrincipalInformation() : this.getParticipantInformation();
+        } catch (e) {
+          console.log("Failed to update user information.");
+        } finally {
+          this.isLoading = false;
+          this.getUsersGroups();
+          const updateMessage = {
+            subject: 'kpas-lti.update'
           }
+          this.preKommunereform2024 = false;
+          window.parent.postMessage(JSON.stringify(updateMessage), "*");
         }
       },
       async getRole() {
         try {
-          const result = await api.get('/enrollment/', {
-            params: { cookie: window.cookie }
-          });
-
+          const result = await api.get('/enrollment/', { params: { cookie: window.cookie } });
           if(result.data.result.length === 0) {
             this.getRoleResult = this.ENROLL_GET_FAILED;
             return;
           }
 
-          this.isPrincipal = result.data.result.find(enrollment => enrollment.role === import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
-          if(this.isPrincipal) {
-            this.information = this.getPrincipalInformation();
-          } else {
-            this.information = this.getParticipantInformation();
-          }
-          this.wantToBePrincipal = this.isPrincipal;
+          this.isLeader = result.data.result.find(enrollment => enrollment.role === import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
+          this.information = this.isLeader ? this.getPrincipalInformation() : this.getParticipantInformation();
           this.clearError("roleError");
-        } catch(e)
-        {
+        } catch(e) {
           this.getRoleResult = this.ENROLL_GET_FAILED;
-          this.wantToBePrincipal = undefined;
+          this.isLeader = false;
           this.reportError("roleError", "Kunne ikke hente rolle.");
         }
       },
@@ -373,7 +393,7 @@
           this.categoriesLoaded = true;
 
           console.log("Categories received.");
-          this.updateCurrentGroups();
+          this.updateSelectedGroups();
           this.clearError("groupError");
         } catch(e)
         {
@@ -397,7 +417,6 @@
     async created() {
       this.ENROLLED = 1;
       this.ADDED_TO_GROUPS = 2;
-      this.ENROLL_FAILED = 3;
       this.ADDTO_GROUPS_FAILED = 4;
       this.ENROLL_GET_FAILED = 5;
 
@@ -411,7 +430,7 @@
             console.log("Storing groups.");
             self.usersGroups = msg.groups;
             self.groupsLoaded = true;
-            self.updateCurrentGroups();
+            self.updateSelectedGroups();
           }
           else if(msg.subject == "kpas-lti.ltibgcolor" && msg.bgColor) {
             console.log("Received background color.");
@@ -431,7 +450,6 @@
       console.log("Hent kategorier...");
       await Promise.all([self.getGroups(), self.getFaculties(), self.getRole(), self.getInstitution()]).then(() => {
         console.log("All promises resolved.");
-        self.updateIsReady();
         self.iframeresize();
         self.preKommunereform2024Check();
         self.everythingIsReady = true;

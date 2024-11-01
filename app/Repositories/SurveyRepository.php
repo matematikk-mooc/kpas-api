@@ -38,6 +38,10 @@ class SurveyRepository
         $customQuestions = $surveyContent->questions;
         for ($i = 0; $i < count($customQuestions); $i++) {
             if ($customQuestions[$i]['text'] != '') {
+                if (empty($customQuestions[$i]['machine_name']) || $customQuestions[$i]['machine_name'] == '') {
+                    $customQuestions[$i]['machine_name'] = "custom_question_" . ($i + 1) . "_" . md5(trim(strtolower($customQuestions[$i]['text'])));;
+                }
+
                 $this->createCustomSurveyQuestion($surveyId, $customQuestions[$i]);
             }
         }
@@ -224,6 +228,24 @@ class SurveyRepository
     public function getSurveys(int $courseId): mixed
     {
         return $this->getSurveysWithOptionalFiltering($courseId, null);
+    }
+
+    /**
+     * Returns all surveys, with questions, for a given course and module.
+     *
+     * @param int $courseId
+     * @param int|null $moduleId
+     * @return mixed
+     * @throws Exception
+     */
+    public function getSurveysWithQuestions(int $courseId, int $moduleId = null): mixed
+    {
+        $surveys = Survey::with(['questions' => function ($query) {
+            $query->where('deleted', false);
+        }])->where([['course_id', '=', $courseId], ['deleted', false]]);
+        if ($moduleId) $surveys = $surveys->where('module_id', $moduleId);
+
+        return $surveys->get();
     }
 
     /**
