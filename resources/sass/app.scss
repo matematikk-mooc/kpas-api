@@ -426,6 +426,10 @@ $orangeGradientBoxShadow: #FF832B;
   padding: 18px;
 }
 
+.kpas-embed-tools .embed-tool.--hidden {
+  opacity: 0;
+}
+
 .kpas-embed-tools .embed-tool:hover, .kpas-embed-tools .embed-tool:focus {
   background: transparent;
   border-color: #000000;

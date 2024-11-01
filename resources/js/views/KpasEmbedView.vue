@@ -5,34 +5,31 @@
 
     <div class="embed-tools">
       <a class="embed-tool" :href="urlRoleMode">
-        <h5 class="kpas-embed-subtitle">Rolle- og gruppe</h5>
-        <p>Dette verktøyet tilater brukere å velge rolle og gruppetilhørighet, innholdet vil blant annet endre seg basert på hvilken rolle brukeren har valgt.</p>
-      </a>
-
-      <a class="embed-tool" :href="urlStatisticsMode">
-        <h5 class="kpas-embed-subtitle">Statistikk</h5>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+        <h5 class="kpas-embed-subtitle">Rolle- og gruppetilhørighet</h5>
+        <p>Dette verktøyet lar brukere velge rolle og gruppetilhørighet. Innholdet tilpasses basert på hvilken rolle brukeren har valgt.</p>
       </a>
 
       <button class="embed-tool" @click="toolToShow = 'survey'">
         <h5 class="kpas-embed-subtitle">Undersøkelse</h5>
-        <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+        <p>Dette verktøyet legger til en spørreundersøkelse med faste spørsmål samt mulighet for å legge inn egendefinerte spørsmål.</p>
       </button>
 
       <button class="embed-tool" @click="toolToShow = 'diplom'">
         <h5 class="kpas-embed-subtitle">Diplom</h5>
-        <p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+        <p>Dette verktøyet legger til et kompetansebevis som kan lastes ned av brukeren når alle sider med krav er oppfylt.</p>
       </button>
 
       <a class="embed-tool" :href="urlDashboardMode">
         <h5 class="kpas-embed-subtitle">Dashboard</h5>
-        <p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+        <p>Dette verktøyet gir en oversikt over svarene som er levert i "Undersøkelse"-verktøyet.</p>
       </a>
 
       <a class="embed-tool" :href="urlAdminDashboardMode">
         <h5 class="kpas-embed-subtitle">Forvaltning</h5>
-        <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+        <p>Dette verktøyet presenterer innholdsprodusenter med to menyer. Meny én, "Helsesjekk", inneholder "Sanitetsjekk", "UU-sjekk", "Lenkesjekk" og "Videotekstsjekk". Meny to gir en statistikkoversikt for hele emnet, med mulighet for filtrering.</p>
       </a>
+
+      <span class="embed-tool --hidden" />
     </div>
   </div>
 
