@@ -1,5 +1,7 @@
 <template>
     <div>
+        <h2 id="healthcheck" class="forvaltning_title">Helsesjekk</h2>
+
         <div class="health-cards">
             <div class="health-cards-overview health-cards-item health-cards-box">
                 <HealthCard

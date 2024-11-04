@@ -577,3 +577,77 @@ $orangeGradientBoxShadow: #FF832B;
 .group-tool h2 {
   margin-bottom: 20px !important;
 }
+
+.forvaltning_buttons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.forvaltning_title {
+  background: whitesmoke;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.activity_view {
+  margin-top: 40px;
+  margin-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  h3 {
+    font-size: 20px;
+  }
+
+  .activity_view_fetch {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .btn.--fetch {
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+
+    th {
+      background-color: whitesmoke;
+      color: black;
+      font-weight: bold;
+      padding: 6px 20px;
+      text-align: left;
+    }
+
+    td {
+      padding: 6px 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    td:nth-child(2), th:nth-child(2) {
+      text-align: right;
+    }
+  }
+}
+
+button.btn.btn-primary {
+  color: #fff !important;
+  background: black !important;
+  padding: 10px 20px;
+  transition: all 0.3s ease-in-out;
+
+  &:hover, &:focus {
+    background: #4a4a4a !important;
+  }
+}

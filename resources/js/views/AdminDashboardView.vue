@@ -1,8 +1,8 @@
 @extends('layouts.app')
 <template>
-  <div ref="ltiView" class="dashboard" v-if="allowed && ready && connectedToParent" >
-    <h1>Oversikt over kompetansepakken</h1>
+  <h2 id="survey" class="forvaltning_title">Undersøkelser</h2>
 
+  <div ref="ltiView" class="dashboard" v-if="allowed && ready && connectedToParent" >  
     <section class="filtering-section">
       <DashboardGroupSelect
       :settings=this.settings
@@ -10,7 +10,7 @@
       @update="updateGroupId"
       />
       <section id="student-count">
-        <h3>Antall brukere: {{ studentCount }}</h3>
+        <h4>Antall brukere: {{ studentCount }}</h4>
       </section>
 
       <v-select
@@ -33,7 +33,7 @@
         ></v-select>
     </section>
 
-    <h2 v-if="completed_count_item.length && current_module" class="title">Markert som fullført </h2>
+    <h3 v-if="completed_count_item.length && current_module" class="title">Markert som fullført </h3>
     <section class="completed-section" v-if="modules_statistics_per_date">
       <line-chart :data="modules_statistics_per_date"></line-chart>
     </section>
@@ -41,7 +41,7 @@
       <horizontal-bar-chart class="completed" :data="completed_count_item" :lang="selectedLang" :multilang="multilang"> </horizontal-bar-chart>
     </section>
 
-    <h2 v-if="view_survey" class="title">{{view_survey.title_internal}}</h2>
+    <h3 v-if="view_survey" class="title">{{view_survey.title_internal}}</h3>
 
     <section class="grouped" v-if="module_surveys.length && current_module && view_survey">
       <grouped-bar-chart :id="view_survey.id" :data="view_survey.questions.slice(0,3)" :likert5ops="this.likert5ops"></grouped-bar-chart>
@@ -60,15 +60,15 @@
     </section>
 
     <section class="no-survey" v-else-if="!module_surveys.length && current_module">
-      <h3> Denne modulen har ikke brukerundersøkelse. </h3>
+      <h4> Denne modulen har ikke brukerundersøkelse. </h4>
     </section>
 
     <section class="no-module" v-else>
-      <h3> Velg modul for å se statistikk og resultater. </h3>
+      <h4> Velg modul for å se statistikk og resultater. </h4>
     </section>
   </div>
   <div v-else-if="!allowed">
-    <h3>Du har ikke rettigheter til å se denne siden, dersom du er ansatt i Udir kan du ta kontakt ved kompetansesupport@udir.no</h3>
+    <h4>Du har ikke rettigheter til å se denne siden, dersom du er ansatt i Udir kan du ta kontakt ved kompetansesupport@udir.no</h4>
   </div>
   <div v-else>
     <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
@@ -346,7 +346,7 @@
 
 <style>
 
-h3 {
+h4 {
   padding: .5em;
 }
 
@@ -363,8 +363,12 @@ h3 {
 
 .completed-section,.grouped, .barview, .feedback, .filtering-section, .no-survey, .no-module {
   background-color: white;
-  padding: 4em 2em 4em 2em;
+  padding: 4em 0px;
   margin: 2em 0 2em 0;
+}
+
+.filtering-section {
+  padding-top: 0px;
 }
 
 </style>
