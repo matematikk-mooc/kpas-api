@@ -105,6 +105,7 @@ Route::group(['prefix' => 'bff'], function () {
 });
 
 Route::get('/surveys', 'SurveyController@getSurveyWithQuestions');
+Route::get('/statistics/activity/courses/{courseId}', 'ActivityStatisticsController@getCourseActivity');
 
 Route::get('course/{courseId}/pages', 'MatomoController@getMatomoData');
 Route::get('user/{userId}/history', 'HistoryController@getUserHistoryData');
