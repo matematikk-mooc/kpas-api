@@ -2,120 +2,119 @@
 <template>
   <div ref="ltiView" class="dashboard" v-if="ready && view_module != null && groupMember" >
     <v-select
+      label="Label"
       class="selector"
-      :disabled="!modules.length"
-      :options="modules"
       placeholder="Velg modul"
-      @update:modelValue="updateModule"
-    >
-    </v-select>
+      v-model="selectedSurvey"
+      :options="surveyOptions"
+      :disabled="!surveyOptions.length"
+      :clearable="false"
+      @update:modelValue="handleSurveyChange"
+    />
 
-
-    <h1 class="title">{{view_module.title_internal}}</h1>
+    <h1 class="title">{{ view_module.title_internal }}</h1>
     <h3>Resultater fra {{ current_group_type }}: {{ current_group_name }}</h3>
 
     <section class="grouped" >
-      <grouped-bar-chart id="view_module.course_id" :data="view_module.questions.slice(0,3)" :likert5ops="this.likert5ops"></grouped-bar-chart>
+      <grouped-bar-chart
+        id="view_module.course_id"
+        :likert5ops="likert5ops"
+        :data="view_module.questions.slice(0,3)"
+      />
     </section>
 
-    <!-- Setting >= here because no essays are returned -->
     <section class="barview" v-if="view_module.questions.length >= 4">
       <div v-for="(question, i) in view_module.questions.slice(3)" :key="i">
-        <bar-chart v-if="question.question_type == 'likert_scale_5pt'" :id="'q' + i" :data="question" :likert5ops="this.likert5ops" :svgWidth=600 :svgHeight=400></bar-chart>
+        <bar-chart
+          :id="'q' + i"
+          :svgWidth=600
+          :svgHeight=400
+          :data="question"
+          :likert5ops="likert5ops"
+          v-if="question.question_type == 'likert_scale_5pt'"
+        />
       </div>
     </section>
 
     <section class="feedback">
       <div v-for="(question, i) in view_module.questions" :key="i">
-        <open-answer v-if="question.question_type === 'essay'" :openAnswers="question.submission_data" :questionText="question.text"></open-answer>
+        <open-answer
+          :questionText="question.text"
+          :openAnswers="question.submission_data"
+          v-if="question.question_type === 'essay'"
+        />
       </div>
     </section>
   </div>
+
   <div v-else-if="!groupMember && ready">
     <h2>Du må være medlem av en gruppe for å få tilgang til Dashboard.</h2>
   </div>
+
   <div v-else-if="groupTooSmall">
     <h2>Du er medlem av en gruppe vi ikke kan vise frem data til, dette er på bakgrunn av å holde besvarelser anonyme.</h2>
   </div>
+
   <div v-else>
       <span class="ml-3">Laster Dashboard. <div class="spinner-border text-success"></div></span>
   </div>
-
 </template>
 
 <script>
+// view_module
 import api from "../api";
 import { extractLabelForSelectedLanguage } from "../mulitlang";
 export default {
   name: "DashboardView",
   data() {
     return {
-      likert5ops: this.likert5ops,
-      connectedToParent: false,
-      selectedGroup: null,
-      ready: false,
+      course_id: null,
       view_module: null,
-      survey_data : null,
-      modules: [],
+      survey_data: null,
+
+      selectedSurvey: null,
+      surveyOptions: [],
+
       userGroups: [],
       usersGroups: [],
       categories: null,
+
+      ready: false,
       categoriesLoaded: false,
       groupsLoaded: false,
-      course_id: null,
+      
       current_group_name: null,
       current_group_type: "gruppe",
+      selectedGroup: null,
+
       groupMember: false,
       groupTooSmall: false,
+      
       multilang: false,
       selectedLang: null,
+      connectedToParent: false,
     };
   },
   props: {
     settings: {},
-    likert5ops: {}
+    likert5ops: {},
+    coursemodules: []
+  },
+  computed: {
+
   },
   methods: {
-    iframeresize() {
-      this.$nextTick(function () {
-        var h = this.$refs.ltiView.clientHeight + 50
-        parent.postMessage(
-        JSON.stringify({ subject: "lti.frameResize", height: h }),
-        "*"
-        );
-      });
-    },
-    postMessageToParent(subject) {
-      const message = {
-        subject: subject
-      };
-      window.parent.postMessage(JSON.stringify(message), "*");
-    },
-    getBgColor() {
-      this.postMessageToParent('kpas-lti.getBgColor');
-    },
-    getUsersGroups() {
-      console.log("Get users groups.");
-      this.postMessageToParent('kpas-lti.getusergroups');
-    },
-    connectToParent() {
-      if(this.connectedToParent === true) {
-        return;
-      }
-      this.postMessageToParent('kpas-lti.connect');
-      window.setTimeout(this.connectToParent, 500);
-    },
-    getCurrentLanguage() {
-      this.postMessageToParent('kpas-lti.getcurrentlang');
-    },
-    updateModule(value){
-
-      if(value == null){
+    handleSurveyChange(newSelectedSurvey) {
+      if (newSelectedSurvey != null) {
+        this.selectedSurvey = newSelectedSurvey;
+        this.view_module = this.survey_data?.find(survey => survey.id === this.selectedSurvey.ID);
+      } else {
+        this.selectedSurvey = this.surveyOptions[0];
         this.view_module = this.survey_data[0];
-        return;
       }
-      let index = this.modules.indexOf(value)
-      this.view_module =  this.survey_data[index]
+
+      console.log("Selected survey: ", this.selectedSurvey, this.view_module);
+
       this.iframeresize()
     },
     async updateCurrentGroups() {
@@ -124,10 +123,12 @@ export default {
         console.log("categories not ready yet.");
         return;
       }
+
       if(!this.groupsLoaded) {
         console.log("groups not ready yet.");
         return;
       }
+
       if(this.categories && this.usersGroups) {
         console.log("got categories and usergroups")
         await Promise.all([this.userGroups = this.categorizeGroups(this.usersGroups, this.categories)]);
@@ -236,11 +237,61 @@ export default {
             e.title_internal = extractLabelForSelectedLanguage(e.title_internal, this.selectedLang)
           })
         }
-        this.modules = this.survey_data.map(survey => survey.title_internal)
-        this.updateModule(this.modules[0]);
+
+        this.surveyOptions = this.survey_data.map(survey => {
+          const surveyModuleId = survey.module_id;
+          let surveyTitle = survey.title_internal;
+
+          const moduleForSurvey = this.coursemodules?.find(moduleItem => moduleItem.id === surveyModuleId);
+          if (moduleForSurvey != null) surveyTitle = this.multilang ? extractLabelForSelectedLanguage(moduleForSurvey.name, this.selectedLang) : moduleForSurvey.name;
+
+          const hasCustomTitle = survey?.form_title != null && survey?.form_title != undefined && survey?.form_title != "";
+          if (hasCustomTitle) surveyTitle = survey.form_title;
+
+          return {
+            Label: surveyTitle,
+            ID: survey.id
+          }
+        });
+
+        this.selectedSurvey = this.surveyOptions[0];
+        this.view_module = this.survey_data[0];
       } catch(e) {
         console.log("Could not get survey data.", e);
       }
+    },
+
+    getBgColor() {
+      this.postMessageToParent('kpas-lti.getBgColor');
+    },
+    getUsersGroups() {
+      console.log("Get users groups.");
+      this.postMessageToParent('kpas-lti.getusergroups');
+    },
+    connectToParent() {
+      if(this.connectedToParent === true) {
+        return;
+      }
+      this.postMessageToParent('kpas-lti.connect');
+      window.setTimeout(this.connectToParent, 500);
+    },
+    getCurrentLanguage() {
+      this.postMessageToParent('kpas-lti.getcurrentlang');
+    },
+    postMessageToParent(subject) {
+      const message = {
+        subject: subject
+      };
+      window.parent.postMessage(JSON.stringify(message), "*");
+    },
+    iframeresize() {
+      this.$nextTick(function () {
+        var h = document.body.clientHeight + 50
+        parent.postMessage(
+        JSON.stringify({ subject: "lti.frameResize", height: h }),
+        "*"
+        );
+      });
     },
   },
   async created() {

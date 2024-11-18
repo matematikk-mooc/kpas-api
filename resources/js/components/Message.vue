@@ -21,7 +21,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 15px;
+  padding: 20px;
   // margin-bottom: 15px;
   margin: 15px 0 15px 0;
   border-radius: 0.5rem;

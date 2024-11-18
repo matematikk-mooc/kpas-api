@@ -251,7 +251,7 @@ class CanvasService
     {
         $accountId = config('canvas.account_id');
         try {
-            $url = "accounts/${accountId}/roles";
+            $url = "accounts/{$accountId}/roles";
             $roles = $this->request($url);
             foreach ($roles as $role) {
                 if ($role->role === $roleName) {
@@ -330,6 +330,30 @@ class CanvasService
         return $this->request($url, 'GET', [], [], true);
     }
 
+    public function getCourseModuleItems($courseId, $moduleId)
+    {
+        $url = "courses/{$courseId}/modules/{$moduleId}/items";
+        return $this->request($url, 'GET', [], [], true);
+    }
+
+    public function getCourseDiscussionTopics($courseId)
+    {
+        $url = "courses/{$courseId}/discussion_topics";
+        return $this->request($url, 'GET', [], [], true);
+    }
+
+    public function getAssignmentsForCourse(int $courseId)
+    {
+        $url = "courses/{$courseId}/assignments";
+        return $this->request($url, 'GET', [], [], true);
+    }
+
+    public function getCourseEnrollments(int $courseId)
+    {
+        $url = "courses/{$courseId}/enrollments";
+        return $this->request($url, 'GET', ["per_page" => 100], [], true);
+    }
+
     public function getEnrollments(int $userId)
     {
         try {
@@ -372,13 +396,13 @@ class CanvasService
     public function getModulesForCourse(int $courseId, int $studentId)
     {
         try {
-            $modulesHref = "courses/${courseId}/modules";
+            $modulesHref = "courses/{$courseId}/modules";
             $modules = $this->request($modulesHref, 'GET', [], [], true);
 
             foreach($modules as $module) {
                 if($module->published) {
                     $moduleId = $module->id;
-                    $itemsHref = "courses/${courseId}/modules/${moduleId}/items?student_id=${studentId}";
+                    $itemsHref = "courses/{$courseId}/modules/{$moduleId}/items?student_id={$studentId}";
                     logger($itemsHref);
                     $items = $this->request($itemsHref, 'GET', [], [], true);
                     $module->items = $items;
@@ -428,7 +452,7 @@ class CanvasService
 
     public function deleteUser(int $userId)
     {
-        $accountId = config('canvas.account_id');
+        $accountId = 1;
         $url = "accounts/{$accountId}/users/{$userId}";
         return $this->request($url, 'DELETE');
     }
@@ -529,9 +553,21 @@ class CanvasService
         return $this->request($url, 'GET');
     }
 
+    public function getCourseFrontPage(int $courseId)
+    {
+        $url = "courses/{$courseId}/front_page";
+        return $this->request($url, 'GET');
+    }
+
     public function getCoursePageContent(int $courseId, int $pageId)
     {
         $url = "courses/{$courseId}/pages/{$pageId}";
+        return $this->request($url, 'GET');
+    }
+
+    public function getLinksValidationForCourse(int $courseId)
+    {
+        $url = "courses/{$courseId}/link_validation";
         return $this->request($url, 'GET');
     }
 }

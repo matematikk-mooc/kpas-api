@@ -8,7 +8,7 @@
 
 Fyll inn statistikk her:
         @php
-            var_dump($statistics);
+            // var_dump($statistics);
         @endphp
 
 <h1>Tilgjengelige innstillinger</h1>

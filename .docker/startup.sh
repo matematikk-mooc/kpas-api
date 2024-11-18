@@ -2,28 +2,21 @@
 
 export PATH=$PATH:/usr/local/bin
 
+usermod -u 1000 www-data
+
 echo -e "\n\n\n[1/8] Copy and import .env variables to the current shell"
 echo -e "##############################################################\n"
-ENV_FILE=".env"
-if [ ! -f "$ENV_FILE" ]; then
-    cp .docker/.env.template .env
+ENV_FILE_PATH="/var/www/html/.env"
+ENV_SCRIPT_PATH="/var/www/html/.docker/env.sh"
+TEMPLATE_PATH="/var/www/html/.docker/.env.template"
+
+if [ ! -f "$ENV_FILE_PATH" ]; then
+    cp $TEMPLATE_PATH $ENV_FILE_PATH
 fi
 
-set -o allexport
-while IFS='=' read -r key value; do
-  if [[ ! "$key" =~ ^# ]] && [[ -n "$key" ]]; then
-    value=$(echo "$value" | sed -e 's/^"//' -e 's/"$//')
-    value=$(echo "$value" | sed -e "s/^'//" -e "s/'$//")
-
-    if [[ -z "${!key}" ]]; then
-      export "$key=$value"
-      echo "  - IMPORTED: $key"
-    else
-      echo "  - ERROR: $key"
-    fi
-  fi
-done < "$ENV_FILE"
-set +o allexport
+echo "export ENV_FILE_PATH=\"$ENV_FILE_PATH\" && source $ENV_SCRIPT_PATH" >>/root/.bashrc
+chmod +x /root/.bashrc
+source /root/.bashrc
 
 echo -e "\n\n\n[2/8] Install NodeJS using NVM"
 echo -e "##############################################################\n"
@@ -33,10 +26,12 @@ nvm install
 echo -e "\n\n\n[3/8] Install NPM packages"
 echo -e "##############################################################\n"
 npm install
+chown -R 1000:1000 node_modules
 
 echo -e "\n\n\n[4/8] Install composer packages"
 echo -e "##############################################################\n"
 composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+chown -R 1000:1000 vendor
 
 echo -e "\n\n\n[5/8] Setup JWT key pair & config"
 echo -e "##############################################################\n"
@@ -60,8 +55,10 @@ else
     echo -e "  - Creating new JWT key pair $jwtDir/jwtRS256.jwk..."
     b64_header=$(echo -n '{"kid":"2","alg":"RS256"}' | openssl base64 -e -A | tr '+/' '-_' | tr -d '=')
     jwk=$(pem-jwk $jwtDir/jwtRS256.key.pub | jq '. + {"kid":"2","alg":"RS256","use":"enc"}')
-    echo $jwk | jq . > $jwtDir/jwtRS256.json
+    echo $jwk | jq . >$jwtDir/jwtRS256.json
 fi
+chown -R 1000:1000 $jwtDir
+chmod -R u+rw,g+rw $jwtDir
 
 jwtConfigsDir="database/configs"
 if [ -d "$jwtConfigsDir" ]; then
@@ -71,7 +68,7 @@ else
     mkdir -p "$jwtConfigsDir"
 
     echo -e "  - Creating empty JWT config template $jwtConfigsDir/config_platform.json..."
-    cat <<EOF > $jwtConfigsDir/config_platform.json
+    cat <<EOF >$jwtConfigsDir/config_platform.json
 {
     "https://canvas.test.instructure.com": {
         "client_id": "",
@@ -85,6 +82,8 @@ else
 }
 EOF
 fi
+chown -R 1000:1000 $jwtConfigsDir
+chmod -R u+rw,g+rw $jwtConfigsDir
 
 echo -e "\n\n\n[6/8] Setup LTI registration templates"
 echo -e "##############################################################\n"
@@ -107,16 +106,23 @@ for template in "$jwtTemplatesDir"/*.tpl; do
 
     echo -e "    - $filename: $outputExec"
 done
+chown -R 1000:1000 $jwtTemplatesOutputDir
+chmod -R u+rw,g+rw $jwtTemplatesOutputDir
 
 echo -e "\n\n\n[7/8] Run artisan commands"
 echo -e "##############################################################\n"
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan migrate --force
+su -s /bin/bash -c "
+    php artisan cache:clear &&
+    php artisan route:clear &&
+    php artisan view:clear &&
+    php artisan config:cache &&
+    php artisan route:cache &&
+    php artisan view:cache &&
+    php artisan migrate --force
+" www-data
+storageDir="/var/www/html/storage"
+chown -R 1000:1000 $storageDir
+chmod -R u+rw,g+rw $storageDir
 
 echo -e "\n\n\n[8/8] Start Supervisor"
 echo -e "##############################################################\n"
