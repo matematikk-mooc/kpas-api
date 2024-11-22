@@ -1,0 +1,37 @@
+name: Branch - Stage V1
+
+permissions:
+    id-token: write
+    contents: read
+
+on:
+    push:
+        branches:
+            - stage
+    workflow_dispatch:
+
+jobs:
+    build-docker:
+        uses: ./.github/workflows/build-docker.yml
+        with:
+            force_build: ${{ vars.FORCE_BUILD_DOCKER == 'true' }}
+            docker_registry: ${{ vars.STAGE_DOCKER_REGISTRY }}
+            docker_username: ${{ vars.STAGE_DOCKER_USERNAME }}
+            docker_image: ${{ vars.DOCKER_IMAGE }}
+        secrets:
+            docker_password: ${{ secrets.STAGE_DOCKER_PASSWORD }}
+
+    deploy-app:
+        needs: [build-docker]
+        uses: ./.github/workflows/deploy-app.yml
+        with:
+            azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
+            azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
+            azure_subscription_id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+            azure_app_service_name: ${{ vars.STAGE_AZURE_APP_SERVICE_NAME }}
+            azure_resource_group: ${{ vars.STAGE_AZURE_RESOURCE_GROUP }}
+            docker_registry: ${{ vars.STAGE_DOCKER_REGISTRY }}
+            docker_username: ${{ vars.STAGE_DOCKER_USERNAME }}
+            docker_image: ${{ vars.DOCKER_IMAGE }}
+        secrets:
+            docker_password: ${{ secrets.STAGE_DOCKER_PASSWORD }}
