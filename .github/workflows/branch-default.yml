@@ -1,0 +1,18 @@
+name: Branch - Default
+
+on:
+    push:
+        branches-ignore:
+            - stage
+            - main
+
+jobs:
+    build-docker:
+        uses: ./.github/workflows/build-docker.yml
+        with:
+            force_build: ${{ vars.FORCE_BUILD_DOCKER == 'true' }}
+            docker_registry: ${{ vars.STAGE_DOCKER_REGISTRY }}
+            docker_username: ${{ vars.STAGE_DOCKER_USERNAME }}
+            docker_image: ${{ vars.DOCKER_IMAGE }}
+        secrets:
+            docker_password: ${{ secrets.STAGE_DOCKER_PASSWORD }}
