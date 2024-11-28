@@ -286,7 +286,7 @@
           const params = Object.assign({},
             this.groups, {
             cookie: window.cookie,
-            role: this.wantToBePrincipal ? this.canvasPrincipalRoleType : this.canvasStudentRoleType,
+            role: this.isLeader ? this.canvasPrincipalRoleType : this.canvasStudentRoleType,
             faculty: this.selectedFaculty,
             county: this.selectedGroups?.Fylke,
             community: this.selectedGroups?.Kommune,
@@ -324,7 +324,7 @@
       async enrollUser() {
         try {
           const enrollmentRes = await api.post('/enrollment', {
-            role: this.wantToBePrincipal ? this.canvasPrincipalRoleType : this.canvasStudentRoleType,
+            role: this.isLeader ? this.canvasPrincipalRoleType : this.canvasStudentRoleType,
             cookie: window.cookie,
           });
 
@@ -371,7 +371,8 @@
             return;
           }
 
-          this.isLeader = result.data.result.find(enrollment => enrollment.role === import.meta.env.VITE_CANVAS_PRINCIPAL_ROLE_TYPE) != null;
+          this.isLeader = result.data.result.find(enrollment => enrollment.role === "Skoleleder") != null;
+          console.log("Role received.", result.data.result.find(enrollment => enrollment.role === "Skoleleder"), this.isLeader);
           this.information = this.isLeader ? this.getPrincipalInformation() : this.getParticipantInformation();
           this.clearError("roleError");
         } catch(e) {
