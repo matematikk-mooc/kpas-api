@@ -15,7 +15,6 @@
     "require": {
         "php": "^8.3",
         "ext-json": "*",
-        "bugsnag/bugsnag-laravel": "^2.28",
         "doctrine/dbal": "^3.8",
         "dompdf/dompdf": "^2.0",
         "easyrdf/easyrdf": "^1.1",
@@ -27,6 +26,7 @@
         "league/oauth2-client": "^2.7",
         "mantas-done/subtitles": "^0.3.10",
         "nesbot/carbon": "*",
+        "sentry/sentry-laravel": "^4.10",
         "spatie/laravel-data": "^3.12",
         "spatie/laravel-ignition": "^2.8",
         "symfony/polyfill-iconv": "^1.30",

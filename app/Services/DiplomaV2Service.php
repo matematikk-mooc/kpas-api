@@ -88,7 +88,7 @@ class DiplomaV2Service {
     }
 
     private function skipValidations() {
-        $skipSaveOnRoles = ["TeacherEnrollment", "Account Admin", "Udir-Innholdsprodusent", "Udir-forvalter"];
+        $skipSaveOnRoles = ["TeacherEnrollment", "Udir-Innholdsprodusent", "Udir-forvalter"];
         if (empty(array_intersect($skipSaveOnRoles, $this->courseUserRoles))) return false;
         return true;
     }

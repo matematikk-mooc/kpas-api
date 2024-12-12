@@ -167,9 +167,8 @@ return [
         /*
          * Package Service Providers...
          */
-
-        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Vimeo\Laravel\VimeoServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
