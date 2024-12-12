@@ -36,7 +36,8 @@ export default defineConfig({
       process.env.VITE_APP_VERSION || "ci_not_found"
     ),
     "import.meta.env.VITE_SENTRY_DSN": JSON.stringify(
-      process.env.VITE_SENTRY_DSN || ""
+      process.env.VITE_SENTRY_DSN ||
+        "https://308bdd098bf3be5533639cd7285eb555@o4507468577701888.ingest.de.sentry.io/4508453633720400"
     ),
   },
 });
