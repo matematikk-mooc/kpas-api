@@ -393,16 +393,48 @@ class CanvasService
         }
     }
 
+    public function getCourseUser(int $courseId, int $userId)
+    {
+        try {
+            $url = "courses/{$courseId}/users?include[]=enrollments&user_ids[]={$userId}";
+            return $this->request($url, 'GET', [], [], true);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
+            }
+            throw $exception;
+        }
+    }
+
+    private function hasStudentEnrollment(array $courseUser): bool
+    {
+        if (empty($courseUser)) return false;
+
+        $user = $courseUser[0];
+        if (!isset($user->enrollments) || !is_array($user->enrollments)) return false;
+
+        foreach ($user->enrollments as $enrollment) {
+            $roleExists = isset($enrollment->role);
+            $isStudent = $roleExists && $enrollment->role === 'StudentEnrollment';
+            $isPreviewStudent = $roleExists && $enrollment->role === 'StudentViewEnrollment';
+            if ($isStudent || $isPreviewStudent) return true;
+        }
+
+        return false;
+    }
+
     public function getModulesForCourse(int $courseId, int $studentId)
     {
         try {
             $modulesHref = "courses/{$courseId}/modules";
             $modules = $this->request($modulesHref, 'GET', [], [], true);
+            $courseUser = $this->getCourseUser($courseId, $studentId);
+            $isStudent = $this->hasStudentEnrollment($courseUser);
 
             foreach($modules as $module) {
                 if($module->published) {
                     $moduleId = $module->id;
-                    $itemsHref = "courses/{$courseId}/modules/{$moduleId}/items?student_id={$studentId}";
+                    $itemsHref = $isStudent ? "courses/{$courseId}/modules/{$moduleId}/items?student_id={$studentId}" : "courses/{$courseId}/modules/{$moduleId}/items";
                     logger($itemsHref);
                     $items = $this->request($itemsHref, 'GET', [], [], true);
                     $module->items = $items;

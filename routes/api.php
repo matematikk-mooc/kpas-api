@@ -3,8 +3,9 @@
 use App\Http\Controllers\MergeUserController;
 use App\Http\Controllers\UserDeletionController;
 
-Route::post('institution', 'Lti3Controller@institution')->middleware('lti');
+Route::get('/ping', 'PingController@getPing');
 
+Route::post('institution', 'Lti3Controller@institution')->middleware('lti');
 Route::get('settings', 'Lti3Controller@kpas_settings')->middleware('lti');
 
 Route::group(['prefix' => 'diploma'], function () {

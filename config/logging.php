@@ -36,7 +36,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily', 'bugsnag'],
+            'channels' => ['daily'],
         ],
 
         'single' => [
@@ -50,14 +50,6 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
             'days' => 7,
-        ],
-
-        'slack' => [
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'Laravel Log',
-            'emoji' => ':boom:',
-            'level' => 'critical',
         ],
 
         'papertrail' => [
@@ -87,10 +79,6 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
-        ],
-
-        'bugsnag' => [
-            'driver' => 'bugsnag',
         ],
     ],
 

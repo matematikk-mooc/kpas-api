@@ -120,14 +120,12 @@ export default {
             const days = Math.floor(seconds / 86400);
             const hours = Math.floor((seconds % 86400) / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
-            const remainingSeconds = Math.ceil(seconds % 60);
 
             const daysText = days > 0 ? `${days} dag${days !== 1 ? 'er' : ''}` : '';
             const hoursText = hours > 0 ? `${hours} time${hours !== 1 ? 'r' : ''}` : '';
             const minutesText = minutes > 0 ? `${minutes} minutt${minutes !== 1 ? 'er' : ''}` : '';
-            const secondsText = remainingSeconds > 0 ? `${remainingSeconds} sekund${remainingSeconds !== 1 ? 'er' : ''}` : '';
 
-            return [daysText, hoursText, minutesText, secondsText].filter(Boolean).join(' ');
+            return [daysText, hoursText, minutesText].filter(Boolean).join(' ');
         }
     },
 }

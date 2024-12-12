@@ -6,6 +6,7 @@ use App\Http\Responses\ErrorResponse;
 use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use Sentry\Laravel\Integration;
 
 class Handler extends ExceptionHandler
 {
@@ -14,9 +15,7 @@ class Handler extends ExceptionHandler
      *
      * @var array
      */
-    protected $dontReport = [
-        //
-    ];
+    protected $dontReport = [];
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
@@ -37,6 +36,10 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
+        if (app()->bound('sentry') && $this->shouldReport($exception)) {
+            Integration::captureUnhandledException($exception);
+        }
+
         parent::report($exception);
     }
 
@@ -67,17 +70,27 @@ class Handler extends ExceptionHandler
     {
         logger("Start rendering.");
 
-//If we want to provide detailed error messages to the user when we are unable to retrieve information from Canvas, enable this code.
         if ($exception instanceof CanvasException) {
             logger("Canvas exception: ". $exception->getMessage());
             return (new ErrorResponse($exception->getMessage(), 403))->toResponse($request);
         }
         
-        //Display custom error page when LTI fails. Probably because 3d party cookies are disabled on client side.
         if ($exception instanceof LtiException) {
             return response()->view('errors.ltierror', ["message"=>$exception->getMessage()], 403);
         }
         return parent::render($request, $exception);
+    }
+
+    /**
+     * Register the exception handling callbacks for the application.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+        $this->reportable(function (Throwable $e) {
+            Integration::captureUnhandledException($e);
+        });
     }
 
     protected function whoopsHandler()
