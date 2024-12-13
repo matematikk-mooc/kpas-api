@@ -317,9 +317,15 @@ class CanvasService
         return $this->request($url, 'GET', [], [], true);
     }
 
+    public function getAllAccountCourses($accountId)
+    {
+        $url = "accounts/{$accountId}/courses?include[]=course_image&per_page=100";
+        return $this->request($url);
+    }
+
     public function getAllPublishedCourses()
     {
-        $url = "/search/all_courses?open_enrollment_only=true&per_page=999";
+        $url = "search/all_courses?open_enrollment_only=true&per_page=999";
         return $this->request($url, 'GET', [], [], true, true);
     }
 

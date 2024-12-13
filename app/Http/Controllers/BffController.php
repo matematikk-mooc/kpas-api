@@ -35,6 +35,7 @@ class BffController extends Controller
             ];
 
             $courses = $this->canvasService->getAllPublishedCourses();
+            $coursesCanvasSettings = $this->canvasService->getAllAccountCourses(99);
             $courseSettings = $courseSettingsRepository->getCourseSettingsForAllCourses();    
             $courseFilters = $courseSettingsRepository->getFilters();
             $highligthedCourse = $courseSettingsRepository->getHighLightedCourse();
@@ -44,6 +45,19 @@ class BffController extends Controller
                 $courseObject = $courseItem->course;
                 $courseAccountId = $courseObject->account_id;
                 if (in_array($courseAccountId, $accountIds)) {
+                    unset($courseItem->course->tab_configuration);
+                    unset($courseItem->course->settings);
+                    unset($courseItem->course->stuck_sis_fields);
+
+                    $courseCanvasSettings = null;
+                    foreach ($coursesCanvasSettings as $key => $value) {
+                        if ($value->id == $courseObject->id) {
+                            $courseCanvasSettings = $value;
+                            break;
+                        }
+                    }
+
+                    $courseItem->course->image_download_url = $courseCanvasSettings != null ? $courseCanvasSettings->image_download_url : null;
                     array_push($coursesFiltered, $courseItem);
                 }
             }
@@ -53,7 +67,6 @@ class BffController extends Controller
             $returnData["filters"] = $courseFilters;
             $returnData["highligthed"] = $highligthedCourse;
 
-            $this->cachedCourses = $returnData;
             return new SuccessResponse($returnData);
         } catch (\Exception $e) {
             return new ErrorResponse($e->getMessage());
