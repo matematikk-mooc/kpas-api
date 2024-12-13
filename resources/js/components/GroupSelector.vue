@@ -49,7 +49,7 @@
         <Message type="error" v-if="schoolsState.error != null">{{ schoolsState.error }}</Message>
       </label>
 
-      <label class="select-kindergarten" v-if="selectedCounty != null && selectedCommunity != null && institutionType === 'kindergarten'">
+      <label class="select-school" v-if="selectedCounty != null && selectedCommunity != null && institutionType === 'kindergarten'">
         <p>Velg barnehage</p>
 
         <v-select
