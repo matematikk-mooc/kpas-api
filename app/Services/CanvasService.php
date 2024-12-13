@@ -319,7 +319,7 @@ class CanvasService
 
     public function getAllAccountCourses($accountId)
     {
-        $url = "accounts/{$accountId}/courses?include[]=course_image&per_page=100";
+        $url = "accounts/{$accountId}/courses?include[]=course_image&published=true&public=true&per_page=999";
         return $this->request($url);
     }
 

@@ -35,7 +35,7 @@ class BffController extends Controller
             ];
 
             $courses = $this->canvasService->getAllPublishedCourses();
-            $coursesCanvasSettings = $this->canvasService->getAllAccountCourses(99);
+            $coursesCanvasSettings = $this->canvasService->getAllAccountCourses(138);
             $courseSettings = $courseSettingsRepository->getCourseSettingsForAllCourses();    
             $courseFilters = $courseSettingsRepository->getFilters();
             $highligthedCourse = $courseSettingsRepository->getHighLightedCourse();
