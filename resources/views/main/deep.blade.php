@@ -1,10 +1,14 @@
-@php use App\Services\CanvasService; use App\Repositories\CanvasRepository; use GuzzleHttp\Client; @endphp
+@php
+use App\Services\CanvasService;
+use App\Repositories\CanvasRepository;
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
 
     @php
-        $canvasService = new CanvasService(new Client());
+        $canvasService = new CanvasService();
         $canvasRepository = new CanvasRepository($canvasService);
         $courseModules = $canvasRepository->getCourseModules($courseId);
     @endphp

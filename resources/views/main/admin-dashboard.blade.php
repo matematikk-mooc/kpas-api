@@ -1,11 +1,18 @@
-@php use App\Models\SurveyQuestion; use App\Services\CanvasService; use App\Repositories\CanvasRepository; use GuzzleHttp\Client; use App\Services\CanvasGraphQLService; use App\Repositories\CanvasGraphQLRepository; @endphp
+@php
+use App\Models\SurveyQuestion;
+use App\Services\CanvasService;
+use App\Repositories\CanvasRepository;
+use App\Services\CanvasGraphQLService;
+use App\Repositories\CanvasGraphQLRepository;
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
 <div class="admin-dashboard-container">
     @php
         $likertScale5ptOptions = SurveyQuestion::getLikertScaleOptions();
-        $canvasService = new CanvasService(new Client());
+        $canvasService = new CanvasService();
         $canvasRepository = new CanvasRepository($canvasService);
         $course_id = intval($settings["custom_canvas_course_id"]);
         $courseModules = $canvasRepository->getCourseModules($course_id);
