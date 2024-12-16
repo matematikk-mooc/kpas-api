@@ -30,7 +30,7 @@ su -s /bin/bash -c "
     php artisan migrate --force
 " www-data
 storageDir="/var/www/html/storage"
-chown -R 1000:1000 $storageDir
+chown -R www-data:www-data $storageDir
 chmod -R u+rw,g+rw $storageDir
 
 echo $0
