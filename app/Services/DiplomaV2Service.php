@@ -1,8 +1,6 @@
 <?php
 namespace App\Services;
 
-use GuzzleHttp\Client;
-
 use App\Services\CanvasService;
 use App\Models\Kompetansepakke;
 use App\Models\Diploma;
@@ -44,8 +42,7 @@ class DiplomaV2Service {
     }
 
     private function getCourseProgress() {
-        $httpClient = new Client();
-        $canvasService = new CanvasService($httpClient);
+        $canvasService = new CanvasService();
 
         $modulesForUser = $canvasService->getModulesForCourse($this->courseId, $this->userId);
         $lastModuleKey = key(array_slice($modulesForUser, -1, 1, true));

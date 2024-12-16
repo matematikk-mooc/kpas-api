@@ -4,17 +4,13 @@ namespace App\Services;
 
 use App\Dto\GroupDto;
 use App\Dto\SectionDto;
+use App\Utils\SentryTrace;
 use App\Exceptions\CanvasException;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
 
 class CanvasService
 {
-    /**
-     * @var Client
-     */
-    protected $guzzleClient;
     /**
      * @var string
      */
@@ -24,11 +20,10 @@ class CanvasService
      */
     protected $accessKey;
 
-    public function __construct(Client $guzzleClient)
+    public function __construct()
     {
         $this->domain = config('canvas.domain');
         $this->accessKey = config('canvas.access_key');
-        $this->guzzleClient = $guzzleClient;
     }
 
     public function getAccountInfoById(int $accountId){
@@ -506,22 +501,27 @@ class CanvasService
         return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
     }
 
-    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false, bool $skip_auth = false)
-    {
+    protected function request(
+        string $url, 
+        string $method = 'GET', 
+        array $data = [], 
+        array $headers = [], 
+        bool $paginable = false, 
+        bool $skip_auth = false
+    ) {
         $fullUrl = "{$this->domain}/{$url}";
-
-        if ($skip_auth != true) {
+        $isFinished = false;
+        $content = [];
+    
+        if (!$skip_auth) {
             $headers = array_merge([
                 'Authorization' => 'Bearer ' . $this->accessKey,
             ], $headers);
         }
 
-        $isFinished = false;
-
         try {
-            $content = [];
             while (!$isFinished) {
-                $response = $this->guzzleClient->request($method, $fullUrl, [
+                $response = SentryTrace::guzzleRequest($method, $fullUrl, [
                     'form_params' => $data,
                     'headers' => $headers,
                     'verify' => false,
@@ -545,10 +545,13 @@ class CanvasService
                     $isFinished = true;
                     continue;
                 }
+
                 $fullUrl = $matches[1];
             }
+    
             logger("CanvasService: returning content");
             return $content;
+    
         } catch (ClientException $exception) {
             logger("CanvasService.request exception:");
             if (config('canvas.debug')) {
@@ -560,6 +563,7 @@ class CanvasService
                     'response' => json_decode($exception->getResponse()->getBody()->getContents())
                 ], JSON_PRETTY_PRINT));
             }
+
             throw $exception;
         }
     }

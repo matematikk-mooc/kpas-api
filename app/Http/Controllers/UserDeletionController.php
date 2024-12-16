@@ -7,7 +7,6 @@ use App\Services\CanvasService;
 use App\Utils\Token;
 
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -61,8 +60,7 @@ class UserDeletionController extends Controller {
         $activeTokenId = $this->getActiveTokenId();
         if ($activeTokenId != null) return response()->json(["message" => "Det finnes allerede en aktiv kode"], 409);
 
-        $client = new Client();
-        $canvasService = new CanvasService($client);
+        $canvasService = new CanvasService();
         $canvasUserData = $canvasService->getUser($userId);
 
         $userEmail = $canvasUserData->email;

@@ -2,7 +2,6 @@
 use App\Models\SurveyQuestion;
 use App\Services\CanvasService;
 use App\Repositories\CanvasRepository;
-use GuzzleHttp\Client;
 @endphp
 
 @extends('layouts.app')
@@ -11,7 +10,7 @@ use GuzzleHttp\Client;
     @php
         $likertScale5ptOptions = SurveyQuestion::getLikertScaleOptions();
 
-        $canvasService = new CanvasService(new Client());
+        $canvasService = new CanvasService();
         $canvasRepository = new CanvasRepository($canvasService);
         $courseModules = $courseId != NULL ? $canvasRepository->getCourseModules($courseId) : [];
     @endphp
