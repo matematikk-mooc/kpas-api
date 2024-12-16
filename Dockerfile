@@ -3,9 +3,9 @@ FROM composer:2.7 AS generateDocs
 COPY . /var/www/html
 WORKDIR /var/www/html
 RUN composer install \
-                --prefer-dist \
-                --no-interaction \
-                --optimize-autoloader
+    --prefer-dist \
+    --no-interaction \
+    --optimize-autoloader
 RUN php artisan scribe:generate
 
 # COMPOSER INSTALL
@@ -14,10 +14,10 @@ COPY . /var/www/html
 COPY --from=generateDocs /var/www/html/public/docs /var/www/html/public/docs
 WORKDIR /var/www/html
 RUN composer install \
-                --no-dev \
-                --prefer-dist \
-                --no-interaction \
-                --optimize-autoloader
+    --no-dev \
+    --prefer-dist \
+    --no-interaction \
+    --optimize-autoloader
 
 # NPM INSTALL + COMPILE ASSETS
 FROM node:20.17-alpine3.19 AS nodeBuild
@@ -66,19 +66,6 @@ COPY --chown=www-data docker-prod/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # -- CONFIGURE SUPERVISORD --
 COPY --chown=www-data docker-prod/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# -- CONFIGURE CRON --
-COPY --chown=www-data docker-prod/laravel-cron /etc/cron.d/laravel-cron
-# Give execution rights on the cron job
-RUN chmod gu+rw /var/run
-RUN chmod gu+s /usr/sbin/cron
-RUN chown www-data /etc/cron.d/laravel-cron
-RUN chmod 0644 /etc/cron.d/laravel-cron
-# Apply cron job
-RUN crontab -u www-data /etc/cron.d/laravel-cron
-# Create the log file to be able to run tail
-RUN touch /var/log/cron.log
-RUN chown www-data /var/log/cron.log
 
 # -- CONFIGURE SSH --
 # Todo: If we want to change to www-data as user, we need to place the bash_profile in the home directory of www-data
