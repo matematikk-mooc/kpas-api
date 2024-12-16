@@ -44,7 +44,7 @@ class PingController extends Controller
             $connectionError = true;
         }
 
-        if ($connectionError) return new ErrorResponse($connectionData);
+        if ($connectionError) return new ErrorResponse(json_encode($connectionData));
         return new SuccessResponse($connectionData);
     }
 }
