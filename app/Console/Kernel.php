@@ -34,13 +34,13 @@ class Kernel extends ConsoleKernel
         $schedule->command('fetch_from:nsr')
             // !DEBUG
             // ->dailyAt('02:00')
-            ->everyHour()
+            ->hourly()
             ->sentryMonitor(maxRuntime: 120)
             ->runInBackground();
         $schedule->command('fetch_from:canvas')
             // !DEBUG
             // ->dailyAt('03:00')
-            ->everyHour()
+            ->hourly()
             ->sentryMonitor(maxRuntime: 120)
             ->runInBackground();
 
