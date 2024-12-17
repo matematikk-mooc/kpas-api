@@ -13,44 +13,25 @@ cp -a /ltijwt/. /var/www/html/app/Ltiv3/jwt_key_kpas
 echo $0
 echo "Inject canvas url from ENV Variable to nginx-config"
 echo "==============="
-sed 's@startup_prod:INJECT_CANVAS_HOST@'"$CANVAS_HOST"'@' /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.temp
+sed 's@startup_prod:INJECT_CANVAS_HOST@'"$CANVAS_HOST"'@' /etc/nginx/nginx.conf >/etc/nginx/nginx.conf.temp
 cp /etc/nginx/nginx.conf.temp /etc/nginx/nginx.conf
 
-
 echo $0
-echo "Artisan migrate"
+echo "Run PHP artisan commands"
 echo "==============="
-php artisan migrate --force
 
-echo $0
-echo "Artisan cache clear"
-echo "==============="
-php artisan cache:clear
-
-echo $0
-echo "Artisan cache config"
-echo "==============="
-php artisan config:cache
-
-echo $0
-echo "Artisan route clear"
-echo "==============="
-php artisan route:clear
-
-echo $0
-echo "Artisan route cache"
-echo "==============="
-php artisan route:cache
-
-echo $0
-echo "Artisan view clear"
-echo "==============="
-php artisan view:clear
-
-echo $0
-echo "Artisan view cache"
-echo "==============="
-php artisan view:cache
+su -s /bin/bash -c "
+    php artisan cache:clear &&
+    php artisan route:clear &&
+    php artisan view:clear &&
+    php artisan config:cache &&
+    php artisan route:cache &&
+    php artisan view:cache &&
+    php artisan migrate --force
+" www-data
+storageDir="/var/www/html/storage"
+chown -R www-data:www-data $storageDir
+chmod -R u+rw,g+rw $storageDir
 
 echo $0
 echo "Start sshd"

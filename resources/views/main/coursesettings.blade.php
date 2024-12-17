@@ -1,4 +1,15 @@
-@php use App\Repositories\CourseSettingsRepository; use App\Models\CourseSettings; use App\Models\CourseFilter; use App\Models\CourseCategory; use App\Models\Filter; use App\Models\Category; use App\Models\CourseImage; use App\Services\CanvasService; use App\Repositories\CanvasRepository; use GuzzleHttp\Client; @endphp
+@php
+use App\Repositories\CourseSettingsRepository;
+use App\Models\CourseSettings;
+use App\Models\CourseFilter;
+use App\Models\CourseCategory;
+use App\Models\Filter;
+use App\Models\Category;
+use App\Models\CourseImage;
+use App\Services\CanvasService;
+use App\Repositories\CanvasRepository;
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -13,7 +24,7 @@
         $course_id = intval($settings["custom_canvas_course_id"]);
 
         $courseSettingsRepository = new CourseSettingsRepository();
-        $canvasRepository = new CanvasRepository(new CanvasService(new Client()));
+        $canvasRepository = new CanvasRepository(new CanvasService());
 
         $courseSettings = $courseSettingsRepository->getCourseSettings($course_id);
         $filters = $courseSettingsRepository->getFilters();

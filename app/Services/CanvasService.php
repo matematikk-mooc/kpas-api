@@ -4,17 +4,13 @@ namespace App\Services;
 
 use App\Dto\GroupDto;
 use App\Dto\SectionDto;
+use App\Utils\SentryTrace;
 use App\Exceptions\CanvasException;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
 
 class CanvasService
 {
-    /**
-     * @var Client
-     */
-    protected $guzzleClient;
     /**
      * @var string
      */
@@ -24,11 +20,10 @@ class CanvasService
      */
     protected $accessKey;
 
-    public function __construct(Client $guzzleClient)
+    public function __construct()
     {
         $this->domain = config('canvas.domain');
         $this->accessKey = config('canvas.access_key');
-        $this->guzzleClient = $guzzleClient;
     }
 
     public function getAccountInfoById(int $accountId){
@@ -317,9 +312,15 @@ class CanvasService
         return $this->request($url, 'GET', [], [], true);
     }
 
+    public function getAllAccountCourses($accountId)
+    {
+        $url = "accounts/{$accountId}/courses?include[]=course_image&published=true&public=true&per_page=999";
+        return $this->request($url);
+    }
+
     public function getAllPublishedCourses()
     {
-        $url = "/search/all_courses?open_enrollment_only=true&per_page=999";
+        $url = "search/all_courses?open_enrollment_only=true&per_page=999";
         return $this->request($url, 'GET', [], [], true, true);
     }
 
@@ -393,16 +394,48 @@ class CanvasService
         }
     }
 
+    public function getCourseUser(int $courseId, int $userId)
+    {
+        try {
+            $url = "courses/{$courseId}/users?include[]=enrollments&user_ids[]={$userId}";
+            return $this->request($url, 'GET', [], [], true);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
+            }
+            throw $exception;
+        }
+    }
+
+    private function hasStudentEnrollment(array $courseUser): bool
+    {
+        if (empty($courseUser)) return false;
+
+        $user = $courseUser[0];
+        if (!isset($user->enrollments) || !is_array($user->enrollments)) return false;
+
+        foreach ($user->enrollments as $enrollment) {
+            $roleExists = isset($enrollment->role);
+            $isStudent = $roleExists && $enrollment->role === 'StudentEnrollment';
+            $isPreviewStudent = $roleExists && $enrollment->role === 'StudentViewEnrollment';
+            if ($isStudent || $isPreviewStudent) return true;
+        }
+
+        return false;
+    }
+
     public function getModulesForCourse(int $courseId, int $studentId)
     {
         try {
             $modulesHref = "courses/{$courseId}/modules";
             $modules = $this->request($modulesHref, 'GET', [], [], true);
+            $courseUser = $this->getCourseUser($courseId, $studentId);
+            $isStudent = $this->hasStudentEnrollment($courseUser);
 
             foreach($modules as $module) {
                 if($module->published) {
                     $moduleId = $module->id;
-                    $itemsHref = "courses/{$courseId}/modules/{$moduleId}/items?student_id={$studentId}";
+                    $itemsHref = $isStudent ? "courses/{$courseId}/modules/{$moduleId}/items?student_id={$studentId}" : "courses/{$courseId}/modules/{$moduleId}/items";
                     logger($itemsHref);
                     $items = $this->request($itemsHref, 'GET', [], [], true);
                     $module->items = $items;
@@ -468,22 +501,27 @@ class CanvasService
         return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
     }
 
-    protected function request(string $url, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false, bool $skip_auth = false)
-    {
+    protected function request(
+        string $url, 
+        string $method = 'GET', 
+        array $data = [], 
+        array $headers = [], 
+        bool $paginable = false, 
+        bool $skip_auth = false
+    ) {
         $fullUrl = "{$this->domain}/{$url}";
-
-        if ($skip_auth != true) {
+        $isFinished = false;
+        $content = [];
+    
+        if (!$skip_auth) {
             $headers = array_merge([
                 'Authorization' => 'Bearer ' . $this->accessKey,
             ], $headers);
         }
 
-        $isFinished = false;
-
         try {
-            $content = [];
             while (!$isFinished) {
-                $response = $this->guzzleClient->request($method, $fullUrl, [
+                $response = SentryTrace::guzzleRequest($method, $fullUrl, [
                     'form_params' => $data,
                     'headers' => $headers,
                     'verify' => false,
@@ -507,10 +545,13 @@ class CanvasService
                     $isFinished = true;
                     continue;
                 }
+
                 $fullUrl = $matches[1];
             }
+    
             logger("CanvasService: returning content");
             return $content;
+    
         } catch (ClientException $exception) {
             logger("CanvasService.request exception:");
             if (config('canvas.debug')) {
@@ -522,6 +563,7 @@ class CanvasService
                     'response' => json_decode($exception->getResponse()->getBody()->getContents())
                 ], JSON_PRETTY_PRINT));
             }
+
             throw $exception;
         }
     }

@@ -11,7 +11,6 @@ use App\Services\AdminDashboardService;
 use App\Services\DashboardService;
 use App\Services\SurveyService;
 use App\Services\CourseSettingsService;
-use GuzzleHttp\Client;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -188,8 +187,7 @@ class Lti3Controller extends Controller
     private function get_categories($settings)
     {
         $course = $settings["canvas_course_id"];
-        $client = new Client();
-        $canvas_service = new CanvasService($client);
+        $canvas_service = new CanvasService();
         try {
             $categories = collect($canvas_service->getGroupCategories($course));
 

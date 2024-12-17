@@ -1,3 +1,6 @@
+import { createApp } from "vue/dist/vue.esm-bundler";
+import * as Sentry from "@sentry/vue";
+
 import AdminDashboardView from "./views/AdminDashboardView";
 import BarChart from "./components/charts/BarChart";
 import CourseSettignsView from "./views/CourseSettingsView";
@@ -17,7 +20,7 @@ import NoCookies from "./views/NoCookies.vue";
 import NoDiplomaView from "./views/NoDiplomaView";
 import OpenAnswer from "./components/OpenAnswer";
 import SurveyView from "./views/SurveyView.vue";
-import { createApp } from "vue/dist/vue.esm-bundler";
+
 import vSelect from "vue-select";
 
 //import jqueryExports from "jquery";
@@ -47,6 +50,58 @@ import vSelect from "vue-select";
 //window.$ = jqueryExports.default;
 
 const app = createApp({});
+
+Sentry.init({
+  app,
+  debug: false,
+  environment: import.meta.env.VITE_APP_ENV,
+  release: import.meta.env.VITE_APP_VERSION,
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  replaysSessionSampleRate: 0,
+  replaysOnErrorSampleRate: 1,
+  tracesSampleRate: 1,
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration({
+      maskAllText: true,
+      blockAllMedia: true,
+    }),
+
+    Sentry.feedbackIntegration({
+      enableScreenshot: true,
+      showBranding: false,
+      colorScheme: "dark",
+
+      isNameRequired: false,
+      isEmailRequired: false,
+
+      triggerLabel: "",
+      triggerAriaLabel: "Gi tilbakemelding",
+      submitButtonLabel: "Send",
+      cancelButtonLabel: "Avbryt",
+      confirmButtonLabel: "Send",
+      addScreenshotButtonLabel: "Legg til skjermbilde",
+      removeScreenshotButtonLabel: "Fjern skjermbilde",
+
+      formTitle: "Tilbakemelding",
+      nameLabel: "Navn",
+      namePlaceholder: "Ditt navn",
+      emailLabel: "E-post",
+      emailPlaceholder: "Din e-post",
+      isRequiredLabel: "(påkrevd)",
+      messageLabel: "Melding",
+      messagePlaceholder: "Skriv inn din tilbakemelding her",
+      successMessageText: "Takk for tilbakemeldingen!",
+
+      themeLight: {
+        background: "#ffffff",
+      },
+      themeDark: {
+        background: "#303030",
+      },
+    }),
+  ],
+});
 
 app.component("group-enroll-view", GroupEnrollView);
 app.component("merge-user-view", MergeUserView);

@@ -6,7 +6,6 @@ use App\Models\UserDeletionToken;
 use App\Services\CanvasService;
 
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
 class UserDeletion extends Command
@@ -56,8 +55,7 @@ class UserDeletion extends Command
         }
 
         $this->info("{$this->signature} - List all users that are scheduled to be deleted:\n");
-        $client = new Client();
-        $canvasService = new CanvasService($client);
+        $canvasService = new CanvasService();
 
         $usersToDelete = [];
         foreach ($confirmedDeleteTokens as $key => $confirmedDeleteTokensItem) {

@@ -25,16 +25,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // IMPORTANT!
-        // We're currently triggering the Laracel scheduler
-        // at XX:00 every hour. If you want the scheduler to
-        // be triggered more often than once every hour, or you
-        // want it to be triggered at another minute than :00,
-        // you'll need to update the file /docker-prod/laravel-cron
         $schedule->command('fetch_from:nsr')
-            ->dailyAt('02:00')->runInBackground();
+            ->everySixHours()
+            ->sentryMonitor(maxRuntime: 240)
+            ->runInBackground();
         $schedule->command('fetch_from:canvas')
-            ->dailyAt('03:00')->runInBackground();
+            ->everySixHours()
+            ->sentryMonitor(maxRuntime: 120)
+            ->runInBackground();
 
     }
 

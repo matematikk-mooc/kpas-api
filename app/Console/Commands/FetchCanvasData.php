@@ -7,7 +7,6 @@ use App\Models\CanvasCourse;
 use App\Models\Group;
 use App\Models\JoinCanvasGroupUser;
 use App\Services\CanvasService;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use DB;
 class FetchCanvasData extends Command
@@ -34,9 +33,7 @@ class FetchCanvasData extends Command
     public function handle()
     {
         logger('Fetching data from Canvas: start');
-        $client = new Client();
-        $canvasService = new CanvasService($client);
-
+        $canvasService = new CanvasService();
 
         logger('Fetching data from Canvas: fetch courses');
         $coursesFromCanvas = $canvasService->getAllCourses();

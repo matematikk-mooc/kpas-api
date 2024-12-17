@@ -2,7 +2,6 @@
 namespace App\Services;
 
 use App\Services\CanvasService;
-use GuzzleHttp\Client;
 use App\Exceptions\CanvasException;
 use App\Models\Kompetansepakke;
 use App\Models\Diploma;
@@ -93,8 +92,7 @@ class DiplomaService
 
         $courseId = $settings["custom_canvas_course_id"];
         $userId = $settings["custom_canvas_user_id"];
-        $client = new Client();
-        $canvas_service = new CanvasService($client);
+        $canvas_service = new CanvasService();
 
 
         $principalRoleName = config('canvas.principal_role');

@@ -18,6 +18,22 @@ on:
                 type: string
                 description: 'Docker image name'
                 required: true
+            app_env:
+                type: string
+                description: 'Application environment'
+                required: true
+            app_version:
+                type: string
+                description: 'Application version'
+                required: true
+            sentry_dsn:
+                type: string
+                description: 'Sentry DSN'
+                required: true
+            vite_sentry_dsn:
+                type: string
+                description: 'Vite Sentry DSN'
+                required: true
 
         secrets:
             docker_password:
@@ -75,3 +91,12 @@ jobs:
                       type=registry,ref=${{ inputs.docker_registry }}/${{ inputs.docker_image }}:buildcache
                   cache-to: |
                       type=registry,ref=${{ inputs.docker_registry }}/${{ inputs.docker_image }}:buildcache,mode=max
+                  build-args: |
+                      APP_ENV=${{ inputs.app_env }}
+                      APP_VERSION=${{ inputs.app_version }}
+                      SENTRY_DSN=${{ inputs.sentry_dsn }}
+                      SENTRY_ENVIRONMENT=${{ inputs.app_env }}
+                      SENTRY_RELEASE=${{ inputs.app_version }}
+                      VITE_APP_ENV=${{ inputs.app_env }}
+                      VITE_APP_VERSION=${{ inputs.app_version }}
+                      VIET_SENTRY_DSN=${{ inputs.vite_sentry_dsn }}

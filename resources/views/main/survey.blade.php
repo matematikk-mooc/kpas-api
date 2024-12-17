@@ -1,4 +1,8 @@
-@php use App\Models\Survey;use App\Models\SurveyQuestion;use App\Repositories\SurveyRepository;use Bugsnag\BugsnagLaravel\Facades\Bugsnag; @endphp
+@php
+use App\Models\Survey;
+use App\Models\SurveyQuestion;
+use App\Repositories\SurveyRepository;
+@endphp
 @extends('layouts.app')
 
 @section('content')
@@ -17,20 +21,16 @@
         $survey = $surveyRepository->getSurvey($survey_id);
 
         if ($survey == null) {
-            Bugsnag::notifyError('Survey', 'Survey with ID ' . $survey_id . ', loaded from course with ID ' . $course_id . ' is not found in database.');
-           surveyConfigurationError();
+            surveyConfigurationError();
             return;
         }
 
         if (intval($survey->course_id) !== $course_id) {
-            Bugsnag::notifyError('Survey', 'Survey with ID ' . $survey_id . ' is loaded from course with ID ' .
-                                    $course_id . ', but belongs to course with ID ' . $survey->course_id);
-           surveyConfigurationError();
+            surveyConfigurationError();
             return;
         }
 
         if (count($survey->questions) == 0) {
-            Bugsnag::notifyError('Survey', 'Survey with ID ' . $survey_id . ' has no questions.');
             surveyConfigurationError();
             return;
         }

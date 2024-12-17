@@ -3,6 +3,7 @@
 namespace App\Ltiv3;
 
 use App\Exceptions\LtiException;
+use App\Utils\SentryTrace;
 use IMSGlobal\LTI;
 
 class LTI3_Database implements LTI\Database
@@ -11,15 +12,18 @@ class LTI3_Database implements LTI\Database
     {
         session()->start();
         $_SESSION['iss'] = [];
+
         try {
-            $reg_configs = array_diff(scandir(database_path($config_directory)), array('..', '.', '.DS_Store'));
-            foreach ($reg_configs as $key => $reg_config)
-            { 
-                logger("Parse config file:".$reg_config); 
-                $_SESSION['iss'] = array_merge($_SESSION['iss'], json_decode(file_get_contents(database_path($config_directory) . "/$reg_config"), true)); 
+            $reg_configs = array_diff(scandir(database_path($config_directory)), ['..', '.', '.DS_Store']);
+
+            foreach ($reg_configs as $key => $reg_config) { 
+                $config_path = database_path($config_directory) . "/$reg_config";
+                $config_data = SentryTrace::fileGetContents($config_path);
+
+                $_SESSION['iss'] = array_merge($_SESSION['iss'], json_decode($config_data, true));
             }
         } catch (\Throwable $e) {
-            throw new LtiException("LTI v1.3 configuration error  : " . $e->getMessage());
+            throw new LtiException("LTI v1.3 configuration error: " . $e->getMessage());
         }
     }
 
@@ -59,6 +63,7 @@ class LTI3_Database implements LTI\Database
 
     private function private_key($iss)
     {
-        return file_get_contents(__DIR__ . $_SESSION['iss'][$iss]['private_key_file']);
+        $privateKeyPath = __DIR__ . $_SESSION['iss'][$iss]['private_key_file'];
+        return SentryTrace::fileGetContents($privateKeyPath);
     }
 }
