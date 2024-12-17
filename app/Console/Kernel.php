@@ -26,15 +26,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('fetch_from:nsr')
-            // !DEBUG
-            // ->dailyAt('02:00')
-            ->everyHour()
-            ->sentryMonitor(maxRuntime: 120)
+            ->everySixHours()
+            ->sentryMonitor(maxRuntime: 240)
             ->runInBackground();
         $schedule->command('fetch_from:canvas')
-            // !DEBUG
-            // ->dailyAt('03:00')
-            ->everyHour()
+            ->everySixHours()
             ->sentryMonitor(maxRuntime: 120)
             ->runInBackground();
 
