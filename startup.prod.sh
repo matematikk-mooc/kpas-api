@@ -17,6 +17,14 @@ sed 's@startup_prod:INJECT_CANVAS_HOST@'"$CANVAS_HOST"'@' /etc/nginx/nginx.conf 
 cp /etc/nginx/nginx.conf.temp /etc/nginx/nginx.conf
 
 echo $0
+echo "Make sure storage folder is writable"
+echo "==============="
+
+storageDir="/var/www/html/storage"
+chown -R www-data:www-data $storageDir
+chmod -R u+rw,g+rw $storageDir
+
+echo $0
 echo "Run PHP artisan commands"
 echo "==============="
 
@@ -29,9 +37,6 @@ su -s /bin/bash -c "
     php artisan view:cache &&
     php artisan migrate --force
 " www-data
-storageDir="/var/www/html/storage"
-chown -R www-data:www-data $storageDir
-chmod -R u+rw,g+rw $storageDir
 
 echo $0
 echo "Start sshd"
