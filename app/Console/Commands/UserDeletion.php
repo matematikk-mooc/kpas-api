@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\UserDeletionToken;
 use App\Services\CanvasService;
+use App\Utils\SentryTrace;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -43,6 +44,8 @@ class UserDeletion extends Command
      */
     public function handle()
     {
+        SentryTrace::new($this->signature, 'console');
+
         $this->info("{$this->signature} - Starting...");
         $confirmedDeleteTokens = UserDeletionToken::where("confirmed_at", "<", Carbon::now("UTC")->subSeconds(self::DELETE_TIMEOUT_SECONDS))
             ->whereNull("canceled_at")
@@ -112,5 +115,7 @@ class UserDeletion extends Command
                 $this->warn("  - Failed deleting {$userEmail} from Canvas (CanvasID: {$userId})\n    - {$th->getMessage()}");
             }
         }
+
+        SentryTrace::finish(null);
     }
 }

@@ -21,7 +21,7 @@
         "guzzlehttp/guzzle": "^7.8",
         "highsolutions/laravel-environments": "*",
         "imsglobal/lti-1p3-tool": "dev-master",
-        "laravel/framework": "^10.48",
+        "laravel/framework": "10.48.20",
         "laravel/tinker": "^2.9",
         "league/oauth2-client": "^2.7",
         "mantas-done/subtitles": "^0.3.10",

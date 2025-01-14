@@ -3,14 +3,80 @@
 namespace App\Utils;
 
 use Sentry\SentrySdk;
+use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
+use Sentry\Tracing\TransactionContext;
 use GuzzleHttp\Client;
 
-class SentryTrace
-{
-    public static function fileGetContents($url, $useIncludePath = false, $context = null, $offset = 0, $maxLen = null): string
-    {
+use function Sentry\getBaggage;
+use function Sentry\getTraceparent;
+use function Sentry\startTransaction;
+
+class SentryTrace {
+    public static function getHub() {
+        return SentrySdk::getCurrentHub();
+    }
+    
+    public static function getSpan() {
+        $hub = SentryTrace::getHub();
+        return $hub->getSpan();
+    }
+
+    public static function setSpan($span) {
+        $hub = SentryTrace::getHub();
+        $hub->setSpan($span);
+    }
+
+    public static function setData($data) {
+        $span = SentryTrace::getSpan();
+        $span->setData($data);
+    }
+
+    public static function new(string $name, string $op, ?string $description = null) {
+        $transactionContext = TransactionContext::make()
+            ->setName($name)
+            ->setOp($op);
+
+        $span = startTransaction($transactionContext);
+        SentryTrace::setSpan($span);
+
+        return $span;
+    }
+
+    public static function newChild($parentSpan, string $op, ?string $description = null) {
+        $spanContext = SpanContext::make()
+            ->setOp($op)
+            ->setDescription($description);
+        $span = $parentSpan ? $parentSpan->startChild($spanContext) : null;
+
+        if (!$span) return false;
+
+        SentryTrace::setSpan($span);
+        return $span;
+    }
+
+    public static function setContext(string $key, $value) {
+        $hub = SentryTrace::getHub();
+        $hub->configureScope(function (Scope $scope) use ($key, $value) {
+            $scope->setContext($key, $value);
+        });
+    }
+
+    public static function finish($parentSpan, $statusCode = 200) {
+        $hub = SentryTrace::getHub();
+        $client = $hub->getClient();
+        $span = $hub->getSpan();
+
+        if ($span) {
+            $span->setStatus(SpanStatus::createFromHttpStatusCode($statusCode));
+            $span->finish();
+        }
+
+        if ($parentSpan != null) $hub->setSpan($parentSpan);
+    }
+
+    public static function fileGetContents($url, $useIncludePath = false, $context = null, $offset = 0, $maxLen = null): string {
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
 
@@ -82,8 +148,7 @@ class SentryTrace
         }
     }
     
-    public static function guzzleRequest($method, $url, $options = [])
-    {
+    public static function guzzleRequest($method, $url, $options = []) {
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
     
@@ -147,19 +212,16 @@ class SentryTrace
         }
     }
 
-    private static function cleanGraphQLQuery(string $query): string
-    {
+    private static function cleanGraphQLQuery(string $query): string {
         return preg_replace('/\s+/', ' ', trim($query));
     }
 
-    private static function extractOperationName(string $query): ?string
-    {
+    private static function extractOperationName(string $query): ?string {
         if (preg_match('/(query|mutation)\s+(\w+)/', $query, $matches)) return $matches[2];
         return null;
     }
 
-    public static function graphqlRequest(string $url, string $query, array $variables = [], array $headers = []): ?array
-    {
+    public static function graphqlRequest(string $url, string $query, array $variables = [], array $headers = []): ?array {
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
 
@@ -179,8 +241,8 @@ class SentryTrace
             $client = new Client();
             $mergedHeaders = array_merge([
                 'Content-Type' => 'application/json',
-                'sentry-trace' => \Sentry\getTraceparent(),
-                'baggage' => \Sentry\getBaggage(),
+                'sentry-trace' => getTraceparent(),
+                'baggage' => getBaggage(),
             ], $headers);
 
             $response = $client->post($url, [
@@ -200,7 +262,7 @@ class SentryTrace
                 : strlen($responseBody);
 
             if ($span) {
-                $span->setStatus(SpanStatus::ok());
+                $span->setStatus(SpanStatus::createFromHttpStatusCode($response->getStatusCode()));
                 $span->setData([
                     'http.request.method' => 'POST',
                     'http.url' => $url,

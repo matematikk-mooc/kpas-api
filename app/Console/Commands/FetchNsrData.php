@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Services\DataNsrService;
+use App\Utils\SentryTrace;
+
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
-
-
 
 class FetchNsrData extends Command
 {
@@ -41,13 +41,26 @@ class FetchNsrData extends Command
      */
     public function handle()
     {
+        SentryTrace::new($this->signature, 'console');
+        SentryTrace::setContext('monitor', [
+            'job_name' => $this->signature,
+            'job_description' => $this->description,
+            'name' => 'scheduled_artisan-fetch-from-nsr',
+            'slug' => 'scheduled_artisan-fetch-from-nsr',
+        ]);
+
         $client = new Client();
         $nsr = new DataNsrService($client);
+
         $nsr->store_counties();
         $nsr->store_communities();
+        
         logger("Store schools");
         $nsr->store_schools();
+
         logger("Store kindergartens");
         $nsr->store_kindergartens();
+        
+        SentryTrace::finish(null);
     }
 }

@@ -25,7 +25,6 @@ class BffController extends Controller
     public function getCoursesForFrontpage(bool $skip_cache = false)
     {
         try {
-            $accountIds = [99, 100, 102, 103, 137, 138, 139, 145];
             $courseSettingsRepository = new CourseSettingsRepository();
             $returnData = [
                 "courses" => [],
@@ -40,29 +39,7 @@ class BffController extends Controller
             $courseFilters = $courseSettingsRepository->getFilters();
             $highligthedCourse = $courseSettingsRepository->getHighLightedCourse();
             
-            $coursesFiltered = [];
-            foreach ($courses as $courseKey => $courseItem) {
-                $courseObject = $courseItem->course;
-                $courseAccountId = $courseObject->account_id;
-                if (in_array($courseAccountId, $accountIds)) {
-                    unset($courseItem->course->tab_configuration);
-                    unset($courseItem->course->settings);
-                    unset($courseItem->course->stuck_sis_fields);
-
-                    $courseCanvasSettings = null;
-                    foreach ($coursesCanvasSettings as $key => $value) {
-                        if ($value->id == $courseObject->id) {
-                            $courseCanvasSettings = $value;
-                            break;
-                        }
-                    }
-
-                    $courseItem->course->image_download_url = $courseCanvasSettings != null ? $courseCanvasSettings->image_download_url : null;
-                    array_push($coursesFiltered, $courseItem);
-                }
-            }
-
-            $returnData["courses"] = $coursesFiltered;
+            $returnData["courses"] = $this->filterCoursesByAccountIds($courses);
             $returnData["settings"] = $courseSettings;
             $returnData["filters"] = $courseFilters;
             $returnData["highligthed"] = $highligthedCourse;
@@ -71,5 +48,19 @@ class BffController extends Controller
         } catch (\Exception $e) {
             return new ErrorResponse($e->getMessage());
         }
+    }
+
+    public function filterCoursesByAccountIds($courses, $accountIds = [99, 100, 102, 103, 137, 138, 139, 145])
+    {
+        $coursesFiltered = [];
+        foreach ($courses as $courseKey => $courseItem) {
+            $courseObject = $courseItem->course;
+            $courseAccountId = $courseObject->account_id;
+            if (in_array($courseAccountId, $accountIds)) {
+                array_push($coursesFiltered, $courseItem);
+            }
+        }
+
+        return $coursesFiltered;
     }
 }
