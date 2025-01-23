@@ -292,6 +292,21 @@ class CanvasService
         }
     }
 
+    public function getGroupMemberships(int $groupId, int $perPage = 100, bool $paginable = true, string $authorizationHeader = null, string $page = null)
+    {
+        $url = "groups/{$groupId}/memberships";
+        $data = ["per_page" => $perPage];
+        $headers = [];
+
+        $usePage = !empty($page);
+        if ($usePage) $data['page'] = $page;
+
+        $useCustomToken = !empty($authorizationHeader);
+        if ($useCustomToken) $headers['Authorization'] = $authorizationHeader;
+
+        return $this->request($url, 'GET', $data, $headers, $paginable, $useCustomToken, !$paginable);
+    }
+
     public function getCourse(int $courseId)
     {
         try {
@@ -309,7 +324,7 @@ class CanvasService
     {
         $accountId = config('canvas.account_id');
         $url = "accounts/{$accountId}/courses";
-        return $this->request($url, 'GET', [], [], true);
+        return $this->request($url, 'GET', ['per_page' => 100], [], true);
     }
 
     public function getAllAccountCourses($accountId)
@@ -324,11 +339,21 @@ class CanvasService
         return $this->request($url, 'GET', [], [], true, true);
     }
 
-    public function getCourseModules($courseId)
+    public function getCourseModules($courseId, $includeItems = false)
     {
+        $data = [];
         $accountId = config('canvas.account_id');
         $url = "courses/{$courseId}/modules";
-        return $this->request($url, 'GET', [], [], true);
+
+        if ($includeItems) $data['include[]'] = "items";
+
+        return $this->request($url, 'GET', $data, [], true);
+    }
+
+    public function getAnnouncements(int $courseId)
+    {
+        $url = "courses/$courseId/discussion_topics";
+        return $this->request($url, 'GET', ['only_announcements' => 'true', 'no_avatar_fallback' => '1'], [], true);
     }
 
     public function getCourseModuleItems($courseId, $moduleId)
@@ -349,10 +374,19 @@ class CanvasService
         return $this->request($url, 'GET', [], [], true);
     }
 
-    public function getCourseEnrollments(int $courseId)
+    public function getCourseEnrollments(int $courseId, int $per_page = 100, bool $paginable = true, string $authorizationHeader = null, string $page = null)
     {
         $url = "courses/{$courseId}/enrollments";
-        return $this->request($url, 'GET', ["per_page" => 100], [], true);
+        $data = ["per_page" => $per_page];
+        $headers = [];
+
+        $usePage = !empty($page);
+        if ($usePage) $data['page'] = $page;
+
+        $useCustomToken = !empty($authorizationHeader);
+        if ($useCustomToken) $headers['Authorization'] = $authorizationHeader;
+
+        return $this->request($url, 'GET', $data, $headers, $paginable, $useCustomToken, !$paginable);
     }
 
     public function getEnrollments(int $userId)
@@ -424,6 +458,16 @@ class CanvasService
         return false;
     }
 
+    public function getModulesWithProgress(int $courseId, int $userId) {
+        try {
+            $modulesHref = "courses/{$courseId}/modules";
+            return $this->request($modulesHref, 'GET', ['include[]' => 'items', 'student_id' => $userId], [], true);
+        } catch (ClientException $exception) {
+            logger("CanvasService.getModulesWithProgress: ".$exception->getMessage());
+            throw $exception;
+        }
+    }
+
     public function getModulesForCourse(int $courseId, int $studentId)
     {
         try {
@@ -468,7 +512,7 @@ class CanvasService
     {
         try {
             $url = "groups/{$groupId}/users";
-            return $this->request($url, 'GET', [], [], true);
+            return $this->request($url, 'GET', ['per_page' => 100], [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 401 || $exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
@@ -507,11 +551,13 @@ class CanvasService
         array $data = [], 
         array $headers = [], 
         bool $paginable = false, 
-        bool $skip_auth = false
+        bool $skip_auth = false,
+        bool $return_next = false
     ) {
         $fullUrl = "{$this->domain}/{$url}";
         $isFinished = false;
         $content = [];
+        $nextPage = null;
     
         if (!$skip_auth) {
             $headers = array_merge([
@@ -541,7 +587,19 @@ class CanvasService
                 }
 
                 $link = $response->getHeader('Link');
-                if (!$paginable || !preg_match('/<([^<]+)>; rel="next"/', $link[0], $matches)) {
+                $linkExists = isset($link[0]);
+
+                if ($linkExists) {
+                    if (preg_match('/<([^>]+)>; rel="next"/', $link[0], $matchesNext)) {
+                        $nextLink = $matchesNext[1];
+                
+                        if (preg_match('/page=([^&]+)/', $nextLink, $pageMatches)) {
+                            $nextPage = str_replace("page=", "", $pageMatches);
+                        }
+                    }
+                }
+
+                if (!$paginable || $linkExists && !preg_match('/<([^<]+)>; rel="next"/', $link[0], $matches)) {
                     $isFinished = true;
                     continue;
                 }
@@ -550,6 +608,7 @@ class CanvasService
             }
     
             logger("CanvasService: returning content");
+            if ($return_next) return ["nextPage" => $nextPage[0] ?? null, "data" => $content];
             return $content;
     
         } catch (ClientException $exception) {
@@ -604,6 +663,12 @@ class CanvasService
     public function getCoursePageContent(int $courseId, int $pageId)
     {
         $url = "courses/{$courseId}/pages/{$pageId}";
+        return $this->request($url, 'GET');
+    }
+
+    public function getCoursePageContentByPath(int $courseId, string $pagePath)
+    {
+        $url = "courses/{$courseId}/pages/{$pagePath}";
         return $this->request($url, 'GET');
     }
 
