@@ -105,6 +105,20 @@ Route::group(['prefix' => 'bff'], function () {
     });
 });
 
+Route::group(['prefix' => 'export'], function () {
+    Route::group(['prefix' => 'courses'], function () {
+        Route::get('/', 'ExportController@getCourses');
+        Route::get('/{courseId}', 'ExportController@getCourse');
+        Route::get('/{courseId}/announcements', 'ExportController@getCourseAnnouncements');
+        Route::get('/{courseId}/modules', 'ExportController@getCourseModules');
+        Route::get('/{courseId}/pages/{pagePath}', 'ExportController@getCoursePage');
+        Route::get('/{courseId}/groups', 'ExportController@getCourseGroups');
+        Route::get('/{courseId}/groups/{groupId}', 'ExportController@getCourseGroupCategories');
+        Route::get('/{courseId}/groups/{groupId}/{groupCategoryId}', 'ExportController@getCourseGroupCategoryUsers');
+        Route::get('/{courseId}/enrollments', 'ExportController@getCourseEnrollments');
+    });
+});
+
 Route::get('/surveys', 'SurveyController@getSurveyWithQuestions');
 Route::get('/statistics/activity/courses/{courseId}', 'ActivityStatisticsController@getCourseActivity');
 
