@@ -33,7 +33,7 @@ class ExportController extends Controller {
         $this->bffController = $bffController;
     }
 
-    public function getCourses(): SuccessResponse {
+    public function getCourses() {
         $publishedCourses = $this->canvasService->getAllPublishedCourses();
         $courses = $this->bffController->filterCoursesByAccountIds($publishedCourses);
         $courseIds = [];
@@ -47,9 +47,19 @@ class ExportController extends Controller {
         return new SuccessResponse($courseIds);
     }
 
-    public function getCourse(int $courseId): SuccessResponse {
-        $canvasCourse = $this->canvasService->getCourse($courseId);
-        $canvasCourseId = $canvasCourse->id;
+    public function getCourse(int $courseId) {
+        $canvasCourse = null;
+        $canvasCourseId = null;
+
+        try {
+            $canvasCourse = $this->canvasService->getCourse($courseId);
+            $canvasCourseId = $canvasCourse->id;
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course not found', 404);
+
+            throw $th;
+        }
 
         $courseFrontpage = $this->canvasService->getCourseFrontpage($canvasCourseId);
         $courseFrontpageSlugID = isset($courseFrontpage->page_id) ? $courseFrontpage->url : null;
@@ -163,11 +173,20 @@ class ExportController extends Controller {
         return null;
     }
 
-    public function getCourseGroups(int $courseId): SuccessResponse {
+    public function getCourseGroups(int $courseId) {
         $userGroups = [];
+        $canvasCourse = null;
+        $canvasCourseId = null;
 
-        $canvasCourse = $this->canvasService->getCourse($courseId);
-        $canvasCourseId = $canvasCourse->id;
+        try {
+            $canvasCourse = $this->canvasService->getCourse($courseId);
+            $canvasCourseId = $canvasCourse->id;
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course not found', 404);
+
+            throw $th;
+        }
 
         $courseUserGroups = $this->canvasService->getGroupCategories($canvasCourseId) ?? [];
         foreach ($courseUserGroups as $courseUserGroup) {
@@ -180,13 +199,31 @@ class ExportController extends Controller {
         return new SuccessResponse($userGroups);
     }
 
-    public function getCourseGroupCategories(int $courseId, int $groupId): SuccessResponse {
+    public function getCourseGroupCategories(int $courseId, int $groupId) {
         $groups = [];
+        $canvasCourse = null;
+        $canvasCourseId = null;
+        $courseGroups = null;
 
-        $canvasCourse = $this->canvasService->getCourse($courseId);
-        $canvasCourseId = $canvasCourse->id;
+        try {
+            $canvasCourse = $this->canvasService->getCourse($courseId);
+            $canvasCourseId = $canvasCourse->id;
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course not found', 404);
 
-        $courseGroups = $this->canvasService->getGroups($groupId) ?? [];
+            throw $th;
+        }
+
+        try {
+            $courseGroups = $this->canvasService->getGroups($groupId) ?? [];
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course group not found', 404);
+
+            throw $th;
+        }
+
         foreach ($courseGroups as $courseGroup) {
             $groupCourseId = $courseGroup->course_id;
             if ($groupCourseId != $canvasCourseId) continue; 
@@ -210,10 +247,28 @@ class ExportController extends Controller {
         if (empty($canvasToken)) return new ErrorResponse('Missing Authorization header', 401);
         if ($perPage > 100) return new ErrorResponse('Per page limit is 100', 400);
 
+        $canvasCourse = null;
+        $canvasCourseId = null;
+
         try {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
+        } catch (ClientException $e) {
+            if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
+                return new ErrorResponse('Token is invalid', 401);
+            } else if (str_contains($e->getMessage(), 'not found')) {
+                return new ErrorResponse('Course not found', 404);
+            }
+        
+            throw $e;
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course not found', 404);
 
+            throw $th;
+        }
+
+        try {
             $res = $this->canvasService->getGroupMemberships($groupCategoryId, $perPage, false, $canvasToken, $page) ?? [];
             $nextPage = $res['nextPage'] ?? null;
             $groupMemberships = $res['data'] ?? [];
@@ -223,22 +278,28 @@ class ExportController extends Controller {
             }
 
             return new SuccessResponse(['nextPage' => $nextPage, 'users' => $groupUserIds]);
-        } catch (ClientException $e) {
-            if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
-                return new ErrorResponse('Token is invalid', 401);
-            }
-        
-            throw $e;
         } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course group category not found', 404);
+
             throw $th;
         }
     }
 
-    public function getCourseModules(Request $request, int $courseId): SuccessResponse {
+    public function getCourseModules(Request $request, int $courseId) {
         $modules = [];
+        $canvasCourse = null;
+        $canvasCourseId = null;
 
-        $canvasCourse = $this->canvasService->getCourse($courseId);
-        $canvasCourseId = $canvasCourse->id;
+        try {
+            $canvasCourse = $this->canvasService->getCourse($courseId);
+            $canvasCourseId = $canvasCourse->id;
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course not found', 404);
+
+            throw $th;
+        }
 
         $courseSettingsRepository = new CourseSettingsRepository();
         $courseSettings = $courseSettingsRepository->getCourseSettings($canvasCourseId);
@@ -319,9 +380,19 @@ class ExportController extends Controller {
         return new SuccessResponse($modules);
     }
 
-    public function getCoursePage(Request $request, int $courseId, string $pagePath): SuccessResponse {
-        $canvasCourse = $this->canvasService->getCourse($courseId);
-        $canvasCourseId = $canvasCourse->id;
+    public function getCoursePage(Request $request, int $courseId, string $pagePath) {
+        $canvasCourse = null;
+        $canvasCourseId = null;
+
+        try {
+            $canvasCourse = $this->canvasService->getCourse($courseId);
+            $canvasCourseId = $canvasCourse->id;
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course not found', 404);
+
+            throw $th;
+        }
 
         $courseSettingsRepository = new CourseSettingsRepository();
         $courseSettings = $courseSettingsRepository->getCourseSettings($canvasCourseId);
@@ -329,8 +400,17 @@ class ExportController extends Controller {
 
         $languageSetting = $courseSettingsArray != null ? $courseSettingsArray["multilang"] : null;
         $languages = $this->getLanguages($languageSetting);
+        $page = null;
 
-        $page = $this->canvasService->getCoursePageContentByPath($canvasCourseId, $pagePath);
+        try {
+            $page = $this->canvasService->getCoursePageContentByPath($canvasCourseId, $pagePath);
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course page not found', 404);
+
+            throw $th;
+        }
+
         $returnObject = [
             "id" => $page->page_id,
             "title" => [
@@ -383,11 +463,20 @@ class ExportController extends Controller {
         return $html;
     }
 
-    public function getCourseAnnouncements(int $courseId): SuccessResponse {
+    public function getCourseAnnouncements(int $courseId) {
         $announcements = [];
+        $canvasCourse = null;
+        $canvasCourseId = null;
 
-        $canvasCourse = $this->canvasService->getCourse($courseId);
-        $canvasCourseId = $canvasCourse->id;
+        try {
+            $canvasCourse = $this->canvasService->getCourse($courseId);
+            $canvasCourseId = $canvasCourse->id;
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course not found', 404);
+
+            throw $th;
+        }
 
         $courseAnnouncements = $this->canvasService->getAnnouncements($canvasCourseId);
         foreach ($courseAnnouncements as $announcementItem) {
@@ -415,10 +504,28 @@ class ExportController extends Controller {
         if (empty($canvasToken)) return new ErrorResponse('Missing Authorization header', 401);
         if ($perPage > 25) return new ErrorResponse('Per page limit is 25', 400);
 
+        $canvasCourse = null;
+        $canvasCourseId = null;
+
         try {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
+        } catch (ClientException $e) {
+            if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
+                return new ErrorResponse('Token is invalid', 401);
+            } else if (str_contains($e->getMessage(), 'not found')) {
+                return new ErrorResponse('Course not found', 404);
+            }
+        
+            throw $e;
+        } catch (\Throwable $th) {
+            if (str_contains($th->getMessage(), 'not found')) 
+                return new ErrorResponse('Course not found', 404);
 
+            throw $th;
+        }
+
+        try {
             $res = $this->canvasService->getCourseEnrollments($canvasCourseId, $perPage, false, $canvasToken, $page);
             $nextPage = $res['nextPage'] ?? null;
             $courseEnrollments = $res['data'] ?? [];

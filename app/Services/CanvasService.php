@@ -294,17 +294,24 @@ class CanvasService
 
     public function getGroupMemberships(int $groupId, int $perPage = 100, bool $paginable = true, string $authorizationHeader = null, string $page = null)
     {
-        $url = "groups/{$groupId}/memberships";
-        $data = ["per_page" => $perPage];
-        $headers = [];
+        try {
+            $url = "groups/{$groupId}/memberships";
+            $data = ["per_page" => $perPage];
+            $headers = [];
 
-        $usePage = !empty($page);
-        if ($usePage) $data['page'] = $page;
+            $usePage = !empty($page);
+            if ($usePage) $data['page'] = $page;
 
-        $useCustomToken = !empty($authorizationHeader);
-        if ($useCustomToken) $headers['Authorization'] = $authorizationHeader;
+            $useCustomToken = !empty($authorizationHeader);
+            if ($useCustomToken) $headers['Authorization'] = $authorizationHeader;
 
-        return $this->request($url, 'GET', $data, $headers, $paginable, $useCustomToken, !$paginable);
+            return $this->request($url, 'GET', $data, $headers, $paginable, $useCustomToken, !$paginable);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new CanvasException(sprintf('Course group category with ID %s not found', $groupId));
+            }
+            throw $exception;
+        }
     }
 
     public function getCourse(int $courseId)
