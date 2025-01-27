@@ -94,15 +94,20 @@ class FetchCanvasData extends Command
                 try {
                     SentryTrace::newChild($span, 'process', "Group ID #{$groupID}");
                     $usersFromCanvas = $canvasService->getUsersInGroup($groupID);
-                    $bulkInsertData = [];
+                    $existingRecords = JoinCanvasGroupUser::where('canvas_group_id', $groupID)
+                        ->pluck('canvas_user_id')
+                        ->toArray();
 
+                    $bulkInsertData = [];
                     foreach ($usersFromCanvas as $user) {
-                        $bulkInsertData[] = [
-                            'canvas_group_id' => $groupID,
-                            'canvas_user_id' => $user->id,
-                        ];
+                        if (!in_array($user->id, $existingRecords)) {
+                            $bulkInsertData[] = [
+                                'canvas_group_id' => $groupID,
+                                'canvas_user_id' => $user->id,
+                            ];
+                        }
                     }
-            
+
                     if (!empty($bulkInsertData)) JoinCanvasGroupUser::insert($bulkInsertData);
 
                     SentryTrace::setData(['groupID', $bulkInsertData]);
