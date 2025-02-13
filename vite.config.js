@@ -24,6 +24,17 @@ export default defineConfig({
         },
       },
     },
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: [
+          "import",
+          "legacy-js-api",
+          "mixed-decls",
+          "color-functions",
+          "global-builtin",
+        ],
+      },
+    },
   },
   plugins: [laravel(["resources/sass/app.scss", "resources/js/app.js"]), vue()],
   envDir: "./vite-config/",

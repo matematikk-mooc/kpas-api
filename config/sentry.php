@@ -1,5 +1,4 @@
 <?php
- 
 $appEnv = env('APP_ENV', 'development');
 $appVersion = env('APP_VERSION', '1.0.0-dev');
 $sentryDSN = env('SENTRY_LARAVEL_DSN', env('SENTRY_DSN', ''));
@@ -23,8 +22,7 @@ return [
     'traces_sample_rate' => 1.0,
     'send_default_pii' => false,
 
-    // 'ignore_exceptions' => [],
-    'ignore_transactions' => [],
+    'before_send_transaction' => [\App\Sentry\BeforeSendTransaction::class, 'Filter'],
 
     'breadcrumbs' => [
         'logs' => env('SENTRY_BREADCRUMBS_LOGS_ENABLED', true),
