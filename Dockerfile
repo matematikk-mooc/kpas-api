@@ -1,16 +1,6 @@
-# GENERATE DOCS
-FROM composer:2.7 AS generateDocs
-COPY . /var/www/html
-WORKDIR /var/www/html
-RUN composer install \
-    --prefer-dist \
-    --no-interaction \
-    --optimize-autoloader
-
 # COMPOSER INSTALL
 FROM composer:2.7 AS composerBuild
 COPY . /var/www/html
-COPY --from=generateDocs /var/www/html/public/docs /var/www/html/public/docs
 WORKDIR /var/www/html
 RUN composer install \
     --no-dev \
