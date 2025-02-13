@@ -6,7 +6,6 @@ RUN composer install \
     --prefer-dist \
     --no-interaction \
     --optimize-autoloader
-RUN php artisan scribe:generate
 
 # COMPOSER INSTALL
 FROM composer:2.7 AS composerBuild
