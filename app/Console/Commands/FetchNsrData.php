@@ -49,18 +49,33 @@ class FetchNsrData extends Command
             'slug' => 'scheduled_artisan-fetch-from-nsr',
         ]);
 
-        $client = new Client();
-        $nsr = new DataNsrService($client);
+        $transaction = SentryTrace::getTransaction();
+        SentryTrace::setSpan(null); // ?NOTE: Disable tracing for this command to avoid wasting quota for long running command that runs daily
 
-        $nsr->store_counties();
-        $nsr->store_communities();
-        
-        logger("Store schools");
-        $nsr->store_schools();
+        try {
+            $client = new Client();
+            $nsr = new DataNsrService($client);
 
-        logger("Store kindergartens");
-        $nsr->store_kindergartens();
-        
-        SentryTrace::finish(null);
+            $nsr->store_counties();
+            $nsr->store_communities();
+            
+            logger("Store schools");
+            $nsr->store_schools();
+
+            logger("Store kindergartens");
+            $nsr->store_kindergartens();
+            
+            SentryTrace::setSpan($transaction);
+            SentryTrace::finish(null);
+            return Command::SUCCESS;
+        } catch (\Throwable $th) {
+            SentryTrace::setSpan($transaction);
+            
+            logger()->error('NSR data synchronization failed.', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Sentry\captureException($e);
+
+            SentryTrace::finish(null, 500);
+            throw $th;
+        }
     }
 }

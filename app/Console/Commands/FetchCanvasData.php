@@ -19,15 +19,18 @@ class FetchCanvasData extends Command
 
     public function handle()
     {
+        SentryTrace::new($this->signature, 'console');
+        SentryTrace::setContext('monitor', [
+            'job_name' => $this->signature,
+            'job_description' => $this->description,
+            'name' => 'scheduled_artisan-fetch-from-canvas',
+            'slug' => 'scheduled_artisan-fetch-from-canvas',
+        ]);
+
+        $transaction = SentryTrace::getTransaction();
+        SentryTrace::setSpan(null); // ?NOTE: Disable tracing for this command to avoid wasting quota for long running command that runs daily
+
         try {
-            SentryTrace::new($this->signature, 'console');
-            SentryTrace::setContext('monitor', [
-                'job_name' => $this->signature,
-                'job_description' => $this->description,
-                'name' => 'scheduled_artisan-fetch-from-canvas',
-                'slug' => 'scheduled_artisan-fetch-from-canvas',
-            ]);
-    
             logger()->info('Canvas data synchronization started.');
 
             $this->processCourses();
@@ -35,10 +38,15 @@ class FetchCanvasData extends Command
 
             logger()->info('Canvas data synchronization completed.');
 
+            SentryTrace::setSpan($transaction);
             SentryTrace::finish(null);
             return Command::SUCCESS;
         } catch (\Exception $e) {
+            SentryTrace::setSpan($transaction);
+
             logger()->error('Canvas data synchronization failed.', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Sentry\captureException($e);
+            
             SentryTrace::finish(null, 500);
             throw $e;
         }
@@ -46,8 +54,6 @@ class FetchCanvasData extends Command
 
     private function processCourses()
     {
-        $parentSpan = SentryTrace::getSpan();
-        SentryTrace::newChild($parentSpan, 'sync', 'Canvas: Courses');
         logger()->info('Fetching courses from Canvas started.');
 
         try {
@@ -66,11 +72,9 @@ class FetchCanvasData extends Command
             if (!empty($bulkInsertData)) CanvasCourse::insert($bulkInsertData);
 
             logger()->info('Fetching courses from Canvas completed.', ['course_count' => count($coursesFromCanvas)]);
-            SentryTrace::setData(['courses', $bulkInsertData]);
-            SentryTrace::finish($parentSpan);
         } catch (\Exception $e) {
+            Sentry\captureException($e);
             logger()->error('Error fetching courses from Canvas.', ['error' => $e->getMessage()]);
-            SentryTrace::finish($parentSpan, 500);
             throw $e;
         }
     }
@@ -78,8 +82,6 @@ class FetchCanvasData extends Command
     private function processUserGroupRelationships()
     {
         $groupIDs = [];
-        $parentSpan = SentryTrace::getSpan();
-        $span = SentryTrace::newChild($parentSpan, 'sync', 'Canvas: User-Group Relationships');
         logger()->info('Fetching user-group relationships from Canvas started.');
     
         try {
@@ -92,43 +94,39 @@ class FetchCanvasData extends Command
                 $groupIDs[] = $groupID;
 
                 try {
-                    SentryTrace::newChild($span, 'process', "Group ID #{$groupID}");
                     $usersFromCanvas = $canvasService->getUsersInGroup($groupID);
+                    $existingRecords = JoinCanvasGroupUser::where('canvas_group_id', $groupID)
+                        ->pluck('canvas_user_id')
+                        ->toArray();
+
                     $bulkInsertData = [];
-
                     foreach ($usersFromCanvas as $user) {
-                        $bulkInsertData[] = [
-                            'canvas_group_id' => $groupID,
-                            'canvas_user_id' => $user->id,
-                        ];
+                        if (!in_array($user->id, $existingRecords)) {
+                            $bulkInsertData[] = [
+                                'canvas_group_id' => $groupID,
+                                'canvas_user_id' => $user->id,
+                            ];
+                        }
                     }
-            
-                    if (!empty($bulkInsertData)) JoinCanvasGroupUser::insert($bulkInsertData);
 
-                    SentryTrace::setData(['groupID', $bulkInsertData]);
-                    SentryTrace::finish($span);
+                    if (!empty($bulkInsertData)) JoinCanvasGroupUser::insert($bulkInsertData);
                 } catch (CanvasException $e) {
                     logger()->warning('Error fetching users for group.', ['group_id' => $groupID, 'error' => $e->getMessage()]);
                     if (!str_contains($e->getMessage(), "not found")) {
-                        SentryTrace::finish($span, 500);
+                        Sentry\captureException($e);
                         throw $e;
                     }
-
-                    SentryTrace::finish($span, 404);
                 } catch (\Exception $e) {
+                    Sentry\captureException($e);
                     logger()->error("Error processing group ID {$groupID}: " . $e->getMessage());
-                    SentryTrace::finish($span, 500);
                     throw $e;
                 }
             }
 
             logger()->info('Fetching user-group relationships from Canvas completed.');
-            SentryTrace::setData(['groupIDs', $groupIDs]);
-            SentryTrace::finish($parentSpan);
         } catch (\Exception $e) {
-            SentryTrace::setSpan($span);
+            Sentry\captureException($e);
             logger()->error('Error fetching user-group relationships from Canvas.', ['error' => $e->getMessage()]);
-            SentryTrace::finish($parentSpan, 500);
             throw $e;
         }
     }

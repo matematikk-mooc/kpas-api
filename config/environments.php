@@ -13,7 +13,6 @@ return [
      */
     'files' => [
         '.env',
-        'phpunit.xml',
         'public/.htaccess',
         // ...
     ],

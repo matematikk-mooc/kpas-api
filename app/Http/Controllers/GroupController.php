@@ -123,7 +123,14 @@ class GroupController extends Controller
         $this->canvasRepository->removeUserFromGroups($userId, $currentGroups);
 
         $groups->each(function (GroupDto $group) use ($userId) {
-            $this->canvasRepository->addUserToGroup($userId, $group);
+            try {
+                $this->canvasRepository->addUserToGroup($userId, $group);
+            } catch (\Throwable $th) {
+                if (!str_contains($th->getMessage(), 'not found')) 
+                    throw $th;
+
+                logger("Group of ID " . $group->getId() . " not found while bulk adding user to groups.");
+            }
         });
 
         //Note that the response does not contain the groups because they are objects.

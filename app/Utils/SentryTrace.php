@@ -23,6 +23,11 @@ class SentryTrace {
         return $hub->getSpan();
     }
 
+    public static function getTransaction() {
+        $hub = SentryTrace::getHub();
+        return $hub->getTransaction();
+    }
+
     public static function setSpan($span) {
         $hub = SentryTrace::getHub();
         $hub->setSpan($span);

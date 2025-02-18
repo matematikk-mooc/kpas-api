@@ -34,6 +34,7 @@ class PingController extends Controller
             $courseFilters = $courseSettingsRepository->getFilters();
             $connectionData["database"] = true;
         } catch (\Throwable $th) {
+            \Sentry\captureException($th);
             $connectionError = true;
         }
 
@@ -41,12 +42,21 @@ class PingController extends Controller
             $courses = $this->canvasService->getAllPublishedCourses();
             $connectionData["integrations"]["canvas"] = true;
         } catch (\Throwable $th) {
+            \Sentry\captureException($th);
             $connectionError = true;
         }
 
+        $statusCode = $connectionError ? 500 : 200;
+        \Sentry\addBreadcrumb(
+            category: "ping.response",
+            message: "Ping response: {$statusCode}",
+            metadata: $connectionData,
+            level: $connectionError ? "error" : "info"
+        );
+
         if ($connectionError) {
             return response()->json([
-                'status' => 500,
+                'status' => $statusCode,
                 'status_message' => 'Failure',
                 'result' => $connectionData
             ], 500);
