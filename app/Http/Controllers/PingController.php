@@ -6,6 +6,7 @@ use App\Http\Responses\ErrorResponse;
 use App\Http\Responses\SuccessResponse;
 use App\Services\CanvasService;
 use App\Repositories\CourseSettingsRepository;
+use App\Http\Controllers\VimeoController;
 
 class PingController extends Controller
 {
@@ -25,7 +26,8 @@ class PingController extends Controller
         $connectionData = [
             "database" => false,
             "integrations" => [
-                "canvas" => false
+                "canvas" => false,
+                "vimeo" => false
             ]
         ];
 
@@ -39,8 +41,17 @@ class PingController extends Controller
         }
 
         try {
-            $courses = $this->canvasService->getCourseData();
+            $courses = $this->canvasService->getCourseData(360);
             $connectionData["integrations"]["canvas"] = true;
+        } catch (\Throwable $th) {
+            \Sentry\captureException($th);
+            $connectionError = true;
+        }
+
+        try {
+            $vimeoController = new VimeoController();
+            $transcriptTest = $vimeoController->index(604691899);
+            $connectionData["integrations"]["vimeo"] = true;
         } catch (\Throwable $th) {
             \Sentry\captureException($th);
             $connectionError = true;
