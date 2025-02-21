@@ -72,7 +72,7 @@ class FetchNsrData extends Command
             SentryTrace::setSpan($transaction);
             
             logger()->error('NSR data synchronization failed.', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            Sentry\captureException($e);
+            \Sentry\captureException($e);
 
             SentryTrace::finish(null, 500);
             throw $th;

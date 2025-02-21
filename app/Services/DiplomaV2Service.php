@@ -66,10 +66,10 @@ class DiplomaV2Service {
                     $includeLeaderRequirements = $isPageIndented && $isPrincipal;
 
                     if ($includeNormalRequirements || $includeLeaderRequirements) {
-                        $pageCompleted = $pageCompletionRequirement->completed == true;
+                        $pageCompleted = $pageCompletionRequirement?->completed == true;
                         if ($pageCompleted) $this->totalRequirementsCompleted++;
 
-                        $pageCompletionType = $pageCompletionRequirement->type;
+                        $pageCompletionType = $pageCompletionRequirement?->type;
                         $this->totalRequirements++;
                     }
                 }

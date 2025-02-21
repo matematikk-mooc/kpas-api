@@ -45,7 +45,7 @@ class FetchCanvasData extends Command
             SentryTrace::setSpan($transaction);
 
             logger()->error('Canvas data synchronization failed.', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            Sentry\captureException($e);
+            \Sentry\captureException($e);
             
             SentryTrace::finish(null, 500);
             throw $e;
@@ -73,7 +73,7 @@ class FetchCanvasData extends Command
 
             logger()->info('Fetching courses from Canvas completed.', ['course_count' => count($coursesFromCanvas)]);
         } catch (\Exception $e) {
-            Sentry\captureException($e);
+            \Sentry\captureException($e);
             logger()->error('Error fetching courses from Canvas.', ['error' => $e->getMessage()]);
             throw $e;
         }
@@ -113,11 +113,11 @@ class FetchCanvasData extends Command
                 } catch (CanvasException $e) {
                     logger()->warning('Error fetching users for group.', ['group_id' => $groupID, 'error' => $e->getMessage()]);
                     if (!str_contains($e->getMessage(), "not found")) {
-                        Sentry\captureException($e);
+                        \Sentry\captureException($e);
                         throw $e;
                     }
                 } catch (\Exception $e) {
-                    Sentry\captureException($e);
+                    \Sentry\captureException($e);
                     logger()->error("Error processing group ID {$groupID}: " . $e->getMessage());
                     throw $e;
                 }
@@ -125,7 +125,7 @@ class FetchCanvasData extends Command
 
             logger()->info('Fetching user-group relationships from Canvas completed.');
         } catch (\Exception $e) {
-            Sentry\captureException($e);
+            \Sentry\captureException($e);
             logger()->error('Error fetching user-group relationships from Canvas.', ['error' => $e->getMessage()]);
             throw $e;
         }
