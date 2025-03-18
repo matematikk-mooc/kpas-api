@@ -150,6 +150,7 @@ export const captionValidation = {
         const messageWrapper = utils.payloadMessagesWrapper(title, "", []);
         for (const iframeItem of vimeoIframes) {
             try {
+                iframeItem.removeAttribute("loading");
                 renderIframesContainer.appendChild(iframeItem);
                 const iframePlayer = new Player(iframeItem);
                 
