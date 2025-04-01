@@ -245,7 +245,7 @@ class ExportController extends Controller {
         $perPage = (int) $request->query('per_page', 50);
         $canvasToken = $request->header('Authorization');
         if (empty($canvasToken)) return new ErrorResponse('Missing Authorization header', 401);
-        if ($perPage > 100) return new ErrorResponse('Per page limit is 100', 400);
+        if ($perPage > 500) return new ErrorResponse('Per page limit is 500', 400);
 
         $canvasCourse = null;
         $canvasCourseId = null;
@@ -506,10 +506,15 @@ class ExportController extends Controller {
 
         $canvasCourse = null;
         $canvasCourseId = null;
+        $courseSettingsArray = [];
 
         try {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
+
+            $courseSettingsRepository = new CourseSettingsRepository();
+            $courseSettings = $courseSettingsRepository->getCourseSettings($canvasCourseId);
+            $courseSettingsArray = $courseSettings != null ? $courseSettings->toArray() : [];
         } catch (ClientException $e) {
             if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
                 return new ErrorResponse('Token is invalid', 401);
@@ -529,10 +534,37 @@ class ExportController extends Controller {
             $res = $this->canvasService->getCourseEnrollments($canvasCourseId, $perPage, false, $canvasToken, $page);
             $nextPage = $res['nextPage'] ?? null;
             $courseEnrollments = $res['data'] ?? [];
+            $hideIndentedContentForLeaders = $courseSettingsArray != null && $courseSettingsArray["role_support"] == 1;
 
             foreach ($courseEnrollments as $enrollment) {
                 $userId = $enrollment->user_id;
+                $userData = $enrollment->user;
                 $userIdInLetters = ucfirst($this->numberToLetterDigits("$userId"));
+                $requirementsCount = 0;
+                $completedCount = 0;
+                $completedDates = [];
+
+                $userRole = 'teacher';
+                $userEnrollments = $this->canvasService->getEnrollmentsByCourse($userId, $canvasCourseId);
+                $leaderEnrollments = [];
+                $teacherEnrollments = [];
+                foreach ($userEnrollments as $userEnrollment) {
+                    if (strtolower($userEnrollment->role) == "skoleleder") {
+                        $userRole = "leader";
+                        $leaderEnrollments[] = $userEnrollment;
+                    } else {
+                        $teacherEnrollments[] = $userEnrollment;
+                    }
+                }
+
+                $enrollmentsToSort = $userRole == "leader" ? $leaderEnrollments : $teacherEnrollments;
+    
+                if (!empty($enrollmentsToSort)) {
+                    usort($enrollmentsToSort, function($a, $b) {
+                        return strtotime($b->updated_at) - strtotime($a->updated_at);
+                    });
+                    $enrollment = $enrollmentsToSort[0];
+                }
 
                 $modulesProgress = [];
                 $modules = $this->canvasService->getModulesWithProgress($canvasCourseId, $userId);
@@ -544,9 +576,11 @@ class ExportController extends Controller {
                     foreach ($moduleItems as $moduleItem) {
                         $moduleType = strtolower($moduleItem->type);
                         $moduleItemRequirement = null;
+                        $moduleItemIndent = $moduleItem->indent ?? 0;
+                        $hideModuleItemRequirement = $hideIndentedContentForLeaders && $userRole == "teacher" && $moduleItemIndent != 0;
                         $requirementExists = isset($moduleItem->completion_requirement);
 
-                        if ($requirementExists) {
+                        if ($requirementExists && !$hideModuleItemRequirement) {
                             $moduleItemRequirementType = $moduleItem->completion_requirement->type;
 
                             if ($moduleItemRequirementType == "must_view") {
@@ -554,15 +588,20 @@ class ExportController extends Controller {
                             } else if ($moduleItemRequirementType == "must_mark_done") {
                                 $moduleItemRequirement = "mark";
                             }
+
+                            $requirementsCount++;
+                            if ($moduleItem->completion_requirement->completed == true) $completedCount++;
                         }
 
                         $moduleItemsProgress[] = [
                             "id" => $moduleItem->id,
+                            "indent" => $moduleItemIndent,
                             "requirement" => $moduleItemRequirement,
-                            "completed" => $requirementExists ? $moduleItem->completion_requirement->completed : true,
+                            "completed" => $requirementExists && !$hideModuleItemRequirement ? $moduleItem->completion_requirement->completed : true,
                         ];
                     }
 
+                    $completedDates[] = $module->completed_at;
                     $modulesProgress[] = [
                         "id" => $moduleId,
                         "completedAt" => $module->completed_at,
@@ -570,23 +609,35 @@ class ExportController extends Controller {
                     ];
                 }
 
+                $completedAt = null;
+                if ($requirementsCount <= $completedCount) {
+                    $completedDates = array_filter($completedDates);
+                    usort($completedDates, function($a, $b) {
+                        return strtotime($b) - strtotime($a);
+                    });
+                    $completedAt = $completedDates[0] ?? null;
+                }
+
                 $enrollments[] = [
                     'id' => $enrollment->id,
                     'type' => $enrollment->type,
-                    'role' => strtolower($enrollment->role) == "skoleleder" ? "leader" : "teacher",
+                    'role' => $userRole,
+                    'requirementsCount' => $requirementsCount,
+                    'completedCount' => $completedCount,
+                    'completedAt' => $completedAt,
                     'createdAt' => $enrollment->created_at,
                     'updatedAt' => $enrollment->updated_at,
                     'user' => [
                         'id' => $userId,
-                        'name' => $useRealData ? $enrollment->user->name : "John $userIdInLetters",
-                        'email' => $useRealData ? $enrollment->user->login_id : "$userIdInLetters@test.kpas.no",
-                        'createdAt' => $enrollment->user->created_at,
+                        'name' => $useRealData ? $userData->name : "John $userIdInLetters",
+                        'email' => $useRealData ? $userData->login_id : "$userIdInLetters@test.kpas.no",
+                        'createdAt' => $userData->created_at,
                     ],
-                    "modules" => $modulesProgress
+                    'modules' => $modulesProgress
                 ];
             }
 
-            return new SuccessResponse(['nextPage' => $nextPage, 'enrollments' => $enrollments]);
+            return new SuccessResponse(['nextPage' => $nextPage, 'roleSupport' => $hideIndentedContentForLeaders, 'enrollments' => $enrollments]);
         } catch (ClientException $e) {
             if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
                 return new ErrorResponse('Token is invalid', 401);
