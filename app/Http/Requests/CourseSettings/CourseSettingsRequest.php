@@ -14,7 +14,7 @@ class CourseSettingsRequest extends FormRequest
             'role_support' => 'required|boolean',
             'licence' => 'required|boolean',
             'banner_type' => ['required', Rule::in(['ALERT', 'NOTIFICATION', 'FEEDBACK', 'UNMAINTAINED','NONE', 0, 1, 2, 3, 4])],
-            'banner_text' => 'nullable|string|max:1000',
+            'banner_text' => 'string|nullable',
             'multilang' => ['required', Rule::in(['ALL', 'SE', 'NN', 'NONE', 0, 1, 2, 3])],
             'courseFilters' => 'array|nullable',
             'courseCategory' => 'array|nullable',
