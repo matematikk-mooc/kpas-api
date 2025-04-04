@@ -567,46 +567,50 @@ class ExportController extends Controller {
                 }
 
                 $modulesProgress = [];
-                $modules = $this->canvasService->getModulesWithProgress($canvasCourseId, $userId);
-                foreach ($modules as $module) {
-                    $moduleId = $module->id;
-                    $moduleItems = $module->items ?? [];
-                    $moduleItemsProgress = [];
+                $enrollmentRole = strtolower($enrollment->role);
+                $roleSupportedForProgress = $enrollmentRole == "studentenrollment" || $enrollmentRole == "skoleleder";
+                if ($roleSupportedForProgress) {
+                    $modules = $this->canvasService->getModulesWithProgress($canvasCourseId, $userId);
+                    foreach ($modules as $module) {
+                        $moduleId = $module->id;
+                        $moduleItems = $module->items ?? [];
+                        $moduleItemsProgress = [];
 
-                    foreach ($moduleItems as $moduleItem) {
-                        $moduleType = strtolower($moduleItem->type);
-                        $moduleItemRequirement = null;
-                        $moduleItemIndent = $moduleItem->indent ?? 0;
-                        $hideModuleItemRequirement = $hideIndentedContentForLeaders && $userRole == "teacher" && $moduleItemIndent != 0;
-                        $requirementExists = isset($moduleItem->completion_requirement);
+                        foreach ($moduleItems as $moduleItem) {
+                            $moduleType = strtolower($moduleItem->type);
+                            $moduleItemRequirement = null;
+                            $moduleItemIndent = $moduleItem->indent ?? 0;
+                            $hideModuleItemRequirement = $hideIndentedContentForLeaders && $userRole == "teacher" && $moduleItemIndent != 0;
+                            $requirementExists = isset($moduleItem->completion_requirement);
 
-                        if ($requirementExists && !$hideModuleItemRequirement) {
-                            $moduleItemRequirementType = $moduleItem->completion_requirement->type;
+                            if ($requirementExists && !$hideModuleItemRequirement) {
+                                $moduleItemRequirementType = $moduleItem->completion_requirement->type;
 
-                            if ($moduleItemRequirementType == "must_view") {
-                                $moduleItemRequirement = "view";
-                            } else if ($moduleItemRequirementType == "must_mark_done") {
-                                $moduleItemRequirement = "mark";
+                                if ($moduleItemRequirementType == "must_view") {
+                                    $moduleItemRequirement = "view";
+                                } else if ($moduleItemRequirementType == "must_mark_done") {
+                                    $moduleItemRequirement = "mark";
+                                }
+
+                                $requirementsCount++;
+                                if ($moduleItem->completion_requirement->completed == true) $completedCount++;
                             }
 
-                            $requirementsCount++;
-                            if ($moduleItem->completion_requirement->completed == true) $completedCount++;
+                            $moduleItemsProgress[] = [
+                                "id" => $moduleItem->id,
+                                "indent" => $moduleItemIndent,
+                                "requirement" => $moduleItemRequirement,
+                                "completed" => $requirementExists && !$hideModuleItemRequirement ? $moduleItem->completion_requirement->completed : true,
+                            ];
                         }
 
-                        $moduleItemsProgress[] = [
-                            "id" => $moduleItem->id,
-                            "indent" => $moduleItemIndent,
-                            "requirement" => $moduleItemRequirement,
-                            "completed" => $requirementExists && !$hideModuleItemRequirement ? $moduleItem->completion_requirement->completed : true,
+                        $completedDates[] = $module->completed_at;
+                        $modulesProgress[] = [
+                            "id" => $moduleId,
+                            "completedAt" => $module->completed_at,
+                            "items" => $moduleItemsProgress,
                         ];
                     }
-
-                    $completedDates[] = $module->completed_at;
-                    $modulesProgress[] = [
-                        "id" => $moduleId,
-                        "completedAt" => $module->completed_at,
-                        "items" => $moduleItemsProgress,
-                    ];
                 }
 
                 $completedAt = null;
@@ -633,6 +637,7 @@ class ExportController extends Controller {
                         'email' => $useRealData ? $userData->login_id : "$userIdInLetters@test.kpas.no",
                         'createdAt' => $userData->created_at,
                     ],
+                    'progressSupport' => $roleSupportedForProgress,
                     'modules' => $modulesProgress
                 ];
             }
