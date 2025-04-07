@@ -53,7 +53,8 @@
             "App\\": "app/",
             "App\\Models\\": "app/Models/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "IMSGlobal\\": "IMSGlobal/"
         },
         "files": [
             "app/Utils/helpers.php"
