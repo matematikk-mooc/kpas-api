@@ -9,6 +9,11 @@ export const utils = {
             }
         });
     },
+    apiPost: async (last_part_of_url) => {
+        return await api.post(location.origin + '/api' + last_part_of_url, {
+            cookie: window.cookie,
+        });
+    },
     initPayload: () => {
         return {
             contentTypes: { pages: 0, assignments: 0, discussions: 0 },
