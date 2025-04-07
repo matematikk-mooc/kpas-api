@@ -155,3 +155,4 @@ Route::get('course/{courseId}/coursedata', 'CanvasController@getCourseData')->mi
 Route::get('course/{courseId}/coursepages', 'CanvasController@getCoursePages')->middleware('lti');
 Route::get('course/{courseId}/coursepage/{pageId}', 'CanvasController@getCoursePageContent')->middleware('lti');
 Route::get('course/{courseId}/linksvalidation', 'CanvasController@getLinksValidationForCourse')->middleware('lti');
+Route::post('course/{courseId}/linksvalidation', 'CanvasController@postLinksValidationForCourse')->middleware('lti');
