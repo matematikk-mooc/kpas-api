@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\CourseSettingsRepository;
 use App\Http\Responses\SuccessResponse;
+use App\Http\Responses\ErrorResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\CourseSettings\CourseSettingsRequest;
 use App\Http\Requests\CourseSettings\FilterRequest;
@@ -102,12 +103,12 @@ class CourseSettingsController extends Controller
 
     }
 
-    public function updateCourseSettings(CourseSettingsRequest $request, int $courseId): SuccessResponse
+    public function updateCourseSettings(CourseSettingsRequest $request, int $courseId)
     {
+        if (strlen($request['banner_text']) >= 255) return new ErrorResponse("Banner text should be less than 255 characters", 400);
         $courseSettingsRepository = new CourseSettingsRepository();
         $result = $courseSettingsRepository->updateCourseSettings($courseId, $request);
         return new SuccessResponse($result);
-
     }
 
     public function updateHighlightedCourse(Request $request): SuccessResponse
