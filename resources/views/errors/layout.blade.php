@@ -5,17 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>@yield('title')</title>
-
-        <!-- Fonts -->
-        <link rel="dns-prefetch" href="//fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-
         <!-- Styles -->
         <style>
+        @font-face {
+            font-family: "Inter";
+            font-style: normal;
+            src: url("/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+            font-weight: 100 900;
+            font-display: swap;
+        }
             html, body {
                 background-color: #fff;
                 color: #636b6f;
-                font-family: 'Nunito', sans-serif;
+                font-family: 'Inter', sans-serif;
                 font-weight: 100;
                 height: 100vh;
                 margin: 0;

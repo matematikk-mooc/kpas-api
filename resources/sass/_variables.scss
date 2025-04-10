@@ -1,9 +1,14 @@
-
 // Body
 $body-bg: #ffffff;
-
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    src: url("/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+    font-weight: 100 900;
+    font-display: swap;
+}
 // Typography
-$font-family-sans-serif: "Roboto", sans-serif;
+$font-family-sans-serif: "Inter", sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
@@ -11,7 +16,7 @@ $line-height-base: 1.6;
 $blue: #3490dc;
 $indigo: #6574cd;
 $purple: #9561e2;
-$pink: #f66D9b;
+$pink: #f66d9b;
 $red: #e3342f;
 $orange: #f6993f;
 $yellow: #ffed4a;
