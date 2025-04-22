@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>
+    <p class="testing">
     </p>
     <p>
       <button
@@ -34,7 +34,7 @@ export default {
   methods: {
     iframeresize() {
       this.$nextTick(function () {
-        var h = $("body").height() + 120;
+        var h = document.body.offsetHeight + 120;
         parent.postMessage(
         JSON.stringify({ subject: "lti.frameResize", height: h }),
         "*"
@@ -88,11 +88,8 @@ export default {
       try {
         let msg = JSON.parse(evt.data);
         if(msg.subject == "kpas-lti.ltibgcolor" && msg.bgColor) {
-          console.log("Received background color.");
-          console.log(msg.bgColor)
           document.body.style.backgroundColor = msg.bgColor;
         } else if(msg.subject == "kpas-lti.ltiparentready") {
-          console.log("parent ready")
           self.connectedToParent = true;
           self.getBgColor();
         }
