@@ -300,7 +300,7 @@
 
     async created() {
       this.modules = this.coursemodules;
-      const allowedRoles = ['Admin', 'Udirforvalter', 'Udir-forvalter', 'udir-innholdsprodusent']
+      const allowedRoles = ['Admin', 'Udirforvalter', 'Udir-forvalter', 'Udir-Innholdsprodusent']
       this.allowed = allowedRoles.some(
         (element) => this.settings.custom_canvas_roles.includes(element)
       )
