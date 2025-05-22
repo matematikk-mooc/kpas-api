@@ -9,6 +9,8 @@ use DOMXPath;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\ClientException;
 
@@ -498,11 +500,14 @@ class ExportController extends Controller {
     public function getCourseEnrollments(Request $request, int $courseId) {
         $enrollments = [];
         $page = $request->query('page');
-        $perPage = (int) $request->query('per_page', 10);
         $useRealData = $request->query('live', false) === 'true';
+
+        $perPage = (int) $request->query('per_page', 10);
+        if ($perPage > 100) return new ErrorResponse('Per page limit is 100', 400);
+
+        $canvasDomain = config('canvas.domain');
         $canvasToken = $request->header('Authorization');
         if (empty($canvasToken)) return new ErrorResponse('Missing Authorization header', 401);
-        if ($perPage > 25) return new ErrorResponse('Per page limit is 25', 400);
 
         $canvasCourse = null;
         $canvasCourseId = null;
@@ -536,55 +541,118 @@ class ExportController extends Controller {
             $courseEnrollments = $res['data'] ?? [];
             $hideIndentedContentForLeaders = $courseSettingsArray != null && $courseSettingsArray["role_support"] == 1;
 
-            foreach ($courseEnrollments as $enrollment) {
+            $userEnrollmentUrls = [];
+            $userIdMap = [];
+            foreach ($courseEnrollments as $index => $enrollment) {
+                $userId = $enrollment->user_id;
+                $userEnrollmentUrls[$index] = "{$canvasDomain}/courses/{$courseId}/users?search_term={$userId}&include[]=enrollments&per_page=999";
+                $userIdMap[$index] = $userId;
+            }
+
+            $userEnrollmentResponses = $this->makeConcurrentCanvasRequests($userEnrollmentUrls, $canvasToken);
+            $moduleUrls = [];
+            $moduleUserMap = [];
+            $enrollmentData = [];
+
+            foreach ($courseEnrollments as $index => $enrollment) {
                 $userId = $enrollment->user_id;
                 $userData = $enrollment->user;
                 $userIdInLetters = ucfirst($this->numberToLetterDigits("$userId"));
-                $requirementsCount = 0;
-                $completedCount = 0;
-                $completedDates = [];
+        
+                $userEnrollmentResponse = $userEnrollmentResponses[$index];
+                if (!$userEnrollmentResponse->successful()) throw new \Exception("Failed to fetch user enrollments for user ID $userId: " . $userEnrollmentResponse->body());
 
+                $decodedContent = (object)json_decode($userEnrollmentResponse->getBody()->getContents())[0];
+                $userEnrollments = $decodedContent->enrollments ?? [];
                 $userRole = 'teacher';
-                $userEnrollments = $this->canvasService->getEnrollmentsByCourse($userId, $canvasCourseId);
                 $leaderEnrollments = [];
                 $teacherEnrollments = [];
-                foreach ($userEnrollments as $userEnrollment) {
-                    if (strtolower($userEnrollment->role) == "skoleleder") {
+
+                foreach ($userEnrollments as $userEnrollmentData) {                    
+                    $enrollmentRole = strtolower($userEnrollmentData->role ?? '');
+                    
+                    if ($enrollmentRole == "skoleleder") {
                         $userRole = "leader";
-                        $leaderEnrollments[] = $userEnrollment;
+                        $leaderEnrollments[] = $userEnrollmentData;
                     } else {
-                        $teacherEnrollments[] = $userEnrollment;
+                        $teacherEnrollments[] = $userEnrollmentData;
                     }
                 }
 
                 $enrollmentsToSort = $userRole == "leader" ? $leaderEnrollments : $teacherEnrollments;
-    
+                $finalEnrollment = $enrollmentsToSort[0];
                 if (!empty($enrollmentsToSort)) {
                     usort($enrollmentsToSort, function($a, $b) {
-                        return strtotime($b->updated_at) - strtotime($a->updated_at);
+                        $timeA = strtotime($a->updated_at ?? '1970-01-01');
+                        $timeB = strtotime($b->updated_at ?? '1970-01-01');
+                        return $timeB - $timeA;
                     });
-                    $enrollment = $enrollmentsToSort[0];
+                    $finalEnrollment = $enrollmentsToSort[0];
                 }
 
-                $modulesProgress = [];
-                $enrollmentRole = strtolower($enrollment->role);
+                $enrollmentData[$index] = [
+                    'userId' => $userId,
+                    'userIdInLetters' => $userIdInLetters,
+                    'userRole' => $userRole,
+                    'userData' => $userData,
+                    'enrollment' => $finalEnrollment
+                ];
+
+                $enrollmentRole = strtolower($finalEnrollment->role ?? '');
                 $roleSupportedForProgress = $enrollmentRole == "studentenrollment" || $enrollmentRole == "skoleleder";
+                
                 if ($roleSupportedForProgress) {
-                    $modules = $this->canvasService->getModulesWithProgress($canvasCourseId, $userId);
-                    foreach ($modules as $module) {
-                        $moduleId = $module->id;
+                    $moduleUrls[$index] = "{$canvasDomain}/courses/{$courseId}/modules?include[]=items&student_id={$userId}&per_page=999";
+                    $moduleUserMap[$index] = $userId;
+                }
+            }
+
+            $enrollments = [];
+            $moduleResponses = [];
+            if (!empty($moduleUrls)) {
+                $moduleResponses = $this->makeConcurrentCanvasRequests($moduleUrls, $canvasToken);
+            }
+
+            foreach ($enrollmentData as $index => $data) {
+                $enrollment = $data['enrollment'];
+                $userData = $data['userData'];
+                $userId = $data['userId'];
+                $userIdInLetters = $data['userIdInLetters'];
+                $userRole = $data['userRole'];
+                
+                $requirementsCount = 0;
+                $completedCount = 0;
+                $completedDates = [];
+                $modulesProgress = [];
+
+                $enrollmentRole = strtolower($enrollment->role ?? '');
+                $roleSupportedForProgress = $enrollmentRole == "studentenrollment" || $enrollmentRole == "skoleleder";
+
+                if ($roleSupportedForProgress && isset($moduleResponses[$index])) {
+                    $moduleResponse = $moduleResponses[$index];
+                    if (!$moduleResponse->successful()) throw new \Exception("Failed to fetch modules for user ID $userId: " . $moduleResponse->body());
+
+                    $modules = (array)json_decode($moduleResponse->getBody()->getContents()) ?? [];
+                    foreach ($modules as $moduleData) {
+                        $module = is_array($moduleData) ? (object)$moduleData : $moduleData;
+                        $moduleId = $module->id ?? null;
                         $moduleItems = $module->items ?? [];
                         $moduleItemsProgress = [];
 
-                        foreach ($moduleItems as $moduleItem) {
-                            $moduleType = strtolower($moduleItem->type);
+                        foreach ($moduleItems as $moduleItemData) {
+                            $moduleItem = is_array($moduleItemData) ? (object)$moduleItemData : $moduleItemData;
+                            $moduleType = strtolower($moduleItem->type ?? '');
                             $moduleItemRequirement = null;
                             $moduleItemIndent = $moduleItem->indent ?? 0;
                             $hideModuleItemRequirement = $hideIndentedContentForLeaders && $userRole == "teacher" && $moduleItemIndent != 0;
                             $requirementExists = isset($moduleItem->completion_requirement);
 
                             if ($requirementExists && !$hideModuleItemRequirement) {
-                                $moduleItemRequirementType = $moduleItem->completion_requirement->type;
+                                $completionReq = is_array($moduleItem->completion_requirement) 
+                                    ? (object)$moduleItem->completion_requirement 
+                                    : $moduleItem->completion_requirement;
+                                    
+                                $moduleItemRequirementType = $completionReq->type ?? '';
 
                                 if ($moduleItemRequirementType == "must_view") {
                                     $moduleItemRequirement = "view";
@@ -593,56 +661,64 @@ class ExportController extends Controller {
                                 }
 
                                 $requirementsCount++;
-                                if ($moduleItem->completion_requirement->completed == true) $completedCount++;
+                                if (($completionReq->completed ?? false) == true) $completedCount++;
                             }
 
                             $moduleItemsProgress[] = [
-                                "id" => $moduleItem->id,
+                                "id" => $moduleItem->id ?? null,
                                 "indent" => $moduleItemIndent,
                                 "requirement" => $moduleItemRequirement,
-                                "completed" => $requirementExists && !$hideModuleItemRequirement ? $moduleItem->completion_requirement->completed : true,
+                                "completed" => $requirementExists && !$hideModuleItemRequirement 
+                                    ? ($moduleItem->completion_requirement->completed ?? false) 
+                                    : true,
                             ];
                         }
 
-                        $completedDates[] = $module->completed_at;
+                        $completedDates[] = $module->completed_at ?? null;
                         $modulesProgress[] = [
                             "id" => $moduleId,
-                            "completedAt" => $module->completed_at,
+                            "completedAt" => $module->completed_at ?? null,
                             "items" => $moduleItemsProgress,
                         ];
                     }
-                }
 
-                $completedAt = null;
-                if ($requirementsCount <= $completedCount) {
-                    $completedDates = array_filter($completedDates);
-                    usort($completedDates, function($a, $b) {
-                        return strtotime($b) - strtotime($a);
-                    });
-                    $completedAt = $completedDates[0] ?? null;
-                }
+                    $completedAt = null;
+                    if ($requirementsCount <= $completedCount && $requirementsCount > 0) {
+                        $completedDates = array_filter($completedDates);
+                        if (!empty($completedDates)) {
+                            usort($completedDates, function($a, $b) {
+                                return strtotime($b) - strtotime($a);
+                            });
+                            $completedAt = $completedDates[0];
+                        }
+                    }
 
-                $enrollments[] = [
-                    'id' => $enrollment->id,
-                    'type' => $enrollment->type,
-                    'role' => $userRole,
-                    'requirementsCount' => $requirementsCount,
-                    'completedCount' => $completedCount,
-                    'completedAt' => $completedAt,
-                    'createdAt' => $enrollment->created_at,
-                    'updatedAt' => $enrollment->updated_at,
-                    'user' => [
-                        'id' => $userId,
-                        'name' => $useRealData ? $userData->name : "John $userIdInLetters",
-                        'email' => $useRealData ? $userData->login_id : "$userIdInLetters@test.kpas.no",
-                        'createdAt' => $userData->created_at,
-                    ],
-                    'progressSupport' => $roleSupportedForProgress,
-                    'modules' => $modulesProgress
-                ];
+                    $enrollments[] = [
+                        'id' => $enrollment->id ?? null,
+                        'type' => $enrollment->type ?? null,
+                        'role' => $userRole,
+                        'requirementsCount' => $requirementsCount,
+                        'completedCount' => $completedCount,
+                        'completedAt' => $completedAt,
+                        'createdAt' => $enrollment->created_at ?? null,
+                        'updatedAt' => $enrollment->updated_at ?? null,
+                        'user' => [
+                            'id' => $userId,
+                            'name' => $useRealData ? ($userData->name ?? '') : "John $userIdInLetters",
+                            'email' => $useRealData ? ($userData->login_id ?? '') : "$userIdInLetters@test.kpas.no",
+                            'createdAt' => $userData->created_at ?? null,
+                        ],
+                        'progressSupport' => $roleSupportedForProgress,
+                        'modules' => $modulesProgress
+                    ];
+                }
             }
 
-            return new SuccessResponse(['nextPage' => $nextPage, 'roleSupport' => $hideIndentedContentForLeaders, 'enrollments' => $enrollments]);
+            return new SuccessResponse([
+                'nextPage' => $nextPage,
+                'roleSupport' => $hideIndentedContentForLeaders,
+                'enrollments' => $enrollments
+            ]);
         } catch (ClientException $e) {
             if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
                 return new ErrorResponse('Token is invalid', 401);
@@ -668,5 +744,19 @@ class ExportController extends Controller {
         }
     
         return $result;
+    }
+
+    private function makeConcurrentCanvasRequests(array $urls, $authorizationHeader) {
+        $headers = [
+            'Authorization' => $authorizationHeader,
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ];
+    
+        return Http::pool(function (Pool $pool) use ($urls, $headers) {
+            foreach ($urls as $key => $url) {
+                $pool->as($key)->withHeaders($headers)->timeout(30)->get($url);
+            }
+        });
     }
 }
