@@ -560,9 +560,12 @@ class ExportController extends Controller {
                 $userIdInLetters = ucfirst($this->numberToLetterDigits("$userId"));
         
                 $userEnrollmentResponse = $userEnrollmentResponses[$index];
-                if (!$userEnrollmentResponse->successful()) throw new \Exception("Failed to fetch user enrollments for user ID $userId: " . $userEnrollmentResponse->body());
+                if ($userEnrollmentResponse->failed()) throw new \Exception("Failed to fetch user enrollment for user ID {$userId} in course ID {$courseId}");
 
-                $decodedContent = (object)json_decode($userEnrollmentResponse->getBody()->getContents())[0];
+                $decodedContentArray = (array)json_decode($userEnrollmentResponse->getBody()->getContents());
+                if (empty($decodedContentArray)) continue;
+
+                $decodedContent = (object)$decodedContentArray[0];
                 $userEnrollments = $decodedContent->enrollments ?? [];
                 $userRole = 'teacher';
                 $leaderEnrollments = [];
@@ -630,7 +633,7 @@ class ExportController extends Controller {
 
                 if ($roleSupportedForProgress && isset($moduleResponses[$index])) {
                     $moduleResponse = $moduleResponses[$index];
-                    if (!$moduleResponse->successful()) throw new \Exception("Failed to fetch modules for user ID $userId: " . $moduleResponse->body());
+                    if ($moduleResponse->failed()) throw new \Exception("Failed to fetch modules for user ID {$userId} in course ID {$courseId}");
 
                     $modules = (array)json_decode($moduleResponse->getBody()->getContents()) ?? [];
                     foreach ($modules as $moduleData) {
