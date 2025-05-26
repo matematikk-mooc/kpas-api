@@ -557,32 +557,44 @@ class ExportController extends Controller {
             foreach ($courseEnrollments as $index => $enrollment) {
                 $userId = $enrollment->user_id;
                 $userData = $enrollment->user;
+                $userRole = strtolower($enrollment->role ?? '');
                 $userIdInLetters = ucfirst($this->numberToLetterDigits("$userId"));
-        
+                
+                if ($userRole != "student" &&$userRole != "studentenrollment" && $userRole != "skoleleder") {
+                    continue;
+                }
+
                 $userEnrollmentResponse = $userEnrollmentResponses[$index];
-                if ($userEnrollmentResponse->failed()) throw new \Exception("Failed to fetch user enrollment for user ID {$userId} in course ID {$courseId}");
+                if (!method_exists($userEnrollmentResponse, 'failed') || $userEnrollmentResponse->failed()) {
+                    throw new \Exception("Failed to fetch user enrollment for user ID {$userId} in course ID {$courseId}");
+                }
 
                 $decodedContentArray = (array)json_decode($userEnrollmentResponse->getBody()->getContents());
                 if (empty($decodedContentArray)) continue;
 
                 $decodedContent = (object)$decodedContentArray[0];
                 $userEnrollments = $decodedContent->enrollments ?? [];
-                $userRole = 'teacher';
+                $userEnrollmentRole = 'teacher';
                 $leaderEnrollments = [];
                 $teacherEnrollments = [];
+                $hasUnsupportedRole = false;
 
                 foreach ($userEnrollments as $userEnrollmentData) {                    
                     $enrollmentRole = strtolower($userEnrollmentData->role ?? '');
                     
                     if ($enrollmentRole == "skoleleder") {
-                        $userRole = "leader";
+                        $userEnrollmentRole = "leader";
                         $leaderEnrollments[] = $userEnrollmentData;
-                    } else {
+                    } else if ($enrollmentRole == "student" || $enrollmentRole == "studentenrollment") {
                         $teacherEnrollments[] = $userEnrollmentData;
+                    } else {
+                        $hasUnsupportedRole = true;
                     }
                 }
 
-                $enrollmentsToSort = $userRole == "leader" ? $leaderEnrollments : $teacherEnrollments;
+                if ($hasUnsupportedRole) continue;
+
+                $enrollmentsToSort = $userEnrollmentRole == "leader" ? $leaderEnrollments : $teacherEnrollments;
                 $finalEnrollment = $enrollmentsToSort[0];
                 if (!empty($enrollmentsToSort)) {
                     usort($enrollmentsToSort, function($a, $b) {
@@ -596,7 +608,7 @@ class ExportController extends Controller {
                 $enrollmentData[$index] = [
                     'userId' => $userId,
                     'userIdInLetters' => $userIdInLetters,
-                    'userRole' => $userRole,
+                    'userRole' => $userEnrollmentRole,
                     'userData' => $userData,
                     'enrollment' => $finalEnrollment
                 ];
@@ -633,7 +645,9 @@ class ExportController extends Controller {
 
                 if ($roleSupportedForProgress && isset($moduleResponses[$index])) {
                     $moduleResponse = $moduleResponses[$index];
-                    if ($moduleResponse->failed()) throw new \Exception("Failed to fetch modules for user ID {$userId} in course ID {$courseId}");
+                    if (!method_exists($moduleResponse, 'failed') || $moduleResponse->failed()) {
+                        throw new \Exception("Failed to fetch modules for user ID {$userId} in course ID {$courseId}");
+                    }
 
                     $modules = (array)json_decode($moduleResponse->getBody()->getContents()) ?? [];
                     foreach ($modules as $moduleData) {
