@@ -5,13 +5,15 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-        <!-- Fonts -->
-        <link rel="dns-prefetch" href="//fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-
         <!-- Styles -->
         <style>
+        @font-face {
+            font-family: "Inter";
+            font-style: normal;
+            src: url("/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+            font-weight: 100 900;
+            font-display: swap;
+        }
         html {
             line-height: 1.15;
                 -ms-text-size-adjust: 100%;
@@ -294,7 +296,7 @@
         }
 
         .font-sans {
-            font-family: Nunito, sans-serif;
+            font-family: "Inter", sans-serif;
         }
 
         .font-light {

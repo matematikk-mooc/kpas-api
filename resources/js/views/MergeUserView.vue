@@ -168,7 +168,7 @@ export default {
     },
     iframeresize() {
       this.$nextTick(function () {
-        var h = $("body").height();
+        var h = document.body.offsetHeight;
         parent.postMessage(
           JSON.stringify({ subject: "lti.frameResize", height: h }),
           "*"
