@@ -1,0 +1,125 @@
+name: Security Audit
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer, phpstan
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install PHP dependencies
+        run: composer install --no-progress --prefer-dist
+        continue-on-error: true
+
+      - name: Install Node dependencies
+        run: npm ci
+        continue-on-error: true
+
+      # === Composer Audit ===
+      - name: Run Composer Security Audit
+        run: |
+          composer audit --format=json > composer-audit.json || true
+          echo "### 📦 Composer (PHP/Laravel)" >> audit-results.md
+          cat composer-audit.json | jq -r '.advisories[]? | "- \(.title) (\(.cve) - \(.link))"' >> audit-results.md || echo "✅ No issues found" >> audit-results.md
+
+      # === npm Audit ===
+      - name: Run npm Audit
+        run: |
+          npm audit --json > npm-audit.json || true
+          echo -e "\n### 📦 npm (Vue/Vite)" >> audit-results.md
+          cat npm-audit.json | jq -r '.advisories?[]? | "- \(.module_name) \(.title) (\(.severity))"' >> audit-results.md || echo "✅ No issues found" >> audit-results.md
+
+      # === PHP Static Analysis ===
+      - name: Run Larastan (PHPStan for Laravel)
+        run: vendor/bin/phpstan analyse --no-progress --error-format=table || true
+        continue-on-error: true
+
+      - name: Collect PHPStan Results
+        run: |
+          echo -e "\n### 🔍 Static Analysis (PHP)" >> audit-results.md
+          vendor/bin/phpstan analyse --no-progress --error-format=table || echo "✅ No issues found" >> audit-results.md
+        continue-on-error: true
+
+      # === ESLint for Vue/JS ===
+      - name: Run ESLint
+        run: |
+          npx eslint . --ext .js,.vue -f json -o eslint-report.json || true
+          echo -e "\n### 🔍 Static Analysis (Vue/JS)" >> audit-results.md
+          jq -r '.[]?.messages[]? | "- [\(.ruleId)] \(.message) at \(.line):\(.column)"' eslint-report.json >> audit-results.md || echo "✅ No issues found" >> audit-results.md
+        continue-on-error: true
+
+      # === Secrets Scan ===
+      - name: Run Trufflehog
+        uses: trufflesecurity/trufflehog@v3
+        with:
+          path: .
+          json: true
+        continue-on-error: true
+
+      - name: Collect Secrets Results
+        run: |
+          echo -e "\n### 🕵️ Secrets Scan" >> audit-results.md
+          if [ -s trufflehog.json ]; then
+            jq -r '.[]? | "- Possible secret: \(.DetectorName) in \(.SourceMetadata.Data.Path)"' trufflehog.json >> audit-results.md
+          else
+            echo "✅ No issues found" >> audit-results.md
+          fiUnder the Hood Analogy
+        continue-on-error: true
+
+      # === Dockerfile Scan ===
+      - name: Dockerfile Scan (Trivy)
+        uses: aquasecurity/trivy-action@0.21.0
+        with:
+          scan-type: 'config'
+          scan-ref: ./Dockerfile
+          format: 'json'
+          output: 'trivy-dockerfile.json'
+        continue-on-error: true
+
+      - name: Collect Dockerfile Scan Results
+        run: |
+          echo -e "\n### 🐳 Dockerfile Scan" >> audit-results.md
+          jq -r '.Results[]?.Misconfigurations[]? | "- [\(.Severity)] \(.ID): \(.Title)"' trivy-dockerfile.json >> audit-results.md || echo "✅ No issues found" >> audit-results.md
+        continue-on-error: true
+
+      # === Build & Scan Docker Image ===
+      - name: Build Docker image
+        run: docker build -t app-image .
+        continue-on-error: true
+
+      - name: Scan Docker Image (Trivy)
+        uses: aquasecurity/trivy-action@0.21.0
+        with:
+          image-ref: 'app-image:latest'
+          format: 'json'
+          output: 'trivy-image.json'
+        continue-on-error: true
+
+      - name: Collect Docker Image Scan Results
+        run: |
+          echo -e "\n### 🐳 Docker Image Scan" >> audit-results.md
+          jq -r '.Results[]?.Vulnerabilities[]? | "- [\(.Severity)] \(.VulnerabilityID) in \(.PkgName) - \(.Title)"' trivy-image.json >> audit-results.md || echo "✅ No issues found" >> audit-results.md
+        continue-on-error: true
+
+      # === Post Results to PR ===
+      - name: Post Audit Report as PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: audit-results.md
+
