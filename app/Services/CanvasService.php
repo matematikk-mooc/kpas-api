@@ -574,11 +574,18 @@ class CanvasService
 
         try {
             while (!$isFinished) {
-                $response = SentryTrace::guzzleRequest($method, $fullUrl, [
-                    'form_params' => $data,
+                $options = [
                     'headers' => $headers,
                     'verify' => false,
-                ]);
+                ];
+
+                if($method === 'GET') {
+                    $options['query'] = $data;
+                } else {
+                    $options['form_params'] = $data;
+                }
+
+                $response = SentryTrace::guzzleRequest($method, $fullUrl, $options);
 
                 $decodedContent = json_decode($response->getBody()->getContents());
                 $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
