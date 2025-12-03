@@ -57,7 +57,7 @@ class ExportController extends Controller {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course not found', 404);
 
             throw $th;
@@ -184,7 +184,7 @@ class ExportController extends Controller {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course not found', 404);
 
             throw $th;
@@ -211,7 +211,7 @@ class ExportController extends Controller {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course not found', 404);
 
             throw $th;
@@ -220,7 +220,7 @@ class ExportController extends Controller {
         try {
             $courseGroups = $this->canvasService->getGroups($groupId) ?? [];
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course group not found', 404);
 
             throw $th;
@@ -228,7 +228,7 @@ class ExportController extends Controller {
 
         foreach ($courseGroups as $courseGroup) {
             $groupCourseId = $courseGroup->course_id;
-            if ($groupCourseId != $canvasCourseId) continue; 
+            if ($groupCourseId != $canvasCourseId) continue;
 
             $groups[] = [
                 "id" => $courseGroup->id,
@@ -243,7 +243,7 @@ class ExportController extends Controller {
 
     public function getCourseGroupCategoryUsers(Request $request, int $courseId, int $groupId, int $groupCategoryId) {
         $groupUserIds = [];
-        $page = $request->query('page');
+        $page = intval($request->query('page'));
         $perPage = (int) $request->query('per_page', 50);
         $canvasToken = $request->header('Authorization');
         if (empty($canvasToken)) return new ErrorResponse('Missing Authorization header', 401);
@@ -261,10 +261,10 @@ class ExportController extends Controller {
             } else if (str_contains($e->getMessage(), 'not found')) {
                 return new ErrorResponse('Course not found', 404);
             }
-        
+
             throw $e;
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course not found', 404);
 
             throw $th;
@@ -281,7 +281,7 @@ class ExportController extends Controller {
 
             return new SuccessResponse(['nextPage' => $nextPage, 'users' => $groupUserIds]);
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course group category not found', 404);
 
             throw $th;
@@ -297,7 +297,7 @@ class ExportController extends Controller {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course not found', 404);
 
             throw $th;
@@ -348,7 +348,7 @@ class ExportController extends Controller {
                 foreach ($languages as $language) {
                     $langTitle = $this->getLangTitle($courseModuleItem->title, $language);
                     $returnModuleItem["title"][$language] = $langTitle;
-        
+
                     $langSlug = $this->getSlug($langTitle);
                     $returnModuleItem["slug"][$language] = $langSlug;
                 }
@@ -390,7 +390,7 @@ class ExportController extends Controller {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course not found', 404);
 
             throw $th;
@@ -407,7 +407,7 @@ class ExportController extends Controller {
         try {
             $page = $this->canvasService->getCoursePageContentByPath($canvasCourseId, $pagePath);
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course page not found', 404);
 
             throw $th;
@@ -448,7 +448,7 @@ class ExportController extends Controller {
         $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
         $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
         $slug = trim($slug, '-');
-        
+
         return $slug;
     }
 
@@ -458,7 +458,7 @@ class ExportController extends Controller {
         if ($langCode == "nb") return $title;
         return '';
     }
-    
+
     // TODO: Add support for multiple languages
     // TODO: Add support for content blocks instead of raw HTML
     private function getLangHtml($html, $keepLang = 'nb') {
@@ -474,7 +474,7 @@ class ExportController extends Controller {
             $canvasCourse = $this->canvasService->getCourse($courseId);
             $canvasCourseId = $canvasCourse->id;
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course not found', 404);
 
             throw $th;
@@ -499,7 +499,7 @@ class ExportController extends Controller {
 
     public function getCourseEnrollments(Request $request, int $courseId) {
         $enrollments = [];
-        $page = $request->query('page');
+        $page = intval($request->query('page'));
         $useRealData = $request->query('live', false) === 'true';
 
         $perPage = (int) $request->query('per_page', 10);
@@ -526,10 +526,10 @@ class ExportController extends Controller {
             } else if (str_contains($e->getMessage(), 'not found')) {
                 return new ErrorResponse('Course not found', 404);
             }
-        
+
             throw $e;
         } catch (\Throwable $th) {
-            if (str_contains($th->getMessage(), 'not found')) 
+            if (str_contains($th->getMessage(), 'not found'))
                 return new ErrorResponse('Course not found', 404);
 
             throw $th;
@@ -559,7 +559,7 @@ class ExportController extends Controller {
                 $userData = $enrollment->user;
                 $userRole = strtolower($enrollment->role ?? '');
                 $userIdInLetters = ucfirst($this->numberToLetterDigits("$userId"));
-                
+
                 if ($userRole != "student" &&$userRole != "studentenrollment" && $userRole != "skoleleder") {
                     continue;
                 }
@@ -579,9 +579,9 @@ class ExportController extends Controller {
                 $teacherEnrollments = [];
                 $hasUnsupportedRole = false;
 
-                foreach ($userEnrollments as $userEnrollmentData) {                    
+                foreach ($userEnrollments as $userEnrollmentData) {
                     $enrollmentRole = strtolower($userEnrollmentData->role ?? '');
-                    
+
                     if ($enrollmentRole == "skoleleder") {
                         $userEnrollmentRole = "leader";
                         $leaderEnrollments[] = $userEnrollmentData;
@@ -615,7 +615,7 @@ class ExportController extends Controller {
 
                 $enrollmentRole = strtolower($finalEnrollment->role ?? '');
                 $roleSupportedForProgress = $enrollmentRole == "studentenrollment" || $enrollmentRole == "skoleleder";
-                
+
                 if ($roleSupportedForProgress) {
                     $moduleUrls[$index] = "{$canvasDomain}/courses/{$courseId}/modules?include[]=items&student_id={$userId}&per_page=999";
                     $moduleUserMap[$index] = $userId;
@@ -634,7 +634,7 @@ class ExportController extends Controller {
                 $userId = $data['userId'];
                 $userIdInLetters = $data['userIdInLetters'];
                 $userRole = $data['userRole'];
-                
+
                 $requirementsCount = 0;
                 $completedCount = 0;
                 $completedDates = [];
@@ -665,10 +665,10 @@ class ExportController extends Controller {
                             $requirementExists = isset($moduleItem->completion_requirement);
 
                             if ($requirementExists && !$hideModuleItemRequirement) {
-                                $completionReq = is_array($moduleItem->completion_requirement) 
-                                    ? (object)$moduleItem->completion_requirement 
+                                $completionReq = is_array($moduleItem->completion_requirement)
+                                    ? (object)$moduleItem->completion_requirement
                                     : $moduleItem->completion_requirement;
-                                    
+
                                 $moduleItemRequirementType = $completionReq->type ?? '';
 
                                 if ($moduleItemRequirementType == "must_view") {
@@ -685,8 +685,8 @@ class ExportController extends Controller {
                                 "id" => $moduleItem->id ?? null,
                                 "indent" => $moduleItemIndent,
                                 "requirement" => $moduleItemRequirement,
-                                "completed" => $requirementExists && !$hideModuleItemRequirement 
-                                    ? ($moduleItem->completion_requirement->completed ?? false) 
+                                "completed" => $requirementExists && !$hideModuleItemRequirement
+                                    ? ($moduleItem->completion_requirement->completed ?? false)
                                     : true,
                             ];
                         }
@@ -740,7 +740,7 @@ class ExportController extends Controller {
             if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
                 return new ErrorResponse('Token is invalid', 401);
             }
-        
+
             throw $e;
         } catch (\Throwable $th) {
             throw $th;
@@ -750,7 +750,7 @@ class ExportController extends Controller {
     private function numberToLetterDigits($number) {
         $digits = str_split((string)$number);
         $result = '';
-    
+
         foreach ($digits as $digit) {
             if ($digit == '0') {
                 $result .= 'x';
@@ -759,7 +759,7 @@ class ExportController extends Controller {
 
             $result .= chr($digit + 96);
         }
-    
+
         return $result;
     }
 
@@ -769,7 +769,7 @@ class ExportController extends Controller {
             'Accept' => 'application/json',
             'Content-Type' => 'application/json'
         ];
-    
+
         return Http::pool(function (Pool $pool) use ($urls, $headers) {
             foreach ($urls as $key => $url) {
                 $pool->as($key)->withHeaders($headers)->timeout(30)->get($url);
