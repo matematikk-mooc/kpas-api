@@ -1,0 +1,41 @@
+# kpas-api - goupdate configuration
+# Example: Laravel PHP API with Vue.js frontend assets
+#
+# Based on matematikk-mooc/kpas-api project structure
+# This project uses Composer (PHP) and npm (Node.js) package managers
+
+extends: [default]
+
+rules:
+  # PHP/Composer dependencies
+  # No groups needed - packages update independently
+  # System tests catch any incompatibilities
+  composer: {}
+
+  # Node.js/npm dependencies (frontend assets)
+  npm:
+    groups:
+      # Vite ecosystem - plugin depends on vite
+      vite:
+        - vite
+        - laravel-vite-plugin
+        - "@vitejs/plugin-vue"
+
+# System tests to verify build after updates
+system_tests:
+  run_preflight: true
+  run_mode: after_each
+  stop_on_fail: true
+  tests:
+    # Install and validate PHP dependencies
+    - name: composer
+      commands: |
+        composer install --no-interaction --prefer-dist
+      timeout_seconds: 300
+
+    # Install and build frontend assets
+    - name: npm-build
+      commands: |
+        npm install
+        npm run build
+      timeout_seconds: 300
