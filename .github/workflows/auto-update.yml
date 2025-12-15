@@ -68,7 +68,7 @@ env:
 
   # Runtime Versions (used when package managers are detected)
   NODE_VERSION: '20'
-  PHP_VERSION: '8.2'
+  PHP_VERSION: '8.4'
   PYTHON_VERSION: '3.12'
   GO_VERSION: '1.24'
   DOTNET_VERSION: '8.0'
