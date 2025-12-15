@@ -61,7 +61,7 @@ env:
   # Branches
   DEFAULT_BRANCH: 'main'
   BRANCH_PREFIX: 'goupdate'
-  UPDATE_TARGET_BRANCH: 'stage'
+  UPDATE_TARGET_BRANCH: 'stage-updates'
 
   # Auto-merge
   AUTO_MERGE_UPDATES: 'true'
