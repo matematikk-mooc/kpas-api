@@ -1,0 +1,90 @@
+# Go Test Action
+# Reusable action for running Go tests with various options
+# Copy to other projects: .github/actions/_go-test/
+
+name: 'Go Test'
+description: 'Run Go tests with configurable options'
+
+inputs:
+  working-directory:
+    description: 'Working directory'
+    required: false
+    default: '.'
+  race:
+    description: 'Enable race detector'
+    required: false
+    default: 'true'
+  coverage:
+    description: 'Generate coverage report'
+    required: false
+    default: 'false'
+  coverage-file:
+    description: 'Coverage output file'
+    required: false
+    default: 'coverage.out'
+  packages:
+    description: 'Packages to test (default: ./...)'
+    required: false
+    default: './...'
+  verbose:
+    description: 'Verbose output'
+    required: false
+    default: 'true'
+  timeout:
+    description: 'Test timeout'
+    required: false
+    default: '10m'
+
+outputs:
+  passed:
+    description: 'Whether all tests passed'
+    value: ${{ steps.test.outputs.passed }}
+  coverage-file:
+    description: 'Path to coverage file if generated'
+    value: ${{ steps.test.outputs.coverage_file }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Build test command
+      id: build-cmd
+      shell: bash
+      run: |
+        CMD="go test"
+
+        if [ "${{ inputs.race }}" = "true" ]; then
+          CMD="$CMD -race"
+        fi
+
+        if [ "${{ inputs.verbose }}" = "true" ]; then
+          CMD="$CMD -v"
+        fi
+
+        if [ "${{ inputs.coverage }}" = "true" ]; then
+          CMD="$CMD -coverprofile=${{ inputs.coverage-file }} -covermode=atomic"
+        fi
+
+        CMD="$CMD -timeout=${{ inputs.timeout }} ${{ inputs.packages }}"
+
+        echo "command=$CMD" >> $GITHUB_OUTPUT
+
+    - name: Run tests
+      id: test
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set +e
+        ${{ steps.build-cmd.outputs.command }}
+        EXIT_CODE=$?
+
+        if [ $EXIT_CODE -eq 0 ]; then
+          echo "passed=true" >> $GITHUB_OUTPUT
+        else
+          echo "passed=false" >> $GITHUB_OUTPUT
+        fi
+
+        if [ "${{ inputs.coverage }}" = "true" ] && [ -f "${{ inputs.coverage-file }}" ]; then
+          echo "coverage_file=${{ inputs.working-directory }}/${{ inputs.coverage-file }}" >> $GITHUB_OUTPUT
+        fi
+
+        exit $EXIT_CODE

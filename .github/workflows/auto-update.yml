@@ -61,7 +61,7 @@ env:
   # Branches
   DEFAULT_BRANCH: 'main'
   BRANCH_PREFIX: 'goupdate'
-  UPDATE_TARGET_BRANCH: 'stage-updates'
+  UPDATE_TARGET_BRANCH: 'stage'
 
   # Auto-merge
   AUTO_MERGE_UPDATES: 'true'
@@ -264,6 +264,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           go-version: ${{ env.GO_VERSION }}
           dotnet-version: ${{ env.DOTNET_VERSION }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install goupdate
         uses: ./.github/actions/_goupdate-install
@@ -350,6 +351,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           go-version: ${{ env.GO_VERSION }}
           dotnet-version: ${{ env.DOTNET_VERSION }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create update branch
         uses: ./.github/actions/_git-branch

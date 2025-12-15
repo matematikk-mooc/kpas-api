@@ -1,0 +1,227 @@
+# Docker Hub Action
+# Builds and pushes multi-architecture Docker images to Docker Hub
+# Copy to other projects: .github/actions/_dockerhub/
+#
+# Features:
+#   - Multi-arch builds (amd64, arm64)
+#   - GitHub Actions cache integration
+#   - Provenance and SBOM generation
+#   - Multi-stage build support
+#
+# Required Secrets:
+#   - DOCKERHUB_USERNAME: Docker Hub username
+#   - DOCKERHUB_TOKEN: Docker Hub access token
+
+name: 'Docker Hub'
+description: 'Build and push multi-architecture Docker images to Docker Hub'
+
+inputs:
+  registry:
+    description: 'Container registry (docker.io, ghcr.io, etc.)'
+    required: false
+    default: 'docker.io'
+  username:
+    description: 'Registry username'
+    required: true
+  password:
+    description: 'Registry password or token'
+    required: true
+  image-name:
+    description: 'Image name without registry prefix'
+    required: true
+  tags:
+    description: 'Image tags (newline or comma separated)'
+    required: true
+  platforms:
+    description: 'Target platforms'
+    required: false
+    default: 'linux/amd64,linux/arm64'
+  dockerfile:
+    description: 'Path to Dockerfile'
+    required: false
+    default: './Dockerfile'
+  context:
+    description: 'Build context'
+    required: false
+    default: '.'
+  build-args:
+    description: 'Build arguments (KEY=VALUE, newline separated)'
+    required: false
+    default: ''
+  push:
+    description: 'Push to registry'
+    required: false
+    default: 'true'
+  cache:
+    description: 'Use GitHub Actions cache'
+    required: false
+    default: 'true'
+  # New enhanced options
+  target:
+    description: 'Multi-stage build target'
+    required: false
+    default: ''
+  labels:
+    description: 'Additional OCI labels (KEY=VALUE, newline separated)'
+    required: false
+    default: ''
+  provenance:
+    description: 'Generate provenance attestation'
+    required: false
+    default: 'false'
+  sbom:
+    description: 'Generate SBOM (Software Bill of Materials)'
+    required: false
+    default: 'false'
+  load:
+    description: 'Load image to local Docker daemon (for testing, disables multi-arch)'
+    required: false
+    default: 'false'
+  secrets:
+    description: 'Build secrets (id=secret_value, newline separated)'
+    required: false
+    default: ''
+  no-cache:
+    description: 'Disable all caching'
+    required: false
+    default: 'false'
+
+outputs:
+  digest:
+    description: 'Image digest'
+    value: ${{ steps.build.outputs.digest }}
+  metadata:
+    description: 'Image metadata JSON'
+    value: ${{ steps.meta.outputs.json }}
+  tags:
+    description: 'Applied tags'
+    value: ${{ steps.meta.outputs.tags }}
+  imageid:
+    description: 'Image ID'
+    value: ${{ steps.build.outputs.imageid }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up QEMU
+      if: inputs.load != 'true'
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ inputs.registry }}/${{ inputs.image-name }}
+        tags: ${{ inputs.tags }}
+
+    - name: Prepare build options
+      id: options
+      shell: bash
+      env:
+        LOAD: ${{ inputs.load }}
+        PUSH: ${{ inputs.push }}
+        PLATFORMS: ${{ inputs.platforms }}
+        CACHE: ${{ inputs.cache }}
+        NO_CACHE: ${{ inputs.no-cache }}
+        PROVENANCE: ${{ inputs.provenance }}
+        SBOM: ${{ inputs.sbom }}
+      run: |
+        # Determine platforms (load mode only supports single platform)
+        if [ "$LOAD" = "true" ]; then
+          echo "platforms=linux/amd64" >> $GITHUB_OUTPUT
+          echo "push=false" >> $GITHUB_OUTPUT
+          echo "load=true" >> $GITHUB_OUTPUT
+        else
+          echo "platforms=$PLATFORMS" >> $GITHUB_OUTPUT
+          echo "push=$PUSH" >> $GITHUB_OUTPUT
+          echo "load=false" >> $GITHUB_OUTPUT
+        fi
+
+        # Cache options
+        if [ "$NO_CACHE" = "true" ]; then
+          echo "cache_from=" >> $GITHUB_OUTPUT
+          echo "cache_to=" >> $GITHUB_OUTPUT
+          echo "no_cache=true" >> $GITHUB_OUTPUT
+        elif [ "$CACHE" = "true" ]; then
+          echo "cache_from=type=gha" >> $GITHUB_OUTPUT
+          echo "cache_to=type=gha,mode=max" >> $GITHUB_OUTPUT
+          echo "no_cache=false" >> $GITHUB_OUTPUT
+        else
+          echo "cache_from=" >> $GITHUB_OUTPUT
+          echo "cache_to=" >> $GITHUB_OUTPUT
+          echo "no_cache=false" >> $GITHUB_OUTPUT
+        fi
+
+        # Provenance and SBOM
+        if [ "$PROVENANCE" = "true" ]; then
+          echo "provenance=true" >> $GITHUB_OUTPUT
+        else
+          echo "provenance=false" >> $GITHUB_OUTPUT
+        fi
+
+        if [ "$SBOM" = "true" ]; then
+          echo "sbom=true" >> $GITHUB_OUTPUT
+        else
+          echo "sbom=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build and push
+      id: build
+      uses: docker/build-push-action@v6
+      with:
+        context: ${{ inputs.context }}
+        file: ${{ inputs.dockerfile }}
+        platforms: ${{ steps.options.outputs.platforms }}
+        push: ${{ steps.options.outputs.push }}
+        load: ${{ steps.options.outputs.load }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: ${{ inputs.build-args }}
+        target: ${{ inputs.target }}
+        cache-from: ${{ steps.options.outputs.cache_from }}
+        cache-to: ${{ steps.options.outputs.cache_to }}
+        no-cache: ${{ steps.options.outputs.no_cache == 'true' }}
+        provenance: ${{ steps.options.outputs.provenance }}
+        sbom: ${{ steps.options.outputs.sbom }}
+        secrets: ${{ inputs.secrets }}
+
+    - name: Summary
+      shell: bash
+      env:
+        DIGEST: ${{ steps.build.outputs.digest }}
+        TAGS: ${{ steps.meta.outputs.tags }}
+        LOAD: ${{ inputs.load }}
+        PUSH: ${{ inputs.push }}
+      run: |
+        echo "## Docker Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ "$LOAD" = "true" ]; then
+          echo "**Mode:** Local load (testing)" >> $GITHUB_STEP_SUMMARY
+        elif [ "$PUSH" = "true" ]; then
+          echo "**Mode:** Push to registry" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Mode:** Build only" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Tags" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "$TAGS" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+
+        if [ -n "$DIGEST" ]; then
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Digest" >> $GITHUB_STEP_SUMMARY
+          echo "\`$DIGEST\`" >> $GITHUB_STEP_SUMMARY
+        fi
