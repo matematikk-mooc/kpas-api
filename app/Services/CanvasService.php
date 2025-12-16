@@ -300,12 +300,15 @@ class CanvasService
         }
     }
 
-    public function getGroupMemberships(int $groupId, int $perPage = 100, bool $paginable = true, string $authorizationHeader = null, int $page = 1)
+    public function getGroupMemberships(int $groupId, int $perPage = 100, bool $paginable = true, string $authorizationHeader = null, string $page = null)
     {
         try {
             $url = "groups/{$groupId}/memberships";
-            $data = ['page' => $page, 'per_page' => $perPage];
+            $data = ['per_page' => $perPage];
             $headers = [];
+
+            $usePage = !empty($page);
+            if ($usePage) $data['page'] = $page;
 
             $useCustomToken = !empty($authorizationHeader);
             if ($useCustomToken) $headers['Authorization'] = $authorizationHeader;
@@ -400,11 +403,14 @@ class CanvasService
         return $this->request($url, 'GET', $data, [], true);
     }
 
-    public function getCourseEnrollments(int $courseId, int $per_page = 100, bool $paginable = true, string $authorizationHeader = null, int $page = 1)
+    public function getCourseEnrollments(int $courseId, int $per_page = 100, bool $paginable = true, string $authorizationHeader = null, string $page = null)
     {
         $url = "courses/{$courseId}/enrollments";
-        $data = ['page' => $page, 'per_page' => $per_page];
+        $data = ['per_page' => $per_page];
         $headers = [];
+
+        $usePage = !empty($page);
+        if ($usePage) $data['page'] = $page;
 
         $useCustomToken = !empty($authorizationHeader);
         if ($useCustomToken) $headers['Authorization'] = $authorizationHeader;
@@ -546,7 +552,7 @@ class CanvasService
     {
         try {
             $url = "groups/{$groupId}/users";
-            $data = ['page' => 1, 'per_page' => 100];
+            $data = ['page' => 1, 'per_page' => 999];
 
             return $this->request($url, 'GET', $data, [], true);
         } catch (ClientException $exception) {
@@ -612,15 +618,14 @@ class CanvasService
             'verify'  => false,
         ];
 
-        // Add data depending on method
-        if ($method === 'GET') {
-            $options['query'] = $data;
-        } else {
-            $options['form_params'] = $data;
-        }
-
         try {
             while (!$isFinished) {
+                // Add data depending on method inside loop for pagination support
+                if ($method === 'GET') {
+                    $options['query'] = $data;
+                } else {
+                    $options['form_params'] = $data;
+                }
 
                 $response = SentryTrace::guzzleRequest($method, $fullUrl, $options);
 
@@ -650,18 +655,29 @@ class CanvasService
                     }
                 }
 
+                /*
+                // Debugging pagination issues
+                error_log(print_r([
+                    'url' => $fullUrl,
+                    'method' => $method,
+                    'paginable' => $paginable,
+                    'linkExists' => $linkExists,
+                    'nextPage' => $nextPage[0] ?? false,
+                    'data' => $data
+                ], true));
+                */
+
                 if (!$paginable || $linkExists && !preg_match('/<([^<]+)>; rel="next"/', $link[0], $matches)) {
                     $isFinished = true;
                     continue;
-                }else {
-                    $method == 'GET' ? ($options['query']['page'] +=1) : ($options['form_params']['page'] +=1);
+                } else if ($paginable && $linkExists && $nextPage[0] ?? false) {
+                    $data['page'] = $nextPage[0]; // If next page exists in link header from Canvas, update page field for next request
                 }
             }
 
             logger("CanvasService: returning content");
             if ($return_next) return ["nextPage" => $nextPage[0] ?? null, "data" => $content];
             return $content;
-
         } catch (ClientException $exception) {
             logger("CanvasService.request exception:");
             if (config('canvas.debug')) {

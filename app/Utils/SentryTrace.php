@@ -182,6 +182,16 @@ class SentryTrace {
                 ]);
                 $span->setStatus(SpanStatus::ok());
             }
+
+            /*
+            // Debugging HTTP requests
+            error_log(print_r([
+                'url' => $url,
+                'method' => $method,
+                'status' => $response->getStatusCode(),
+                'date' => date('c')
+            ], true));
+            */
     
             return $response;
         } catch (RequestException $e) {
@@ -278,6 +288,16 @@ class SentryTrace {
                     'request.duration_ms' => $duration,
                 ]);
             }
+
+            /*
+            // Debugging HTTP requests
+            error_log(print_r([
+                'url' => $url,
+                'method' => 'POST',
+                'status' => $response->getStatusCode(),
+                'date' => date('c')
+            ], true));
+            */
 
             return $responseData;
         } catch (RequestException $e) {

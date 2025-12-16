@@ -243,7 +243,7 @@ class ExportController extends Controller {
 
     public function getCourseGroupCategoryUsers(Request $request, int $courseId, int $groupId, int $groupCategoryId) {
         $groupUserIds = [];
-        $page = intval($request->query('page'));
+        $page = $request->query('page');
         $perPage = (int) $request->query('per_page', 50);
         $canvasToken = $request->header('Authorization');
         if (empty($canvasToken)) return new ErrorResponse('Missing Authorization header', 401);
@@ -499,7 +499,7 @@ class ExportController extends Controller {
 
     public function getCourseEnrollments(Request $request, int $courseId) {
         $enrollments = [];
-        $page = intval($request->query('page'));
+        $page = $request->query('page');
         $useRealData = $request->query('live', false) === 'true';
 
         $perPage = (int) $request->query('per_page', 10);
