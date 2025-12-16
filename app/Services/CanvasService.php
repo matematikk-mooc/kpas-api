@@ -19,17 +19,24 @@ class CanvasService
      * @var string
      */
     protected $accessKey;
+    /**
+     * @var string
+     */
+    protected $accountId;
 
     public function __construct()
     {
         $this->domain = config('canvas.domain');
         $this->accessKey = config('canvas.access_key');
+        $this->accountId = config('canvas.account_id');
     }
 
-    public function getAccountInfoById(int $accountId){
+    public function getAccountInfoById(int $accountId)
+    {
         try {
             $url = "accounts/{$accountId}";
-            return $this->request($url, 'GET');
+
+            return $this->request($url);
 
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
@@ -41,9 +48,8 @@ class CanvasService
 
     public function getUsersByFeideId(string $feideId): array
     {
-        $accountId = config('canvas.account_id');
         try {
-            $url = "accounts/{$accountId}/users";
+            $url = "accounts/{$this->accountId}/users";
             $data = ['search_term' => $feideId];
 
             $response = $this->request($url, 'GET', $data);
@@ -51,7 +57,7 @@ class CanvasService
             return is_array($response) ? $response : [];
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
-                throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
+                throw new CanvasException(sprintf('Account with ID %s not found', $this->accountId));
             }
 
             throw $exception;
@@ -82,7 +88,7 @@ class CanvasService
         try {
             $url = "groups/{$groupId}";
 
-            $response = $this->request($url, 'GET');
+            $response = $this->request($url);
             logger(print_R($response, true));
 
             return ['antallBrukere' => $response->members_count];
@@ -99,11 +105,10 @@ class CanvasService
     {
         try {
             $url = "group_categories/{$groupDto->getCategoryId()}/groups";
+            $data = ['name' => $groupDto->getName(),
+                     'description' => $groupDto->getDescription()];
 
-            $response = $this->request($url, 'POST', [
-                'name' => $groupDto->getName(),
-                'description' => $groupDto->getDescription(),
-            ]);
+            $response = $this->request($url, 'POST', $data);
 
             $groupDto->setId($response->id);
 
@@ -124,7 +129,7 @@ class CanvasService
         try {
             $url = "groups/{$groupId}";
 
-            return $this->request($url, 'GET');
+            return $this->request($url);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
@@ -137,8 +142,9 @@ class CanvasService
     {
         try {
             $url = "group_categories/{$categoryId}/groups";
+            $data = ['page' => 1, 'per_page' => 100];
 
-            return $this->request($url, 'GET', [], [], true);
+            return $this->request($url, 'GET', $data, [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group category with ID %s not found', $categoryId));
@@ -151,10 +157,9 @@ class CanvasService
     {
         try {
             $url = "courses/{$sectionDto->getCourseId()}/sections";
+            $data = ['name' => $sectionDto->getName()];
 
-            $response = $this->request($url, 'POST', [
-                'name' => $sectionDto->getName(),
-            ]);
+            $response = $this->request($url, 'POST', $data);
 
             $sectionDto->setId($response->id);
 
@@ -185,10 +190,10 @@ class CanvasService
     {
         try {
             $url = "courses/{$courseId}/enrollments/%s";
+            $data = ['task' => 'delete'];
+
             foreach ($unenrollnmentIds as $unenrollnmentId) {
-                $this->request(sprintf($url, $unenrollnmentId), 'DELETE', [
-                    'task' => 'delete'
-                ]);
+                $this->request(sprintf($url, $unenrollnmentId), 'DELETE', $data);
             }
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
@@ -202,16 +207,16 @@ class CanvasService
     {
         try {
             $url = "sections/{$sectionId}/enrollments";
-
-            return $this->request($url, "POST", [
-                'enrollment' => [
-                    'user_id' => $userId,
-                    'role_id' => $roleId,
-                    'enrollment_state' => "active",
-                    'limit_privileges_to_course_section' => "true",
-                    'self_enrolled' => "true",
+            $data = ['enrollment' => [
+                     'user_id' => $userId,
+                     'role_id' => $roleId,
+                     'enrollment_state' => "active",
+                     'limit_privileges_to_course_section' => "true",
+                     'self_enrolled' => "true",
                 ],
-            ]);
+            ];
+
+            return $this->request($url, "POST", $data);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Section with ID %s not found', $sectionId));
@@ -224,8 +229,7 @@ class CanvasService
     {
         try {
             $url = "courses/{$courseId}/enrollments";
-
-            return $this->request($url, "POST", [
+            $data = [
                 'enrollment' => [
                     'user_id' => $userId,
                     'role_id' => $roleId,
@@ -233,7 +237,9 @@ class CanvasService
                     'limit_privileges_to_course_section' => "true",
                     'self_enrolled' => "true",
                 ],
-            ]);
+            ];
+
+            return $this->request($url, "POST", $data);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
@@ -244,9 +250,9 @@ class CanvasService
 
     public function getRoleIdFor(string $roleName): ?int
     {
-        $accountId = config('canvas.account_id');
         try {
-            $url = "accounts/{$accountId}/roles";
+            $url = "accounts/{$this->accountId}/roles";
+
             $roles = $this->request($url);
             foreach ($roles as $role) {
                 if ($role->role === $roleName) {
@@ -257,7 +263,7 @@ class CanvasService
             return null;
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
-                throw new CanvasException(sprintf('Account with ID %s not found', $accountId));
+                throw new CanvasException(sprintf('Account with ID %s not found', $this->accountId));
             }
             throw $exception;
         }
@@ -267,9 +273,9 @@ class CanvasService
     {
         try {
             $url = "groups/{$groupId}/memberships";
-            $this->request($url, 'POST', [
-                'user_id' => $userId,
-            ]);
+            $data = ['user_id' => $userId];
+
+            $this->request($url, 'POST', $data);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
@@ -282,8 +288,10 @@ class CanvasService
     {
         try {
             $url = "courses/{$courseId}/group_categories";
+            $data = ['page' => 1, 'per_page' => 100];
             logger($url);
-            return $this->request($url, 'GET', [], [], true);
+
+            return $this->request($url, 'GET', $data, [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
@@ -296,7 +304,7 @@ class CanvasService
     {
         try {
             $url = "groups/{$groupId}/memberships";
-            $data = ["per_page" => $perPage];
+            $data = ['per_page' => $perPage];
             $headers = [];
 
             $usePage = !empty($page);
@@ -317,8 +325,10 @@ class CanvasService
     public function getCourse(int $courseId)
     {
         try {
-            $url = "courses/{$courseId}?include[]=public_description";
-            return $this->request($url);
+            $url = "courses/{$courseId}";
+            $data = ['include[]' => 'public_description'];
+
+            return $this->request($url, 'GET', $data);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
@@ -329,28 +339,32 @@ class CanvasService
 
     public function getAllCourses()
     {
-        $accountId = config('canvas.account_id');
-        $url = "accounts/{$accountId}/courses";
-        return $this->request($url, 'GET', ['per_page' => 100], [], true);
+        $url = "accounts/{$this->accountId}/courses";
+        $data = ['page' => 1, 'per_page' => 100];
+
+        return $this->request($url, 'GET', $data, [], true);
     }
 
     public function getAllAccountCourses($accountId)
     {
-        $url = "accounts/{$accountId}/courses?include[]=course_image&published=true&public=true&per_page=999";
-        return $this->request($url);
+        $url = "accounts/{$accountId}/courses";
+        $data = ['public' => true, 'published' => true, 'include[]' => 'course_image', 'page' => 1, 'per_page' => 100];
+
+        return $this->request($url, 'GET', $data, [], true);
     }
 
     public function getAllPublishedCourses()
     {
-        $url = "search/all_courses?open_enrollment_only=true&per_page=999";
-        return $this->request($url, 'GET', [], [], true, true);
+        $url = "search/all_courses";
+        $data = ['open_enrollment_only' => true, 'page' => 1, 'per_page' => 999];
+
+        return $this->request($url, 'GET', $data, [], true, true);
     }
 
     public function getCourseModules($courseId, $includeItems = false)
     {
-        $data = [];
-        $accountId = config('canvas.account_id');
         $url = "courses/{$courseId}/modules";
+        $data = ['page' => 1, 'per_page' => 100];
 
         if ($includeItems) $data['include[]'] = "items";
 
@@ -360,31 +374,39 @@ class CanvasService
     public function getAnnouncements(int $courseId)
     {
         $url = "courses/$courseId/discussion_topics";
-        return $this->request($url, 'GET', ['only_announcements' => 'true', 'no_avatar_fallback' => '1'], [], true);
+        $data = ['page' => 1, 'per_page' => 100,
+                 'only_announcements' => true, 'no_avatar_fallback' => '1'];
+        return $this->request($url, 'GET', $data, [], true);
     }
 
     public function getCourseModuleItems($courseId, $moduleId)
     {
         $url = "courses/{$courseId}/modules/{$moduleId}/items";
-        return $this->request($url, 'GET', [], [], true);
+        $data = ['page' => 1, 'per_page' => 100];
+
+        return $this->request($url, 'GET', $data, [], true);
     }
 
     public function getCourseDiscussionTopics($courseId)
     {
         $url = "courses/{$courseId}/discussion_topics";
-        return $this->request($url, 'GET', [], [], true);
+        $data = ['page' => 1, 'per_page' => 100];
+
+        return $this->request($url, 'GET', $data, [], true);
     }
 
     public function getAssignmentsForCourse(int $courseId)
     {
         $url = "courses/{$courseId}/assignments";
-        return $this->request($url, 'GET', [], [], true);
+        $data = ['page' => 1, 'per_page' => 100];
+
+        return $this->request($url, 'GET', $data, [], true);
     }
 
     public function getCourseEnrollments(int $courseId, int $per_page = 100, bool $paginable = true, string $authorizationHeader = null, string $page = null)
     {
         $url = "courses/{$courseId}/enrollments";
-        $data = ["per_page" => $per_page];
+        $data = ['per_page' => $per_page];
         $headers = [];
 
         $usePage = !empty($page);
@@ -400,7 +422,9 @@ class CanvasService
     {
         try {
             $url = "users/{$userId}/enrollments";
-            return $this->request($url, 'GET', [], [], true);
+            $data = ['page' => 1, 'per_page' => 100];
+
+            return $this->request($url, 'GET', $data, [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('User with ID %s not found', $userId));
@@ -412,9 +436,10 @@ class CanvasService
     public function getEnrollmentsByCourse(string $userId, int $courseId)
     {
         try {
-            $url = "courses/{$courseId}/users?search_term={$userId}&include[]=enrollments";
+            $url = "courses/{$courseId}/users";
+            $data = ['search_term' => $userId, 'include[]' => 'enrollments'];
             logger($url);
-            $result = $this->request($url);
+            $result = $this->request($url, 'GET', $data);
 
             if(empty($result)) {
                 return [];
@@ -438,8 +463,11 @@ class CanvasService
     public function getCourseUser(int $courseId, int $userId)
     {
         try {
-            $url = "courses/{$courseId}/users?include[]=enrollments&user_ids[]={$userId}";
-            return $this->request($url, 'GET', [], [], true);
+            $url = "courses/{$courseId}/users";
+            $data = ['include[]' => 'enrollments','user_ids[]' => $userId,
+                     'page' => 1, 'per_page' => 100];
+
+            return $this->request($url, 'GET', $data, [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
@@ -468,7 +496,10 @@ class CanvasService
     public function getModulesWithProgress(int $courseId, int $userId) {
         try {
             $modulesHref = "courses/{$courseId}/modules";
-            return $this->request($modulesHref, 'GET', ['include[]' => 'items', 'student_id' => $userId], [], true);
+            $data = ['page' => 1, 'per_page' => 100,
+                     'include[]' => 'items', 'student_id' => $userId];
+
+            return $this->request($modulesHref, 'GET', $data, [], true);
         } catch (ClientException $exception) {
             logger("CanvasService.getModulesWithProgress: ".$exception->getMessage());
             throw $exception;
@@ -479,7 +510,9 @@ class CanvasService
     {
         try {
             $modulesHref = "courses/{$courseId}/modules";
-            $modules = $this->request($modulesHref, 'GET', [], [], true);
+            $data = ['page' => 1, 'per_page' => 100];
+
+            $modules = $this->request($modulesHref, 'GET', $data, [], true);
             $courseUser = $this->getCourseUser($courseId, $studentId);
             $isStudent = $this->hasStudentEnrollment($courseUser);
 
@@ -488,7 +521,7 @@ class CanvasService
                     $moduleId = $module->id;
                     $itemsHref = $isStudent ? "courses/{$courseId}/modules/{$moduleId}/items?student_id={$studentId}" : "courses/{$courseId}/modules/{$moduleId}/items";
                     logger($itemsHref);
-                    $items = $this->request($itemsHref, 'GET', [], [], true);
+                    $items = $this->request($itemsHref, 'GET', $data, [], true);
                     $module->items = $items;
                 }
             }
@@ -503,10 +536,10 @@ class CanvasService
     public function getUsersGroups(int $userId)
     {
         try {
-            $url = "users/self/groups?as_user_id={$userId}";
-            return $this->request($url, 'GET', [
-                'as_user_id' => $userId
-            ]);
+            $url = "users/self/groups";
+            $data = ['as_user_id' => $userId];
+
+            return $this->request($url, 'GET', $data);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 401) {
                 throw new CanvasException(sprintf('User with ID %s not found', $userId));
@@ -519,7 +552,9 @@ class CanvasService
     {
         try {
             $url = "groups/{$groupId}/users";
-            return $this->request($url, 'GET', ['per_page' => 100], [], true);
+            $data = ['page' => 1, 'per_page' => 999];
+
+            return $this->request($url, 'GET', $data, [], true);
         } catch (ClientException $exception) {
             if ($exception->getCode() === 401 || $exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Group with ID %s not found', $groupId));
@@ -531,6 +566,7 @@ class CanvasService
     public function mergeUsers(int $fromUserId, int $toUserId)
     {
         $url = "users/$fromUserId/merge_into/$toUserId";
+
         return $this->request($url, 'PUT');
     }
 
@@ -538,13 +574,15 @@ class CanvasService
     {
         $accountId = 1;
         $url = "accounts/{$accountId}/users/{$userId}";
+
         return $this->request($url, 'DELETE');
     }
 
     public function getUser(int $userId)
     {
         $url = "users/{$userId}";
-        return $this->request($url, 'GET');
+
+        return $this->request($url);
     }
 
     public function removeUserFromGroup(int $groupId, int $userId)
@@ -553,11 +591,11 @@ class CanvasService
     }
 
     protected function request(
-        string $url, 
-        string $method = 'GET', 
-        array $data = [], 
-        array $headers = [], 
-        bool $paginable = false, 
+        string $url,
+        string $method = 'GET',
+        array $data = [],
+        array $headers = [],
+        bool $paginable = false,
         bool $skip_auth = false,
         bool $return_next = false
     ) {
@@ -565,20 +603,31 @@ class CanvasService
         $isFinished = false;
         $content = [];
         $nextPage = null;
-    
+
+        // Build headers
         if (!$skip_auth) {
             $headers = array_merge([
                 'Authorization' => 'Bearer ' . $this->accessKey,
+                'Accept'        => 'application/json',
             ], $headers);
         }
 
+        // Start options with headers + verify
+        $options = [
+            'headers' => $headers,
+            'verify'  => false,
+        ];
+
         try {
             while (!$isFinished) {
-                $response = SentryTrace::guzzleRequest($method, $fullUrl, [
-                    'form_params' => $data,
-                    'headers' => $headers,
-                    'verify' => false,
-                ]);
+                // Add data depending on method inside loop for pagination support
+                if ($method === 'GET') {
+                    $options['query'] = $data;
+                } else {
+                    $options['form_params'] = $data;
+                }
+
+                $response = SentryTrace::guzzleRequest($method, $fullUrl, $options);
 
                 $decodedContent = json_decode($response->getBody()->getContents());
                 $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
@@ -599,25 +648,36 @@ class CanvasService
                 if ($linkExists) {
                     if (preg_match('/<([^>]+)>; rel="next"/', $link[0], $matchesNext)) {
                         $nextLink = $matchesNext[1];
-                
+
                         if (preg_match('/page=([^&]+)/', $nextLink, $pageMatches)) {
                             $nextPage = str_replace("page=", "", $pageMatches);
                         }
                     }
                 }
 
+                /*
+                // Debugging pagination issues
+                error_log(print_r([
+                    'url' => $fullUrl,
+                    'method' => $method,
+                    'paginable' => $paginable,
+                    'linkExists' => $linkExists,
+                    'nextPage' => $nextPage[0] ?? false,
+                    'data' => $data
+                ], true));
+                */
+
                 if (!$paginable || $linkExists && !preg_match('/<([^<]+)>; rel="next"/', $link[0], $matches)) {
                     $isFinished = true;
                     continue;
+                } else if ($paginable && $linkExists && $nextPage[0] ?? false) {
+                    $data['page'] = $nextPage[0]; // If next page exists in link header from Canvas, update page field for next request
                 }
-
-                $fullUrl = $matches[1];
             }
-    
+
             logger("CanvasService: returning content");
             if ($return_next) return ["nextPage" => $nextPage[0] ?? null, "data" => $content];
             return $content;
-    
         } catch (ClientException $exception) {
             logger("CanvasService.request exception:");
             if (config('canvas.debug')) {
@@ -652,42 +712,50 @@ class CanvasService
     public function getCourseData(int $courseId)
     {
         $url = "courses/{$courseId}";
-        return $this->request($url, 'GET');
+
+        return $this->request($url);
     }
 
     public function getCoursePages(int $courseId)
     {
-        $url = "courses/{$courseId}/pages?per_page=100";
-        return $this->request($url, 'GET');
+        $url = "courses/{$courseId}/pages";
+        $data = ['per_page' => 100];
+
+        return $this->request($url, 'GET', $data);
     }
 
     public function getCourseFrontPage(int $courseId)
     {
         $url = "courses/{$courseId}/front_page";
-        return $this->request($url, 'GET');
+
+        return $this->request($url);
     }
 
     public function getCoursePageContent(int $courseId, int $pageId)
     {
         $url = "courses/{$courseId}/pages/{$pageId}";
-        return $this->request($url, 'GET');
+
+        return $this->request($url);
     }
 
     public function getCoursePageContentByPath(int $courseId, string $pagePath)
     {
         $url = "courses/{$courseId}/pages/{$pagePath}";
-        return $this->request($url, 'GET');
+
+        return $this->request($url);
     }
 
     public function getLinksValidationForCourse(int $courseId)
     {
         $url = "courses/{$courseId}/link_validation";
-        return $this->request($url, 'GET');
+
+        return $this->request($url);
     }
 
     public function postLinksValidationForCourse(int $courseId)
     {
         $url = "courses/{$courseId}/link_validation";
+
         return $this->request($url, 'POST');
     }
 }
