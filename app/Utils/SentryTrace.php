@@ -156,7 +156,10 @@ class SentryTrace {
     }
     
     public static function guzzleRequest($method, $url, $options = []) {
-        logger("SentryTrace::guzzleRequest url=$url");
+        $canvasPingEndpoint = "/api/v1/courses/360";
+        if (!str_contains($url, $canvasPingEndpoint)) {
+            logger("SentryTrace::guzzleRequest url=$url");
+        }
 
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();

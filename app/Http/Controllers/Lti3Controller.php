@@ -83,6 +83,8 @@ class Lti3Controller extends Controller
             foreach ($settings as $key => $value) {
                 Arr::set($settings_new, 'settings.custom_' . $key, $value);
             }
+
+            logger("Lti3Controller::launch type=deep_link_launch message=Settings for rendering: " . print_r($settings_new, true));
             session(['settings' => $settings_new['settings']]);
 
             return view('main.deep')
@@ -130,6 +132,7 @@ class Lti3Controller extends Controller
             Arr::set($settings_new, 'settings.custom_diploma_logo_list', $logoList);
         }
 
+        logger("Lti3Controller::launch type=resource_launch message=Settings for rendering: " . print_r($settings_new, true));
         session(['settings' => $settings_new['settings']]);
         $settings = session()->get('settings');
 
