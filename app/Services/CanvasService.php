@@ -480,9 +480,19 @@ class CanvasService
 
         foreach ($user->enrollments as $enrollment) {
             $roleExists = isset($enrollment->role);
-            $isStudent = $roleExists && $enrollment->role === 'StudentEnrollment';
-            $isPreviewStudent = $roleExists && $enrollment->role === 'StudentViewEnrollment';
-            if ($isStudent || $isPreviewStudent) return true;
+
+            if ($roleExists) {
+                $role = $enrollment->role;
+                $isStudent = $role === 'StudentEnrollment';
+                $isPreviewStudent = $role === 'StudentViewEnrollment';
+
+                $log_user_id = isset($user->id) ? $user->id : "unknown";
+                $log_course_id = isset($user->course_id) ? $user->course_id : "unknown";
+                logger("CanvasService::hasStudentEnrollment user_id=" . $log_user_id . " course_id=" . $log_course_id . " role=" . $role);
+
+                if ($isStudent || $isPreviewStudent) return true;
+            }
+
         }
 
         return false;
@@ -510,6 +520,8 @@ class CanvasService
             $modules = $this->request($modulesHref, 'GET', $data, [], true);
             $courseUser = $this->getCourseUser($courseId, $studentId);
             $isStudent = $this->hasStudentEnrollment($courseUser);
+
+            logger("CanvasService::getModulesForCourse course_id=" . $courseId . " student_id=" . $studentId . " is_student=" . ($isStudent ? "true" : "false"));
 
             foreach($modules as $module) {
                 if($module->published) {

@@ -84,7 +84,9 @@ class Lti3Controller extends Controller
                 Arr::set($settings_new, 'settings.custom_' . $key, $value);
             }
 
-            logger("Lti3Controller::launch type=deep_link_launch message=Settings for rendering: " . print_r($settings_new, true));
+            $log_user_id = Arr::get($settings_new, 'settings.custom_canvas_user_id', 'unknown');
+            $log_course_id = Arr::get($settings_new, 'settings.custom_canvas_course_id', 'unknown');
+            logger("Lti3Controller::launch type=deep_link_launch user_id=" . $log_user_id . " course_id=" . $log_course_id);
             session(['settings' => $settings_new['settings']]);
 
             return view('main.deep')
@@ -132,7 +134,10 @@ class Lti3Controller extends Controller
             Arr::set($settings_new, 'settings.custom_diploma_logo_list', $logoList);
         }
 
-        logger("Lti3Controller::launch type=resource_launch message=Settings for rendering: " . print_r($settings_new, true));
+        $log_user_id = Arr::get($settings_new, 'settings.custom_canvas_user_id', 'unknown');
+        $log_course_id = Arr::get($settings_new, 'settings.custom_canvas_course_id', 'unknown');
+        logger("Lti3Controller::launch type=resource_launch user_id=" . $log_user_id . " course_id=" . $log_course_id);
+
         session(['settings' => $settings_new['settings']]);
         $settings = session()->get('settings');
 
