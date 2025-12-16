@@ -18,7 +18,6 @@ class HistoryService
     {
         logger("HistoryService::getUserHistory");
         $url = "{$this->statisticsBaseUrl}/statistics/user/{$userId}/history/?from={$from}&to={$to}&format=json";
-        logger($url);
 
         $this->guzzleClient = new Client();
         $res = $this->guzzleClient->request('GET', $url, []);
@@ -29,7 +28,6 @@ class HistoryService
     {
         logger("HistoryService::getUserContextHistory");
         $url = "{$this->statisticsBaseUrl}/statistics/user/{$userId}/context/{$contextId}/history/?from={$from}&to={$to}&format=json";
-        logger($url);
 
         $this->guzzleClient = new Client();
         $res = $this->guzzleClient->request('GET', $url, []);
@@ -40,7 +38,6 @@ class HistoryService
     {
         logger("HistoryService::getContextHistory");
         $url = "{$this->statisticsBaseUrl}/statistics/context/{$contextId}/history/?from={$from}&to={$to}&format=json";
-        logger($url);
 
         $this->guzzleClient = new Client();
         $res = $this->guzzleClient->request('GET', $url, []);
@@ -50,7 +47,6 @@ class HistoryService
     protected function request(string $userId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
         $fullUrl = "{$this->statisticsBaseUrl}/statistics/user/{$userId}/history/?from={$fromDate}&to={$toDate}";
-        logger($fullUrl);
 
         try {
             $content = [];
@@ -62,8 +58,6 @@ class HistoryService
 
             $decodedContent = json_decode($response->getBody()->getContents());
             $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
-
-            logger("HistoryService::request returning content");
 
             return $content;
         } catch (ClientException $exception) {

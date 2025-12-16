@@ -58,11 +58,11 @@ class FetchNsrData extends Command
 
             $nsr->store_counties();
             $nsr->store_communities();
-            
-            logger("Store schools");
+
+            logger("nsr::store_schools");
             $nsr->store_schools();
 
-            logger("Store kindergartens");
+            logger("nsr::store_kindergartens");
             $nsr->store_kindergartens();
             
             SentryTrace::setSpan($transaction);

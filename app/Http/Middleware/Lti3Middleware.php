@@ -21,8 +21,7 @@ class Lti3Middleware
     public function handle($request, Closure $next)
     {
         $config_directory = $request->query("config_directory", "configs");
-        logger("Middleware config directory:".$config_directory);
-        logger("Target URL:".$request->input("target_link_uri"));
+        logger("Lti3Middleware::handle config_directory=" . $config_directory . " target_link_uri=" . $request->input("target_link_uri"));
 
         try {
             $lti_oidc_login = LTI\LTI_OIDC_Login::new(new LTI3_Database($config_directory));
@@ -30,7 +29,6 @@ class Lti3Middleware
             $loginUrl = $login->get_redirect_url();
             $arr = parse_url($loginUrl);
             parse_str($arr['query'], $params);
-            logger($arr);
 
             return response(view('main.nocookies')->withState($params['state'])
             ->withNonce($params['nonce'])

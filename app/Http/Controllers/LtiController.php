@@ -17,10 +17,10 @@ class LtiController extends Controller
 
     public function index(Request $request)
     {
-        logger("LtiController.index");
+        logger("LtiController::index");
         if(app()->environment('local')) {
-            logger('A request from CANVAS', $request->all());
-            logger('An user session', session('settings', []));
+            logger('LtiController::index message=A request from CANVAS', $request->all());
+            logger('LtiController::index message=An user session', session('settings', []));
         }
         return view('lti.index');
     }

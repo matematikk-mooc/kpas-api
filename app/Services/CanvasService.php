@@ -71,7 +71,6 @@ class CanvasService
             $data = ['include[]' => "total_students"];
 
             $response = $this->request($url, 'GET', $data);
-            logger(print_R($response, true));
 
             return ['antallBrukere' => $response->total_students];
         } catch (ClientException $exception) {
@@ -89,7 +88,6 @@ class CanvasService
             $url = "groups/{$groupId}";
 
             $response = $this->request($url);
-            logger(print_R($response, true));
 
             return ['antallBrukere' => $response->members_count];
         } catch (ClientException $exception) {
@@ -125,7 +123,6 @@ class CanvasService
     }
     public function getGroup(int $groupId)
     {
-        logger("getGroup " . $groupId);
         try {
             $url = "groups/{$groupId}";
 
@@ -289,7 +286,6 @@ class CanvasService
         try {
             $url = "courses/{$courseId}/group_categories";
             $data = ['page' => 1, 'per_page' => 100];
-            logger($url);
 
             return $this->request($url, 'GET', $data, [], true);
         } catch (ClientException $exception) {
@@ -438,7 +434,6 @@ class CanvasService
         try {
             $url = "courses/{$courseId}/users";
             $data = ['search_term' => $userId, 'include[]' => 'enrollments'];
-            logger($url);
             $result = $this->request($url, 'GET', $data);
 
             if(empty($result)) {
@@ -452,7 +447,7 @@ class CanvasService
             }
             return [];
         } catch (ClientException $exception) {
-            logger("CanvasService.getEnrollmentsByCourse: ".$exception->getMessage());
+            logger("CanvasService::getEnrollmentsByCourse error=" . $exception->getMessage());
             if ($exception->getCode() === 404) {
                 throw new CanvasException(sprintf('Course with ID %s not found', $courseId));
             }
@@ -501,7 +496,7 @@ class CanvasService
 
             return $this->request($modulesHref, 'GET', $data, [], true);
         } catch (ClientException $exception) {
-            logger("CanvasService.getModulesWithProgress: ".$exception->getMessage());
+            logger("CanvasService::getModulesWithProgress error=" . $exception->getMessage());
             throw $exception;
         }
     }
@@ -520,7 +515,7 @@ class CanvasService
                 if($module->published) {
                     $moduleId = $module->id;
                     $itemsHref = $isStudent ? "courses/{$courseId}/modules/{$moduleId}/items?student_id={$studentId}" : "courses/{$courseId}/modules/{$moduleId}/items";
-                    logger($itemsHref);
+                    
                     $items = $this->request($itemsHref, 'GET', $data, [], true);
                     $module->items = $items;
                 }
@@ -528,7 +523,7 @@ class CanvasService
 
             return $modules;
         } catch (ClientException $exception) {
-            logger("CanvasService.getModulesForCourse: ".$exception->getMessage());
+            logger("CanvasService::getModulesForCourse error=" . $exception->getMessage());
             throw $exception;
         }
     }
@@ -675,11 +670,10 @@ class CanvasService
                 }
             }
 
-            logger("CanvasService: returning content");
             if ($return_next) return ["nextPage" => $nextPage[0] ?? null, "data" => $content];
             return $content;
         } catch (ClientException $exception) {
-            logger("CanvasService.request exception:");
+            logger("CanvasService::request error=" . $exception->getMessage());
             if (config('canvas.debug')) {
                 info(json_encode([
                     'url' => $fullUrl,

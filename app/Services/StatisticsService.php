@@ -16,8 +16,7 @@ class StatisticsService
     }
 
     public function getStatisticsHtml($settings) {
-        logger("getStatisticsHtml");
-        logger($settings);
+        logger("StatisticsService::getStatisticsHtml");
 
         return view('main.statistics')
         ->withSettings($settings);
@@ -39,14 +38,12 @@ class StatisticsService
         }
 
         $this->guzzleClient = new Client();
-        logger($url);
         return $this->guzzleClient->request($url);
     }
 
     protected function request(string $courseId, string $method = 'GET', array $data = [], array $headers = [], bool $paginable = false)
     {
         $fullUrl = "{$this->statisticsBaseUrl}/statistics/{$courseId}/count";
-        logger($fullUrl);
 
         try {
             $content = [];
@@ -58,8 +55,6 @@ class StatisticsService
 
             $decodedContent = json_decode($response->getBody()->getContents());
             $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
-
-            logger("CanvasService: returning content");
 
             return $content;
         } catch (ClientException $exception) {

@@ -18,7 +18,6 @@ class MatomoService
     {
         logger("MatomoService::getMatomoData");
         $url = "{$this->statisticsBaseUrl}/statistics/course/{$courseid}/pages?from={$from}&to={$to}&format=json";
-        logger($url);
 
         $this->guzzleClient = new Client();
         $res = $this->guzzleClient->request('GET', $url, []);
@@ -29,7 +28,6 @@ class MatomoService
     protected function request(string $courseId, string $fromDate, string $toDate, string $method = 'GET', array $data = [], array $headers = [])
     {
         $fullUrl = "{$this->statisticsBaseUrl}/statistics/course/{$courseId}/pages?from={$fromDate}&to={$toDate}";
-        logger($fullUrl);
 
         try {
             $content = [];
@@ -41,8 +39,6 @@ class MatomoService
 
             $decodedContent = json_decode($response->getBody()->getContents());
             $content = is_array($decodedContent) ? array_merge($content, $decodedContent) : $decodedContent;
-
-            logger("MatomoService::request returning content");
 
             return $content;
         } catch (ClientException $exception) {

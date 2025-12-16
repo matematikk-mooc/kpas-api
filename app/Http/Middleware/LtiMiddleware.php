@@ -19,17 +19,15 @@ class LtiMiddleware
     public function handle($request, Closure $next)
     {
         if ($request->has('cookie')) {
-            logger("LtiMiddleware has cookie.");
             session()->setId($request->get('cookie'));
             session()->start();
         }
+
         if (!$this->isLtiAuthenticated()
             || ($request->has('lti_message_type') && $this->checkIds($request))
         ) {
-            logger("LtiMiddleware: Trying to authenticate.");
             Authenticator::authenticate();
         }
-        logger("LtiMiddleware: next request: " . $request);
 
         return $next($request);
     }

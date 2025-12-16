@@ -12,7 +12,6 @@ class GroupEnrollmentController extends Controller
     public function getGroupEnrollmentCount(int $courseId, Request $request): SuccessResponse
     {
         $enrollmentService = new GroupEnrollmentService();
-        logger($request);
         $data = $enrollmentService->getGroupEnrollment($courseId, $request->from, $request->to);
         $res = $data->getBody()->getContents();
         return new SuccessResponse($res);

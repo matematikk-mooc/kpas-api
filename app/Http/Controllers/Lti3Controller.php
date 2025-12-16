@@ -55,7 +55,8 @@ class Lti3Controller extends Controller
     public function launch(Request $request)
     {
         $config_directory = $request->query("config_directory", "configs");
-        logger("LTI3Controller config directory:". $config_directory);
+        logger("Lti3Controller::launch config_directory=" . $config_directory);
+
         $launch = LTI\LTI_Message_Launch::new(new LTI3_Database($config_directory));
         try {
             $launch->validate(true);
@@ -73,9 +74,9 @@ class Lti3Controller extends Controller
         $courseSettingsMode = config('constants.options.COURSE_SETTINGS_MODE');
 
         if ($launch->is_resource_launch()) {
-            logger('Resource Launch!');
+            logger("Lti3Controller::launch type=resource_launch");
         } else if ($launch->is_deep_link_launch()) {
-            logger('Deep Linking Launch!');
+            logger("Lti3Controller::launch type=deep_link_launch");
             $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
 
             $settings_new = [];
@@ -96,12 +97,10 @@ class Lti3Controller extends Controller
             ->withSurveyMode($surveyMode)
             ->withRequest($request);
         } else {
-            logger('Unknown launch type');
+            logger("Lti3Controller::launch type=unknown_launch");
         }
 
         $settings = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/custom'];
-        logger("SETTINGS:" . print_r($settings, true));
-
         $settings["canvas_user_id"] = (string)$settings['canvas_user_id'];
 
         $kpasUserView = "group_management";
@@ -132,12 +131,9 @@ class Lti3Controller extends Controller
         }
 
         session(['settings' => $settings_new['settings']]);
-        logger("Lti3Middleware has settings.");
         $settings = session()->get('settings');
 
         if ($kpasMode == $diplomaMode) {
-            logger("embed diploma");
-
             $userId = $settings["custom_canvas_user_id"];
             $userName = $settings['custom_canvas_user_display_name'];
             $courseId = $settings["custom_canvas_course_id"];
@@ -145,31 +141,42 @@ class Lti3Controller extends Controller
             $courseUserRoles = $settings['custom_canvas_roles'];
             $courseDiplomaLogos = $settings['custom_diploma_logo_list'];
 
+            logger("Lti3Controller::launch mode=diploma user_id=$userId course_id=$courseId");
             $diplomaV2Service = new DiplomaV2Service($userId, $userName, $courseId, $courseName, $courseUserRoles, $courseDiplomaLogos);
             return $diplomaV2Service->render();
         } else if ($kpasMode == $statisticsMode) {
+            logger("Lti3Controller::launch mode=statistics");
+
             $statisticsService = new StatisticsService();
             return $statisticsService->getStatisticsHtml($settings);
         } else if ($kpasMode == $dashboardMode) {
             $dashboardService = new DashboardService();
             $courseId = $settings["custom_canvas_course_id"];
+
+            logger("Lti3Controller::launch mode=dashboard course_id=" . $courseId);
             return $dashboardService->getDashboardHtml($courseId, $settings);
         } else if ($kpasMode == $surveyMode){
+            logger("Lti3Controller::launch mode=survey");
+
             $surveyService = new SurveyService();
             return $surveyService->getSurveyBlade($settings);
         } else if ($kpasMode == $adminDashboardMode){
+            logger("Lti3Controller::launch mode=admin_dashboard");
+
             $adminDashboardService = new AdminDashboardService();
             return $adminDashboardService->getAdminDashboardBlade($settings);
         } else if ($kpasMode == $courseSettingsMode) {
+            logger("Lti3Controller::launch mode=course_settings");
+
             $courseSettingsService = new CourseSettingsService();
             return $courseSettingsService->getCourseSettingsBlade($settings);
         }
 
         if ($kpasUserView == 'user_management') {
-            logger("Display user management view.");
+            logger("Lti3Controller::launch mode=user_management");
             return view('usermerge.index');
         } else if ($kpasUserView == 'user_deletion') {
-            logger("Display user deletion view.");
+            logger("Lti3Controller::launch mode=user_deletion");
             return view('userdeletion.index');
         }
 
@@ -195,7 +202,6 @@ class Lti3Controller extends Controller
             throw new LtiException("Error at LTIv3 get categories from canvas :" . $e->getMessage());
         }
 
-        logger("get_categories: " . print_r($categories, true));
         foreach ($categories as $value) {
             if ($value->name == "Fylke") {
                 $settings["county_category_id"] = (string)$value->id;
@@ -225,33 +231,22 @@ class Lti3Controller extends Controller
 
     public function institution()
     {
-        logger("===========");
-        logger("INSTITUTION");
-        logger("===========");
-        logger(print_r(session()->get('settings'), true));
         $customInstitutionType = Arr::get(session()->get('settings'), 'custom_institution_category_type');
         $customInstitutionLeaderDescription = Arr::get(session()->get('settings'), 'custom_institution_leader_description');
         $customInstitutionParticipantDescription = Arr::get(session()->get('settings'), 'custom_institution_participant_description');
 
-        logger($customInstitutionParticipantDescription);
-        logger($customInstitutionLeaderDescription);
-
         $institution["institutionType"] = $customInstitutionType;
         $institution["institutionLeaderDescription"] = $customInstitutionLeaderDescription ? $customInstitutionLeaderDescription : "Leder/eier";
         $institution["institutionParticipantDescription"] = $customInstitutionParticipantDescription ? $customInstitutionParticipantDescription : "Deltager";
-        logger(print_r($institution, true));
 
+        logger("Lti3Controller::institution institutionType=" . $institution["institutionType"]);
         return new SuccessResponse($institution);
     }
 
     public function kpas_settings()
     {
-        logger("===========");
-        logger("SETTINGS");
-        logger("===========");
+        logger("Lti3Controller::kpas_settings message=Fetching kpas settings");
         $customDeep = Arr::get(session()->get('settings'), 'custom_deep');
-        logger("Deep: " . $customDeep);
-
         $kpasSettings["deep"] = $customDeep ? $customDeep : false;
 
         return new SuccessResponse($kpasSettings);
@@ -259,9 +254,7 @@ class Lti3Controller extends Controller
 
     public function diplomaPdf(Request $request)
     {
-        logger("DiplomaPDF");
         $settings = session()->get('settings');
-        logger($settings);
 
         $userId = $settings["custom_canvas_user_id"];
         $userName = $settings['custom_canvas_user_display_name'];
@@ -269,6 +262,8 @@ class Lti3Controller extends Controller
         $courseName = $settings['custom_canvas_course_name'];
         $courseUserRoles = $settings['custom_canvas_roles'];
         $courseDiplomaLogos = $settings['custom_diploma_logo_list'];
+
+        logger("Lti3Controller::diplomaPdf user_id=$userId course_id=$courseId");
 
         $diplomaV2Service = new DiplomaV2Service($userId, $userName, $courseId, $courseName, $courseUserRoles, $courseDiplomaLogos);
         if (!$diplomaV2Service->isCourseCompleted()) return (new ErrorResponse("Alle krav må fullføres før diplom kan lastes ned.", 403))->toResponse($request);

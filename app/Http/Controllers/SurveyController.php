@@ -16,18 +16,16 @@ class SurveyController extends Controller
 
     public function create(AddSurveyRequest $request): SuccessResponse
     {
-
-        logger("SurveyController@create");
-        logger($request);
         $surveyRepository = new SurveyRepository();
         $id = $surveyRepository->createSurvey($request);
+        logger("SurveyController::create survey_id=$id");
 
         return new SuccessResponse($id);
     }
 
     public function getCourseSurveys(Request $request, $courseId): SuccessResponse
     {
-        logger("SurveyController@getCourseSurveys");
+        logger("SurveyController::getCourseSurveys course_id=$courseId");
         $surveyRepository = new SurveyRepository();
         if ($request->has('group')) {
             $result = $surveyRepository->getSurveysFilteredOnGroup(intval($courseId), $request->group);
@@ -48,7 +46,7 @@ class SurveyController extends Controller
             }
         }
         catch(\Exception $e) {
-            logger("Could not get surveys. Error: " . $e->getMessage());
+            logger("SurveyController::getCourseSurveysWithoutOpenAnswerResponses error=" . $e->getMessage());
         }
 
 
@@ -62,11 +60,10 @@ class SurveyController extends Controller
         $moduleIdInt = !empty($moduleIdIParam) ? intval($moduleIdIParam) : null;
 
         if ($courseIdInt == null) {
-            logger("SurveyController@getSurveyWithQuestions - Missing course_id");
             return response()->json(['message' => 'Missing course_id'], 400);
         }
 
-        logger("SurveyController@getSurveyWithQuestions");
+        logger("SurveyController::getSurveyWithQuestions course_id=$courseIdInt module_id=$moduleIdInt");
         $surveyRepository = new SurveyRepository();
         $result = $surveyRepository->getSurveysWithQuestions($courseIdInt, $moduleIdInt);
         return new SuccessResponse($result);
@@ -82,7 +79,7 @@ class SurveyController extends Controller
 
     public function createUserSubmission(AddUserSubmissionRequest $request, int $surveyId)
     {
-        logger("SurveyController@createUserSubmission");
+        logger("SurveyController::createUserSubmission survey_id=$surveyId");
 
         $settings = session()->get('settings');
         $userId = intval($settings['custom_canvas_user_id']);
@@ -93,7 +90,7 @@ class SurveyController extends Controller
         } catch (SurveyAlreadySubmittedException $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         } catch (\Exception $e) {
-            logger("Error creating user submission - Returning 500 Internal Server Error: " . $e->getMessage());
+            logger("SurveyController::createUserSubmission error=" . $e->getMessage());
             return response()->json(['message' => $e->getMessage()], 500);
         }
         return new SuccessResponse(null);
@@ -101,7 +98,7 @@ class SurveyController extends Controller
 
     public function deleteUserSubmission(Request $request, int $surveyId)
     {
-        logger("SurveyController@deleteUserSubmission");
+        logger("SurveyController::deleteUserSubmission survey_id=$surveyId");
 
         $settings = session()->get('settings');
         $userId = intval($settings['custom_canvas_user_id']);

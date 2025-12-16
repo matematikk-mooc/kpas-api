@@ -82,6 +82,8 @@ class SentryTrace {
     }
 
     public static function fileGetContents($url, $useIncludePath = false, $context = null, $offset = 0, $maxLen = null): string {
+        logger("SentryTrace::fileGetContents url=$url");
+
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
 
@@ -154,6 +156,8 @@ class SentryTrace {
     }
     
     public static function guzzleRequest($method, $url, $options = []) {
+        logger("SentryTrace::guzzleRequest url=$url");
+
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
     
@@ -237,6 +241,8 @@ class SentryTrace {
     }
 
     public static function graphqlRequest(string $url, string $query, array $variables = [], array $headers = []): ?array {
+        logger("SentryTrace::graphqlRequest url=$url");
+
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
 

@@ -100,8 +100,6 @@ class DiplomaV2Service {
     }
 
     public function render() {
-        logger("getDiplomaHtml");
-
         return view('main.diploma-v2')
             ->withUserName($this->userName)
             ->withCourseName($this->courseName)

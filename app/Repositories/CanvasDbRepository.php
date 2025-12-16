@@ -28,7 +28,7 @@ class CanvasDbRepository extends CanvasRepository
 
     public function getOrCreateGroup(GroupDto $groupDto): GroupDto
     {
-        logger("getOrCreateGroup in category" . $groupDto->getCategoryId());
+        logger("CanvasDbRepository::getOrCreateGroup category=" . $groupDto->getCategoryId());
         if ($group = $this->findGroupId($groupDto)) {
             return $group;
         }
@@ -42,7 +42,7 @@ class CanvasDbRepository extends CanvasRepository
 
     public function getGroupsInGroupCategory(int $categoryId) 
     {
-        logger("getGroupsInGroupCategory". $categoryId);
+        logger("CanvasDbRepository::getGroupsInGroupCategory category=" . $categoryId);
         $groups = Group::where('category_id', $categoryId)->get();
         foreach ($groups as $group) {
             $canvasGroup = $this->canvasService->getGroup($group->canvas_id);

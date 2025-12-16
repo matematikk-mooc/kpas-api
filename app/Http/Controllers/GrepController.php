@@ -11,7 +11,8 @@ class GrepController extends Controller
     private function getGF5()
     {
         $sparqlEndpoint = env("GREP_SPARQL_ENDPOINT", "");
-        logger("SPARQL ENDPOINT:" . $sparqlEndpoint);
+        logger("GrepController::getGF5 endpoint=" . $sparqlEndpoint);
+
         $sparql = new EasyRdf\Sparql\Client($sparqlEndpoint);
         $query = '
         PREFIX u: <http://psi.udir.no/ontologi/kl06/>
@@ -33,11 +34,11 @@ class GrepController extends Controller
         $result = $sparql->query($query);
         return $result;
     }
+
     public function gf5()
     {
         $result = $this->getGF5();
         $data = ['grep' => $result];
-        logger('data', $data);
         return view('grep.grep', $data);
     }
 }

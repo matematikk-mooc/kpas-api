@@ -66,7 +66,7 @@ class UserDeletionController extends Controller {
         $userEmail = $canvasUserData->email;
         if (empty($userEmail)) return response()->json(["message" => "Fant ikke epost for canvas bruker"], 422);
 
-        logger("Creating token for user deletion: $userId");
+        logger("UserDeletionController::createToken user_id=$userId");
         $token = Token::generate(9);
         $hashedToken = password_hash($token, PASSWORD_BCRYPT, ["cost" => 12]);
 
@@ -95,7 +95,6 @@ Med vennlig hilsen,
 Kompetanseportalen
 UDIR - DIT";
 
-        logger("Sending token for user deletion to '$userEmail': $userId");
         Mail::raw($emailMessage, function ($message) use ($userEmail) {
             $message
                 ->to($userEmail)
@@ -122,10 +121,10 @@ UDIR - DIT";
         $activeToken = UserDeletionToken::where("canvas_user_id", $userId)->where("id", $activeTokenId)->first();
         if (!empty($activeToken->confirmed_at)) return response()->json(["message" => "Fant aktiv kode men den er allerede aktivert"], 422);
 
-        logger("Confirming token for user deletion: $userId");
         $emailTokenIsValid = password_verify($emailToken, $activeToken->token);
         if (!$emailTokenIsValid) return response()->json(["message" => "Ugyldig verifiseringskode"], 400);
 
+        logger("UserDeletionController::verifyToken user_id=$userId");
         $activeToken->confirmed_at = Carbon::now("UTC");
         $activeToken->save();
 
@@ -141,7 +140,7 @@ UDIR - DIT";
         $activeToken = UserDeletionToken::where("canvas_user_id", $userId)->where("id", $activeTokenId)->first();
         if(!empty($activeToken->canceled_at)) return response()->json(["message" => "Fant inaktiv kode men den er allerede kansellert"], 422);
 
-        logger("Cancel token for user deletion: $userId");
+        logger("UserDeletionController::cancelToken user_id=$userId");
         $activeToken->canceled_at = Carbon::now("UTC");
         $activeToken->save();
 

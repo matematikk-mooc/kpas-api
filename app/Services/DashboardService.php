@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class DashboardService {
     public function getDashboardHtml($courseId, $settings) {
-        logger("getDashboardData");
+        logger("DashboardService::getDashboardHtml");
 
         return view('main.dashboard')
             ->withCourseId($courseId)
