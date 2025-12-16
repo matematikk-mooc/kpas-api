@@ -20,6 +20,11 @@ echo $0
 echo "Make sure storage and bootstrap/cache folders are writable"
 echo "==============="
 
+# Ensure cache directory structure exists (in case of volume mounts overwriting)
+mkdir -p /var/www/html/storage/framework/cache/data
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R u+rw,g+rw /var/www/html/storage /var/www/html/bootstrap/cache
 

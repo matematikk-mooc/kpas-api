@@ -39,6 +39,12 @@ WORKDIR /var/www/html
 # Add application
 COPY --from=nodeBuild --chown=www-data /var/www/html /var/www/html
 
+# Ensure Laravel storage directory structure exists
+RUN mkdir -p /var/www/html/storage/framework/cache/data \
+    /var/www/html/storage/framework/sessions \
+    /var/www/html/storage/framework/views \
+    && chown -R www-data:www-data /var/www/html/storage
+
 # Make sure files/folders needed by the processes are accessable when they run under the www-data user
 RUN chown -R www-data /run /var/lib/nginx /var/log/nginx
 
