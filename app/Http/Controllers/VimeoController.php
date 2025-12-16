@@ -13,14 +13,15 @@ class VimeoController extends Controller
 {
     public function index(int $vimeoId)
     {
-        logger("VimeoController::index vimeo_id=" . $vimeoId);
+        $pingVimeoId = 604691899;
+        if($vimeoId !== $pingVimeoId) logger("VimeoController::index vimeo_id=" . $vimeoId);
         $subtitles = SubtitlesRepository::getOrCreateSubtitles($vimeoId);
         if(!$subtitles->first()["language"]) return new ErrorXmlResponse("Videotranskript er dessverre ikke tilgjengelig for denne videoen.");
 
         $transcript = '<?xml version="1.0" encoding="utf-8" ?><transcript>';
         foreach($subtitles as $subtitle) {
             $subtitleLanguage = $subtitle["language"];
-            logger("VimeoController::index vimeo_id=" . $vimeoId . " subtitle_language=" . $subtitleLanguage);
+            if($vimeoId !== $pingVimeoId) logger("VimeoController::index vimeo_id=" . $vimeoId . " subtitle_language=" . $subtitleLanguage);
             $vtt_subtitles = Subtitles::loadFromString($subtitle["raw_subtitles"], 'vtt');
             $vtt_subtitlesArray = $vtt_subtitles->getInternalFormat();
             $transcript .= '<language lang="' . $subtitleLanguage . '">';
