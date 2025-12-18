@@ -609,7 +609,6 @@ class CanvasService
         bool $skip_auth = false,
         bool $return_next = false
     ) {
-        $fullUrl = "{$this->domain}/{$url}";
         $isFinished = false;
         $content = [];
         $nextPage = null;
@@ -630,6 +629,8 @@ class CanvasService
 
         try {
             while (!$isFinished) {
+                $fullUrl = "{$this->domain}/{$url}";
+
                 // Add data depending on method inside loop for pagination support
                 if ($method === 'GET') {
                     // Both query in options and URL having query params can lead to issues, where params passed in URL are ignored.
