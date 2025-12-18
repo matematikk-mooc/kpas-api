@@ -487,7 +487,7 @@ class CanvasService
                 $isPreviewStudent = $role === 'StudentViewEnrollment';
 
                 $log_user_id = isset($user->id) ? $user->id : "unknown";
-                $log_course_id = isset($user->course_id) ? $user->course_id : "unknown";
+                $log_course_id = isset($enrollment->course_id) ? $enrollment->course_id : "unknown";
                 logger("CanvasService::hasStudentEnrollment user_id=" . $log_user_id . " course_id=" . $log_course_id . " role=" . $role);
 
                 if ($isStudent || $isPreviewStudent) return true;
@@ -513,9 +513,11 @@ class CanvasService
 
     public function getModulesForCourse(int $courseId, int $studentId)
     {
+        logger("CanvasService::getModulesForCourse course_id=" . $courseId . " student_id=" . $studentId);
+
         try {
             $modulesHref = "courses/{$courseId}/modules";
-            $data = ['page' => 1, 'per_page' => 100];
+            $data = ['page' => 1, 'per_page' => 999];
 
             $modules = $this->request($modulesHref, 'GET', $data, [], true);
             $courseUser = $this->getCourseUser($courseId, $studentId);
@@ -526,9 +528,10 @@ class CanvasService
             foreach($modules as $module) {
                 if($module->published) {
                     $moduleId = $module->id;
-                    $itemsHref = $isStudent ? "courses/{$courseId}/modules/{$moduleId}/items?student_id={$studentId}" : "courses/{$courseId}/modules/{$moduleId}/items";
-                    
-                    $items = $this->request($itemsHref, 'GET', $data, [], true);
+                    $itemsUrl = "courses/{$courseId}/modules/{$moduleId}/items";
+                    if($isStudent) $data['student_id'] = $studentId;
+
+                    $items = $this->request($itemsUrl, 'GET', $data, [], true);
                     $module->items = $items;
                 }
             }
@@ -629,7 +632,10 @@ class CanvasService
             while (!$isFinished) {
                 // Add data depending on method inside loop for pagination support
                 if ($method === 'GET') {
-                    $options['query'] = $data;
+                    // Both query in options and URL having query params can lead to issues, where params passed in URL are ignored.
+                    // $options['query'] = $data;
+
+                    $fullUrl .= (strpos($fullUrl, '?') === false ? '?' : '&') . http_build_query($data); // Supports old URL format with query params and new data params
                 } else {
                     $options['form_params'] = $data;
                 }

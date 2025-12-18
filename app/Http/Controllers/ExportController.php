@@ -767,7 +767,8 @@ class ExportController extends Controller {
         $headers = [
             'Authorization' => $authorizationHeader,
             'Accept' => 'application/json',
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => 'KPAS'
         ];
 
         return Http::pool(function (Pool $pool) use ($urls, $headers) {
