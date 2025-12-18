@@ -597,7 +597,18 @@ class CanvasService
 
     public function removeUserFromGroup(int $groupId, int $userId)
     {
-        return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
+        try {
+            return $this->request("groups/{$groupId}/users/{$userId}", 'DELETE');
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 404) {
+                logger("CanvasService::removeUserFromGroup group_id=" . $groupId . " user_id=" . $userId . " message=not found");
+                return false;
+            }
+
+            throw $e;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     protected function request(
