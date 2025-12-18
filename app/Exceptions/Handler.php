@@ -68,10 +68,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        logger("Start rendering.");
+        logger("Handler::render");
 
         if ($exception instanceof CanvasException) {
-            logger("Canvas exception: ". $exception->getMessage());
+            logger("Handler::render error=" . $exception->getMessage());
             return (new ErrorResponse($exception->getMessage(), 403))->toResponse($request);
         }
         

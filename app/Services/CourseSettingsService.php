@@ -7,7 +7,7 @@ class CourseSettingsService
 
     public function getCourseSettingsBlade($settings)
     {
-        logger("getCourseSettingsData");
+        logger("CourseSettingsService::getCourseSettingsBlade");
 
         return view('main.coursesettings')->withSettings($settings);
     }

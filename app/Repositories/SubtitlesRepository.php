@@ -11,23 +11,17 @@ class SubtitlesRepository
     public static function getOrCreateSubtitles(int $videoId)
     {
         $subtitles = self::getSubtitlesFromDatabase($videoId);
-        if ($subtitles->isNotEmpty()) 
-        {
-            return $subtitles;
-        } 
+        if ($subtitles->isNotEmpty()) return $subtitles;
 
         $href = "/videos/" . $videoId . "/texttracks";
-        //logger("getOrCreateSubtitles:" . $href);
         $result = Vimeo::request($href, [], 'GET');
-        //logger("getOrCreateSubtitles" . print_r($result, true));
+
         if(!isset($result["body"]) || !isset($result["body"]["data"]) || !count($result["body"]["data"])) {
             self::createNoSubtitles($videoId);
         } else {
             $languagesAvailable = $result["body"]["data"];
-            //logger($languagesAvailable);
             foreach($languagesAvailable as $languageAvailable) {         
                 $vttHref = $languageAvailable["link"];
-                //logger($vttHref);
                 $client = new Client();
                 $res = $client->request('GET', $vttHref, []);
                 $vtt = $res->getBody();
@@ -38,7 +32,7 @@ class SubtitlesRepository
     }
     public static function deleteSubtitles(int $videoId)
     {
-        logger("Delete videoId {$videoId}");
+        logger("SubtitlesRepository::deleteSubtitles video_id={$videoId}");
         return Subtitles::where('videoId', $videoId)->delete();
     }
     private static function getSubtitlesFromDatabase(int $videoId)

@@ -113,10 +113,9 @@ class CourseSettingsController extends Controller
 
     public function updateHighlightedCourse(Request $request): SuccessResponse
     {
-        logger("updateHighlightedCourse");
         $courseSettingsRepository = new CourseSettingsRepository();
         $result = $courseSettingsRepository->updateHighlightedCourse($request->get('courseId'));
-        logger($result);
+
         return new SuccessResponse($result);
 
     }

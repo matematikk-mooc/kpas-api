@@ -24,6 +24,8 @@ class BffController extends Controller
     // V2: Remove unused fields to reduce payload size for client side to download
     public function getCoursesForFrontpage(bool $skip_cache = false)
     {
+        logger("BffController::getCoursesForFrontpage skip_cache=" . ($skip_cache ? 'true' : 'false'));
+
         try {
             $courseSettingsRepository = new CourseSettingsRepository();
             $returnData = [

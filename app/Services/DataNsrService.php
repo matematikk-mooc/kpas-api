@@ -60,7 +60,6 @@ class DataNsrService
         $today = date("Y-m-d");
         $fylker = $this->request($this->nxrDomain, 'api/v2/fylkedata?datotid='.$today);
 
-        logger(print_r($fylker,true));
         return $fylker;
     }
 
@@ -117,7 +116,7 @@ class DataNsrService
             $responseBody = $response->getBody()->getContents();
             return json_decode($responseBody, true);
         } catch (\Throwable $e) {
-            logger($e);
+            logger("DataNsrService::postRequest error=" . $e->getMessage());
             return [];
         }
     }
@@ -130,7 +129,7 @@ class DataNsrService
                 'verify' => false,
             ]);
         } catch (\Throwable $e) {
-            logger($e);
+            logger("DataNsrService::request error=" . $e->getMessage());
         }
 
         return json_decode($response->getBody()->getContents());
@@ -138,7 +137,7 @@ class DataNsrService
 
     public function store_counties()
     {
-        logger("store_counties");
+        logger("DataNsrService::store_counties");
         $model = new Fylke();
 
         $model->createAnnetFylke();
@@ -159,15 +158,14 @@ class DataNsrService
                 $filter_fields = filter_institution_fields($county, $county_keys);
                 $model->updateFylke($filter_fields);
             } catch (\Throwable $e) {
-                logger($e);
+                logger("DataNsrService::store_counties error=" . $e->getMessage());
             }
         }
-        logger("store_counties complete.");
     }
 
     public function store_communities()
     {
-        logger("store_communities");
+        logger("DataNsrService::store_communities");
         $model = new Kommune();
 
         $model->createAnnenKommune();
@@ -190,10 +188,9 @@ class DataNsrService
                 $filter_fields = filter_institution_fields($community, $community_keys);
                 $model->updateKommune($filter_fields);
             } catch (\Throwable $e) {
-                logger($e);
+                logger("DataNsrService::store_communities error=" . $e->getMessage());
             }
         }
-        logger("store_communities complete.");
     }
 
     public function store_schools()
@@ -215,7 +212,7 @@ class DataNsrService
             {
                 $i++;
                 if(!($i % 1000)) {
-                    logger("store_schools processed " . $i);
+                    logger("DataNsrService::store_schools index=" . $i);
                 }
                 try {
                     $school['NSRId'] = $school['Orgnr'];
@@ -230,12 +227,10 @@ class DataNsrService
 
                     $model->updateSkole($filter_fields);
                 } catch (\Throwable $e) {
-                    logger("Failure when processing school:" . print_r($school, true));
-                    logger($e);
+                    logger("DataNsrService::store_schools error=" . $e->getMessage());
                 }
             }
         }
-        logger("store_schools complete.");
     }
 
     public function store_kindergartens()
@@ -251,7 +246,7 @@ class DataNsrService
         foreach ($org as $kindergarten) {
             $i++;
             if(!($i % 1000)) {
-                logger("store_kindergartens processed " . $i);
+                logger("DataNsrService::store_kindergartens index=" . $i);
             }
             if (!$kindergarten['ErAktiv']){
                 continue;
@@ -268,10 +263,8 @@ class DataNsrService
                 $filter_fields = filter_institution_fields($kindergarten, $kindergartens_keys);
                 $model->updateBarnehage($filter_fields);
             } catch (\Throwable $e) {
-                logger("Failure when processing kindergarten:" . print_r($kindergarten, true));
-                logger($e);
+                logger("DataNsrService::store_kindergartens error=" . $e->getMessage());
             }
         }
-        logger("store_kindergartens complete.");
     }
 }

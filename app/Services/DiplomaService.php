@@ -10,9 +10,6 @@ class DiplomaService
 {
     public function getDiplomaHtml($settings, $downloadLink, $hasDeservedDiploma)
     {
-        logger("getDiplomaHtml");
-        logger("Downloadlink:" . $downloadLink);
-        logger($settings);
         $diplomaDisplayName = $settings['custom_canvas_user_display_name'];
         $diplomaCourseName = $settings['custom_canvas_course_name'];
         $logoList = $settings['custom_diploma_logo_list'];
@@ -45,7 +42,7 @@ class DiplomaService
         for ($j = 0; $j < $noOfItems; $j++) {
             $isLastItem = ($j == ($noOfItems-1));
             $item = $items[$j];
-            logger(print_r($item,true));
+
             //It the item is indented and it should not be counted (i.e. normal participant), we should not check completion requirement.
             if ($item->indent && !$bIncludeIndentedItems) {
                 continue;
@@ -87,9 +84,6 @@ class DiplomaService
 
     public function hasDeservedDiploma($settings)
     {
-        logger("hasDeservedDiploma BEGIN");
-        logger($settings);
-
         $courseId = $settings["custom_canvas_course_id"];
         $userId = $settings["custom_canvas_user_id"];
         $canvas_service = new CanvasService();

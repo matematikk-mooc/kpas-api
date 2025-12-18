@@ -7,7 +7,7 @@ class AdminDashboardService
 
     public function getAdminDashboardBlade($settings)
     {
-        logger("getAdminDashboardData");
+        logger("AdminDashboardService::getAdminDashboardBlade");
 
         return view('main.admin-dashboard')->withSettings($settings);
     }

@@ -82,6 +82,8 @@ class SentryTrace {
     }
 
     public static function fileGetContents($url, $useIncludePath = false, $context = null, $offset = 0, $maxLen = null): string {
+        logger("SentryTrace::fileGetContents url=$url");
+
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
 
@@ -154,6 +156,11 @@ class SentryTrace {
     }
     
     public static function guzzleRequest($method, $url, $options = []) {
+        $canvasPingEndpoint = "/api/v1/courses/360";
+        if (!str_contains($url, $canvasPingEndpoint)) {
+            logger("SentryTrace::guzzleRequest url=$url");
+        }
+
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
     
@@ -182,6 +189,16 @@ class SentryTrace {
                 ]);
                 $span->setStatus(SpanStatus::ok());
             }
+
+            /*
+            // Debugging HTTP requests
+            error_log(print_r([
+                'url' => $url,
+                'method' => $method,
+                'status' => $response->getStatusCode(),
+                'date' => date('c')
+            ], true));
+            */
     
             return $response;
         } catch (RequestException $e) {
@@ -227,6 +244,8 @@ class SentryTrace {
     }
 
     public static function graphqlRequest(string $url, string $query, array $variables = [], array $headers = []): ?array {
+        logger("SentryTrace::graphqlRequest url=$url");
+
         $hub = SentrySdk::getCurrentHub();
         $parentSpan = $hub->getSpan();
 
@@ -278,6 +297,16 @@ class SentryTrace {
                     'request.duration_ms' => $duration,
                 ]);
             }
+
+            /*
+            // Debugging HTTP requests
+            error_log(print_r([
+                'url' => $url,
+                'method' => 'POST',
+                'status' => $response->getStatusCode(),
+                'date' => date('c')
+            ], true));
+            */
 
             return $responseData;
         } catch (RequestException $e) {

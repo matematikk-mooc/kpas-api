@@ -37,7 +37,7 @@ class MergeUserController extends Controller
     public function createToken(Request $request)
     {
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
-        logger("Creating token for user $userId");
+        logger("MergeUserController::createToken user_id=$userId");
 
         $codeEntry = CanvasUserMergeToken::firstOrNew([
             'canvas_user_id' => $userId,
@@ -54,7 +54,7 @@ class MergeUserController extends Controller
     public function mergeUser(Request $request)
     {
         $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
-        logger("User $toUserId sent request to merge user");
+        logger("MergeUserController::mergeUser user_id=$toUserId");
 
         $parsedToken = $this->parseToken($request);
         if (is_null($parsedToken)) {
@@ -69,10 +69,11 @@ class MergeUserController extends Controller
         if($this->validateToken($fromUserId, $parsedToken->token)) {
             $this->canvasRepository->mergeUsers($fromUserId, $toUserId);
             CanvasUserMergeToken::destroy($fromUserId);
-            logger("Merged user $fromUserId into $toUserId");
+
+            logger("MergeUserController::mergeUser user_id=$toUserId from_user_id=$fromUserId");
             return response('', 200);
         } else {
-            logger("Got invalid token from $toUserId");
+            logger("MergeUserController::mergeUser user_id=$toUserId from_user_id=$fromUserId error=invalid token");
             return response('Ugyldig kode.', 403);
         }
     }
@@ -80,7 +81,7 @@ class MergeUserController extends Controller
     public function getCourseIntersection(Request $request)
     {
         $toUserId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
-        logger("User $toUserId sent request to get course intersection");
+        logger("MergeUserController::getCourseIntersection user_id=$toUserId");
         $parsedToken = $this->parseToken($request);
 
         if (is_null($parsedToken)) {
@@ -89,7 +90,7 @@ class MergeUserController extends Controller
 
         $fromUserId = $parsedToken->userId;
         if(!$this->validateToken($fromUserId, $parsedToken->token)) {
-            logger("Got invalid token from $toUserId");
+            logger("MergeUserController::getCourseIntersection user_id=$toUserId from_user_id=$fromUserId error=invalid token");
             return response('Ugyldig kode.', 403);
         }
 
@@ -107,13 +108,12 @@ class MergeUserController extends Controller
         $fromCourseIds = array_unique($fromCourseIds);
         $toCourseIds = array_unique($toCourseIds);
 
-        logger("Returning intersection of courses for user $fromUserId and $toUserId");
+        logger("MergeUserController::getCourseIntersection user_id=$toUserId from_user_id=$fromUserId");
         $conflicts = array_values(array_intersect($fromCourseIds, $toCourseIds));
 
         $course_conflicts = array();
         foreach ($conflicts as $conflict) {
             $canvasCourse = $this->canvasRepository->getCourseById($conflict);
-            //logger(print_r($canvasCourse, true));
             $conflictCourse = new KpasCanvasCourse($canvasCourse->id, $canvasCourse->name);
 
             array_push($course_conflicts, $conflictCourse);
@@ -126,7 +126,7 @@ class MergeUserController extends Controller
         $idToken = $request->header('X-merge-token');
 
         if (is_null($idToken)) {
-            logger("Got request missing token from user");
+            logger("MergeUserController::parseToken user_id=$userId error=missing token");
             return null;
         }
 
@@ -134,7 +134,7 @@ class MergeUserController extends Controller
         $fromUserId = $tokenArray[0];
 
         if (!is_numeric($fromUserId)) {
-            logger("Got invalid userId in token '$fromUserId'");
+            logger("MergeUserController::parseToken user_id=$userId error=invalid token");
             return null;
         }
 
@@ -151,14 +151,14 @@ class MergeUserController extends Controller
         $codeEntry = CanvasUserMergeToken::where('canvas_user_id', $userId)->first();
 
         if (is_null($codeEntry)) {
-            logger("No token in DB for $userId");
+            logger("MergeUserController::validateToken user_id=$userId error=no token in DB");
             return false;
         }
 
         $updatedAt = new DateTimeImmutable($codeEntry->updated_at);
         $timestamp = $updatedAt->getTimestamp();
         if ($timestamp < time() - self::CODE_TIMEOUT_SECONDS) {
-            logger("Token out of date for $userId");
+            logger("MergeUserController::validateToken user_id=$userId error=token out of date");
             $codeEntry->delete();
             return false;
         }

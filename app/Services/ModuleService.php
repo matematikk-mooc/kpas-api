@@ -4,6 +4,7 @@ namespace App\Services;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
+
 class ModuleService
 {
     protected $guzzleClient;
@@ -11,7 +12,6 @@ class ModuleService
 
     public function __construct()
     {
-        logger(config('statistics-api.base_url'));
         $this->statisticsBaseUrl = config('statistics-api.base_url');
         $this->guzzleClient = new Client();
     }

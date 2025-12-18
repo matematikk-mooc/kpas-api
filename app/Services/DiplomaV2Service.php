@@ -42,6 +42,7 @@ class DiplomaV2Service {
     }
 
     private function getCourseProgress() {
+        logger("DiplomaV2Service::getCourseProgress user_id=" . $this->userId . " course_id=" . $this->courseId);
         $canvasService = new CanvasService();
 
         $modulesForUser = $canvasService->getModulesForCourse($this->courseId, $this->userId);
@@ -87,20 +88,26 @@ class DiplomaV2Service {
     private function skipValidations() {
         $skipSaveOnRoles = ["TeacherEnrollment", "Udir-Innholdsprodusent", "Udir-forvalter"];
         if (empty(array_intersect($skipSaveOnRoles, $this->courseUserRoles))) return false;
+
+        logger("DiplomaV2Service::skipValidations user_id=" . $this->userId . " course_id=" . $this->courseId . " roles=" . implode(",", $this->courseUserRoles));
         return true;
     }
 
     private function storeDiplomaCompletion() {
+        logger("DiplomaV2Service::storeDiplomaCompletion user_id=" . $this->userId . " course_id=" . $this->courseId);
         Diploma::updateOrCreate(["user_id" => $this->userId], ["course_id" => $this->courseId]);
     }
 
     public function isCourseCompleted() {
         if ($this->skipValidations()) return true;
+
+        logger("DiplomaV2Service::isCourseCompleted user_id=" . $this->userId . " course_id=" . $this->courseId . " total_requirements_completed=" . $this->totalRequirementsCompleted . " total_requirements=" . $this->totalRequirements);
         return $this->totalRequirementsCompleted == $this->totalRequirements;
     }
 
     public function render() {
-        logger("getDiplomaHtml");
+        $is_completed = $this->isCourseCompleted();
+        logger("DiplomaV2Service::render user_id=" . $this->userId . " course_id=" . $this->courseId . " is_completed=" . ($is_completed ? "true" : "false"));
 
         return view('main.diploma-v2')
             ->withUserName($this->userName)
@@ -114,7 +121,7 @@ class DiplomaV2Service {
             ->withTotalRequirementsCompleted($this->totalRequirementsCompleted)
             ->withModules($this->modules)
 
-            ->withIsCourseCompleted($this->isCourseCompleted());
+            ->withIsCourseCompleted($is_completed);
     }
 }
 

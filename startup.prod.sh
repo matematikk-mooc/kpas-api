@@ -17,12 +17,16 @@ sed 's@startup_prod:INJECT_CANVAS_HOST@'"$CANVAS_HOST"'@' /etc/nginx/nginx.conf 
 cp /etc/nginx/nginx.conf.temp /etc/nginx/nginx.conf
 
 echo $0
-echo "Make sure storage folder is writable"
+echo "Make sure storage and bootstrap/cache folders are writable"
 echo "==============="
 
-storageDir="/var/www/html/storage"
-chown -R www-data:www-data $storageDir
-chmod -R u+rw,g+rw $storageDir
+# Ensure cache directory structure exists (in case of volume mounts overwriting)
+mkdir -p /var/www/html/storage/framework/cache/data
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R u+rw,g+rw /var/www/html/storage /var/www/html/bootstrap/cache
 
 echo $0
 echo "Run PHP artisan commands"
@@ -41,6 +45,11 @@ su -s /bin/bash -c "
 echo $0
 echo "Start sshd"
 echo "==============="
+
+# Fix /run/sshd permissions for Azure App Service
+mkdir -p /run/sshd
+chmod 755 /run/sshd
+chown root:root /run/sshd
 /usr/sbin/sshd
 
 echo $0

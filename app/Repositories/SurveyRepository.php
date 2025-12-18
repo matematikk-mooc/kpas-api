@@ -135,7 +135,7 @@ class SurveyRepository
             ['deleted', '=', false]
         ])->first();
         if ($existingSubmission) {
-            logger("User $userID tried to submit survey $surveyId twice");
+            logger("SurveyRepository::createUserSubmission user_id=$userID survey_id=$surveyId error=already submitted");
             throw new SurveyAlreadySubmittedException();
         }
 

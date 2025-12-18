@@ -35,47 +35,25 @@ class GroupController extends Controller
 
     public function index(): SuccessResponse
     {
-        logger("GroupController.index");
-//        $userId = Arr::get(session('settings'), 'custom_canvas_user_id');
         $courseId = Arr::get(session('settings'), 'custom_canvas_course_id');
-        //It is not possible to fetch groups for a user with the token we have.
-        //        $groups = collect($this->canvasRepository->getUserGroups($userId));
-        logger("custom_canvas_course_id:" . $courseId);
+        logger("GroupController::index course_id=" . $courseId);
+
         $categories = collect($this->canvasRepository->getGroupCategories($courseId));
-        logger("Returning categories: " . $categories);
         return new SuccessResponse($categories);
-
-        //Old way below. Note that this endpoint now returns the categories and that the client has to
-        //fetch the users groups and then merge it with the categories. So this method should be renamed from
-        //group to groupcategories or something like that.
-        /*
-        $categorizedGroups = $categories->mapWithKeys(function ($category) use ($groups) {
-            return [$category-> name => $groups->first(function($group) use ($category) {
-                return $group->group_category_id === $category->id;
-            })];
-        });
-        logger('categorizedGroups:' . $categorizedGroups);
-
-        return new SuccessResponse($categorizedGroups);
-        */
     }
 
     public function bulkStore(AddUserToGroupsRequest $request): SuccessResponse
     {
-        logger("bulkStore: " . print_r(session('settings'),true));
         $groups = new Collection();
-
         $county = new GroupDto($request->input('county'));
-        logger("County group:" . print_r($request->input('county'), true));
         $county->setCategoryId($this->getFromSession('custom_county_category_id'));
 
         $community = new GroupDto($request->input('community'));
         $community->setCategoryId($this->getFromSession('custom_community_category_id'));
 
         $groups = $groups->merge([$county, $community]);
-
         $institutionPresent =  $request->has('institution');
-        logger("INSTITUTION present: " . $institutionPresent ? "true" : "false");
+        logger("GroupController::bulkStore has_institution=" . ($institutionPresent ? "true" : "false"));
 
         if($institutionPresent) {
             $institution = new GroupDto($request->input('institution'));
@@ -87,7 +65,6 @@ class GroupController extends Controller
         if ($role === config('canvas.principal_role')) {
             //KURSP-378 temporary fix - customInstitutionLeaderDescription should be used instead in future.
             if($institutionPresent) {
-                logger("Group description: " . $institution->getDescription());
                 if((strpos($institution->getDescription(), 'kindergarten') !== false)) {
                     $role = "Leder";
                 }
@@ -103,23 +80,22 @@ class GroupController extends Controller
         if ($request->has('faculty')) {
             $faculty = $request->get('faculty');
             if($faculty != "") {
-                logger("Request has faculty:" . $request);
                 $courseId = $request->get('courseId');
+                logger("GroupController::bulkStore courseId=" . $courseId . " role=" . $role . " faculty=" . $faculty);
+
                 $faculties = $this->createFacultyGroups($courseId, $county, $community, $faculty);
                 $groups = $groups->merge($faculties);
             }
         }
 
-        logger(print_r($groups, true));
         $groups = $groups->map(function (GroupDto $group) {
-            logger("getOrCreateGroup" . $group->getName());
+            logger("GroupController::bulkStore group_name=" . $group->getName());
             return $this->canvasRepository->getOrCreateGroup($group);
         });
 
         $userId = Arr::get(session()->get('settings'), 'custom_canvas_user_id');
 
         $currentGroups = $request->input('currentGroups');
-        //logger("CurrentGroups" . print_r($currentGroups, true));
         $this->canvasRepository->removeUserFromGroups($userId, $currentGroups);
 
         $groups->each(function (GroupDto $group) use ($userId) {
@@ -129,7 +105,7 @@ class GroupController extends Controller
                 if (!str_contains($th->getMessage(), 'not found')) 
                     throw $th;
 
-                logger("Group of ID " . $group->getId() . " not found while bulk adding user to groups.");
+                logger("GroupController::bulkStore group_id=" . $group->getId() . " error=" . $th->getMessage());
             }
         });
 
@@ -182,7 +158,7 @@ class GroupController extends Controller
 
         $nationalCategoryId = $this->getFromSession('custom_national_faculty_category_id');
         if($nationalCategoryId) {
-            logger("Create national faculty group.");
+            logger("GroupController::createFacultyGroups courseId=" . $courseId . " faculty=" . $faculty . " national_category_id=" . $nationalCategoryId);
             $facultyStripped = $this->getStrippedFacultyName($faculty);
             $nationalFacultyDescription = "faculty:" . $facultyStripped . ":courseId:" . $courseId . ":national" ;
             $nationalFacultyArray = array("Name"=>$faculty, "Description"=>$nationalFacultyDescription);
