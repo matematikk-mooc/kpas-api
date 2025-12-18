@@ -344,7 +344,7 @@ class CanvasService
     public function getAllAccountCourses($accountId)
     {
         $url = "accounts/{$accountId}/courses";
-        $data = ['public' => true, 'published' => true, 'include[]' => 'course_image', 'page' => 1, 'per_page' => 100];
+        $data = ['public' => 'true', 'published' => 'true', 'include[]' => 'course_image', 'page' => 1, 'per_page' => 100];
 
         return $this->request($url, 'GET', $data, [], true);
     }
@@ -352,7 +352,7 @@ class CanvasService
     public function getAllPublishedCourses()
     {
         $url = "search/all_courses";
-        $data = ['open_enrollment_only' => true, 'page' => 1, 'per_page' => 999];
+        $data = ['open_enrollment_only' => 'true', 'page' => 1, 'per_page' => 999];
 
         return $this->request($url, 'GET', $data, [], true, true);
     }
@@ -371,7 +371,7 @@ class CanvasService
     {
         $url = "courses/$courseId/discussion_topics";
         $data = ['page' => 1, 'per_page' => 100,
-                 'only_announcements' => true, 'no_avatar_fallback' => '1'];
+                 'only_announcements' => 'true', 'no_avatar_fallback' => '1'];
         return $this->request($url, 'GET', $data, [], true);
     }
 
