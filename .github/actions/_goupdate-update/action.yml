@@ -20,6 +20,14 @@ inputs:
     description: 'System test run mode: after_each, after_all, or none'
     required: false
     default: ''
+  skip-preflight:
+    description: 'Skip pre-flight system tests (run before updates)'
+    required: false
+    default: 'false'
+  skip-system-tests:
+    description: 'Skip all system tests (preflight and validation)'
+    required: false
+    default: 'false'
   verbose:
     description: 'Enable verbose output'
     required: false
@@ -55,6 +63,8 @@ runs:
       env:
         UPDATE_TYPE: ${{ inputs.update-type }}
         SYSTEM_TEST_MODE: ${{ inputs.system-test-mode }}
+        SKIP_PREFLIGHT: ${{ inputs.skip-preflight }}
+        SKIP_SYSTEM_TESTS: ${{ inputs.skip-system-tests }}
         VERBOSE: ${{ inputs.verbose }}
       run: |
         # Build update type flag
@@ -66,10 +76,16 @@ runs:
           none)  UPDATE_FLAG="" ;;
         esac
 
-        # Build system test flag
+        # Build system test flags
         TEST_FLAG=""
         if [[ -n "$SYSTEM_TEST_MODE" ]]; then
           TEST_FLAG="--system-test-mode=$SYSTEM_TEST_MODE"
+        fi
+        if [[ "$SKIP_PREFLIGHT" == "true" ]]; then
+          TEST_FLAG="$TEST_FLAG --skip-preflight"
+        fi
+        if [[ "$SKIP_SYSTEM_TESTS" == "true" ]]; then
+          TEST_FLAG="$TEST_FLAG --skip-system-tests"
         fi
 
         # Build verbose flag
