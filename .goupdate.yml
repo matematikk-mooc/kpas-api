@@ -1,0 +1,91 @@
+# kpas-api - goupdate configuration
+# Example: Laravel PHP API with Vue.js frontend assets
+#
+# Based on matematikk-mooc/kpas-api project structure
+# This project uses Composer (PHP) and npm (Node.js) package managers
+
+extends: [default]
+
+rules:
+  # PHP/Composer dependencies
+  # Some packages need --with-all-dependencies (-W) flag to update transitive dependencies
+  # This is required when composer.lock has sub-dependencies that need updating together
+  composer:
+    groups:
+      # Laravel core packages that must be updated together due to version constraints
+      # collision requires specific laravel/framework versions, so they must update atomically
+      laravel-core:
+        with_all_dependencies: true
+        packages:
+          - laravel/framework
+          - nunomaduro/collision
+
+    packages:
+      guzzlehttp/guzzle:
+        with_all_dependencies: true
+
+      # Dev dependencies with complex sub-dependencies
+      barryvdh/laravel-debugbar:
+        with_all_dependencies: true
+
+      # Packages with complex transitive dependencies that require -W flag
+      sentry/sentry-laravel:
+        with_all_dependencies: true
+      intervention/image:
+        with_all_dependencies: true
+      maatwebsite/excel:
+        with_all_dependencies: true
+      phpoffice/phpspreadsheet:
+        with_all_dependencies: true
+      spatie/laravel-medialibrary:
+        with_all_dependencies: true
+
+  # Node.js/npm dependencies (frontend assets)
+  npm:
+    groups:
+      # Vite ecosystem - plugin depends on vite
+      vite:
+        - vite
+        - laravel-vite-plugin
+        - "@vitejs/plugin-vue"
+
+# System tests to verify build after updates
+# Note: This is a config-only example - copy to your actual Laravel project
+system_tests:
+  run_preflight: true
+  run_mode: after_each
+  stop_on_fail: true
+  tests:
+    # Install and validate PHP dependencies
+    # --no-scripts: Skip post-install hooks (artisan package:discover) that require
+    # full Laravel environment setup (.env, database, etc.) - not needed for
+    # dependency verification
+    - name: composer
+      commands: |
+        composer install --no-interaction --prefer-dist --no-scripts
+      timeout_seconds: 300
+
+    # Install and build frontend assets
+    # --ignore-scripts: Skip postinstall hooks that may require environment setup
+    - name: npm-build
+      commands: |
+        npm install --ignore-scripts
+        npm run build
+      timeout_seconds: 300
+
+    # Start server and verify HTTP 200 response (uncomment when using with actual project)
+    # - name: http-test
+    #   commands: |
+    #     # Start Laravel dev server in background
+    #     php artisan serve --port=8766 &
+    #     SERVER_PID=$!
+    #     sleep 3
+    #     # Check HTTP 200 status and response content
+    #     STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8766/api/health)
+    #     BODY=$(curl -s http://localhost:8766/api/health)
+    #     kill $SERVER_PID 2>/dev/null || true
+    #     # Verify status is 2xx and response contains expected content
+    #     [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 300 ] || { echo "HTTP status $STATUS != 2xx"; exit 1; }
+    #     echo "$BODY" | grep -q '"status"' || { echo "Response missing status field"; exit 1; }
+    #     echo "HTTP test passed! Status: $STATUS"
+    #   timeout_seconds: 60
