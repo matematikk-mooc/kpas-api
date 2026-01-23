@@ -18,7 +18,9 @@
 
       <div>
         <div v-if="faculties?.length">
-          <h2>2. Velg fakultet</h2>
+          <h2>
+            {{ specialId.includes(courseId) ? '2. Velg utdanningsprogram' : '2. Velg fakultet' }}
+          </h2>
           <div v-if="groupError" class="alert alert-danger">{{ groupError }}</div>
 
           <faculty-selector :faculties="faculties" :selectedFaculty="selectedFaculty" @updateSelectedFaculty="updateSelectedFaculty" />
@@ -27,7 +29,9 @@
         </div>
 
         <div v-if="!faculties?.length || isFacultySelected">
-          <h2>{{ faculties?.length ? "3" : "2" }}. Velg grupper</h2>
+          <h2>
+            {{ faculties?.length ? "3" : "2" }}. {{ specialId.includes(courseId) ? "Velg fylke og kommune" : "Velg grupper"}} 
+          </h2>
 
           <div v-if="preKommunereform2024">
             <Message type="warn">
@@ -153,6 +157,9 @@
 
         roleError: '',
         groupError: '',
+        
+        // Packages with different translations than the standard.
+        specialId: [526, 556, 619]
       }
     },
 
