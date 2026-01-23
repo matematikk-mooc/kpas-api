@@ -15,7 +15,7 @@
         <label for="radioSkoleleder" class="role-label">{{ leaderDescription }}</label>
       </span>
 
-      <p>Velg denne rollen dersom du skal ha tilgang til prossesstøtte for gjennomføring av kompetansepakken.</p>
+      <p>Velg denne rollen dersom du skal ha tilgang til prosesstøtte for gjennomføring av kompetansepakken.</p>
     </Message>
   </div>
 </template>
