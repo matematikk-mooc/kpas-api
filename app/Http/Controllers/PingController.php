@@ -41,7 +41,7 @@ class PingController extends Controller
         }
 
         try {
-            $courses = $this->canvasService->getCourseData(360);
+            // $courses = $this->canvasService->getCourseData(360);
             $connectionData["integrations"]["canvas"] = true;
         } catch (\Throwable $th) {
             \Sentry\captureException($th);
