@@ -76,16 +76,12 @@ class CanvasDbRepository extends CanvasRepository
     {
         $query = Group::query();
 
-
-
         foreach ($data as $key => $datum) {
             $snakeKey = Str::snake($key);
             if (in_array($snakeKey, $this->searchablecolumns)) {
                 $query->where($snakeKey, $datum);
             }
         }
-
-        logger("CanvasDbRepository::findByArray query=" . $query->toSql() . " bindings=" . print_r($query->getBindings(), true));
 
         return $query->first();
     }
