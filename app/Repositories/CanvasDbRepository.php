@@ -30,6 +30,19 @@ class CanvasDbRepository extends CanvasRepository
     {
         logger("CanvasDbRepository::getOrCreateGroup category=" . $groupDto->getCategoryId());
         if ($group = $this->findGroupId($groupDto)) {
+            if (env('APP_ENV') !== 'production') {
+                $canvasGroups = $this->canvasService->getGroups($groupDto->getCategoryId());
+                $matchingCanvasGroup = collect($canvasGroups)->first(function ($canvasGroup) use ($group) {
+                    return $canvasGroup->description === $group->getDescription();
+                });
+
+                if ($matchingCanvasGroup && $matchingCanvasGroup->id != $group->getId()) {   
+                    logger("CanvasDbRepository::getOrCreateGroup updating canvas_id from " . $group->getId() . " to " . $matchingCanvasGroup->id . " for description=" . $group->getDescription());                 
+                    Group::where('id', $group->getId())->update(['canvas_id' => $matchingCanvasGroup->id]);
+                    $group->setId($matchingCanvasGroup->id);
+                }
+            }
+
             return $group;
         }
 
@@ -69,6 +82,7 @@ class CanvasDbRepository extends CanvasRepository
                 $query->where($snakeKey, $datum);
             }
         }
+
         return $query->first();
     }
 }
