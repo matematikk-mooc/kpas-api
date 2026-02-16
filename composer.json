@@ -21,7 +21,7 @@
     "highsolutions/laravel-environments": "*",
     "imsglobal/lti-1p3-tool": "dev-master",
     "laravel/framework": "v11.48.0",
-    "laravel/tinker": "^v2.11.0",
+    "laravel/tinker": "^v2.11.1",
     "league/oauth2-client": "^2.9.0",
     "mantas-done/subtitles": "^1.0.22",
     "nesbot/carbon": "^3.11.1",
