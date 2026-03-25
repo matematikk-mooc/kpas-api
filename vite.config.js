@@ -29,9 +29,9 @@ export default defineConfig({
         silenceDeprecations: [
           "import",
           "legacy-js-api",
-          "mixed-decls",
           "color-functions",
           "global-builtin",
+          "if-function",
         ],
       },
     },

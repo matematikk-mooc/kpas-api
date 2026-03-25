@@ -1,5 +1,5 @@
 # COMPOSER INSTALL
-FROM composer:2.7 AS composerBuild
+FROM composer:2 AS composerBuild
 COPY . /var/www/html
 WORKDIR /var/www/html
 RUN composer install \
@@ -9,7 +9,7 @@ RUN composer install \
     --optimize-autoloader
 
 # NPM INSTALL + COMPILE ASSETS
-FROM node:20.17-alpine3.19 AS nodeBuild
+FROM node:24-alpine AS nodeBuild
 COPY --from=composerBuild /var/www/html /var/www/html
 WORKDIR /var/www/html
 RUN npm install

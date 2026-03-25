@@ -18,20 +18,20 @@
         "dompdf/dompdf": "^3.1.0",
         "easyrdf/easyrdf": "^1.1",
         "guzzlehttp/guzzle": "^7.8",
-        "highsolutions/laravel-environments": "*",
+        "highsolutions/laravel-environments": "^3.6",
         "imsglobal/lti-1p3-tool": "dev-master",
-        "laravel/framework": "11.41.3",
+        "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "league/oauth2-client": "^2.7",
         "mantas-done/subtitles": "^1.0.22",
         "nesbot/carbon": "^3.8.4",
         "sentry/sentry-laravel": "^4.12.0",
         "spatie/laravel-data": "^4.13.0",
-        "spatie/laravel-ignition": "^2.8",
         "symfony/polyfill-iconv": "^1.30",
         "vimeo/laravel": "^5.9"
     },
     "require-dev": {
+        "spatie/laravel-ignition": "^2.8",
         "barryvdh/laravel-debugbar": "^3.13",
         "beyondcode/laravel-dump-server": "^2.0",
         "filp/whoops": "^2.17.0",
@@ -41,7 +41,14 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "audit": {
+            "abandoned": "report",
+            "ignore": {
+                "PKSA-y2cr-5h3j-g3ys": "firebase/php-jwt v6 required by LTI library"
+            },
+            "block-insecure": false
+        }
     },
     "extra": {
         "laravel": {

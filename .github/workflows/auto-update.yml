@@ -28,21 +28,21 @@ name: GoUpdate - Auto Update
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # Weekly on Monday
+    - cron: "0 0 * * 1" # Weekly on Monday
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Operation mode'
+        description: "Operation mode"
         required: true
-        default: 'update'
+        default: "update"
         type: choice
         options:
           - check-only
           - update
       update-type:
-        description: 'Dependency update type'
+        description: "Dependency update type"
         required: false
-        default: 'minor'
+        default: "minor"
         type: choice
         options:
           - minor
@@ -56,27 +56,27 @@ concurrency:
 # CONFIGURATION - Modify for your project
 # ============================================================================
 env:
-  GOUPDATE_REPO: 'ajxudir/goupdate'
+  GOUPDATE_REPO: "ajxudir/goupdate"
 
   # Branches
-  DEFAULT_BRANCH: 'main'
-  BRANCH_PREFIX: 'goupdate'
-  UPDATE_TARGET_BRANCH: 'stage-updates'
+  DEFAULT_BRANCH: "main"
+  BRANCH_PREFIX: "goupdate"
+  UPDATE_TARGET_BRANCH: "stage-updates"
 
   # Auto-merge
-  AUTO_MERGE_UPDATES: 'true'
+  AUTO_MERGE_UPDATES: "true"
 
   # Runtime Versions (used when package managers are detected)
-  NODE_VERSION: '20'
-  PHP_VERSION: '8.2'
-  PYTHON_VERSION: '3.12'
-  GO_VERSION: '1.24'
-  DOTNET_VERSION: '8.0'
+  NODE_VERSION: "24"
+  PHP_VERSION: "8.3"
+  PYTHON_VERSION: "3.12"
+  GO_VERSION: "1.24"
+  DOTNET_VERSION: "8.0"
 
   # PR title template - use {date} for current date, {type} for update type (minor/patch)
-  PR_TITLE: 'GoUpdate: Auto update - {type} ({date})'
+  PR_TITLE: "GoUpdate: Auto update - {type} ({date})"
   # Commit message template - supports {date} and {type} placeholders
-  COMMIT_MESSAGE: 'GoUpdate: Auto update - {type} ({date})'
+  COMMIT_MESSAGE: "GoUpdate: Auto update - {type} ({date})"
 
 permissions:
   contents: write
@@ -123,7 +123,7 @@ jobs:
           fi
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ env.DEFAULT_BRANCH }}
 
@@ -236,7 +236,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ env.DEFAULT_BRANCH }}
           fetch-depth: 0
@@ -246,8 +246,8 @@ jobs:
         with:
           branch: ${{ env.UPDATE_TARGET_BRANCH }}
           base: ${{ env.DEFAULT_BRANCH }}
-          create-if-missing: 'true'
-          push: 'true'
+          create-if-missing: "true"
+          push: "true"
 
       # Setup runtimes based on scan results
       - name: Setup runtimes
@@ -323,7 +323,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ env.DEFAULT_BRANCH }}
           fetch-depth: 0
@@ -333,8 +333,8 @@ jobs:
         with:
           branch: ${{ env.UPDATE_TARGET_BRANCH }}
           base: ${{ env.DEFAULT_BRANCH }}
-          create-if-missing: 'true'
-          push: 'true'
+          create-if-missing: "true"
+          push: "true"
 
       # Setup runtimes based on scan results
       - name: Setup runtimes
@@ -358,8 +358,8 @@ jobs:
         with:
           branch: ${{ needs.prepare.outputs.update-branch-name }}
           base: ${{ env.UPDATE_TARGET_BRANCH }}
-          delete-remote: 'true'
-          push: 'false'
+          delete-remote: "true"
+          push: "false"
 
       - name: Install goupdate
         uses: ./.github/actions/_goupdate-install
@@ -416,7 +416,7 @@ jobs:
       - name: Generate GitHub App token
         id: app-token
         if: steps.goupdate.outputs.has-changes == 'true'
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.GOUPDATE_APP_ID }}
           private-key: ${{ secrets.GOUPDATE_APP_PRIVATE_KEY }}
@@ -450,9 +450,9 @@ jobs:
           body: ${{ steps.pr-body.outputs.body }}
           base: ${{ env.UPDATE_TARGET_BRANCH }}
           head: ${{ needs.prepare.outputs.update-branch-name }}
-          auto-merge: 'false'
-          merge-method: 'squash'
-          delete-branch: 'false'
+          auto-merge: "false"
+          merge-method: "squash"
+          delete-branch: "false"
 
       - name: Generate job summary
         if: steps.goupdate.outputs.has-changes == 'true'
@@ -493,11 +493,11 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Generate GitHub App token
         id: app-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.GOUPDATE_APP_ID }}
           private-key: ${{ secrets.GOUPDATE_APP_PRIVATE_KEY }}
