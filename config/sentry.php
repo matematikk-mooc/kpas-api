@@ -3,7 +3,9 @@ $appEnv = env('APP_ENV', 'development');
 $appVersion = env('APP_VERSION', '1.0.0-dev');
 $sentryDSN = env('SENTRY_LARAVEL_DSN', env('SENTRY_DSN', ''));
 
-if (!$appEnv != 'local' && $sentryDSN != '') {
+$isDev = $appEnv === 'local' || $appEnv === 'development';
+
+if (!$isDev && $sentryDSN != '') {
     $sentryDSN = 'https://a01959126b295c4c067f7943636a04d3@o4507468577701888.ingest.de.sentry.io/4508453628084304';
 }
 
