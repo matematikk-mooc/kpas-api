@@ -48,6 +48,9 @@
                 "PKSA-y2cr-5h3j-g3ys": "firebase/php-jwt v6 required by LTI library"
             },
             "block-insecure": false
+        },
+        "platform": {
+            "php": "8.3"
         }
     },
     "extra": {
