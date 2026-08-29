@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('deleted')->default(false);
 
             $table->foreign('survey_id')->references('id')->on('surveys');
-            $table->foreign('user_id')->references('canvas_user_id')->on('join_canvas_group_users');
+						//$table->foreign('user_id')->references('canvas_user_id')->on('join_canvas_group_users');
         });
     }
 

@@ -111,6 +111,12 @@ chmod -R u+rw,g+rw $jwtTemplatesOutputDir
 
 echo -e "\n\n\n[7/8] Run artisan commands"
 echo -e "##############################################################\n"
+storageDir="/var/www/html/storage"
+cacheDir="/var/www/html/bootstrap/cache"
+mkdir -p $cacheDir
+chown -R 1000:1000 $storageDir $cacheDir
+chmod -R u+rw,g+rw $storageDir $cacheDir
+
 su -s /bin/bash -c "
     php artisan cache:clear &&
     php artisan route:clear &&
@@ -120,9 +126,8 @@ su -s /bin/bash -c "
     php artisan view:cache &&
     php artisan migrate --force
 " www-data
-storageDir="/var/www/html/storage"
-chown -R 1000:1000 $storageDir
-chmod -R u+rw,g+rw $storageDir
+chown -R 1000:1000 $storageDir $cacheDir
+chmod -R u+rw,g+rw $storageDir $cacheDir
 
 echo -e "\n\n\n[8/8] Start Supervisor"
 echo -e "##############################################################\n"
