@@ -18,9 +18,9 @@ return new class extends Migration
             $table->dropForeign(['course_id']);
         });
 
-        Schema::table('survey_submissions', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-        });
+				//Schema::table('survey_submissions', function (Blueprint $table) {
+        //    $table->dropForeign(['user_id']);
+        //});
     }
 
     /**
@@ -35,8 +35,8 @@ return new class extends Migration
             $table->foreign('course_id')->references('canvas_id')->on('canvas_courses');
         });
 
-        Schema::table('survey_submissions', function (Blueprint $table) {
-            $table->foreign('user_id')->references('canvas_user_id')->on('join_canvas_group_users');
-        });
+				//Schema::table('survey_submissions', function (Blueprint $table) {
+        //    $table->foreign('user_id')->references('canvas_user_id')->on('join_canvas_group_users');
+        //});
     }
 };

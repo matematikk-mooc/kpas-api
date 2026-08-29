@@ -15,7 +15,8 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('canvas_id')->index();
+						//$table->unsignedInteger('canvas_id')->index();
+            $table->unsignedInteger('canvas_id')->unique();
             $table->unsignedInteger('category_id')->index();
             $table->string('name');
             $table->string('description');
