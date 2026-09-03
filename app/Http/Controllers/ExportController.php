@@ -135,7 +135,7 @@ class ExportController extends Controller {
         return new SuccessResponse($returnObject);
     }
 
-    private function getLanguages(string $languageSetting): array {
+    private function getLanguages($languageSetting): array {
         $languages = ["nb"];
         if ($languageSetting == "ALL") {
             $languages = ["nb", "nn", "se"];
