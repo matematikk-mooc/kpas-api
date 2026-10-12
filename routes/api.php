@@ -146,6 +146,7 @@ Route::put('settings/highlighted', 'CourseSettingsController@updateHighlightedCo
 Route::get('settings/highlighted', 'CourseSettingsController@getHighLightedCourse');
 Route::get('courses/settings', 'CourseSettingsController@getCourseSettingsForAllCourses');
 
+Route::get('files/{fileId}', 'CanvasController@getFile');
 Route::get('course/{courseId}/moduletitles', 'CanvasController@getModuleTitles');
 Route::get('course/{courseId}/modules/{moduleId}/items', 'CanvasController@getCourseModuleItems');
 Route::get('course/{courseId}/frontpage', 'CanvasController@getCourseFrontPage')->middleware('lti');
