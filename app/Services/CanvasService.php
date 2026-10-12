@@ -782,4 +782,11 @@ class CanvasService
 
         return $this->request($url, 'POST');
     }
+
+    public function getFile(int $fileId)
+    {
+        $url = "files/{$fileId}";
+
+        return $this->request($url);
+    }
 }
