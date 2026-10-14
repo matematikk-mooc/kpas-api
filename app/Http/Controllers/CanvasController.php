@@ -82,4 +82,16 @@ class CanvasController extends Controller
         $links = $this->canvasService->postLinksValidationForCourse($courseId);
         return new SuccessResponse($links);
     }
+
+    public function getFile($fileId)
+    {
+        if (!is_numeric($fileId) || (int) $fileId <= 0) {
+            return new ErrorResponse("Ugyldig fil-ID", 400);
+        }
+
+        $idAsInt = (int) $fileId;
+
+        $file = $this->canvasService->getFile($idAsInt);
+        return new SuccessResponse($file);
+    }
 }
