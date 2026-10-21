@@ -125,5 +125,4 @@ Maintaining a Laravel project with a Vue.js frontend involves regular updates to
 ### NPM Packages
 
 1. **Update Packages**: Regularly run `npm update` to fetch the latest versions of dependencies. Use `npm outdated` to check for available updates.
-
 1. **Security Audits**: Perform security audits using `npm audit` to identify and resolve potential vulnerabilities.
