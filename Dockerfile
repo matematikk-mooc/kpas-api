@@ -6,7 +6,8 @@ RUN composer install \
     --no-dev \
     --prefer-dist \
     --no-interaction \
-    --optimize-autoloader
+    --optimize-autoloader \
+    --ignore-platform-req=ext-gd
 
 # NPM INSTALL + COMPILE ASSETS
 FROM node:22-alpine AS nodeBuild
