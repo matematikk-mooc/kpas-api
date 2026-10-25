@@ -26,6 +26,16 @@ Route::post('/worker', 'WorkerController@store')->name('worker.store');
 Route::get('/worker', 'WorkerController@index')->name('worker.index');
 Route::get('/quiz', 'MainController@quiz')->name('main.quiz');
 
+Route::get('/om-kompetanseportalen', function () {
+    return response()->file(public_path('om-kompetanseportalen/index.html'));
+});
+Route::get('/kontakt', function () {
+    return response()->file(public_path('kontakt/index.html'));
+});
+Route::get('/personvern', function () {
+    return response()->file(public_path('personvern/index.html'));
+});
+
 Route::fallback(function ()
 {
     return response()->view('errors.illustrated-layout');

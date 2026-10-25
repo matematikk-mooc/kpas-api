@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2e3c51">
+  <title>Kontakt | Kompetanseportalen - Udir</title>
+  <link rel="stylesheet" href="/css/info-page.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body data-page="contact">
+  <a href="#main-content" id="skip-link" class="skip-link">Hopp til hovedinnhold</a>
+
+  <header class="header--nav-container" role="banner">
+    <div class="header__content">
+      <a href="https://bibsys.instructure.com/search/all_courses?design=udir" id="brand-link" class="header-brand" aria-label="Kompetanseportalen - Forside">
+        Kompetanseportalen
+      </a>
+
+      <div class="header__actions">
+        <div class="lang-selector">
+          <button type="button" class="lang-btn" id="lang-toggle-btn" aria-haspopup="true" aria-expanded="false" aria-label="Velg språk">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span id="lang-btn-text">NB</span>
+          </button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button type="button" id="lang-opt-nb" role="menuitem" class="active">Bokmål (NB)</button></li>
+            <li><button type="button" id="lang-opt-nn" role="menuitem">Nynorsk (NN)</button></li>
+          </ul>
+        </div>
+
+        <div class="login-container">
+          <button type="button" class="login-btn" id="login-btn" aria-haspopup="true" aria-expanded="false">
+            Logg inn
+          </button>
+          <div class="login-dropdown" id="login-dropdown" role="menu">
+            <div class="login-notice" id="login-obs-text">
+              <b>OBS!</b> Vennligst benytt "Meld deg på" dersom du skal registrere ny bruker.
+            </div>
+            <ul class="login-links">
+              <li>
+                <a href="https://bibsys.instructure.com/login/saml/2">
+                  <span>Feide</span>
+                  <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href="https://bibsys.instructure.com/login/canvas">
+                  <span>Canvas</span>
+                  <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="breadcrumbs-bar" role="navigation" aria-label="Brødsmulesti">
+    <div class="breadcrumbs-inner">
+      <span class="breadcrumbs-label" id="bc-here">Du er her:</span>
+      <a href="https://bibsys.instructure.com/search/all_courses?design=udir" id="bc-home">Forside</a>
+      <span class="breadcrumbs-separator" aria-hidden="true">&gt;</span>
+      <span class="breadcrumbs-current" id="bc-current" aria-current="page">Kontakt</span>
+    </div>
+  </div>
+
+  <main id="main-content" class="main-wrapper" role="main" tabindex="-1">
+    <article class="article-container">
+      <header class="article-header">
+        <h1 class="article-title" id="page-title">Kontakt</h1>
+        <p class="article-lead" id="page-lead">Velkommen til Kompetanseportalen - en plattform utviklet av Utdanningsdirektoratet i samarbeid med flere universiteter og høgskoler.</p>
+      </header>
+      <div id="alert-container"></div>
+      <div class="article-body" id="article-dynamic-body">
+        <p>Vi tilbyr gratis nettbaserte kompetansepakker for ansatte i barnehager, skoler og fagopplæring, med mål om å støtte faglig utvikling og praksisrefleksjon.</p>
+        <p>Plattformen vår er designet for å gi brukerne enkel tilgang til videre- og etterutdanning, enten individuelt eller i grupper. Vi streber etter å tilby den beste opplevelsen for brukerne våre og er her for å hjelpe deg.</p>
+        <h2>Ofte stilte spørsmål (FAQ)</h2>
+        <div class="accordion" id="contact-faq-accordion" role="region" aria-label="Ofte stilte spørsmål (FAQ)">
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button type="button" class="accordion-trigger" id="acc-header-0" aria-expanded="false" aria-controls="acc-panel-0">
+                <span class="accordion-icon-wrapper" aria-hidden="true">
+                  <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+                <span class="accordion-header-title">Hvordan registrerer jeg meg på kompetanse.udir.no?</span>
+              </button>
+            </h3>
+            <div class="accordion-panel" id="acc-panel-0" role="region" aria-labelledby="acc-header-0">
+              <div class="accordion-content">
+                <p>Du kan registrere deg på plattformen ved å bruke Feide-pålogging eller ved å registrere deg manuelt med navn og e-postadresse. For manuell registrering, meld deg på en kompetansepakke og følg instruksjonene for å opprette en brukerkonto.</p>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button type="button" class="accordion-trigger" id="acc-header-1" aria-expanded="false" aria-controls="acc-panel-1">
+                <span class="accordion-icon-wrapper" aria-hidden="true">
+                  <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+                <span class="accordion-header-title">Jeg har registrert meg men får ikke logget inn. Hva gjør jeg?</span>
+              </button>
+            </h3>
+            <div class="accordion-panel" id="acc-panel-1" role="region" aria-labelledby="acc-header-1">
+              <div class="accordion-content">
+                <p>For å logge inn her må du være påmeldt minst en kompetansepakke.</p>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button type="button" class="accordion-trigger" id="acc-header-2" aria-expanded="false" aria-controls="acc-panel-2">
+                <span class="accordion-icon-wrapper" aria-hidden="true">
+                  <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+                <span class="accordion-header-title">Hvordan kan jeg få tilgang til kompetansepakkene?</span>
+              </button>
+            </h3>
+            <div class="accordion-panel" id="acc-panel-2" role="region" aria-labelledby="acc-header-2">
+              <div class="accordion-content">
+                <p>Når du er registrert og innlogget på plattformen, kan du utforske og melde deg på de ulike kompetansepakkene fra hovedmenyen. Alle pakkene er gratis og tilgjengelige for alle registrerte brukere.</p>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button type="button" class="accordion-trigger" id="acc-header-3" aria-expanded="false" aria-controls="acc-panel-3">
+                <span class="accordion-icon-wrapper" aria-hidden="true">
+                  <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+                <span class="accordion-header-title">Hvordan kan jeg slette kontoen min?</span>
+              </button>
+            </h3>
+            <div class="accordion-panel" id="acc-panel-3" role="region" aria-labelledby="acc-header-3">
+              <div class="accordion-content">
+                <p>Du kan når som helst slette brukerkontoen din ved å gå inn på innstillinger oppe til høyre og velge undermenyen «Brukersletting». Dette starter en prosess der du må verifisere en kode sendt på e-post og har en angrefrist på en måned før brukerdataen permanent slettes. Merk at dette vil fjerne all tilknyttet informasjon og fremdrift på plattformen.</p>
+                <p>Du kan også kontakte vår brukerstøtte på <a href="mailto:kompetansesupport@udir.no">kompetansesupport@udir.no</a> for hjelp til sletting av kontoen din.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h2>Kontaktinformasjon</h2>
+        <p>Hvis du ikke finner svar på spørsmålet ditt i FAQ-seksjonen, er vi her for å hjelpe deg. For spørsmål om plattformen, registrering eller teknisk støtte, vennligst kontakt oss på <a href="mailto:kompetansesupport@udir.no">kompetansesupport@udir.no</a>.</p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-content">
+      <a href="https://www.udir.no/" target="_blank" rel="noopener noreferrer" class="footer-logo-link" aria-label="Utdanningsdirektoratet">
+        <img src="/images/logo-white.png" alt="Utdanningsdirektoratet" class="footer-logo">
+      </a>
+      <p class="footer-title" id="footer-delivered">Kompetansepakker er levert av Utdanningsdirektoratet</p>
+      <ul class="footer-links">
+        <li><a href="/om-kompetanseportalen/" id="footer-link-about">Om kompetansepakker</a></li>
+        <li class="footer-divider" aria-hidden="true"></li>
+        <li><a href="/kontakt/" id="footer-link-contact">Kontakt</a></li>
+        <li class="footer-divider" aria-hidden="true"></li>
+        <li><a href="/personvern/" id="footer-link-privacy">Personvernerklæring</a></li>
+      </ul>
+      <div class="footer-accessibility">
+        <span id="footer-a11y-label">Tilgjengelighetserklæring på</span>
+        <a href="https://uustatus.no/nb/erklaringer/publisert/2796ebc6-161f-4dc9-9429-70d7dd136431" target="_blank" rel="noopener noreferrer">Bokmål</a>
+        <span aria-hidden="true">|</span>
+        <a href="https://uustatus.no/nn/erklaringer/publisert/2796ebc6-161f-4dc9-9429-70d7dd136431" target="_blank" rel="noopener noreferrer">Nynorsk</a>
+      </div>
+      <button type="button" class="scroll-top-btn" id="scroll-top-btn" aria-label="Rull til toppen av siden">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="18 15 12 9 6 15"/>
+        </svg>
+        <span id="scroll-top-btn-text">Til toppen</span>
+      </button>
+    </div>
+  </footer>
+
+  <script src="/js/info-page.js"></script>
+</body>
+</html>
