@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2e3c51">
+  <title>Personvernerklæring | Kompetanseportalen - Udir</title>
+  <link rel="stylesheet" href="/css/info-page.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body data-page="privacy">
+  <a href="#main-content" id="skip-link" class="skip-link">Hopp til hovedinnhold</a>
+
+  <header class="header--nav-container" role="banner">
+    <div class="header__content">
+      <a href="https://bibsys.instructure.com/search/all_courses?design=udir" id="brand-link" class="header-brand" aria-label="Kompetanseportalen - Forside">
+        Kompetanseportalen
+      </a>
+
+      <div class="header__actions">
+        <div class="lang-selector">
+          <button type="button" class="lang-btn" id="lang-toggle-btn" aria-haspopup="true" aria-expanded="false" aria-label="Velg språk">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            <span id="lang-btn-text">NB</span>
+          </button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button type="button" id="lang-opt-nb" role="menuitem" class="active">Bokmål (NB)</button></li>
+            <li><button type="button" id="lang-opt-nn" role="menuitem">Nynorsk (NN)</button></li>
+          </ul>
+        </div>
+
+        <div class="login-container">
+          <button type="button" class="login-btn" id="login-btn" aria-haspopup="true" aria-expanded="false">
+            Logg inn
+          </button>
+          <div class="login-dropdown" id="login-dropdown" role="menu">
+            <div class="login-notice" id="login-obs-text">
+              <b>OBS!</b> Vennligst benytt "Meld deg på" dersom du skal registrere ny bruker.
+            </div>
+            <ul class="login-links">
+              <li>
+                <a href="https://bibsys.instructure.com/login/saml/2">
+                  <span>Feide</span>
+                  <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a href="https://bibsys.instructure.com/login/canvas">
+                  <span>Canvas</span>
+                  <svg class="icon-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="breadcrumbs-bar" role="navigation" aria-label="Brødsmulesti">
+    <div class="breadcrumbs-inner">
+      <span class="breadcrumbs-label" id="bc-here">Du er her:</span>
+      <a href="https://bibsys.instructure.com/search/all_courses?design=udir" id="bc-home">Forside</a>
+      <span class="breadcrumbs-separator" aria-hidden="true">&gt;</span>
+      <span class="breadcrumbs-current" id="bc-current" aria-current="page">Personvern</span>
+    </div>
+  </div>
+
+  <main id="main-content" class="main-wrapper" role="main" tabindex="-1">
+    <article class="article-container">
+      <header class="article-header">
+        <h1 class="article-title" id="page-title">Personvernerklæring</h1>
+        <p class="article-lead" id="page-lead">Her finner du informasjon om hvordan personopplysningene dine behandles når du bruker Kompetanseportalen.</p>
+      </header>
+      <div id="alert-container"></div>
+      <div class="article-body" id="article-dynamic-body">
+        <p>Kompetanseportalen bruker informasjonskapsler for å forbedre brukeropplevelsen, blant annet ved å huske språket du har valgt. De fleste nettlesere aksepterer automatisk informasjonskapsler, men du kan selv endre innstillingene for å blokkere eller tillate dem.</p>
+        <h2>Vanlige spørsmål om behandling av personopplysninger</h2>
+        <div class="accordion" id="privacy-faq-accordion" role="region" aria-label="Vanlige spørsmål om behandling av personopplysninger">
+          <!-- Accordion items loaded dynamically based on NB / NN -->
+        </div>
+        <h2>Klage</h2>
+        <p>Hvis du mener at vi behandler personopplysninger i strid med lovgivningen, kan du kontakte vårt personvernombud på <a href="mailto:personvernombud@udir.no">personvernombud@udir.no</a> eller klage til Datatilsynet. Du finner kontaktinformasjon her: <a href="https://www.datatilsynet.no/om-datatilsynet/kontakt-oss/" target="_blank" rel="noopener noreferrer">Datatilsynet</a>.</p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-content">
+      <a href="https://www.udir.no/" target="_blank" rel="noopener noreferrer" class="footer-logo-link" aria-label="Utdanningsdirektoratet">
+        <img src="/images/logo-white.png" alt="Utdanningsdirektoratet" class="footer-logo">
+      </a>
+      <p class="footer-title" id="footer-delivered">Kompetansepakker er levert av Utdanningsdirektoratet</p>
+      <ul class="footer-links">
+        <li><a href="/om-kompetanseportalen/" id="footer-link-about">Om kompetansepakker</a></li>
+        <li class="footer-divider" aria-hidden="true"></li>
+        <li><a href="/kontakt/" id="footer-link-contact">Kontakt</a></li>
+        <li class="footer-divider" aria-hidden="true"></li>
+        <li><a href="/personvern/" id="footer-link-privacy">Personvernerklæring</a></li>
+      </ul>
+      <div class="footer-accessibility">
+        <span id="footer-a11y-label">Tilgjengelighetserklæring på</span>
+        <a href="https://uustatus.no/nb/erklaringer/publisert/2796ebc6-161f-4dc9-9429-70d7dd136431" target="_blank" rel="noopener noreferrer">Bokmål</a>
+        <span aria-hidden="true">|</span>
+        <a href="https://uustatus.no/nn/erklaringer/publisert/2796ebc6-161f-4dc9-9429-70d7dd136431" target="_blank" rel="noopener noreferrer">Nynorsk</a>
+      </div>
+      <button type="button" class="scroll-top-btn" id="scroll-top-btn" aria-label="Rull til toppen av siden">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="18 15 12 9 6 15"/>
+        </svg>
+        <span id="scroll-top-btn-text">Til toppen</span>
+      </button>
+    </div>
+  </footer>
+
+  <script src="/js/info-page.js"></script>
+</body>
+</html>

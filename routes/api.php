@@ -157,3 +157,7 @@ Route::get('course/{courseId}/coursepages', 'CanvasController@getCoursePages')->
 Route::get('course/{courseId}/coursepage/{pageId}', 'CanvasController@getCoursePageContent')->middleware('lti');
 Route::get('course/{courseId}/linksvalidation', 'CanvasController@getLinksValidationForCourse')->middleware('lti');
 Route::post('course/{courseId}/linksvalidation', 'CanvasController@postLinksValidationForCourse')->middleware('lti');
+
+Route::group(['prefix' => 'ditdata'], function () {
+    Route::get('reminders', 'DitdataController@reminders');
+});
