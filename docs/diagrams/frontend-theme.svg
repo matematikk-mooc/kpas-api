@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="156" viewBox="0 0 1240 156">
+  <defs>
+    <style>
+      .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 600; fill: #1E293B; }
+      .sublabel { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 500; fill: #64748B; }
+      .card { fill: #FFFFFF; stroke: #CBD5E1; stroke-width: 1.5; rx: 6px; }
+      .edge { stroke: #0078D4; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .edge-dot { stroke: #64748B; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .arrow { fill: #0078D4; }
+      .arrow-dot { fill: #64748B; }
+    </style>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow" />
+    </marker>
+    <marker id="arr-dot" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow-dot" />
+    </marker>
+  </defs>
+
+  <!-- Pure White Background -->
+  <rect width="1240" height="156" fill="#FFFFFF"/>
+
+  <!-- ==================== CONNECTORS ==================== -->
+
+  <!-- User -> Canvas -->
+  <path d="M 120 78 L 148 78" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Canvas -> Theme Loader -->
+  <path d="M 304 78 L 332 78" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Theme Loader -> Storage Account -->
+  <path d="M 518 78 L 546 78" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Storage Account -> kompetanseportalen bundle -->
+  <path d="M 716 78 L 744 78" class="edge" marker-end="url(#arr)"/>
+
+  <!-- kompetanseportalen bundle -> KPAS API (Top Fork) -->
+  <path d="M 1020 60 L 1046 60 L 1046 46 L 1072 46" class="edge" marker-end="url(#arr)"/>
+
+  <!-- kompetanseportalen bundle -> Matomo (Bottom Fork) -->
+  <path d="M 1020 96 L 1046 96 L 1046 110 L 1072 110" class="edge-dot" marker-end="url(#arr-dot)"/>
+
+  <!-- ==================== COMPONENTS ==================== -->
+
+  <!-- 1. User -->
+  <g transform="translate(4, 56)">
+    <rect width="116" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#475569" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <text x="38" y="22" class="label">User</text>
+    <text x="38" y="34" class="sublabel">Browser</text>
+  </g>
+
+  <!-- 2. Canvas -->
+  <g transform="translate(148, 56)">
+    <rect width="156" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#E11D48" d="M12 2L1 21h22L12 2zm0 3.8L19.5 19h-15L12 5.8z"/></svg>
+    <text x="38" y="22" class="label">Canvas</text>
+    <text x="38" y="34" class="sublabel">bibsys.instructure.com</text>
+  </g>
+
+  <!-- 3. Theme Loader -->
+  <g transform="translate(332, 56)">
+    <rect width="186" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0284C7" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+    <text x="38" y="22" class="label">theme-udirdesign.js</text>
+    <text x="38" y="34" class="sublabel">Theme Loader</text>
+  </g>
+
+  <!-- 4. Storage Account -->
+  <g transform="translate(546, 56)">
+    <rect width="170" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0078D4" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+    <text x="38" y="22" class="label">Storage Account</text>
+    <text x="38" y="34" class="sublabel">/&lt;container&gt;/ci_&lt;sha&gt;/</text>
+  </g>
+
+  <!-- 5. Runtime Bundle -->
+  <g transform="translate(744, 56)">
+    <rect width="276" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0284C7" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+    <text x="38" y="22" class="label">kompetanseportalen-udirdesign.js</text>
+    <text x="38" y="34" class="sublabel">Runtime Bundle</text>
+  </g>
+
+  <!-- 6a. KPAS -->
+  <g transform="translate(1072, 24)">
+    <rect width="160" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#F59E0B" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    <text x="38" y="22" class="label">KPAS</text>
+    <text x="38" y="34" class="sublabel">REST &amp; LTI</text>
+  </g>
+
+  <!-- 6b. Matomo -->
+  <g transform="translate(1072, 88)">
+    <rect width="160" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#3B82F6" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5h-2v-5h2v5zm0-7h-2V7h2v2.5z"/></svg>
+    <text x="38" y="22" class="label">Matomo</text>
+    <text x="38" y="34" class="sublabel">statistik.digilaer.no</text>
+  </g>
+
+</svg>

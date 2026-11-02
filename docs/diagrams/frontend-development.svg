@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="992" height="116" viewBox="0 0 992 116">
+  <defs>
+    <style>
+      .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 600; fill: #1E293B; }
+      .sublabel { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 500; fill: #64748B; }
+      .card { fill: #FFFFFF; stroke: #CBD5E1; stroke-width: 1.5; rx: 6px; }
+      .card-dashed { fill: #FFFFFF; stroke: #8FA3B8; stroke-width: 1.5; stroke-dasharray: 4,4; rx: 6px; }
+      .edge { stroke: #0078D4; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .edge-dot { stroke: #64748B; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .arrow { fill: #0078D4; }
+      .arrow-dot { fill: #64748B; }
+    </style>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow" />
+    </marker>
+    <marker id="arr-dot" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow-dot" />
+    </marker>
+  </defs>
+
+  <!-- Pure White Background -->
+  <rect width="992" height="116" fill="#FFFFFF"/>
+
+  <!-- ==================== CONNECTORS ==================== -->
+
+  <!-- Developer -> Canvas Test -->
+  <path d="M 120 58 L 144 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Canvas Test -> theme-udirdesign.js -->
+  <path d="M 320 58 L 344 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- theme-udirdesign.js -> kompetanseportalen-udirdesign.js -->
+  <path d="M 530 58 L 554 58" class="edge-dot" marker-end="url(#arr-dot)"/>
+
+  <!-- kompetanseportalen-udirdesign.js -> KPAS API -->
+  <path d="M 824 58 L 848 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- ==================== COMPONENTS ==================== -->
+
+  <!-- 1. Developer -->
+  <g transform="translate(4, 36)">
+    <rect width="116" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#475569" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <text x="38" y="22" class="label">Developer</text>
+    <text x="38" y="34" class="sublabel">Browser</text>
+  </g>
+
+  <!-- 2. Canvas Test Site -->
+  <g transform="translate(144, 36)">
+    <rect width="176" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#E11D48" d="M12 2L1 21h22L12 2zm0 3.8L19.5 19h-15L12 5.8z"/></svg>
+    <text x="38" y="22" class="label">Canvas Test</text>
+    <text x="38" y="34" class="sublabel">bibsys.test.instructure.com</text>
+  </g>
+
+  <!-- 3. Theme Loader with cookie -->
+  <g transform="translate(344, 36)">
+    <rect width="186" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0284C7" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+    <text x="38" y="22" class="label">theme-udirdesign.js</text>
+    <text x="38" y="34" class="sublabel">use_localhost_theme=true</text>
+  </g>
+
+  <!-- 4. Runtime Bundle on Localhost -->
+  <g transform="translate(554, 36)">
+    <rect width="270" height="44" class="card-dashed"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0284C7" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+    <text x="38" y="22" class="label">kompetanseportalen-udirdesign.js</text>
+    <text x="38" y="34" class="sublabel">http://localhost:9000/</text>
+  </g>
+
+  <!-- 5. KPAS -->
+  <g transform="translate(848, 36)">
+    <rect width="140" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#F59E0B" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    <text x="38" y="22" class="label">KPAS</text>
+    <text x="38" y="34" class="sublabel">Stage</text>
+  </g>
+
+</svg>

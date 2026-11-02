@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="116" viewBox="0 0 940 116">
+  <defs>
+    <style>
+      .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 600; fill: #1E293B; }
+      .sublabel { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 500; fill: #64748B; }
+      .card { fill: #FFFFFF; stroke: #CBD5E1; stroke-width: 1.5; rx: 6px; }
+      .edge { stroke: #0078D4; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .arrow { fill: #0078D4; }
+    </style>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow" />
+    </marker>
+  </defs>
+
+  <!-- Pure White Background -->
+  <rect width="940" height="116" fill="#FFFFFF"/>
+
+  <!-- ==================== CONNECTORS ==================== -->
+
+  <!-- Git Push -> GitHub Actions -->
+  <path d="M 160 58 L 190 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- GitHub Actions -> Storage -->
+  <path d="M 370 58 L 400 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Storage -> Admin Download -->
+  <path d="M 590 58 L 620 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Admin Download -> Canvas Upload -->
+  <path d="M 750 58 L 780 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- ==================== COMPONENTS ==================== -->
+
+  <!-- 1. Git Push -->
+  <g transform="translate(4, 36)">
+    <rect width="156" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#F05032" d="M23.546 10.93L13.067.452a1.5 1.5 0 0 0-2.126 0L8.808 2.585l3.256 3.256a1.781 1.781 0 0 1 2.25 2.25l3.14 3.14a1.78 1.78 0 1 1-1.066 1.066l-2.932-2.932v4.868a1.78 1.78 0 1 1-1.5 0v-5.02a1.78 1.78 0 0 1-.954-2.336L7.75 3.644.452 10.942a1.5 1.5 0 0 0 0 2.126l10.48 10.48a1.5 1.5 0 0 0 2.125 0l10.489-10.49a1.5 1.5 0 0 0 0-2.127z"/></svg>
+    <text x="38" y="22" class="label">Git Push</text>
+    <text x="38" y="34" class="sublabel">stage / main</text>
+  </g>
+
+  <!-- 2. GitHub Actions -->
+  <g transform="translate(190, 36)">
+    <rect width="180" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#2088FF" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+    <text x="38" y="22" class="label">build-node.yml</text>
+    <text x="38" y="34" class="sublabel">Webpack build</text>
+  </g>
+
+  <!-- 3. Storage Account -->
+  <g transform="translate(400, 36)">
+    <rect width="190" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0078D4" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+    <text x="38" y="22" class="label">Storage Account</text>
+    <text x="38" y="34" class="sublabel">/&lt;container&gt;/ci_&lt;sha&gt;/</text>
+  </g>
+
+  <!-- 4. Admin Download -->
+  <g transform="translate(620, 36)">
+    <rect width="130" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#475569" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <text x="38" y="22" class="label">Admin</text>
+    <text x="38" y="34" class="sublabel">Download</text>
+  </g>
+
+  <!-- 5. Canvas Upload -->
+  <g transform="translate(780, 36)">
+    <rect width="156" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#E11D48" d="M12 2L1 21h22L12 2zm0 3.8L19.5 19h-15L12 5.8z"/></svg>
+    <text x="38" y="22" class="label">Canvas</text>
+    <text x="38" y="34" class="sublabel">Theme Editor</text>
+  </g>
+
+</svg>

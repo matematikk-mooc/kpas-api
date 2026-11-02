@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1034" height="116" viewBox="0 0 1034 116">
+  <defs>
+    <style>
+      .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 600; fill: #1E293B; }
+      .sublabel { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 500; fill: #64748B; }
+      .card { fill: #FFFFFF; stroke: #CBD5E1; stroke-width: 1.5; rx: 6px; }
+      .edge { stroke: #0078D4; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .edge-dot { stroke: #64748B; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .arrow { fill: #0078D4; }
+      .arrow-dot { fill: #64748B; }
+    </style>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow" />
+    </marker>
+    <marker id="arr-dot" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow-dot" />
+    </marker>
+  </defs>
+
+  <!-- Pure White Background -->
+  <rect width="1034" height="116" fill="#FFFFFF"/>
+
+  <!-- ==================== CONNECTORS ==================== -->
+
+  <!-- 1. Canvas Iframe -> 2. OIDC Handshake -->
+  <path d="M 170 58 L 194 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- 2. OIDC Handshake -> 3. POST /launch -->
+  <path d="M 376 58 L 400 58" class="edge" marker-end="url(#arr)"/>
+
+  <!-- 3. POST /launch -> 4a. Resource Launch (Top Path) -->
+  <path d="M 576 48 L 595 48 L 595 26 L 614 26" class="edge" marker-end="url(#arr)"/>
+
+  <!-- 3. POST /launch -> 4b. Deep Link Embed (Bottom Path) -->
+  <path d="M 576 68 L 595 68 L 595 90 L 614 90" class="edge-dot" marker-end="url(#arr-dot)"/>
+
+  <!-- 4a. Resource Launch -> 5a. LtiMiddleware (Auth to /api/*) -->
+  <path d="M 808 20 L 846 20" class="edge" marker-end="url(#arr)"/>
+
+  <!-- 4b. Deep Link Embed -> 5a. LtiMiddleware (Auth to /api/*) -->
+  <path d="M 808 80 L 827 80 L 827 36 L 846 36" class="edge" marker-end="url(#arr)"/>
+
+  <!-- 4b. Deep Link Embed -> 5b. GET /deep (Return iframe to Canvas) -->
+  <path d="M 808 96 L 846 96" class="edge-dot" marker-end="url(#arr-dot)"/>
+
+  <!-- ==================== COMPONENTS ==================== -->
+
+  <!-- 1. Canvas Iframe -->
+  <g transform="translate(4, 36)">
+    <rect width="166" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#E11D48" d="M12 2L1 21h22L12 2zm0 3.8L19.5 19h-15L12 5.8z"/></svg>
+    <text x="38" y="22" class="label">1. Canvas Iframe</text>
+    <text x="38" y="34" class="sublabel">POST /lti3 login init</text>
+  </g>
+
+  <!-- 2. OIDC Handshake -->
+  <g transform="translate(194, 36)">
+    <rect width="182" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0284C7" d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+    <text x="38" y="22" class="label">2. OIDC Handshake</text>
+    <text x="38" y="34" class="sublabel">nocookies ↔ authorize</text>
+  </g>
+
+  <!-- 3. POST /launch -->
+  <g transform="translate(400, 36)">
+    <rect width="176" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#F59E0B" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    <text x="38" y="22" class="label">3. POST /launch</text>
+    <text x="38" y="34" class="sublabel">JWT → session &amp; cookie</text>
+  </g>
+
+  <!-- 4a. Resource Launch -->
+  <g transform="translate(614, 4)">
+    <rect width="194" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#10B981" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+    <text x="38" y="22" class="label">4a. Resource Launch</text>
+    <text x="38" y="34" class="sublabel">kpasMode → Tool Vue View</text>
+  </g>
+
+  <!-- 4b. Deep Link Embed -->
+  <g transform="translate(614, 68)">
+    <rect width="194" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#6C5FC7" d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+    <text x="38" y="22" class="label">4b. Deep Link Embed</text>
+    <text x="38" y="34" class="sublabel">Editor → KpasEmbedView</text>
+  </g>
+
+  <!-- 5a. LtiMiddleware -->
+  <g transform="translate(846, 4)">
+    <rect width="184" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0078D4" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+    <text x="38" y="22" class="label">5a. LtiMiddleware</text>
+    <text x="38" y="34" class="sublabel">Validates ?cookie → /api/*</text>
+  </g>
+
+  <!-- 5b. GET /deep -->
+  <g transform="translate(846, 68)">
+    <rect width="184" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#6C5FC7" d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+    <text x="38" y="22" class="label">5b. GET /deep</text>
+    <text x="38" y="34" class="sublabel">Embeds /launch iframe</text>
+  </g>
+
+</svg>

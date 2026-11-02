@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="694" height="232" viewBox="0 0 694 232">
+  <defs>
+    <style>
+      .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 600; fill: #1E293B; }
+      .sublabel { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 500; fill: #64748B; }
+      .card { fill: #FFFFFF; stroke: #CBD5E1; stroke-width: 1.5; rx: 6px; }
+      .edge { stroke: #0078D4; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .edge-dot { stroke: #64748B; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .arrow { fill: #0078D4; }
+      .arrow-dot { fill: #64748B; }
+    </style>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow" />
+    </marker>
+    <marker id="arr-dot" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" class="arrow-dot" />
+    </marker>
+  </defs>
+
+  <!-- Pure White Background -->
+  <rect width="694" height="232" fill="#FFFFFF"/>
+
+  <!-- ==================== CONNECTORS ==================== -->
+
+  <!-- User -> Canvas -->
+  <path d="M 114 86 L 138 86" class="edge" marker-end="url(#arr)"/>
+
+  <!-- Canvas -> KPAS -->
+  <path d="M 294 86 L 318 86" class="edge" marker-end="url(#arr)"/>
+
+  <!-- KPAS -> Storage Account (Mounted File System) -->
+  <path d="M 404 64 L 404 48" class="edge-dot" marker-end="url(#arr-dot)"/>
+
+  <!-- KPAS -> Sentry (Error & Trace Monitoring) -->
+  <path d="M 404 108 L 404 124" class="edge-dot" marker-end="url(#arr-dot)"/>
+
+  <!-- KPAS -> Grafana (/api/ping) -->
+  <path d="M 318 98 L 306 98 L 306 206 L 318 206" class="edge-dot" marker-end="url(#arr-dot)"/>
+
+  <!-- KPAS -> Canvas API (Top Path) -->
+  <path d="M 490 74 L 512 74 L 512 26 L 534 26" class="edge" marker-end="url(#arr)"/>
+
+  <!-- KPAS -> Azure MySQL KPAS DB (Middle Path) -->
+  <path d="M 490 86 L 534 86" class="edge" marker-end="url(#arr)"/>
+
+  <!-- KPAS -> Statistics API (Bottom Path) -->
+  <path d="M 490 98 L 512 98 L 512 146 L 534 146" class="edge-dot" marker-end="url(#arr-dot)"/>
+
+  <!-- ==================== COMPONENTS ==================== -->
+
+  <!-- 1. User -->
+  <g transform="translate(4, 64)">
+    <rect width="110" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#475569" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <text x="38" y="22" class="label">User</text>
+    <text x="38" y="34" class="sublabel">Browser</text>
+  </g>
+
+  <!-- 2. Canvas -->
+  <g transform="translate(138, 64)">
+    <rect width="156" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#E11D48" d="M12 2L1 21h22L12 2zm0 3.8L19.5 19h-15L12 5.8z"/></svg>
+    <text x="38" y="22" class="label">Canvas</text>
+    <text x="38" y="34" class="sublabel">bibsys.instructure.com</text>
+  </g>
+
+  <!-- 3a. Storage Account (File System) -->
+  <g transform="translate(318, 4)">
+    <rect width="172" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0078D4" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+    <text x="38" y="22" class="label">Storage Account</text>
+    <text x="38" y="34" class="sublabel">File System</text>
+  </g>
+
+  <!-- 3b. KPAS -->
+  <g transform="translate(318, 64)">
+    <rect width="172" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#F59E0B" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    <text x="38" y="22" class="label">KPAS</text>
+    <text x="38" y="34" class="sublabel">kpas.kompetanse.udir.no</text>
+  </g>
+
+  <!-- 3c. Sentry -->
+  <g transform="translate(318, 124)">
+    <rect width="172" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#6C5FC7" d="M13.91 2.5a2.2 2.2 0 0 0-3.82 0L1.29 17.75a2.2 2.2 0 0 0 1.91 3.3h3.92v-2.1h-3.9a.1.1 0 0 1-.09-.15L11.9 3.55a.1.1 0 0 1 .18 0l8.78 15.25a.1.1 0 0 1-.09.15h-2.55a10.4 10.4 0 0 0-9.15-9.55v2.12a8.3 8.3 0 0 1 7 8.23v1.3h4.71a2.2 2.2 0 0 0 1.91-3.3L13.91 2.5zm-4.79 11.6a6.2 6.2 0 0 1 5.08 6.1v.85h-2.1v-.85a4.1 4.1 0 0 0-2.98-3.95v-2.15z"/></svg>
+    <text x="38" y="22" class="label">Sentry</text>
+    <text x="38" y="34" class="sublabel">udir.sentry.io</text>
+  </g>
+
+  <!-- 3d. Grafana -->
+  <g transform="translate(318, 184)">
+    <rect width="172" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#F46800" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+    <text x="38" y="22" class="label">Grafana</text>
+    <text x="38" y="34" class="sublabel">/api/ping → Slack Alert</text>
+  </g>
+
+  <!-- 4a. Canvas API -->
+  <g transform="translate(534, 4)">
+    <rect width="156" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#E11D48" d="M12 2L1 21h22L12 2zm0 3.8L19.5 19h-15L12 5.8z"/></svg>
+    <text x="38" y="22" class="label">Canvas API</text>
+    <text x="38" y="34" class="sublabel">bibsys.instructure.com</text>
+  </g>
+
+  <!-- 4b. Azure MySQL (KPAS Database) -->
+  <g transform="translate(534, 64)">
+    <rect width="156" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#0078D4" d="M12 3C7.58 3 4 4.79 4 7v10c0 2.21 3.59 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4zm0 2c3.87 0 6 1.5 6 2s-2.13 2-6 2-6-1.5-6-2 2.13-2 6-2zm6 12c0 .5-2.13 2-6 2s-6-1.5-6-2v-2.23c1.61.78 3.72 1.23 6 1.23s4.39-.45 6-1.23V17zm0-5c0 .5-2.13 2-6 2s-6-1.5-6-2V9.77c1.61.78 3.72 1.23 6 1.23s4.39-.45 6-1.23V12z"/></svg>
+    <text x="38" y="22" class="label">Azure MySQL</text>
+    <text x="38" y="34" class="sublabel">KPAS Database</text>
+  </g>
+
+  <!-- 4c. Statistics API -->
+  <g transform="translate(534, 124)">
+    <rect width="156" height="44" class="card"/>
+    <svg x="12" y="12" width="20" height="20" viewBox="0 0 24 24"><path fill="#10B981" d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
+    <text x="38" y="22" class="label">Statistics API</text>
+    <text x="38" y="34" class="sublabel">REST Endpoints</text>
+  </g>
+
+</svg>
