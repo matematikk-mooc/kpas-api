@@ -220,7 +220,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "resources/sass/_variables.scss";
+@import "../../../sass/_variables.scss";
 
 .table-completed *,
 .table-completed ::after,
